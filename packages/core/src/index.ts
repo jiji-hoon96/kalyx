@@ -1,12 +1,20 @@
-// @kalyx/core — 날짜 계산 로직 (플랫폼 독립)
-// 구현은 Phase 1에서 진행
+// @kalyx/core — 플랫폼 독립 날짜 로직
 
-export type ISODateString = string;
+// 타입
+export type {
+  ISODateString,
+  DisabledRule,
+  CalendarDay,
+  CalendarWeek,
+  CalendarGrid,
+  CalendarOptions,
+  DateAdapter,
+  WeekStartsOn,
+} from './types.js';
 
-export type DisabledRule =
-	| { date: ISODateString }
-	| { before: ISODateString }
-	| { after: ISODateString }
-	| { dayOfWeek: number[] };
+// 어댑터
+export { DateFnsAdapter } from './adapters/date-fns.js';
 
-export type {};
+// 유틸
+export { getCalendarDays, isDateDisabled } from './utils/calendar.js';
+export { normalizeISO, parseInputValue, getOrderedWeekdays, WEEKDAY_LABELS } from './utils/date.js';
