@@ -1,0 +1,194 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# 같은 PR에 새 커밋이 오면 이전 실행 취소
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─────────────────────────────────────
+  # 1. 타입 체크
+  # ─────────────────────────────────────
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+
+  # ─────────────────────────────────────
+  # 2. 린트
+  # ─────────────────────────────────────
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+
+  # ─────────────────────────────────────
+  # 3. 테스트 (Node.js 20, 22에서 모두)
+  # ─────────────────────────────────────
+  test:
+    name: Test (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: ${{ matrix.node }}, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:run --coverage
+      - name: 커버리지 업로드 (Node 22만)
+        if: matrix.node == 22
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+  # ─────────────────────────────────────
+  # 4. 빌드
+  # ─────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: dist 아티팩트 보관 (bundle-size job 공유)
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.run_id }}
+          path: packages/react/dist/
+          retention-days: 1
+
+  # ─────────────────────────────────────
+  # 5. 번들 크기 게이팅 (≤ 12KB gzip)
+  # ─────────────────────────────────────
+  bundle-size:
+    name: Bundle Size (≤12KB gzip)
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - name: dist 다운로드
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-${{ github.run_id }}
+          path: packages/react/dist/
+      - name: 크기 측정 및 판정
+        id: check
+        run: |
+          BYTES=$(gzip -c packages/react/dist/index.js | wc -c)
+          KB=$(echo "scale=2; $BYTES / 1024" | bc)
+          MAX=12
+          echo "gzip_kb=$KB" >> $GITHUB_OUTPUT
+          echo "📦 번들 크기: ${KB}KB (목표: ≤${MAX}KB)"
+          if (( $(echo "$KB > $MAX" | bc -l) )); then
+            echo "❌ 초과: ${KB}KB > ${MAX}KB"; exit 1
+          else
+            echo "✅ OK: ${KB}KB ≤ ${MAX}KB"
+          fi
+      - name: PR 코멘트
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const kb   = '${{ steps.check.outputs.gzip_kb }}';
+            const ok   = parseFloat(kb) <= 12;
+            const icon = ok ? '✅' : '❌';
+            const body = [
+              `## ${icon} Bundle Size`,
+              '',
+              '| | gzip |',
+              '|---|---|',
+              `| **현재** | **${kb}KB** |`,
+              `| 목표 | ≤ 12KB |`,
+              '',
+              ok
+                ? '번들 크기가 목표 이내입니다.'
+                : '⚠️ 번들 크기가 목표를 초과했습니다. `pnpm check-bundle` 로 확인하세요.',
+            ].join('\n');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            });
+
+  # ─────────────────────────────────────
+  # 6. SSR 안전성 검증
+  # ─────────────────────────────────────
+  ssr-check:
+    name: SSR Safety Check
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - name: dist 다운로드
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-${{ github.run_id }}
+          path: packages/react/dist/
+      - name: Node.js에서 직접 import 테스트 (SSR 시뮬레이션)
+        run: |
+          node -e "
+            const lib = require('./packages/react/dist/index.cjs');
+            console.log('CJS exports:', Object.keys(lib).join(', '));
+            console.log('✅ CJS import 성공');
+          "
+          node --input-type=module -e "
+            import('./packages/react/dist/index.js').then(lib => {
+              console.log('ESM exports:', Object.keys(lib).join(', '));
+              console.log('✅ ESM import 성공');
+            });
+          "
+
+  # ─────────────────────────────────────
+  # 7. 전체 통과 게이트 (Branch Protection용)
+  # ─────────────────────────────────────
+  all-pass:
+    name: All Checks Pass
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint, test, build, bundle-size, ssr-check]
+    if: always()
+    steps:
+      - name: 결과 확인
+        run: |
+          results='${{ toJSON(needs) }}'
+          if echo "$results" | grep -q '"result":"failure"'; then
+            echo "❌ 일부 검사 실패"
+            exit 1
+          fi
+          echo "✅ 모든 검사 통과"

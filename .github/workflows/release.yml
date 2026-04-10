@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # 태그·릴리즈 생성
+      pull-requests: write  # Version PR 생성·업데이트
+      id-token: write       # npm provenance (공급망 보안)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Changesets가 전체 git 히스토리 필요
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install --frozen-lockfile
+
+      # 릴리즈 전 최종 품질 검사
+      - name: 빌드
+        run: pnpm build
+
+      - name: 테스트 (릴리즈 전 최종 검증)
+        run: pnpm test:run
+
+      - name: 번들 크기 확인
+        run: |
+          BYTES=$(gzip -c packages/react/dist/index.js | wc -c)
+          KB=$(echo "scale=2; $BYTES / 1024" | bc)
+          echo "📦 릴리즈 번들 크기: ${KB}KB"
+          if (( $(echo "$KB > 12" | bc -l) )); then
+            echo "❌ 번들 크기 12KB 초과 — 릴리즈 중단"
+            exit 1
+          fi
+
+      # Changesets 릴리즈 핵심 액션
+      # - changeset 파일이 있으면 → "chore: release packages" PR 생성/업데이트
+      # - Version PR이 merge되면 → npm publish 실행
+      - name: Changesets 릴리즈
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: pnpm changeset publish
+          version: pnpm changeset version
+          title: "chore: release packages"
+          commit: "chore: release packages"
+          createGithubReleases: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: "true"
+
+      # 릴리즈 성공 시 Slack/Discord 알림 (선택적)
+      - name: 릴리즈 알림
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          VERSION=$(node -p "require('./packages/react/package.json').version")
+          echo "🎉 @your-lib/react@$VERSION 릴리즈 완료"
+          # Slack/Discord 웹훅은 NOTIFICATION_WEBHOOK secret에 추가
+          # curl -X POST ${{ secrets.NOTIFICATION_WEBHOOK }} \
+          #   -H 'Content-type: application/json' \
+          #   --data "{\"text\":\"🎉 @your-lib/react@$VERSION released!\"}"

@@ -1,0 +1,62 @@
+{
+	"name": "your-datepicker-monorepo",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Headless, SSR-safe React DatePicker monorepo",
+
+	"scripts": {
+		"build": "pnpm -r build",
+		"build:core": "pnpm --filter @your-lib/core build",
+		"build:react": "pnpm --filter @your-lib/react build",
+
+		"test": "vitest",
+		"test:run": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"test:ui": "vitest --ui",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
+
+		"typecheck": "tsc -b",
+		"lint": "eslint packages/*/src --ext .ts,.tsx",
+		"lint:fix": "eslint packages/*/src --ext .ts,.tsx --fix",
+
+		"check-bundle": "node scripts/check-bundle-size.js",
+		"check-a11y": "vitest run --reporter=verbose --testPathPattern=a11y",
+
+		"changeset": "changeset",
+		"version": "changeset version",
+		"release": "pnpm build && changeset publish",
+
+		"docs:dev": "pnpm --filter docs dev",
+		"docs:build": "pnpm --filter docs build",
+
+		"clean": "pnpm -r clean && rm -rf node_modules coverage"
+	},
+
+	"devDependencies": {
+		"@changesets/cli": "^2.27.0",
+		"@changesets/changelog-github": "^0.5.0",
+		"@playwright/test": "^1.45.0",
+		"@testing-library/jest-dom": "^6.4.0",
+		"@testing-library/react": "^16.0.0",
+		"@testing-library/user-event": "^14.5.0",
+		"@types/react": "^19.0.0",
+		"@types/react-dom": "^19.0.0",
+		"@typescript-eslint/eslint-plugin": "^8.0.0",
+		"@typescript-eslint/parser": "^8.0.0",
+		"@vitejs/plugin-react": "^4.3.0",
+		"eslint": "^9.0.0",
+		"jest-axe": "^9.0.0",
+		"jsdom": "^25.0.0",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"tsup": "^8.2.0",
+		"typescript": "^5.5.0",
+		"vitest": "^3.0.0"
+	},
+
+	"engines": {
+		"node": ">=20.0.0",
+		"pnpm": ">=9.0.0"
+	}
+}
