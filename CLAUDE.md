@@ -159,7 +159,7 @@ export const DatePicker = Object.assign(DatePickerRoot, {
 });
 
 // 사용
-import { DatePicker } from '@your-lib/react';
+import { DatePicker } from '@kalyx/react';
 ```
 
 ### 원칙 5: 제어/비제어 모두 지원
@@ -177,7 +177,7 @@ import { DatePicker } from '@your-lib/react';
 ## 4. 파일 구조
 
 ```
-your-datepicker/
+kalyx/
 ├── CLAUDE.md                         ← 이 파일 (항상 읽힘)
 ├── .claude/
 │   ├── skills/                       ← 도메인 전문 가이드
