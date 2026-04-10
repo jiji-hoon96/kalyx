@@ -1,0 +1,58 @@
+{
+	"name": "@kalyx/react",
+	"version": "0.1.0",
+	"description": "Headless, SSR-safe React DatePicker",
+	"license": "MIT",
+	"author": "jiji-hoon96",
+	"homepage": "https://github.com/jiji-hoon96/kalyx#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jiji-hoon96/kalyx.git",
+		"directory": "packages/react"
+	},
+	"bugs": { "url": "https://github.com/jiji-hoon96/kalyx/issues" },
+	"keywords": [
+		"react",
+		"datepicker",
+		"calendar",
+		"headless",
+		"typescript",
+		"tailwind",
+		"accessible",
+		"SSR"
+	],
+	"type": "module",
+	"sideEffects": false,
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
+		}
+	},
+	"files": ["dist", "CHANGELOG.md", "LICENSE"],
+	"scripts": {
+		"build": "tsup",
+		"typecheck": "tsc --noEmit",
+		"clean": "rm -rf dist"
+	},
+	"dependencies": {
+		"@floating-ui/react": "^0.26.0",
+		"@kalyx/core": "workspace:*",
+		"date-fns": "^4.0.0",
+		"date-fns-tz": "^3.0.0"
+	},
+	"peerDependencies": {
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0"
+	},
+	"devDependencies": {
+		"@types/react": "^19.0.0",
+		"@types/react-dom": "^19.0.0"
+	}
+}
