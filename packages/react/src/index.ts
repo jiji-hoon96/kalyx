@@ -4,6 +4,7 @@
 export { DatePicker } from './components/DatePicker/index.js';
 export { RangePicker } from './components/RangePicker/index.js';
 export { TimePicker } from './components/TimePicker/index.js';
+export { DateTimePicker } from './components/DateTimePicker/index.js';
 
 // 훅
 export { useDatePicker } from './hooks/useDatePicker.js';
@@ -41,6 +42,12 @@ export type {
   TimePickerAmPmToggleProps,
   TimePickerAmPmToggleClassNames,
 } from './components/TimePicker/index.js';
+
+// 타입 — DateTimePicker
+export type {
+  DateTimePickerRootProps,
+  DateTimePickerInputProps,
+} from './components/DateTimePicker/index.js';
 
 // 타입 — Hooks
 export type { UseDatePickerOptions, UseDatePickerReturn } from './hooks/useDatePicker.js';
