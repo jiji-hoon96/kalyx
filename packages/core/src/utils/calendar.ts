@@ -3,7 +3,9 @@ import type {
   CalendarGrid,
   CalendarOptions,
   DateAdapter,
+  DateRange,
   DisabledRule,
+  ISODateString,
 } from '../types.js';
 
 /**
@@ -21,14 +23,18 @@ export function getCalendarDays(
     selected,
     focusedDate,
     disabled = [],
+    range,
+    rangeHover,
   } = options;
 
   const todayISO = today ?? adapter.today();
   const monthStart = adapter.startOfMonth(monthISO);
-  const monthEnd = adapter.endOfMonth(monthISO);
 
   // 캘린더 그리드의 시작: 해당 월 첫째 날이 속한 주의 시작
   const gridStart = adapter.startOfWeek(monthStart, weekStartsOn);
+
+  // 범위 계산용 정규화 (start <= end 보장)
+  const normalizedRange = normalizeRangeForDisplay(range, rangeHover, adapter);
 
   const weeks: CalendarGrid = [];
   let current = gridStart;
@@ -44,6 +50,8 @@ export function getCalendarDays(
       const isFocused_ = focusedDate ? adapter.isSameDay(current, focusedDate) : false;
       const isDisabled_ = isDateDisabled(current, disabled, adapter);
 
+      const rangeFlags = computeRangeFlags(current, normalizedRange, adapter);
+
       days.push({
         isoString: current,
         dayNumber: adapter.getDate(current),
@@ -52,6 +60,7 @@ export function getCalendarDays(
         isSelected: isSelected_,
         isDisabled: isDisabled_,
         isFocused: isFocused_,
+        ...rangeFlags,
       });
 
       current = adapter.addDays(current, 1);
@@ -66,6 +75,76 @@ export function getCalendarDays(
   }
 
   return weeks;
+}
+
+/**
+ * Range가 한 쪽만 선택된 경우 hover 날짜로 임시 범위를 만들어 표시한다.
+ * start > end인 경우 정렬한다.
+ */
+function normalizeRangeForDisplay(
+  range: DateRange | null | undefined,
+  hover: ISODateString | null | undefined,
+  adapter: DateAdapter,
+): { start: ISODateString | null; end: ISODateString | null } {
+  if (!range) return { start: null, end: null };
+
+  const { start, end } = range;
+
+  // 둘 다 선택됨 → 정렬해서 반환
+  if (start && end) {
+    if (adapter.isAfter(start, end)) {
+      return { start: end, end: start };
+    }
+    return { start, end };
+  }
+
+  // 시작만 선택됨 + hover 있음 → hover까지 미리보기
+  if (start && !end && hover) {
+    if (adapter.isAfter(start, hover)) {
+      return { start: hover, end: start };
+    }
+    return { start, end: hover };
+  }
+
+  // 시작만 선택됨, hover 없음
+  if (start && !end) {
+    return { start, end: null };
+  }
+
+  return { start: null, end: null };
+}
+
+interface RangeFlags {
+  isRangeStart: boolean;
+  isRangeEnd: boolean;
+  isInRange: boolean;
+}
+
+function computeRangeFlags(
+  iso: ISODateString,
+  range: { start: ISODateString | null; end: ISODateString | null },
+  adapter: DateAdapter,
+): RangeFlags {
+  const { start, end } = range;
+
+  if (!start) {
+    return { isRangeStart: false, isRangeEnd: false, isInRange: false };
+  }
+
+  const isRangeStart = adapter.isSameDay(iso, start);
+
+  if (!end) {
+    return { isRangeStart, isRangeEnd: false, isInRange: false };
+  }
+
+  const isRangeEnd = adapter.isSameDay(iso, end);
+  const isInRange =
+    !isRangeStart &&
+    !isRangeEnd &&
+    adapter.isAfter(iso, start) &&
+    adapter.isBefore(iso, end);
+
+  return { isRangeStart, isRangeEnd, isInRange };
 }
 
 /**
@@ -88,4 +167,26 @@ export function isDateDisabled(
     }
   }
   return false;
+}
+
+/**
+ * 두 날짜 중 더 이른 것을 반환한다.
+ */
+export function minDate(
+  a: ISODateString,
+  b: ISODateString,
+  adapter: DateAdapter,
+): ISODateString {
+  return adapter.isBefore(a, b) ? a : b;
+}
+
+/**
+ * 두 날짜 중 더 늦은 것을 반환한다.
+ */
+export function maxDate(
+  a: ISODateString,
+  b: ISODateString,
+  adapter: DateAdapter,
+): ISODateString {
+  return adapter.isAfter(a, b) ? a : b;
 }

@@ -4,6 +4,7 @@
 export type {
   ISODateString,
   DisabledRule,
+  DateRange,
   CalendarDay,
   CalendarWeek,
   CalendarGrid,
@@ -16,5 +17,5 @@ export type {
 export { DateFnsAdapter } from './adapters/date-fns.js';
 
 // 유틸
-export { getCalendarDays, isDateDisabled } from './utils/calendar.js';
+export { getCalendarDays, isDateDisabled, minDate, maxDate } from './utils/calendar.js';
 export { normalizeISO, parseInputValue, getOrderedWeekdays, WEEKDAY_LABELS } from './utils/date.js';

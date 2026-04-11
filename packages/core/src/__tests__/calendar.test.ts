@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getCalendarDays, isDateDisabled } from '../utils/calendar.js';
+import { getCalendarDays, isDateDisabled, minDate, maxDate } from '../utils/calendar.js';
 import { DateFnsAdapter } from '../adapters/date-fns.js';
 
 const adapter = DateFnsAdapter;
@@ -128,5 +128,111 @@ describe('isDateDisabled', () => {
 
   it('빈 규칙 배열이면 모든 날짜가 enabled', () => {
     expect(isDateDisabled('2026-01-15T00:00:00.000Z', [], adapter)).toBe(false);
+  });
+});
+
+describe('minDate / maxDate', () => {
+  it('minDate는 더 이른 날짜를 반환한다', () => {
+    expect(
+      minDate('2026-01-15T00:00:00.000Z', '2026-01-20T00:00:00.000Z', adapter),
+    ).toBe('2026-01-15T00:00:00.000Z');
+  });
+
+  it('maxDate는 더 늦은 날짜를 반환한다', () => {
+    expect(
+      maxDate('2026-01-15T00:00:00.000Z', '2026-01-20T00:00:00.000Z', adapter),
+    ).toBe('2026-01-20T00:00:00.000Z');
+  });
+});
+
+describe('getCalendarDays — Range', () => {
+  it('range가 없으면 모든 날짜의 range 플래그가 false', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter);
+    const allDays = weeks.flat();
+    for (const day of allDays) {
+      expect(day.isRangeStart).toBe(false);
+      expect(day.isRangeEnd).toBe(false);
+      expect(day.isInRange).toBe(false);
+    }
+  });
+
+  it('range start와 end가 모두 있으면 올바르게 표시된다', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      range: {
+        start: '2026-01-10T00:00:00.000Z',
+        end: '2026-01-15T00:00:00.000Z',
+      },
+    });
+    const allDays = weeks.flat();
+
+    const start = allDays.find(d => d.dayNumber === 10 && d.isCurrentMonth);
+    const middle = allDays.find(d => d.dayNumber === 12 && d.isCurrentMonth);
+    const end = allDays.find(d => d.dayNumber === 15 && d.isCurrentMonth);
+    const outside = allDays.find(d => d.dayNumber === 20 && d.isCurrentMonth);
+
+    expect(start?.isRangeStart).toBe(true);
+    expect(start?.isRangeEnd).toBe(false);
+    expect(start?.isInRange).toBe(false);
+
+    expect(middle?.isRangeStart).toBe(false);
+    expect(middle?.isRangeEnd).toBe(false);
+    expect(middle?.isInRange).toBe(true);
+
+    expect(end?.isRangeStart).toBe(false);
+    expect(end?.isRangeEnd).toBe(true);
+    expect(end?.isInRange).toBe(false);
+
+    expect(outside?.isRangeStart).toBe(false);
+    expect(outside?.isRangeEnd).toBe(false);
+    expect(outside?.isInRange).toBe(false);
+  });
+
+  it('start > end인 경우 자동으로 정렬한다', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      range: {
+        start: '2026-01-15T00:00:00.000Z',
+        end: '2026-01-10T00:00:00.000Z',
+      },
+    });
+    const allDays = weeks.flat();
+    const day10 = allDays.find(d => d.dayNumber === 10 && d.isCurrentMonth);
+    const day15 = allDays.find(d => d.dayNumber === 15 && d.isCurrentMonth);
+
+    expect(day10?.isRangeStart).toBe(true);
+    expect(day15?.isRangeEnd).toBe(true);
+  });
+
+  it('start만 있고 hover가 있으면 미리보기 범위를 표시한다', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      range: { start: '2026-01-10T00:00:00.000Z', end: null },
+      rangeHover: '2026-01-15T00:00:00.000Z',
+    });
+    const allDays = weeks.flat();
+    const day12 = allDays.find(d => d.dayNumber === 12 && d.isCurrentMonth);
+    expect(day12?.isInRange).toBe(true);
+  });
+
+  it('start만 있고 hover가 start보다 이전이면 hover가 시작이 된다', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      range: { start: '2026-01-15T00:00:00.000Z', end: null },
+      rangeHover: '2026-01-10T00:00:00.000Z',
+    });
+    const allDays = weeks.flat();
+    const day12 = allDays.find(d => d.dayNumber === 12 && d.isCurrentMonth);
+    expect(day12?.isInRange).toBe(true);
+  });
+
+  it('range start = end (단일 날짜)', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      range: {
+        start: '2026-01-15T00:00:00.000Z',
+        end: '2026-01-15T00:00:00.000Z',
+      },
+    });
+    const allDays = weeks.flat();
+    const day15 = allDays.find(d => d.dayNumber === 15 && d.isCurrentMonth);
+    expect(day15?.isRangeStart).toBe(true);
+    expect(day15?.isRangeEnd).toBe(true);
+    expect(day15?.isInRange).toBe(false);
   });
 });

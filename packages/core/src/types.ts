@@ -15,6 +15,12 @@ export type DisabledRule =
   | { after: ISODateString }
   | { dayOfWeek: number[] };
 
+/** 날짜 범위 (RangePicker) */
+export interface DateRange {
+  start: ISODateString | null;
+  end: ISODateString | null;
+}
+
 /** 캘린더 그리드의 하루를 표현하는 타입 */
 export interface CalendarDay {
   /** ISO 8601 UTC string */
@@ -25,12 +31,18 @@ export interface CalendarDay {
   isCurrentMonth: boolean;
   /** 오늘인지 */
   isToday: boolean;
-  /** 선택된 날짜인지 */
+  /** 선택된 날짜인지 (단일 선택) */
   isSelected: boolean;
   /** 비활성화 상태인지 */
   isDisabled: boolean;
   /** 포커스된 날짜인지 */
   isFocused: boolean;
+  /** 범위의 시작일인지 */
+  isRangeStart: boolean;
+  /** 범위의 종료일인지 */
+  isRangeEnd: boolean;
+  /** 범위 내부 (시작과 종료 사이)인지 */
+  isInRange: boolean;
 }
 
 /** 캘린더 그리드: 주(week) 배열 → 일(day) 배열 */
@@ -89,4 +101,8 @@ export interface CalendarOptions {
   selected?: ISODateString | null;
   focusedDate?: ISODateString;
   disabled?: DisabledRule[];
+  /** 선택된 범위 (RangePicker) */
+  range?: DateRange | null;
+  /** 호버 중인 날짜 (RangePicker 미리보기용) */
+  rangeHover?: ISODateString | null;
 }
