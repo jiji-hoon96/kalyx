@@ -67,7 +67,7 @@ git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"%s" | \
 
 ```bash
 # package.json 버전 업데이트
-pnpm --filter @your-lib/react version [patch|minor|major]
+pnpm --filter @kalyx/react version [patch|minor|major]
 
 # Git 태그 생성
 git tag -a "v$(node -p "require('./packages/react/package.json').version")" \
@@ -92,7 +92,7 @@ git tag -a "v$(node -p "require('./packages/react/package.json').version")" \
 npm pack --dry-run  # 번들에 포함될 파일 목록 확인
 
 # 배포 (CI에서 자동 실행)
-pnpm --filter @your-lib/react publish --access public
+pnpm --filter @kalyx/react publish --access public
 ```
 
 ## 참고

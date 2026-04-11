@@ -35,10 +35,13 @@
 
 2026년 React 생태계의 DatePicker는 두 극단만 존재한다:
 
-- **react-day-picker (11M/week)**: Headless지만 Calendar Grid만. Input·TimePicker 없음. shadcn이 기반으로 쓰지만 개발자가 3개 컴포넌트를 직접 조합해야 함.
-- **react-datepicker (3.8M/week)**: 통합됐지만 CSS 필수 import, timezone 버그(#1018 만성), Props 100개 이상, SSR 불안정.
+- **react-day-picker (11M/week, ~22KB gzip)**: Headless지만 Calendar Grid만. Input·TimePicker 없음. v9에서도 개발자가 3개 컴포넌트를 직접 조합해야 함.
+- **react-datepicker (17.5M/week, ~40-60KB gzip)**: 통합됐지만 CSS 필수 import, timezone 이슈(#1018, native Date 의존), Props 100개 이상.
+- **Ark UI**: Composition 패턴이지만 **TimePicker를 버그로 제거함**. 45개 이상 컴포넌트의 범용 UI 라이브러리.
+- **React Aria**: 기능 완전하지만 복잡하고, `@internationalized/date` 의존 강제 (date-fns 비호환).
+- **Headless UI**: DatePicker 구현 거부 ("유지보수가 너무 큼").
 
-**우리가 채우는 공백:** Headless + Input·Calendar·TimePicker·RangePicker 통합 + SSR 안전 + TypeScript-first
+**우리가 채우는 공백:** Headless + Input·Calendar·TimePicker·RangePicker 통합 + date-fns 호환 + SSR 안전 + < 12KB
 
 ### 포지셔닝
 
@@ -48,6 +51,8 @@ react-day-picker의 Headless 철학
 react-datepicker의 통합 기능
       +
 shadcn의 Composition 패턴 & Tailwind 친화성
+      +
+Ark UI가 포기한 TimePicker 통합
 ```
 
 ---
@@ -184,8 +189,12 @@ kalyx/
 │   │   ├── api-design.md
 │   │   ├── accessibility.md
 │   │   ├── testing.md
+│   │   ├── testing-ci.md
 │   │   ├── timezone.md
-│   │   └── documentation.md
+│   │   ├── documentation.md
+│   │   ├── release-workflow.md
+│   │   ├── ci-cd.md
+│   │   └── oss-references.md
 │   └── commands/                     ← 슬래시 커맨드
 │       ├── new-component.md
 │       ├── check-bundle.md
@@ -193,35 +202,40 @@ kalyx/
 │       └── release.md
 ├── packages/
 │   ├── core/                         ← 플랫폼 독립 로직
+│   │   ├── CLAUDE.md                 ← 패키지별 컨텍스트
 │   │   └── src/
-│   │       ├── state/               ← 날짜 선택 상태 머신
-│   │       ├── validation/          ← 날짜 유효성 검사
-│   │       ├── utils/               ← 날짜 계산, 포맷
-│   │       └── adapters/            ← 날짜 라이브러리 어댑터
+│   │       ├── types.ts             ← 타입 정의 (DateAdapter, CalendarDay 등)
+│   │       ├── adapters/
+│   │       │   └── date-fns.ts      ← UTC 기반 DateFnsAdapter
+│   │       ├── utils/
+│   │       │   ├── calendar.ts      ← getCalendarDays, isDateDisabled
+│   │       │   └── date.ts          ← normalizeISO, parseInputValue
+│   │       ├── __tests__/           ← 단위 테스트
+│   │       └── index.ts             ← 공개 API
 │   └── react/                        ← React 컴포넌트 레이어
+│       ├── CLAUDE.md                 ← 패키지별 컨텍스트
 │       └── src/
 │           ├── components/
 │           │   ├── DatePicker/
-│           │   │   ├── Root.tsx          ← Context, 상태
-│           │   │   ├── Input.tsx         ← 텍스트 입력 + 파싱
+│           │   │   ├── Root.tsx          ← Provider, 제어/비제어
+│           │   │   ├── Input.tsx         ← role="combobox", 날짜 파싱
+│           │   │   ├── Trigger.tsx       ← 캘린더 아이콘 버튼
 │           │   │   ├── Popover.tsx       ← Floating UI 기반
-│           │   │   ├── Calendar.tsx      ← 날짜 그리드
-│           │   │   ├── TimePicker.tsx    ← 시간 선택
+│           │   │   ├── Calendar.tsx      ← role="grid", 키보드 내비게이션
 │           │   │   ├── DatePicker.test.tsx
-│           │   │   └── index.ts          ← 공개 API만
-│           │   └── RangePicker/
+│           │   │   └── index.ts          ← Object.assign Dot Notation
+│           │   └── RangePicker/          ← Phase 1 후반
 │           ├── hooks/
-│           │   ├── useDatePicker.ts
-│           │   └── useCalendar.ts
+│           │   └── useDatePicker.ts      ← 커스텀 UI용 Hook
 │           ├── context/
 │           │   └── DatePickerContext.ts
 │           └── index.ts                  ← 패키지 공개 API
 ├── apps/
-│   └── docs/                         ← 문서 사이트 (Next.js)
-├── docs/
-│   ├── roadmap.md
-│   ├── decisions.md                  ← ADR 기록
-│   └── setup-guide.md
+│   └── docs/                         ← 문서 사이트 (Next.js, 추후 구성)
+├── scripts/
+│   └── check-bundle-size.js          ← 번들 크기 측정
+├── test/
+│   └── setup.ts                      ← Vitest 전역 설정
 └── package.json
 ```
 

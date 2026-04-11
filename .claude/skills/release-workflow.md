@@ -51,11 +51,11 @@ pnpm changeset init
 {
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
   "changelog": ["@changesets/changelog-github", {
-    "repo": "your-username/your-datepicker"
+    "repo": "jiji-hoon96/kalyx"
   }],
   "commit": false,
   "fixed": [],
-  "linked": [["@your-lib/core", "@your-lib/react"]],
+  "linked": [["@kalyx/core", "@kalyx/react"]],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
@@ -74,7 +74,7 @@ pnpm changeset init
 pnpm changeset
 
 # 인터랙티브 프롬프트
-# 1. 어떤 패키지가 변경됐나? → @your-lib/react 선택
+# 1. 어떤 패키지가 변경됐나? → @kalyx/react 선택
 # 2. semver 타입? → patch / minor / major
 # 3. 변경 내용 설명 → "키보드 내비게이션 추가"
 ```
@@ -82,7 +82,7 @@ pnpm changeset
 생성 결과 예시:
 ```markdown
 ---
-"@your-lib/react": minor
+"@kalyx/react": minor
 ---
 
 키보드 내비게이션 추가 — Arrow keys로 날짜 이동, Enter로 선택
@@ -111,7 +111,7 @@ pnpm changeset
 changeset 파일 예시:
 ```markdown
 ---
-"@your-lib/react": major
+"@kalyx/react": major
 ---
 
 **Breaking:** `onChange` 반환 타입이 `Date` → `string` (ISO 8601)으로 변경됐습니다.
@@ -137,7 +137,7 @@ changeset 파일 예시:
 
 ```json
 {
-  "name": "@your-lib/react",
+  "name": "@kalyx/react",
   "version": "0.1.0",
   "description": "Headless, SSR-safe React DatePicker",
   "license": "MIT",
@@ -145,11 +145,11 @@ changeset 파일 예시:
   "homepage": "https://your-docs-site.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/your-datepicker.git",
+    "url": "https://github.com/jiji-hoon96/kalyx.git",
     "directory": "packages/react"
   },
   "bugs": {
-    "url": "https://github.com/your-username/your-datepicker/issues"
+    "url": "https://github.com/jiji-hoon96/kalyx/issues"
   },
   "keywords": [
     "react", "datepicker", "calendar", "headless",
@@ -189,7 +189,7 @@ changeset 파일 예시:
 
   "dependencies": {
     "@floating-ui/react": "^0.26.0",
-    "@your-lib/core": "workspace:*",
+    "@kalyx/core": "workspace:*",
     "date-fns": "^4.0.0",
     "date-fns-tz": "^3.0.0"
   },
@@ -278,10 +278,10 @@ pnpm changeset pre enter alpha
 
 # 이제 모든 changeset은 alpha 버전으로 발행
 pnpm changeset version
-# → @your-lib/react@1.0.0-alpha.0
+# → @kalyx/react@1.0.0-alpha.0
 
 # alpha 릴리즈 배포
-pnpm --filter @your-lib/react publish --tag alpha
+pnpm --filter @kalyx/react publish --tag alpha
 
 # beta로 전환
 pnpm changeset pre exit   # alpha 종료
@@ -289,23 +289,23 @@ pnpm changeset pre enter beta
 
 # beta 릴리즈
 pnpm changeset version
-# → @your-lib/react@1.0.0-beta.0
-pnpm --filter @your-lib/react publish --tag beta
+# → @kalyx/react@1.0.0-beta.0
+pnpm --filter @kalyx/react publish --tag beta
 
 # 안정 릴리즈
 pnpm changeset pre exit
 pnpm changeset version
-pnpm --filter @your-lib/react publish
+pnpm --filter @kalyx/react publish
 ```
 
 ### npm 태그 전략
 
 | npm tag | 설치 명령 | 용도 |
 |---|---|---|
-| `latest` (기본) | `npm install @your-lib/react` | 안정 버전 |
-| `alpha` | `npm install @your-lib/react@alpha` | 실험적 기능 |
-| `beta` | `npm install @your-lib/react@beta` | RC 단계 |
-| `next` | `npm install @your-lib/react@next` | 다음 메이저 RC |
+| `latest` (기본) | `npm install @kalyx/react` | 안정 버전 |
+| `alpha` | `npm install @kalyx/react@alpha` | 실험적 기능 |
+| `beta` | `npm install @kalyx/react@beta` | RC 단계 |
+| `next` | `npm install @kalyx/react@next` | 다음 메이저 RC |
 
 ---
 
@@ -317,7 +317,7 @@ cd packages/react
 npm pack --dry-run
 
 # 예상 출력:
-# npm notice 📦  @your-lib/react@0.1.0
+# npm notice 📦  @kalyx/react@0.1.0
 # npm notice === Tarball Contents ===
 # npm notice 2.3kB  dist/index.cjs
 # npm notice 8.1kB  dist/index.js
@@ -328,7 +328,7 @@ npm pack --dry-run
 # 2. 실제 설치해서 테스트 (선택적)
 cd /tmp && mkdir test-install && cd test-install
 npm init -y
-npm install /path/to/your-datepicker/packages/react
+npm install /path/to/kalyx/packages/react
 # → 실제 배포 전 설치 테스트
 
 # 3. bundlephobia 로컬 시뮬레이션
@@ -355,18 +355,18 @@ module.exports = {
 
 ```bash
 # npm에 제대로 올라갔는지 확인
-npm info @your-lib/react versions --json
+npm info @kalyx/react versions --json
 
 # 최신 버전 설치해서 테스트
 npx create-next-app@latest test-app --typescript
 cd test-app
-npm install @your-lib/react
+npm install @kalyx/react
 
 # 타입이 올바른지 확인
 npx tsc --noEmit
 
 # 실제 import 되는지 확인
-node -e "const lib = require('@your-lib/react'); console.log(Object.keys(lib))"
+node -e "const lib = require('@kalyx/react'); console.log(Object.keys(lib))"
 ```
 
 ---

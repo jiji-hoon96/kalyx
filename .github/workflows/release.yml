@@ -72,8 +72,8 @@ jobs:
         if: steps.changesets.outputs.published == 'true'
         run: |
           VERSION=$(node -p "require('./packages/react/package.json').version")
-          echo "🎉 @your-lib/react@$VERSION 릴리즈 완료"
+          echo "🎉 @kalyx/react@$VERSION 릴리즈 완료"
           # Slack/Discord 웹훅은 NOTIFICATION_WEBHOOK secret에 추가
           # curl -X POST ${{ secrets.NOTIFICATION_WEBHOOK }} \
           #   -H 'Content-type: application/json' \
-          #   --data "{\"text\":\"🎉 @your-lib/react@$VERSION released!\"}"
+          #   --data "{\"text\":\"🎉 @kalyx/react@$VERSION released!\"}"

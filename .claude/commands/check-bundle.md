@@ -8,13 +8,13 @@ description: 현재 번들 크기를 분석하고 12KB 목표 달성 여부를 �
 ## 설명
 
 빌드 후 번들 크기를 분석한다.
-목표: `@your-lib/react` gzip 12KB 미만
+목표: `@kalyx/react` gzip 12KB 미만
 
 ## Claude가 수행할 작업
 
 ```bash
 # 1. 빌드
-pnpm --filter @your-lib/react build
+pnpm --filter @kalyx/react build
 
 # 2. 크기 확인
 ls -lh packages/react/dist/

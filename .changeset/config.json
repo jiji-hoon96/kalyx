@@ -2,11 +2,11 @@
 	"$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
 	"changelog": [
 		"@changesets/changelog-github",
-		{ "repo": "your-username/your-datepicker" }
+		{ "repo": "jiji-hoon96/kalyx" }
 	],
 	"commit": false,
 	"fixed": [],
-	"linked": [["@your-lib/core", "@your-lib/react"]],
+	"linked": [["@kalyx/core", "@kalyx/react"]],
 	"access": "public",
 	"baseBranch": "main",
 	"updateInternalDependencies": "patch",
