@@ -3,10 +3,12 @@
 // 컴포넌트
 export { DatePicker } from './components/DatePicker/index.js';
 export { RangePicker } from './components/RangePicker/index.js';
+export { TimePicker } from './components/TimePicker/index.js';
 
 // 훅
 export { useDatePicker } from './hooks/useDatePicker.js';
 export { useRangePicker } from './hooks/useRangePicker.js';
+export { useTimePicker } from './hooks/useTimePicker.js';
 
 // 타입 — DatePicker
 export type {
@@ -28,9 +30,22 @@ export type {
   RangePickerCalendarClassNames,
 } from './components/RangePicker/index.js';
 
+// 타입 — TimePicker
+export type {
+  TimePickerRootProps,
+  TimePickerInputProps,
+  TimePickerHourListProps,
+  TimePickerHourListClassNames,
+  TimePickerMinuteListProps,
+  TimePickerMinuteListClassNames,
+  TimePickerAmPmToggleProps,
+  TimePickerAmPmToggleClassNames,
+} from './components/TimePicker/index.js';
+
 // 타입 — Hooks
 export type { UseDatePickerOptions, UseDatePickerReturn } from './hooks/useDatePicker.js';
 export type { UseRangePickerOptions, UseRangePickerReturn } from './hooks/useRangePicker.js';
+export type { UseTimePickerOptions, UseTimePickerReturn } from './hooks/useTimePicker.js';
 
 // @kalyx/core 재export (사용자 편의)
 export { DateFnsAdapter } from '@kalyx/core';
@@ -40,4 +55,5 @@ export type {
   DisabledRule,
   DateAdapter,
   CalendarDay,
+  TimeValue,
 } from '@kalyx/core';
