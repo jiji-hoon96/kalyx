@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+import type { MutableRefObject } from 'react';
 import type {
   DateAdapter,
   DateRange,
@@ -11,6 +12,8 @@ import type {
 export type RangeSelectingTarget = 'start' | 'end';
 
 export interface RangePickerContextValue {
+  /** Floating UI reference 요소 */
+  referenceRef: MutableRefObject<HTMLElement | null>;
   /** 현재 선택된 범위 */
   value: DateRange;
   /** 범위 변경 (Range 객체 전체 갱신) */

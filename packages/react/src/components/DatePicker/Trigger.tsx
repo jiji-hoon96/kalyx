@@ -23,7 +23,12 @@ export const DatePickerTrigger = forwardRef<HTMLButtonElement, DatePickerTrigger
 
     return (
       <button
-        ref={ref}
+        ref={(node) => {
+          // Input이 없으면 Trigger가 reference
+          if (!ctx.referenceRef.current) ctx.referenceRef.current = node;
+          if (typeof ref === 'function') ref(node);
+          else if (ref) ref.current = node;
+        }}
         type="button"
         tabIndex={0}
         aria-label={ctx.isOpen ? '캘린더 닫기' : '캘린더 열기'}

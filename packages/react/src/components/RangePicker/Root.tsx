@@ -67,6 +67,7 @@ export function RangePickerRoot({
 }: RangePickerRootProps) {
   const pickerId = useId();
   const isControlled = useRef(controlledValue !== undefined).current;
+  const referenceRef = useRef<HTMLElement | null>(null);
 
   // 비제어 모드의 내부 상태
   const [uncontrolledValue, setUncontrolledValue] = useState<DateRange>(
@@ -172,6 +173,7 @@ export function RangePickerRoot({
 
   const contextValue: RangePickerContextValue = useMemo(
     () => ({
+      referenceRef,
       value: currentValue,
       setRange,
       selectDate,

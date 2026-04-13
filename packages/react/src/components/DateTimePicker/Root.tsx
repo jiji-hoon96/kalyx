@@ -100,6 +100,7 @@ export function DateTimePickerRoot({
 }: DateTimePickerRootProps) {
   const pickerId = useId();
   const isControlled = useRef(controlledValue !== undefined).current;
+  const referenceRef = useRef<HTMLElement | null>(null);
 
   const [uncontrolledValue, setUncontrolledValue] = useState<ISODateString | null>(
     defaultValue ?? null,
@@ -185,6 +186,7 @@ export function DateTimePickerRoot({
   // ─── DatePickerContext (Calendar, Popover 재사용용) ───
   const dateContext: DatePickerContextValue = useMemo(
     () => ({
+      referenceRef,
       value: currentValue,
       selectDate,
       isOpen,

@@ -62,6 +62,7 @@ export function DatePickerRoot({
 }: DatePickerRootProps) {
   const pickerId = useId();
   const isControlled = useRef(controlledValue !== undefined).current;
+  const referenceRef = useRef<HTMLElement | null>(null);
 
   // 비제어 모드의 내부 상태
   const [uncontrolledValue, setUncontrolledValue] = useState<ISODateString | null>(
@@ -124,6 +125,7 @@ export function DatePickerRoot({
 
   const contextValue: DatePickerContextValue = useMemo(
     () => ({
+      referenceRef,
       value: currentValue,
       selectDate,
       isOpen,

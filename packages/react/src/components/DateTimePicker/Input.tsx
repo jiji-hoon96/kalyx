@@ -47,7 +47,11 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
 
     return (
       <input
-        ref={ref}
+        ref={(node) => {
+          ctx.referenceRef.current = node;
+          if (typeof ref === 'function') ref(node);
+          else if (ref) ref.current = node;
+        }}
         type="text"
         role="combobox"
         readOnly

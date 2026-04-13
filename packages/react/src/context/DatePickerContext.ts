@@ -1,7 +1,10 @@
 import { createContext, useContext } from 'react';
+import type { MutableRefObject } from 'react';
 import type { DateAdapter, DisabledRule, ISODateString, WeekStartsOn } from '@kalyx/core';
 
 export interface DatePickerContextValue {
+  /** Floating UI reference 요소 (Input/Trigger가 설정, Popover가 읽음) */
+  referenceRef: MutableRefObject<HTMLElement | null>;
   /** 현재 선택된 날짜 (ISO 8601 UTC) */
   value: ISODateString | null;
   /** 날짜 선택 핸들러 */

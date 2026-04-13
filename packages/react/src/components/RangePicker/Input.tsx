@@ -49,7 +49,12 @@ export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputPro
 
     return (
       <input
-        ref={ref}
+        ref={(node) => {
+          // 첫 번째 Input(start)을 reference로 사용
+          if (part === 'start' && node) ctx.referenceRef.current = node;
+          if (typeof ref === 'function') ref(node);
+          else if (ref) ref.current = node;
+        }}
         type="text"
         role="combobox"
         readOnly

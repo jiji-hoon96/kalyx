@@ -91,7 +91,13 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
 
     return (
       <input
-        ref={ref}
+        ref={(node) => {
+          // Floating UI reference 등록
+          ctx.referenceRef.current = node;
+          // forwardRef 전달
+          if (typeof ref === 'function') ref(node);
+          else if (ref) ref.current = node;
+        }}
         type="text"
         role="combobox"
         aria-expanded={ctx.isOpen}
