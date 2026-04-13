@@ -118,7 +118,7 @@ describe('DateTimePicker — 날짜/시간 분리 보존', () => {
     await user.click(screen.getByLabelText('날짜 및 시간'));
 
     // 20일 클릭
-    const day20 = screen.getByRole('button', { name: /2026년 1월 20일/ });
+    const day20 = screen.getByRole('button', { name: /January 20, 2026/ });
     await user.click(day20);
 
     const newValue = onChange.mock.calls[0]![0] as string;
@@ -185,7 +185,7 @@ describe('DateTimePicker — 날짜/시간 분리 보존', () => {
     await user.click(screen.getByLabelText('날짜 및 시간'));
 
     // 1) 20일 클릭
-    await user.click(screen.getByRole('button', { name: /2026년 1월 20일/ }));
+    await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
     // 2) 18시 클릭
     await user.click(screen.getByRole('option', { name: '18시' }));
     // 3) 30분 클릭
@@ -205,7 +205,7 @@ describe('DateTimePicker — 자동 닫기 비활성화', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
     // 날짜 클릭
-    await user.click(screen.getByRole('button', { name: /2026년 1월 20일/ }));
+    await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
 
     // DatePicker와 달리 팝오버가 닫히지 않아야 함
     expect(screen.getByRole('dialog')).toBeInTheDocument();

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { HTMLAttributes } from 'react';
-import { getCalendarDays, getOrderedWeekdays, isDateDisabled } from '@kalyx/core';
+import { getCalendarDays, isDateDisabled, getWeekdayNames, formatMonthYear, formatFullDate } from '@kalyx/core';
 import type { CalendarDay } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
 
@@ -42,8 +42,8 @@ export function DatePickerCalendar({ classNames, ...props }: DatePickerCalendarP
   const gridRef = useRef<HTMLTableElement>(null);
   const [announcement, setAnnouncement] = useState('');
 
-  const { adapter, viewMonth, focusedDate, weekStartsOn, disabled } = ctx;
-  const weekdays = getOrderedWeekdays(weekStartsOn);
+  const { adapter, viewMonth, focusedDate, weekStartsOn, disabled, locale } = ctx;
+  const weekdays = getWeekdayNames(locale, weekStartsOn);
 
   const weeks = getCalendarDays(viewMonth, adapter, {
     weekStartsOn,
@@ -53,8 +53,8 @@ export function DatePickerCalendar({ classNames, ...props }: DatePickerCalendarP
   });
 
   const year = adapter.getYear(viewMonth);
-  const month = adapter.getMonth(viewMonth) + 1;
-  const title = `${year}년 ${month}월`;
+  const month = adapter.getMonth(viewMonth);
+  const title = formatMonthYear(year, month, locale);
 
   // 포커스된 날짜 셀에 포커스 이동
   useEffect(() => {
@@ -71,21 +71,19 @@ export function DatePickerCalendar({ classNames, ...props }: DatePickerCalendarP
       ctx.setViewMonth(newMonth);
       ctx.setFocusedDate(adapter.startOfMonth(newMonth));
       const y = adapter.getYear(newMonth);
-      const m = adapter.getMonth(newMonth) + 1;
-      setAnnouncement(`${y}년 ${m}월로 이동했습니다`);
+      const m = adapter.getMonth(newMonth);
+      setAnnouncement(formatMonthYear(y, m, locale));
     },
-    [adapter, viewMonth, ctx],
+    [adapter, viewMonth, ctx, locale],
   );
 
   const handleDayClick = useCallback(
     (day: CalendarDay) => {
       if (day.isDisabled) return;
       ctx.selectDate(day.isoString);
-      setAnnouncement(
-        `${adapter.getYear(day.isoString)}년 ${adapter.getMonth(day.isoString) + 1}월 ${day.dayNumber}일을 선택했습니다`,
-      );
+      setAnnouncement(formatFullDate(day.isoString, locale));
     },
-    [ctx, adapter],
+    [ctx, locale],
   );
 
   const handleKeyDown = useCallback(
@@ -235,7 +233,7 @@ export function DatePickerCalendar({ classNames, ...props }: DatePickerCalendarP
                       data-outside-month={!day.isCurrentMonth || undefined}
                       className={dayClasses}
                       onClick={() => handleDayClick(day)}
-                      aria-label={`${adapter.getYear(day.isoString)}년 ${adapter.getMonth(day.isoString) + 1}월 ${day.dayNumber}일${day.isSelected ? ' (선택됨)' : ''}${day.isToday ? ' (오늘)' : ''}${day.isDisabled ? ' (선택 불가)' : ''}`}
+                      aria-label={formatFullDate(day.isoString, locale)}
                     >
                       {day.dayNumber}
                     </button>

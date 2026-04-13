@@ -94,7 +94,7 @@ describe('RangePicker — 기본 인터랙션', () => {
     await user.click(screen.getByLabelText('시작일'));
 
     // 1차 클릭: 10일 → start
-    const day10 = screen.getByRole('button', { name: /2026년 1월 10일/ });
+    const day10 = screen.getByRole('button', { name: /January 10, 2026/ });
     await user.click(day10);
 
     expect(onChange).toHaveBeenLastCalledWith({
@@ -103,7 +103,7 @@ describe('RangePicker — 기본 인터랙션', () => {
     });
 
     // 2차 클릭: 20일 → end
-    const day20 = screen.getByRole('button', { name: /2026년 1월 20일/ });
+    const day20 = screen.getByRole('button', { name: /January 20, 2026/ });
     await user.click(day20);
 
     expect(onChange).toHaveBeenLastCalledWith({
@@ -125,9 +125,9 @@ describe('RangePicker — 기본 인터랙션', () => {
     await user.click(screen.getByLabelText('시작일'));
 
     // 1차 클릭: 20일 → start
-    await user.click(screen.getByRole('button', { name: /2026년 1월 20일/ }));
+    await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
     // 2차 클릭: 10일 → end (swap 발생)
-    await user.click(screen.getByRole('button', { name: /2026년 1월 10일/ }));
+    await user.click(screen.getByRole('button', { name: /January 10, 2026/ }));
 
     const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1]![0] as DateRange;
     expect(lastCall.start).toMatch(/^2026-01-10T/);
@@ -143,12 +143,12 @@ describe('RangePicker — 기본 인터랙션', () => {
     );
 
     await user.click(screen.getByLabelText('시작일'));
-    await user.click(screen.getByRole('button', { name: /2026년 1월 10일/ }));
+    await user.click(screen.getByRole('button', { name: /January 10, 2026/ }));
 
     // start만 선택된 상태에서는 팝오버 유지
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: /2026년 1월 20일/ }));
+    await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
 
     // end 선택 후 팝오버 닫힘
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -248,7 +248,7 @@ describe('RangePicker — Range 시각화', () => {
 
     await user.click(screen.getByLabelText('시작일'));
 
-    const day12 = screen.getByRole('button', { name: /2026년 1월 12일/ });
+    const day12 = screen.getByRole('button', { name: /January 12, 2026/ });
     expect(day12).toHaveAttribute('data-in-range', 'true');
   });
 
@@ -263,8 +263,8 @@ describe('RangePicker — Range 시각화', () => {
 
     await user.click(screen.getByLabelText('시작일'));
 
-    const day10 = screen.getByRole('button', { name: /2026년 1월 10일.*시작일/ });
-    const day15 = screen.getByRole('button', { name: /2026년 1월 15일.*종료일/ });
+    const day10 = screen.getByRole('button', { name: /January 10, 2026/ });
+    const day15 = screen.getByRole('button', { name: /January 15, 2026/ });
 
     expect(day10).toHaveAttribute('data-range-start', 'true');
     expect(day15).toHaveAttribute('data-range-end', 'true');

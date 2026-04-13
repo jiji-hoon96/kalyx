@@ -49,7 +49,7 @@ describe('DatePicker — 기본 인터랙션', () => {
     await user.click(screen.getByRole('combobox'));
 
     // 15일 클릭
-    const day15 = screen.getByRole('button', { name: /2026년 1월 15일/ });
+    const day15 = screen.getByRole('button', { name: /January 15, 2026/ });
     await user.click(day15);
 
     expect(onChange).toHaveBeenCalledWith(
@@ -64,7 +64,7 @@ describe('DatePicker — 기본 인터랙션', () => {
     await user.click(screen.getByRole('combobox'));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
-    const day15 = screen.getByRole('button', { name: /2026년 1월 15일/ });
+    const day15 = screen.getByRole('button', { name: /January 15, 2026/ });
     await user.click(day15);
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -117,13 +117,13 @@ describe('DatePicker — 캘린더 네비게이션', () => {
     renderDatePicker({ value: '2026-01-15T00:00:00.000Z' });
 
     await user.click(screen.getByRole('combobox'));
-    expect(screen.getByText('2026년 1월')).toBeInTheDocument();
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', 'January 2026');
 
     await user.click(screen.getByRole('button', { name: '다음 달' }));
-    expect(screen.getByText('2026년 2월')).toBeInTheDocument();
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', 'February 2026');
 
     await user.click(screen.getByRole('button', { name: '이전 달' }));
-    expect(screen.getByText('2026년 1월')).toBeInTheDocument();
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', 'January 2026');
   });
 });
 
@@ -209,7 +209,7 @@ describe('DatePicker — 접근성', () => {
     await user.click(screen.getByRole('combobox'));
 
     const grid = screen.getByRole('grid');
-    expect(grid).toHaveAttribute('aria-label', '2026년 1월');
+    expect(grid).toHaveAttribute('aria-label', 'January 2026');
   });
 
   it('axe 접근성 검사를 통과한다 (닫힌 상태)', async () => {

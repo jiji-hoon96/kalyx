@@ -41,6 +41,8 @@ export interface RangePickerContextValue {
   weekStartsOn: WeekStartsOn;
   /** 날짜 표시 포맷 */
   displayFormat: string;
+  /** BCP 47 locale */
+  locale: string;
   /** 전체 비활성화 */
   isDisabled: boolean;
   /** 읽기 전용 */

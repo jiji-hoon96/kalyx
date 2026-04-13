@@ -39,6 +39,8 @@ export interface DateTimePickerRootProps {
   weekStartsOn?: WeekStartsOn;
   /** 날짜·시간 표시 포맷 (Input용) */
   displayFormat?: string;
+  /** BCP 47 locale */
+  locale?: string;
   /** 날짜 어댑터 */
   adapter?: DateAdapter;
   /** 자식 컴포넌트 */
@@ -76,6 +78,7 @@ export function DateTimePickerRoot({
   readOnly = false,
   weekStartsOn = 0,
   displayFormat = 'yyyy-MM-dd HH:mm',
+  locale = 'en-US',
   adapter = DateFnsAdapter,
   children,
 }: DateTimePickerRootProps) {
@@ -180,6 +183,7 @@ export function DateTimePickerRoot({
       disabled: disabledRules,
       weekStartsOn,
       displayFormat,
+      locale,
       isDisabled,
       isReadOnly: readOnly,
       pickerId,
@@ -197,6 +201,7 @@ export function DateTimePickerRoot({
       disabledRules,
       weekStartsOn,
       displayFormat,
+      locale,
       isDisabled,
       readOnly,
       pickerId,

@@ -31,6 +31,8 @@ export interface RangePickerRootProps {
   weekStartsOn?: WeekStartsOn;
   /** 날짜 표시 포맷 */
   displayFormat?: string;
+  /** BCP 47 locale */
+  locale?: string;
   /** 날짜 어댑터 */
   adapter?: DateAdapter;
   /** 자식 컴포넌트 */
@@ -45,6 +47,7 @@ export function RangePickerRoot({
   readOnly = false,
   weekStartsOn = 0,
   displayFormat = 'yyyy-MM-dd',
+  locale = 'en-US',
   adapter = DateFnsAdapter,
   children,
 }: RangePickerRootProps) {
@@ -173,6 +176,7 @@ export function RangePickerRoot({
       disabled: disabledRules,
       weekStartsOn,
       displayFormat,
+      locale,
       isDisabled,
       isReadOnly: readOnly,
       pickerId,
@@ -193,6 +197,7 @@ export function RangePickerRoot({
       disabledRules,
       weekStartsOn,
       displayFormat,
+      locale,
       isDisabled,
       readOnly,
       pickerId,
