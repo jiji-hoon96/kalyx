@@ -28,6 +28,10 @@ export type {
   RangeInputPart,
   RangePickerPopoverProps,
   RangePickerCalendarProps,
+  RangePickerPresetsProps,
+  RangePickerPresetsClassNames,
+  RangePickerPresetProps,
+  PresetKey,
   RangePickerCalendarClassNames,
 } from './components/RangePicker/index.js';
 

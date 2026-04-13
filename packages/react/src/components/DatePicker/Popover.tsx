@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
 import {
   useFloating,

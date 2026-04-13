@@ -334,6 +334,107 @@ describe('RangePicker — 접근성', () => {
   });
 });
 
+describe('RangePicker — Presets', () => {
+  function renderWithPresets(onChange?: (r: DateRange) => void) {
+    const cb = onChange ?? vi.fn();
+    const result = render(
+      <RangePicker onChange={cb}>
+        <RangePicker.Input part="start" />
+        <RangePicker.Input part="end" />
+        <RangePicker.Popover>
+          <RangePicker.Presets>
+            <RangePicker.Preset value="today">Today</RangePicker.Preset>
+            <RangePicker.Preset value="last7days">Last 7 days</RangePicker.Preset>
+            <RangePicker.Preset value="last30days">Last 30 days</RangePicker.Preset>
+            <RangePicker.Preset value="thisMonth">This month</RangePicker.Preset>
+          </RangePicker.Presets>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+    return { ...result, onChange: cb };
+  }
+
+  it('Presets가 group 역할로 렌더된다', async () => {
+    const user = userEvent.setup();
+    renderWithPresets();
+    await user.click(screen.getByLabelText('시작일'));
+    expect(screen.getByRole('group', { name: '날짜 범위 프리셋' })).toBeInTheDocument();
+  });
+
+  it('프리셋 클릭 → onChange에 올바른 범위가 전달된다', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderWithPresets();
+    await user.click(screen.getByLabelText('시작일'));
+
+    await user.click(screen.getByRole('option', { name: 'Today' }));
+
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        start: expect.any(String),
+        end: expect.any(String),
+      }),
+    );
+
+    // Today 프리셋: start === end
+    const call = (onChange as ReturnType<typeof vi.fn>).mock.calls[0]![0] as DateRange;
+    expect(call.start).toBe(call.end);
+  });
+
+  it('Last 7 days 프리셋 → 7일 범위', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderWithPresets();
+    await user.click(screen.getByLabelText('시작일'));
+
+    await user.click(screen.getByRole('option', { name: 'Last 7 days' }));
+
+    const call = (onChange as ReturnType<typeof vi.fn>).mock.calls[0]![0] as DateRange;
+    expect(call.start).toBeTruthy();
+    expect(call.end).toBeTruthy();
+    // end - start = 6일 (오늘 포함 7일)
+    const startDate = new Date(call.start!);
+    const endDate = new Date(call.end!);
+    const diffDays = Math.round((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    expect(diffDays).toBe(6);
+  });
+
+  it('프리셋 클릭 후 팝오버가 닫힌다', async () => {
+    const user = userEvent.setup();
+    renderWithPresets();
+    await user.click(screen.getByLabelText('시작일'));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('option', { name: 'Today' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('커스텀 range prop으로 직접 범위 지정', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <RangePicker onChange={onChange}>
+        <RangePicker.Input part="start" />
+        <RangePicker.Popover>
+          <RangePicker.Presets>
+            <RangePicker.Preset
+              range={{ start: '2026-01-01T00:00:00.000Z', end: '2026-03-31T00:00:00.000Z' }}
+            >
+              Q1 2026
+            </RangePicker.Preset>
+          </RangePicker.Presets>
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByRole('option', { name: 'Q1 2026' }));
+
+    expect(onChange).toHaveBeenCalledWith({
+      start: '2026-01-01T00:00:00.000Z',
+      end: '2026-03-31T00:00:00.000Z',
+    });
+  });
+});
+
 describe('RangePicker — SSR 안전성', () => {
   it('서버에서 renderToString이 에러 없이 동작한다', async () => {
     const { renderToString } = await import('react-dom/server');

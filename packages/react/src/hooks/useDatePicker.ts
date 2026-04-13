@@ -1,5 +1,5 @@
 import { useCallback, useId, useRef, useState } from 'react';
-import { DateFnsAdapter, getCalendarDays, isDateDisabled } from '@kalyx/core';
+import { DateFnsAdapter, getCalendarDays } from '@kalyx/core';
 import type {
   CalendarGrid,
   DateAdapter,

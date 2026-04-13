@@ -44,8 +44,6 @@ export function getWeekdayNames(
   weekStartsOn: WeekStartsOn = 0,
 ): WeekdayInfo[] {
   // 2026-01-04 = Sunday (기준점)
-  const baseSunday = new Date(Date.UTC(2026, 0, 4));
-
   const shortFormatter = new Intl.DateTimeFormat(locale, {
     weekday: 'short',
     timeZone: 'UTC',
