@@ -8,4 +8,6 @@ coverage
 playwright-report
 test-results
 *.tsbuildinfo
+.next
+out
  
