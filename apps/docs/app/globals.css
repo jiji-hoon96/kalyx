@@ -250,9 +250,13 @@ a:hover {
 	border-bottom-left-radius: 0;
 }
 
-/* Calendar nav */
+/* Calendar nav (prev/next + title) */
 [aria-label='이전 달'],
-[aria-label='다음 달'] {
+[aria-label='다음 달'],
+[aria-label='이전 년'],
+[aria-label='다음 년'],
+[aria-label='이전 12년'],
+[aria-label='다음 12년'] {
 	background: transparent;
 	border: none;
 	cursor: pointer;
@@ -262,8 +266,72 @@ a:hover {
 }
 
 [aria-label='이전 달']:hover,
-[aria-label='다음 달']:hover {
+[aria-label='다음 달']:hover,
+[aria-label='이전 년']:hover,
+[aria-label='다음 년']:hover,
+[aria-label='이전 12년']:hover,
+[aria-label='다음 12년']:hover {
 	background: #f3f4f6;
+}
+
+/* MonthGrid / YearGrid cells */
+[role='grid'] > div > [role='gridcell'] {
+	padding: 10px 8px;
+	border: none;
+	border-radius: 6px;
+	background: transparent;
+	font-size: 13px;
+	cursor: pointer;
+	text-align: center;
+}
+
+[role='grid'] > div > [role='gridcell']:hover {
+	background: #f3f4f6;
+}
+
+[role='grid'] > div > [role='gridcell'][data-selected='true'] {
+	background: #2563eb;
+	color: #fff;
+}
+
+[role='grid'] > div > [role='gridcell'][data-current='true'] {
+	font-weight: 700;
+	color: #2563eb;
+}
+
+[role='grid'] > div > [role='gridcell'][data-selected='true'][data-current='true'] {
+	color: #fff;
+}
+
+/* Presets */
+[role='group'][aria-label='날짜 범위 프리셋'] {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 120px;
+	border-right: 1px solid #e5e5e5;
+	padding-right: 16px;
+}
+
+[role='group'][aria-label='날짜 범위 프리셋'] [role='option'] {
+	padding: 8px 12px;
+	border: none;
+	border-radius: 4px;
+	background: transparent;
+	cursor: pointer;
+	font-size: 13px;
+	text-align: left;
+	white-space: nowrap;
+}
+
+[role='group'][aria-label='날짜 범위 프리셋'] [role='option']:hover {
+	background: #f3f4f6;
+}
+
+[role='group'][aria-label='날짜 범위 프리셋'] [role='option'][data-active='true'] {
+	background: #eff6ff;
+	color: #2563eb;
+	font-weight: 500;
 }
 
 /* TimePicker listbox */

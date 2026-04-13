@@ -1,4 +1,4 @@
-import { RangePickerDemo } from './demo';
+import { RangePickerDemo, RangePickerPresetsDemo } from './demo';
 
 export default function RangePickerPage() {
 	return (
@@ -6,46 +6,51 @@ export default function RangePickerPage() {
 			<h1>RangePicker</h1>
 			<p>날짜 범위를 선택하는 컴포넌트.</p>
 
-			<h2>예제</h2>
+			<h2>기본 예제</h2>
 			<div className="demo">
 				<RangePickerDemo />
 			</div>
 
+			<h2>Presets (대시보드용)</h2>
+			<p>
+				한 클릭으로 미리 정의된 범위를 선택. 9가지 내장 프리셋 + 커스텀 범위
+				지원.
+			</p>
+			<div className="demo">
+				<RangePickerPresetsDemo />
+			</div>
+
 			<h2>코드</h2>
 			<pre>
-				<code>{`import { RangePicker } from '@kalyx/react';
-import { useState } from 'react';
+				<code>{`// 기본
+<RangePicker value={range} onChange={setRange}>
+  <RangePicker.Input part="start" />
+  <RangePicker.Input part="end" />
+  <RangePicker.Popover>
+    <RangePicker.Calendar />
+  </RangePicker.Popover>
+</RangePicker>
 
-function MyForm() {
-  const [range, setRange] = useState({ start: null, end: null });
-
-  return (
-    <RangePicker value={range} onChange={setRange}>
-      <RangePicker.Input part="start" className="kalyx-input" />
-      <RangePicker.Input part="end" className="kalyx-input" />
-      <RangePicker.Popover>
-        <RangePicker.Calendar />
-      </RangePicker.Popover>
-    </RangePicker>
-  );
-}`}</code>
+// Presets
+<RangePicker.Popover>
+  <RangePicker.Presets>
+    <RangePicker.Preset value="last7days">Last 7 days</RangePicker.Preset>
+    <RangePicker.Preset value="thisMonth">This month</RangePicker.Preset>
+    <RangePicker.Preset range={{ start: "...", end: "..." }}>
+      Custom
+    </RangePicker.Preset>
+  </RangePicker.Presets>
+  <RangePicker.Calendar />
+</RangePicker.Popover>`}</code>
 			</pre>
 
-			<h2>특징</h2>
+			<h2>내장 프리셋</h2>
 			<ul>
-				<li>
-					<strong>자동 swap</strong> — 종료일이 시작일보다 이전이면 자동 정렬
-				</li>
-				<li>
-					<strong>hover 미리보기</strong> — 시작일 선택 후 마우스 hover로 범위 시각화
-				</li>
-				<li>
-					<strong>자동 단계 진행</strong> — 첫 클릭=시작일, 두 번째 클릭=종료일
-				</li>
-				<li>
-					<code>data-range-start</code>, <code>data-range-end</code>,{' '}
-					<code>data-in-range</code> 속성으로 스타일링
-				</li>
+				<li><code>today</code> / <code>yesterday</code></li>
+				<li><code>last7days</code> / <code>last30days</code></li>
+				<li><code>thisWeek</code> / <code>lastWeek</code></li>
+				<li><code>thisMonth</code> / <code>lastMonth</code></li>
+				<li><code>thisYear</code></li>
 			</ul>
 		</>
 	);
