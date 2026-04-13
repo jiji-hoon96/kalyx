@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	reactStrictMode: true,
+	// GitHub Pages 배포를 위한 정적 Export
+	output: 'export',
 	// 모노레포의 워크스페이스 패키지를 트랜스파일
 	transpilePackages: ['@kalyx/react', '@kalyx/core'],
 	experimental: {

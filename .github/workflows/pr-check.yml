@@ -116,7 +116,7 @@ jobs:
             echo "✅ OK: ${KB}KB ≤ ${MAX}KB"
           fi
       - name: PR 코멘트
-        if: github.event_name == 'pull_request' && always()
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
@@ -136,7 +136,7 @@ jobs:
                 : '⚠️ 번들 크기가 목표를 초과했습니다. `pnpm check-bundle` 로 확인하세요.',
             ].join('\n');
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
+              issue_number: context.payload.pull_request.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body,

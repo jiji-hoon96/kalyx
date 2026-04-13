@@ -71,8 +71,12 @@ jobs:
       - name: 릴리즈 알림
         if: steps.changesets.outputs.published == 'true'
         run: |
-          VERSION=$(node -p "require('./packages/react/package.json').version")
-          echo "🎉 @kalyx/react@$VERSION 릴리즈 완료"
+          if [ -f ./packages/react/package.json ]; then
+            VERSION=$(node -p "require('./packages/react/package.json').version")
+            echo "🎉 @kalyx/react@$VERSION 릴리즈 완료"
+          else
+            echo "⚠️ package.json not found, skipping version log"
+          fi
           # Slack/Discord 웹훅은 NOTIFICATION_WEBHOOK secret에 추가
           # curl -X POST ${{ secrets.NOTIFICATION_WEBHOOK }} \
           #   -H 'Content-type: application/json' \

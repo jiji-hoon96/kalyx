@@ -26,7 +26,8 @@ export default defineConfig({
 	],
 
 	webServer: {
-		command: 'pnpm build && pnpm --filter @kalyx/docs start',
+		// 빌드 후 정적 export(out/)를 로컬 서버로 서빙
+		command: 'pnpm build && npx serve apps/docs/out -l 3000',
 		url: 'http://localhost:3000',
 		reuseExistingServer: !process.env.CI,
 		timeout: 120_000,
