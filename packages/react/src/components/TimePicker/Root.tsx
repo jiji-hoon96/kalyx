@@ -8,8 +8,21 @@ import type {
   TimePickerFormat,
 } from '../../context/TimePickerContext.js';
 
+/**
+ * TimePicker의 Root 컴포넌트 props.
+ *
+ * @example
+ * ```tsx
+ * <TimePicker value={time} onChange={setTime} format="24h" step={15}>
+ *   <TimePicker.Input />
+ *   <TimePicker.HourList />
+ *   <TimePicker.MinuteList />
+ *   <TimePicker.AmPmToggle />
+ * </TimePicker>
+ * ```
+ */
 export interface TimePickerRootProps {
-  /** 선택된 시간 (제어 모드, ISO 8601 UTC) */
+  /** 선택된 시간 (제어 모드, ISO 8601 UTC). 날짜 부분은 무시되고 시간만 사용. */
   value?: ISODateString | null;
   /** 초기 시간 (비제어 모드) */
   defaultValue?: ISODateString;

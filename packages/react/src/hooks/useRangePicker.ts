@@ -65,6 +65,17 @@ export interface UseRangePickerReturn {
 /**
  * RangePicker 상태 관리 Hook.
  * 컴포넌트 없이 완전 커스텀 UI를 만들 때 사용한다.
+ *
+ * @example
+ * ```tsx
+ * function MyRangePicker() {
+ *   const { value, calendar, selectDate, selectingTarget } = useRangePicker({
+ *     onChange: (range) => console.log(range.start, range.end),
+ *   });
+ *   // selectingTarget === 'start' → 시작일 선택 대기
+ *   // selectingTarget === 'end' → 종료일 선택 대기
+ * }
+ * ```
  */
 export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePickerReturn {
   const {

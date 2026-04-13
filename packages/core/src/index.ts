@@ -18,7 +18,7 @@ export { DateFnsAdapter } from './adapters/date-fns.js';
 
 // 유틸
 export { getCalendarDays, isDateDisabled, minDate, maxDate } from './utils/calendar.js';
-export { normalizeISO, parseInputValue, getOrderedWeekdays, WEEKDAY_LABELS } from './utils/date.js';
+export { normalizeISO, parseInputValue } from './utils/date.js';
 export {
   setTime,
   getTime,

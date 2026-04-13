@@ -10,7 +10,23 @@ import type {
 
 /**
  * 특정 월의 캘린더 그리드를 생성한다.
- * 6주(42일) 또는 해당 월에 필요한 만큼의 주를 반환한다.
+ * 주(week) 단위로 구분된 2차원 배열(`CalendarGrid`)을 반환한다.
+ *
+ * @param monthISO - 표시할 월을 포함하는 ISO datetime
+ * @param adapter - 날짜 연산 어댑터 ({@link DateFnsAdapter})
+ * @param options - 주 시작 요일, 선택된 날짜, 비활성화 규칙, 범위 등
+ * @returns 4~6주의 캘린더 그리드. 각 주는 7개의 {@link CalendarDay} 배열.
+ *
+ * @example
+ * ```ts
+ * const grid = getCalendarDays('2026-01-01T00:00:00.000Z', DateFnsAdapter, {
+ *   weekStartsOn: 0,
+ *   selected: '2026-01-15T00:00:00.000Z',
+ *   disabled: [{ dayOfWeek: [0, 6] }],
+ * });
+ * // grid[0] = 첫째 주 (CalendarDay[7])
+ * // grid[0][0].dayNumber = 28 (이전 달)
+ * ```
  */
 export function getCalendarDays(
   monthISO: string,

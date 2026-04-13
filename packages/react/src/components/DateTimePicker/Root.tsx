@@ -20,8 +20,24 @@ import type {
   TimePickerFormat,
 } from '../../context/TimePickerContext.js';
 
+/**
+ * DateTimePicker의 Root 컴포넌트 props.
+ * 내부적으로 DatePickerContext + TimePickerContext를 동시에 제공 (Context Bridging).
+ *
+ * @example
+ * ```tsx
+ * <DateTimePicker value={dt} onChange={setDt} format="24h" step={15}>
+ *   <DateTimePicker.Input />
+ *   <DateTimePicker.Popover>
+ *     <DateTimePicker.Calendar />
+ *     <DateTimePicker.HourList />
+ *     <DateTimePicker.MinuteList />
+ *   </DateTimePicker.Popover>
+ * </DateTimePicker>
+ * ```
+ */
 export interface DateTimePickerRootProps {
-  /** 선택된 datetime (제어 모드, ISO 8601 UTC) */
+  /** 선택된 datetime (제어 모드, ISO 8601 UTC). 날짜+시간 모두 포함. */
   value?: ISODateString | null;
   /** 초기 datetime (비제어 모드) */
   defaultValue?: ISODateString;

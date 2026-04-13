@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { normalizeISO, parseInputValue, getOrderedWeekdays } from '../utils/date.js';
+import { normalizeISO, parseInputValue } from '../utils/date.js';
 import { DateFnsAdapter } from '../adapters/date-fns.js';
 
 const adapter = DateFnsAdapter;
@@ -39,19 +39,5 @@ describe('parseInputValue', () => {
   it('잘못된 입력은 null을 반환한다', () => {
     expect(parseInputValue('hello', 'yyyy-MM-dd', adapter)).toBeNull();
     expect(parseInputValue('2026-13-45', 'yyyy-MM-dd', adapter)).toBeNull();
-  });
-});
-
-describe('getOrderedWeekdays', () => {
-  it('일요일 시작 (기본)', () => {
-    const days = getOrderedWeekdays(0);
-    expect(days[0]!.short).toBe('Su');
-    expect(days[6]!.short).toBe('Sa');
-  });
-
-  it('월요일 시작', () => {
-    const days = getOrderedWeekdays(1);
-    expect(days[0]!.short).toBe('Mo');
-    expect(days[6]!.short).toBe('Su');
   });
 });

@@ -5,8 +5,28 @@ import type { DateAdapter, DisabledRule, ISODateString, WeekStartsOn } from '@ka
 import { DatePickerContext } from '../../context/DatePickerContext.js';
 import type { DatePickerContextValue } from '../../context/DatePickerContext.js';
 
+/**
+ * DatePicker의 Root 컴포넌트 props.
+ *
+ * @example 제어 모드
+ * ```tsx
+ * <DatePicker value={date} onChange={setDate}>
+ *   <DatePicker.Input />
+ *   <DatePicker.Popover>
+ *     <DatePicker.Calendar />
+ *   </DatePicker.Popover>
+ * </DatePicker>
+ * ```
+ *
+ * @example 비제어 모드
+ * ```tsx
+ * <DatePicker defaultValue="2026-01-15T00:00:00.000Z">
+ *   <DatePicker.Input />
+ * </DatePicker>
+ * ```
+ */
 export interface DatePickerRootProps {
-  /** 선택된 날짜 (제어 모드, ISO 8601 UTC) */
+  /** 선택된 날짜 (제어 모드, ISO 8601 UTC). `null`이면 빈 상태. */
   value?: ISODateString | null;
   /** 초기 날짜 (비제어 모드) */
   defaultValue?: ISODateString;

@@ -64,6 +64,19 @@ function getDefaultIso(): ISODateString {
 /**
  * TimePicker 상태 관리 Hook.
  * 컴포넌트 없이 완전 커스텀 UI를 구현할 때 사용한다.
+ *
+ * @example
+ * ```tsx
+ * function MyTimePicker() {
+ *   const {
+ *     currentTime, displayHour, period,
+ *     availableHours, availableMinutes,
+ *     setHour, setMinute, setPeriod,
+ *   } = useTimePicker({ format: '12h', step: 15 });
+ *   // displayHour = 1-12, period = "AM" | "PM"
+ *   // availableMinutes = [0, 15, 30, 45]
+ * }
+ * ```
  */
 export function useTimePicker(options: UseTimePickerOptions = {}): UseTimePickerReturn {
   const {

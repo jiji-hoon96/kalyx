@@ -58,6 +58,19 @@ function utcEndOfWeek(d: Date, weekStartsOn: 0 | 1): Date {
   ));
 }
 
+/**
+ * date-fns 기반 DateAdapter 구현체.
+ * 모든 연산은 UTC 기준으로 동작하여 timezone 간섭을 방지한다.
+ *
+ * @example
+ * ```ts
+ * import { DateFnsAdapter } from '@kalyx/core';
+ *
+ * DateFnsAdapter.format('2026-01-15T00:00:00.000Z', 'yyyy-MM-dd'); // "2026-01-15"
+ * DateFnsAdapter.addDays('2026-01-15T00:00:00.000Z', 7);           // "2026-01-22T..."
+ * DateFnsAdapter.isSameDay('2026-01-15T00:00:00.000Z', '2026-01-15T23:59:59.000Z'); // true
+ * ```
+ */
 export const DateFnsAdapter: DateAdapter = {
   parse(value: string): string {
     if (!value) return '';

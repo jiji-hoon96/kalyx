@@ -16,8 +16,22 @@ import type {
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
 
+/**
+ * RangePicker의 Root 컴포넌트 props.
+ *
+ * @example
+ * ```tsx
+ * <RangePicker value={range} onChange={setRange}>
+ *   <RangePicker.Input part="start" />
+ *   <RangePicker.Input part="end" />
+ *   <RangePicker.Popover>
+ *     <RangePicker.Calendar />
+ *   </RangePicker.Popover>
+ * </RangePicker>
+ * ```
+ */
 export interface RangePickerRootProps {
-  /** 선택된 범위 (제어 모드) */
+  /** 선택된 범위 (제어 모드). `{ start, end }` 형태의 ISO string 또는 null. */
   value?: DateRange;
   /** 초기 범위 (비제어 모드) */
   defaultValue?: DateRange;

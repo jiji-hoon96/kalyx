@@ -8,7 +8,19 @@
 /** ISO 8601 UTC 날짜 문자열. 예: "2026-01-15T00:00:00.000Z" */
 export type ISODateString = string;
 
-/** 날짜 비활성화 규칙 */
+/**
+ * 날짜 비활성화 규칙. 여러 규칙을 배열로 조합할 수 있다.
+ *
+ * @example
+ * ```ts
+ * const rules: DisabledRule[] = [
+ *   { before: '2026-01-01T00:00:00.000Z' }, // 1월 1일 이전 비활성화
+ *   { after: '2026-12-31T00:00:00.000Z' },  // 12월 31일 이후 비활성화
+ *   { date: '2026-06-15T00:00:00.000Z' },   // 특정 날짜 비활성화
+ *   { dayOfWeek: [0, 6] },                   // 주말 비활성화
+ * ];
+ * ```
+ */
 export type DisabledRule =
   | { date: ISODateString }
   | { before: ISODateString }
@@ -49,7 +61,11 @@ export interface CalendarDay {
 export type CalendarWeek = CalendarDay[];
 export type CalendarGrid = CalendarWeek[];
 
-/** 날짜 라이브러리 어댑터 인터페이스 */
+/**
+ * 날짜 라이브러리 어댑터 인터페이스.
+ * 모든 날짜 연산을 추상화하여 다른 라이브러리(Temporal API 등)로 교체 가능.
+ * 기본 구현체: {@link DateFnsAdapter}
+ */
 export interface DateAdapter {
   // ─── 파싱 ───
   /** 어떤 형식이든 → ISO 8601 UTC string */
