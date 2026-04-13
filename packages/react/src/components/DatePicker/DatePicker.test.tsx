@@ -234,6 +234,102 @@ describe('DatePicker — 접근성', () => {
   });
 });
 
+describe('DatePicker — MonthGrid', () => {
+  it('MonthGrid에 12개월이 표시된다', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.MonthGrid />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    const cells = screen.getAllByRole('gridcell');
+    expect(cells).toHaveLength(12);
+    expect(cells[0]).toHaveTextContent('January');
+    expect(cells[11]).toHaveTextContent('December');
+  });
+
+  it('현재 월에 aria-selected가 있다', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value="2026-03-15T00:00:00.000Z" onChange={vi.fn()}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.MonthGrid />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('gridcell', { name: 'March' })).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('월 클릭 → onSelect 콜백 호출', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.MonthGrid onSelect={onSelect} />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    await user.click(screen.getByRole('gridcell', { name: 'June' }));
+    expect(onSelect).toHaveBeenCalled();
+  });
+});
+
+describe('DatePicker — YearGrid', () => {
+  it('YearGrid에 12개 년도가 표시된다', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.YearGrid />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    const cells = screen.getAllByRole('gridcell');
+    expect(cells).toHaveLength(12);
+  });
+
+  it('현재 년도에 aria-selected가 있다', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.YearGrid />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('gridcell', { name: '2026' })).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('년 클릭 → onSelect 콜백 호출', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.YearGrid onSelect={onSelect} />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    await user.click(screen.getByRole('gridcell', { name: '2025' }));
+    expect(onSelect).toHaveBeenCalled();
+  });
+});
+
 describe('DatePicker — SSR 안전성', () => {
   it('서버에서 renderToString이 에러 없이 동작한다', async () => {
     const { renderToString } = await import('react-dom/server');

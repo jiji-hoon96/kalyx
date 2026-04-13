@@ -4,6 +4,8 @@ import { DateTimePickerInput } from './Input.js';
 // 재사용: DatePicker 하위 컴포넌트 (DatePickerContext 소비)
 import { DatePickerPopover } from '../DatePicker/Popover.js';
 import { DatePickerCalendar } from '../DatePicker/Calendar.js';
+import { DatePickerMonthGrid } from '../DatePicker/MonthGrid.js';
+import { DatePickerYearGrid } from '../DatePicker/YearGrid.js';
 
 // 재사용: TimePicker 하위 컴포넌트 (TimePickerContext 소비)
 import { TimePickerHourList } from '../TimePicker/HourList.js';
@@ -50,6 +52,8 @@ export const DateTimePicker = Object.assign(DateTimePickerRoot, {
   Input: DateTimePickerInput,
   Popover: DatePickerPopover,
   Calendar: DatePickerCalendar,
+  MonthGrid: DatePickerMonthGrid,
+  YearGrid: DatePickerYearGrid,
   HourList: TimePickerHourList,
   MinuteList: TimePickerMinuteList,
   AmPmToggle: TimePickerAmPmToggle,

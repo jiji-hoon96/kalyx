@@ -19,6 +19,10 @@ export type {
   DatePickerPopoverProps,
   DatePickerCalendarProps,
   DatePickerCalendarClassNames,
+  DatePickerMonthGridProps,
+  DatePickerMonthGridClassNames,
+  DatePickerYearGridProps,
+  DatePickerYearGridClassNames,
 } from './components/DatePicker/index.js';
 
 // 타입 — RangePicker

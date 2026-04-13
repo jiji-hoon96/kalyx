@@ -22,6 +22,8 @@ export interface DatePickerCalendarClassNames {
 
 export interface DatePickerCalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
   classNames?: DatePickerCalendarClassNames;
+  /** 타이틀("January 2026") 클릭 시 콜백. Month/Year 뷰 전환에 사용. */
+  onTitleClick?: () => void;
 }
 
 /** 스크린리더 전용 숨김 스타일 */
@@ -37,7 +39,7 @@ const srOnly: React.CSSProperties = {
   border: 0,
 };
 
-export function DatePickerCalendar({ classNames, ...props }: DatePickerCalendarProps) {
+export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DatePickerCalendarProps) {
   const ctx = useDatePickerContext('DatePicker.Calendar');
   const gridRef = useRef<HTMLTableElement>(null);
   const [announcement, setAnnouncement] = useState('');
@@ -164,9 +166,20 @@ export function DatePickerCalendar({ classNames, ...props }: DatePickerCalendarP
         >
           &lt;
         </button>
-        <span className={classNames?.title} aria-live="polite">
-          {title}
-        </span>
+        {onTitleClick ? (
+          <button
+            type="button"
+            className={classNames?.title}
+            onClick={onTitleClick}
+            aria-live="polite"
+          >
+            {title}
+          </button>
+        ) : (
+          <span className={classNames?.title} aria-live="polite">
+            {title}
+          </span>
+        )}
         <button
           type="button"
           className={classNames?.navButton}
