@@ -1,6 +1,6 @@
 {
 	"name": "@kalyx/react",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Headless, SSR-safe React DatePicker",
 	"license": "MIT",
 	"author": "jiji-hoon96",
@@ -10,7 +10,9 @@
 		"url": "https://github.com/jiji-hoon96/kalyx.git",
 		"directory": "packages/react"
 	},
-	"bugs": { "url": "https://github.com/jiji-hoon96/kalyx/issues" },
+	"bugs": {
+		"url": "https://github.com/jiji-hoon96/kalyx/issues"
+	},
 	"keywords": [
 		"react",
 		"datepicker",
@@ -28,14 +30,21 @@
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
 			"require": {
 				"types": "./dist/index.d.cts",
 				"default": "./dist/index.cjs"
 			}
 		}
 	},
-	"files": ["dist", "CHANGELOG.md", "LICENSE"],
+	"files": [
+		"dist",
+		"CHANGELOG.md",
+		"LICENSE"
+	],
 	"scripts": {
 		"build": "tsup",
 		"typecheck": "tsc --noEmit",
