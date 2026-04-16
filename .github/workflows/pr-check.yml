@@ -161,11 +161,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: dist 다운로드
-        uses: actions/download-artifact@v4
-        with:
-          name: dist-${{ github.run_id }}
-          path: packages/react/dist/
+      - run: pnpm build
       - name: Node.js에서 직접 import 테스트 (SSR 시뮬레이션)
         run: |
           node -e "
