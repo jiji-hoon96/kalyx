@@ -1,0 +1,134 @@
+---
+id: migration
+title: Migration guide
+sidebar_position: 20
+---
+
+# Migration guide
+
+How to move to Kalyx from the three libraries you're most likely coming from.
+
+## From `react-datepicker`
+
+`react-datepicker` uses a single component with dozens of props — Kalyx splits each into a sub-component.
+
+### Before
+
+```tsx
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+
+<DatePicker
+  selected={date}
+  onChange={setDate}
+  showMonthDropdown
+  showYearDropdown
+  dateFormat="yyyy-MM-dd"
+/>
+```
+
+### After
+
+```tsx
+import { useState } from 'react';
+import { DatePicker } from '@kalyx/react';
+
+const [view, setView] = useState<'days' | 'months' | 'years'>('days');
+
+<DatePicker
+  value={date ? date.toISOString() : null}
+  onChange={(iso) => setDate(iso ? new Date(iso) : null)}
+  displayFormat="yyyy-MM-dd">
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    {view === 'days' && <DatePicker.Calendar onTitleClick={() => setView('months')} />}
+    {view === 'months' && <DatePicker.MonthGrid onSelect={() => setView('days')} onTitleClick={() => setView('years')} />}
+    {view === 'years' && <DatePicker.YearGrid onSelect={() => setView('months')} />}
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+Key translations:
+
+| `react-datepicker` | Kalyx |
+| --- | --- |
+| `selected` / `onChange` (`Date`) | `value` / `onChange` (`ISODateString \| null`) |
+| `minDate` / `maxDate` | `disabled={[{ before }, { after }]}` |
+| `excludeDates={[d1, d2]}` | `disabled={[{ date: d1 }, { date: d2 }]}` |
+| `showMonthDropdown` | Mount `<DatePicker.MonthGrid>` |
+| `showYearDropdown` | Mount `<DatePicker.YearGrid>` |
+| `dateFormat` | `displayFormat` |
+| `locale` | `locale` (BCP 47 tag) |
+| CSS import | Remove — no stylesheet needed |
+
+### TimePicker translation
+
+`react-datepicker`'s `showTimeSelect` becomes a dedicated component:
+
+```tsx
+// Before
+<DatePicker selected={dt} onChange={setDt} showTimeSelect />
+
+// After
+<DateTimePicker value={iso} onChange={setIso}>
+  <DateTimePicker.Input />
+  <DateTimePicker.Popover>
+    <DateTimePicker.Calendar />
+    <DateTimePicker.HourList />
+    <DateTimePicker.MinuteList />
+  </DateTimePicker.Popover>
+</DateTimePicker>
+```
+
+## From `react-day-picker`
+
+Already composition-based — the mapping is mostly renames.
+
+| `react-day-picker` | Kalyx |
+| --- | --- |
+| `<DayPicker mode="single">` | `<DatePicker>` + `<DatePicker.Calendar>` |
+| `<DayPicker mode="range">` | `<RangePicker>` + `<RangePicker.Calendar>` |
+| `selected` (`Date`) | `value` (`ISODateString`) |
+| `onSelect` | `onChange` |
+| `disabled` matcher | `DisabledRule[]` — same shape for `before`/`after`/`dayOfWeek` |
+| `classNames` | `classNames` (different keys, see [DatePicker](./components/datepicker.md)) |
+
+`react-day-picker` doesn't ship Input/TimePicker — that's the gap Kalyx fills. If you were pairing `react-day-picker` with a separate text input and a time component, you can collapse both into `<DatePicker.Input>` + `<DatePicker.TimePicker>` or move to `<DateTimePicker>`.
+
+## From React Aria's `DatePicker`
+
+React Aria is the closest in philosophy but forces `@internationalized/date` throughout. Kalyx uses plain ISO strings.
+
+| React Aria | Kalyx |
+| --- | --- |
+| `CalendarDate`, `DateValue` | `ISODateString` |
+| `useDatePicker` | `useDatePicker` (different return shape — see [hook docs](./hooks/use-date-picker.md)) |
+| `<DatePicker>` + `<Group>` + `<DateInput>` + `<Popover>` + `<Calendar>` | `<DatePicker>` + `<DatePicker.Input>` + `<DatePicker.Popover>` + `<DatePicker.Calendar>` |
+
+Conversion shim:
+
+```ts
+import { parseDate, type CalendarDate } from '@internationalized/date';
+
+const toAria = (iso: ISODateString | null): CalendarDate | null =>
+  iso ? parseDate(iso.slice(0, 10)) : null;
+
+const toISO = (cal: CalendarDate | null): ISODateString | null =>
+  cal ? new Date(Date.UTC(cal.year, cal.month - 1, cal.day)).toISOString() : null;
+```
+
+## General checklist
+
+When migrating:
+
+1. Replace all `Date` props with ISO strings.
+2. Remove CSS imports from the old library.
+3. Translate feature flags into mounted sub-components.
+4. Copy custom styling onto `classNames` slot maps.
+5. Test SSR rendering and form submission.
+6. Run axe against the new component — styling changes can regress contrast.
+
+## Getting help
+
+- Open an issue at [github.com/jiji-hoon96/kalyx/issues](https://github.com/jiji-hoon96/kalyx/issues)
+- Check existing [Discussions](https://github.com/jiji-hoon96/kalyx/discussions)

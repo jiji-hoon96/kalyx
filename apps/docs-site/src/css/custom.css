@@ -1,0 +1,149 @@
+/**
+ * Kalyx — minimal, Radix/Turbo-inspired theme
+ * Palette derived from img/main.jpeg (teal/violet isometric gradient on off-white)
+ */
+
+:root {
+  --ifm-color-primary: #5b4fe1;
+  --ifm-color-primary-dark: #4a3ed3;
+  --ifm-color-primary-darker: #4538c7;
+  --ifm-color-primary-darkest: #392ea3;
+  --ifm-color-primary-light: #6f64e6;
+  --ifm-color-primary-lighter: #7b71e8;
+  --ifm-color-primary-lightest: #9a92ee;
+
+  --ifm-color-secondary: #2dd4bf;
+
+  --ifm-font-family-base:
+    -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  --ifm-font-family-monospace:
+    'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular,
+    Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  --ifm-heading-font-weight: 700;
+  --ifm-heading-line-height: 1.2;
+  --ifm-code-font-size: 90%;
+  --ifm-global-radius: 0.5rem;
+  --ifm-container-width-xl: 1280px;
+
+  --docusaurus-highlighted-code-line-bg: rgba(91, 79, 225, 0.08);
+
+  --kalyx-surface: #fafafa;
+  --kalyx-surface-raised: #ffffff;
+  --kalyx-border: rgba(17, 17, 17, 0.08);
+  --kalyx-text-muted: #6b7280;
+  --kalyx-gradient: linear-gradient(135deg, #5b4fe1 0%, #2dd4bf 100%);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #8b80ff;
+  --ifm-color-primary-dark: #7166ff;
+  --ifm-color-primary-darker: #6357ff;
+  --ifm-color-primary-darkest: #3f32f5;
+  --ifm-color-primary-light: #a59dff;
+  --ifm-color-primary-lighter: #b3acff;
+  --ifm-color-primary-lightest: #d0cbff;
+
+  --ifm-background-color: #0a0a0f;
+  --ifm-background-surface-color: #111117;
+
+  --docusaurus-highlighted-code-line-bg: rgba(139, 128, 255, 0.12);
+
+  --kalyx-surface: #0a0a0f;
+  --kalyx-surface-raised: #111117;
+  --kalyx-border: rgba(255, 255, 255, 0.08);
+  --kalyx-text-muted: #9ca3af;
+}
+
+/* Navbar refinement */
+.navbar {
+  backdrop-filter: saturate(180%) blur(12px);
+  background-color: rgba(255, 255, 255, 0.72);
+  border-bottom: 1px solid var(--kalyx-border);
+  box-shadow: none;
+}
+
+[data-theme='dark'] .navbar {
+  background-color: rgba(10, 10, 15, 0.72);
+}
+
+.navbar__brand img {
+  height: 28px;
+  width: 28px;
+  border-radius: 6px;
+}
+
+.navbar__title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Typography */
+.markdown h1 {
+  letter-spacing: -0.02em;
+}
+
+.markdown h2 {
+  letter-spacing: -0.015em;
+  border-bottom: 1px solid var(--kalyx-border);
+  padding-bottom: 0.4em;
+  margin-top: 2.5rem;
+}
+
+.markdown h3 {
+  letter-spacing: -0.01em;
+  margin-top: 2rem;
+}
+
+/* Code blocks */
+.theme-code-block {
+  border-radius: 10px;
+  border: 1px solid var(--kalyx-border);
+  box-shadow: none;
+}
+
+/* Tables — clean, minimal */
+.markdown table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--kalyx-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.markdown table thead tr {
+  background: var(--kalyx-surface);
+  border-bottom: 1px solid var(--kalyx-border);
+}
+
+.markdown table th,
+.markdown table td {
+  border: none;
+  border-bottom: 1px solid var(--kalyx-border);
+  padding: 0.65rem 0.9rem;
+  font-size: 0.92em;
+}
+
+.markdown table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Admonitions */
+.alert {
+  border-radius: 10px;
+  border-left-width: 3px;
+}
+
+/* Pagination */
+.pagination-nav__link {
+  border-radius: 10px;
+  border-color: var(--kalyx-border);
+}
+
+/* Footer */
+.footer--light {
+  background-color: var(--kalyx-surface);
+  border-top: 1px solid var(--kalyx-border);
+}

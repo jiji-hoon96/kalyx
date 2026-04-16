@@ -1,17 +1,85 @@
 # @kalyx/core
 
-> Platform-agnostic date logic for Kalyx. Types, adapters, and utilities.
+> Platform-independent date logic powering [Kalyx](https://github.com/jiji-hoon96/kalyx). Types, adapters, and UTC-safe utilities.
 
-This package is used internally by `@kalyx/react`. Most users should install `@kalyx/react` directly.
+[![npm](https://img.shields.io/npm/v/@kalyx/core?color=5b4fe1)](https://www.npmjs.com/package/@kalyx/core)
+[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/jiji-hoon96/kalyx/blob/main/LICENSE)
+
+Most users should install [`@kalyx/react`](https://www.npmjs.com/package/@kalyx/react) directly — it re-exports what you need. Install `@kalyx/core` only if you're building your own picker layer or a custom platform adapter.
+
+**📚 Full docs:** [kalyx-docs.vercel.app/docs/api/core](https://kalyx-docs.vercel.app/docs/api/core)
+
+## Install
+
+```bash
+pnpm add @kalyx/core
+```
 
 ## What's inside
 
-- **Types** — `ISODateString`, `DateRange`, `DateAdapter`, `CalendarDay`, `TimeValue`, etc.
-- **DateFnsAdapter** — UTC-based date-fns adapter implementing `DateAdapter` interface
-- **Calendar utils** — `getCalendarDays`, `isDateDisabled`
-- **Time utils** — `setTime`, `getTime`, `parseTimeString`, `to12Hour`, `to24Hour`, `generateHours`, `generateMinutes`
-- **Date utils** — `normalizeISO`, `parseInputValue`
+### Types
+
+```ts
+import type {
+  ISODateString,
+  DisabledRule,
+  DateRange,
+  CalendarDay,
+  CalendarGrid,
+  WeekStartsOn,
+  CalendarOptions,
+  DateAdapter,
+  TimeValue,
+} from '@kalyx/core';
+```
+
+### Adapter
+
+```ts
+import { DateFnsAdapter } from '@kalyx/core';
+// UTC-safe default adapter, built on date-fns v4.
+```
+
+### Calendar utilities
+
+```ts
+import { getCalendarDays, isDateDisabled, minDate, maxDate } from '@kalyx/core';
+```
+
+### Date helpers
+
+```ts
+import { normalizeISO, parseInputValue } from '@kalyx/core';
+```
+
+### Time helpers
+
+```ts
+import {
+  setTime, getTime,
+  parseTimeString, formatTimeString, formatTimeFromISO,
+  to12Hour, to24Hour,
+  generateHours, generateMinutes,
+  isSameTime,
+} from '@kalyx/core';
+```
+
+### Locale helpers
+
+```ts
+import {
+  getMonthName, formatMonthYear,
+  getWeekdayNames, formatFullDate,
+} from '@kalyx/core';
+```
+
+## Principles
+
+- **All dates are ISO 8601 UTC strings** — never `Date` objects.
+- **UTC-only arithmetic** — uses `getUTC*` methods, never local-timezone variants.
+- **Adapter abstraction** — swap date engines by implementing `DateAdapter`.
+- **Pure functions** — zero side effects, fully testable.
 
 ## License
 
-MIT
+[MIT](https://github.com/jiji-hoon96/kalyx/blob/main/LICENSE)

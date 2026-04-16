@@ -1,0 +1,131 @@
+---
+id: datetimepicker
+title: DateTimePicker
+sidebar_position: 4
+---
+
+# DateTimePicker
+
+Combined date + time, one popover, one ISO string.
+
+```tsx
+import { DateTimePicker } from '@kalyx/react';
+```
+
+## Basic usage
+
+```tsx
+import { useState } from 'react';
+import { DateTimePicker, type ISODateString } from '@kalyx/react';
+
+function Example() {
+  const [dt, setDt] = useState<ISODateString | null>(null);
+  return (
+    <DateTimePicker value={dt} onChange={setDt} format="24h" step={15}>
+      <DateTimePicker.Input />
+      <DateTimePicker.Popover>
+        <DateTimePicker.Calendar />
+        <DateTimePicker.HourList />
+        <DateTimePicker.MinuteList />
+      </DateTimePicker.Popover>
+    </DateTimePicker>
+  );
+}
+```
+
+Selecting a day **does not close the popover** — time can be adjusted after. Use your own close button or outside-click to confirm.
+
+## `<DateTimePicker>` (Root)
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `ISODateString \| null` | — | Controlled datetime. |
+| `defaultValue` | `ISODateString` | — | Uncontrolled initial value. |
+| `onChange` | `(value: ISODateString \| null) => void` | — | Fires on any date or time change. |
+| `format` | `'12h' \| '24h'` | `'24h'` | Time format. |
+| `step` | `number` | `1` | Minute granularity. |
+| `disabled` | `DisabledRule[] \| boolean` | `false` | Date disable rules. |
+| `readOnly` | `boolean` | `false` | Prevent changes. |
+| `weekStartsOn` | `0 \| 1` | `0` | Week start. |
+| `displayFormat` | `string` | `'yyyy-MM-dd HH:mm'` | date-fns format. |
+| `locale` | `string` | `'en-US'` | BCP 47 locale. |
+| `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom adapter. |
+| `children` | `ReactNode` | — | Sub-components. |
+
+## Sub-components
+
+DateTimePicker re-exports sub-components from both DatePicker and TimePicker under one namespace:
+
+| Name | Behavior |
+| --- | --- |
+| `.Input` | Combined date + time input — parses both. |
+| `.Popover` | Same as DatePicker.Popover. |
+| `.Calendar` | Month grid (stays open on select). |
+| `.MonthGrid` | Optional month jump. |
+| `.YearGrid` | Optional year jump. |
+| `.HourList` | Same as TimePicker.HourList. |
+| `.MinuteList` | Same as TimePicker.MinuteList. |
+| `.AmPmToggle` | Same as TimePicker.AmPmToggle (12h mode only). |
+
+All `classNames` types are re-exported — see [DatePicker](./datepicker.md) and [TimePicker](./timepicker.md).
+
+## Patterns
+
+### 12-hour datetime
+
+```tsx
+<DateTimePicker value={dt} onChange={setDt} format="12h" step={5}>
+  <DateTimePicker.Input />
+  <DateTimePicker.Popover>
+    <DateTimePicker.Calendar />
+    <div className="flex gap-2 p-2 border-t">
+      <DateTimePicker.HourList />
+      <DateTimePicker.MinuteList />
+      <DateTimePicker.AmPmToggle />
+    </div>
+  </DateTimePicker.Popover>
+</DateTimePicker>
+```
+
+### Forcing the minute to snap
+
+Combine `step={15}` with a `displayFormat` that hides the minute if you want fixed-slot scheduling:
+
+```tsx
+<DateTimePicker
+  value={dt}
+  onChange={setDt}
+  step={30}
+  displayFormat="yyyy-MM-dd HH:mm">
+  <DateTimePicker.Input />
+  <DateTimePicker.Popover>
+    <DateTimePicker.Calendar />
+    <DateTimePicker.HourList />
+    <DateTimePicker.MinuteList />
+  </DateTimePicker.Popover>
+</DateTimePicker>
+```
+
+### Booking flow
+
+```tsx
+<DateTimePicker
+  value={dt}
+  onChange={setDt}
+  disabled={[
+    { dayOfWeek: [0, 6] },                           // weekends off
+    { before: new Date().toISOString() },            // no past
+  ]}>
+  <DateTimePicker.Input />
+  <DateTimePicker.Popover>
+    <DateTimePicker.Calendar />
+    <DateTimePicker.HourList />
+    <DateTimePicker.MinuteList />
+  </DateTimePicker.Popover>
+</DateTimePicker>
+```
+
+## Related
+
+- [DatePicker →](./datepicker.md)
+- [TimePicker →](./timepicker.md)

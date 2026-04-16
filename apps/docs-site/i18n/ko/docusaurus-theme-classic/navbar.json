@@ -1,0 +1,26 @@
+{
+  "title": {
+    "message": "Kalyx",
+    "description": "네비바 타이틀"
+  },
+  "logo.alt": {
+    "message": "Kalyx",
+    "description": "로고 대체 텍스트"
+  },
+  "item.label.Docs": {
+    "message": "문서",
+    "description": "네비 Docs 항목"
+  },
+  "item.label.Components": {
+    "message": "컴포넌트",
+    "description": "네비 Components 항목"
+  },
+  "item.label.npm": {
+    "message": "npm",
+    "description": "네비 npm 링크"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "네비 GitHub 링크"
+  }
+}

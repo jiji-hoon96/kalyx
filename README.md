@@ -1,50 +1,86 @@
+<div align="center">
+
+<img src="./img/main.jpeg" alt="Kalyx — the headless DatePicker, finally complete" width="720" />
+
 # Kalyx
 
-> Headless, SSR-safe React DatePicker. Zero CSS. Composition API. < 8KB gzip.
+**The headless React DatePicker, finally complete.**
 
+[Docs](https://kalyx-docs.vercel.app) · [한국어 문서](https://kalyx-docs.vercel.app/ko) · [npm](https://www.npmjs.com/package/@kalyx/react) · [GitHub](https://github.com/jiji-hoon96/kalyx)
+
+[![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
+[![Bundle](https://img.shields.io/badge/gzip-9.2KB-brightgreen)](#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-19+-61DAFB)](https://react.dev/)
-[![Bundle](https://img.shields.io/badge/gzip-7.71KB-brightgreen)](#bundle-size)
+[![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
-## Why Kalyx?
+</div>
 
-The React DatePicker ecosystem in 2026 has only two extremes:
+---
 
-| Library | Headless | Input | TimePicker | Composition | Bundle |
-|---|---|---|---|---|---|
-| react-day-picker | Yes | No | No | No | 22KB |
-| react-datepicker | No (CSS required) | Yes | Yes | No (100+ props) | 40-60KB |
-| Ark UI | Yes | Yes | **Removed** | Yes | Large |
-| React Aria | Yes | Yes | Yes | Yes | Large (dep chain) |
-| **Kalyx** | **Yes** | **Yes** | **Yes** | **Yes** | **7.71KB** |
+> 한국어 README: [README.ko.md](./README.ko.md)
 
-Kalyx fills the gap: **headless + integrated Date/Range/Time/DateTime picker + Composition API + SSR-safe + < 12KB**.
-
-## Install
+Kalyx is a headless React DatePicker library that ships **complete**. One composable API covers single dates, date ranges, time, and date-time — under 12 KB gzipped, zero CSS, SSR-safe.
 
 ```bash
 pnpm add @kalyx/react
-# or
-npm install @kalyx/react
 ```
-
-**Peer dependencies:** `react >= 19.0.0`, `react-dom >= 19.0.0`
-
-## Quick Start
-
-### DatePicker
 
 ```tsx
 import { DatePicker } from '@kalyx/react';
+
+<DatePicker value={iso} onChange={setIso}>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+## Why Kalyx?
+
+The React ecosystem in 2026 has two extremes — Kalyx fills the gap.
+
+| Library | Headless | Input | TimePicker | RangePicker | SSR | Bundle (gzip) |
+| --- | --- | --- | --- | --- | --- | --- |
+| react-day-picker | ✅ | ❌ | ❌ | ✅ | ✅ | ~22 KB |
+| react-datepicker | ❌ (CSS required) | ✅ | ✅ | ✅ | △ | ~60 KB |
+| Ark UI | ✅ | ✅ | ❌ (removed) | ✅ | ✅ | Large |
+| React Aria | ✅ | ✅ | ✅ | ✅ | ✅ | Large |
+| **Kalyx** | ✅ | ✅ | ✅ | ✅ | ✅ | **~9 KB** |
+
+## Features
+
+- **Zero CSS** — no stylesheets to import, no classes to override.
+- **True composition** — Radix-style dot notation. No prop explosions.
+- **Headless** — pair with Tailwind, shadcn/ui, Chakra, or any CSS.
+- **SSR-safe** — verified on Next.js App Router. `useId` for stable IDs.
+- **ISO 8601 UTC strings** — no `Date` object footguns.
+- **Accessible** — WAI-ARIA, full keyboard, passes axe out of the box.
+- **Tree-shakable** — pay only for what you render.
+- **TypeScript first** — strict types, zero `any`.
+
+## Packages
+
+| Package | Purpose |
+| --- | --- |
+| [`@kalyx/react`](./packages/react) | React components, hooks, and types |
+| [`@kalyx/core`](./packages/core) | Platform-independent date logic and adapters |
+
+## Quick Start
+
+```tsx
+'use client';
+
 import { useState } from 'react';
+import { DatePicker, type ISODateString } from '@kalyx/react';
 
-function MyForm() {
-  const [date, setDate] = useState<string | null>(null);
-
+export function BookingField() {
+  const [date, setDate] = useState<ISODateString | null>(null);
   return (
     <DatePicker value={date} onChange={setDate}>
-      <DatePicker.Input placeholder="Select date" />
+      <DatePicker.Input placeholder="YYYY-MM-DD" />
+      <DatePicker.Trigger />
       <DatePicker.Popover>
         <DatePicker.Calendar />
       </DatePicker.Popover>
@@ -53,158 +89,86 @@ function MyForm() {
 }
 ```
 
-### RangePicker
+Value is always an `ISODateString | null`:
 
-```tsx
-import { RangePicker, type DateRange } from '@kalyx/react';
-
-const [range, setRange] = useState<DateRange>({ start: null, end: null });
-
-<RangePicker value={range} onChange={setRange}>
-  <RangePicker.Input part="start" />
-  <span>~</span>
-  <RangePicker.Input part="end" />
-  <RangePicker.Popover>
-    <RangePicker.Calendar />
-  </RangePicker.Popover>
-</RangePicker>
+```ts
+// onChange receives "2026-04-15T00:00:00.000Z" | null
 ```
 
-### TimePicker
+See the [Quick Start guide →](https://kalyx-docs.vercel.app/docs/getting-started/quick-start)
+
+## Components
 
 ```tsx
-import { TimePicker } from '@kalyx/react';
-
-<TimePicker value={time} onChange={setTime} format="24h" step={15}>
-  <TimePicker.Input />
-  <TimePicker.HourList />
-  <TimePicker.MinuteList />
-  <TimePicker.AmPmToggle />  {/* Only renders in 12h mode */}
-</TimePicker>
+import {
+  DatePicker,       // single date
+  RangePicker,      // date range with presets
+  TimePicker,       // hour + minute (+ seconds)
+  DateTimePicker,   // combined date + time
+} from '@kalyx/react';
 ```
 
-### DateTimePicker
+Each root exposes sub-components via dot notation:
 
 ```tsx
-import { DateTimePicker } from '@kalyx/react';
-
-<DateTimePicker value={dt} onChange={setDt} format="24h" step={15}>
-  <DateTimePicker.Input />
-  <DateTimePicker.Popover>
-    <DateTimePicker.Calendar />
-    <DateTimePicker.HourList />
-    <DateTimePicker.MinuteList />
-  </DateTimePicker.Popover>
-</DateTimePicker>
+<DatePicker.Input />
+<DatePicker.Trigger />
+<DatePicker.Popover />
+<DatePicker.Calendar />
+<DatePicker.MonthGrid />
+<DatePicker.YearGrid />
 ```
 
-## Key Principles
-
-### Composition over Configuration
+## Hooks
 
 ```tsx
-// Bad: Props explosion
-<DatePicker showTimeSelect timeFormat="HH:mm" showMonthDropdown />
-
-// Good: Composition
-<DatePicker value={date} onChange={setDate}>
-  <DatePicker.Input />
-  <DatePicker.Popover>
-    <DatePicker.Calendar />
-  </DatePicker.Popover>
-</DatePicker>
+import { useDatePicker, useRangePicker, useTimePicker } from '@kalyx/react';
 ```
 
-### ISO 8601 UTC Strings Only
+Use when you need a fully custom UI that the components can't express.
 
-All date values are ISO 8601 UTC strings. No native `Date` objects — structurally prevents timezone bugs.
+## Documentation
 
-```tsx
-// value is always: "2026-01-15T00:00:00.000Z"
-<DatePicker
-  value="2026-01-15T00:00:00.000Z"
-  onChange={(iso: string | null) => save(iso)}
-/>
+Full documentation is at **[kalyx-docs.vercel.app](https://kalyx-docs.vercel.app)**.
+
+- [Introduction](https://kalyx-docs.vercel.app/docs/intro)
+- [Installation](https://kalyx-docs.vercel.app/docs/getting-started/installation)
+- [Composition API](https://kalyx-docs.vercel.app/docs/concepts/composition)
+- [Components](https://kalyx-docs.vercel.app/docs/components/datepicker)
+- [Hooks](https://kalyx-docs.vercel.app/docs/hooks/use-date-picker)
+- [Recipes — Tailwind / shadcn / React Hook Form](https://kalyx-docs.vercel.app/docs/recipes/tailwind)
+- [Migration guide](https://kalyx-docs.vercel.app/docs/migration)
+
+## Bundle size
+
+```
+packages/react/dist/index.js  →  9.2 KB gzip
 ```
 
-### Zero CSS
+Enforced in CI at `< 12 KB`. Tree-shakable per import — using only `TimePicker` drops the DatePicker code.
 
-Kalyx ships no CSS. Style with `classNames` prop or `data-*` attributes:
+## Browser support
 
-```tsx
-<DatePicker.Calendar
-  classNames={{
-    day: 'my-day',
-    daySelected: 'my-day--selected',
-    dayToday: 'my-day--today',
-  }}
-/>
+- React 19+
+- All modern browsers (Chrome, Firefox, Safari, Edge)
+- SSR: Next.js App Router, Pages Router, Remix, any `renderToString` env
+- Node ≥ 20 for development
 
-/* Or use data attributes in CSS */
-[data-selected="true"] { background: blue; }
-[data-today="true"] { font-weight: bold; }
-[data-in-range="true"] { background: lightblue; }
-```
-
-### Headless Hooks
-
-Every component has an equivalent hook for fully custom UIs:
-
-```tsx
-import { useDatePicker } from '@kalyx/react';
-
-const { value, isOpen, calendar, open, selectDate } = useDatePicker({
-  onChange: (iso) => console.log(iso),
-});
-```
-
-Available hooks: `useDatePicker`, `useRangePicker`, `useTimePicker`.
-
-## Accessibility
-
-Kalyx follows WAI-ARIA patterns with full keyboard navigation:
-
-- **Calendar**: `role="grid"` — Arrow keys (day/week), PageUp/Down (month), Home/End (week start/end), Enter/Space (select), Escape (close)
-- **Input**: `role="combobox"` with `aria-expanded`, `aria-haspopup="dialog"`
-- **Popover**: `role="dialog"` with focus trap and focus restoration
-- **TimePicker**: `role="listbox"` with `role="option"` items
-- **AmPmToggle**: `role="radiogroup"` with `role="radio"` buttons
-- All components pass **axe** accessibility checks
-
-## SSR Safe
-
-Verified with Next.js 15 App Router (static generation). No `window`/`document` access outside `useEffect`. No hydration mismatches. Uses `useId()` for deterministic IDs.
-
-## Bundle Size
-
-| Component | Tests | gzip |
-|---|---|---|
-| DatePicker | 23 | 4.33KB (baseline) |
-| + RangePicker | 22 | +1.16KB |
-| + TimePicker | 27 | +1.78KB |
-| + DateTimePicker | 20 | +0.44KB |
-| **Total** | **185** | **7.71KB** |
-
-Target: < 12KB gzip. Current: **7.71KB** (35% headroom).
-
-## Packages
-
-| Package | Description |
-|---|---|
-| `@kalyx/react` | React components, hooks, and public API |
-| `@kalyx/core` | Platform-agnostic date logic, types, and adapters |
-
-## Development
+## Contributing
 
 ```bash
 pnpm install
-pnpm build          # Build all packages
-pnpm test:run       # Run 185 tests
-pnpm typecheck      # TypeScript check
-pnpm check-bundle   # Verify bundle < 12KB
-pnpm --filter @kalyx/docs dev  # Documentation site
+pnpm test           # unit + component tests
+pnpm test:e2e       # Playwright
+pnpm typecheck
+pnpm lint
+pnpm build
+pnpm check-bundle   # enforce ≤ 12 KB
+pnpm --filter docs-site start  # docs site at localhost:3000
 ```
+
+PRs welcome. Before opening one, see [CLAUDE.md](./CLAUDE.md) for the architecture principles.
 
 ## License
 
-MIT
+[MIT](./LICENSE) © 2026 Kalyx contributors.
