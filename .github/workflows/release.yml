@@ -49,9 +49,33 @@ jobs:
             exit 1
           fi
 
-      # Changesets 릴리즈 핵심 액션
-      # - changeset 파일이 있으면 → "chore: release packages" PR 생성/업데이트
-      # - Version PR이 merge되면 → npm publish 실행
+      # Diagnostic: verify the NPM_TOKEN identity and scope access
+      # This step is informational only — it exposes no secret value, just the account that
+      # the token authenticates as and what packages it can see.
+      - name: NPM token diagnostic
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
+          echo "=== npm whoami ==="
+          npm whoami || echo "whoami failed"
+          echo ""
+          echo "=== @kalyx/core maintainers (public) ==="
+          npm view @kalyx/core maintainers
+          echo ""
+          echo "=== @kalyx/react maintainers (public) ==="
+          npm view @kalyx/react maintainers
+          echo ""
+          echo "=== token-scope check: can we read @kalyx/core metadata with auth? ==="
+          curl -sS -H "Authorization: Bearer ${NODE_AUTH_TOKEN}" \
+            https://registry.npmjs.org/@kalyx%2Fcore \
+            | head -c 200
+          echo ""
+          echo ""
+          echo "=== org membership check ==="
+          curl -sS -H "Authorization: Bearer ${NODE_AUTH_TOKEN}" \
+            https://registry.npmjs.org/-/org/kalyx/user || echo "org endpoint failed"
+
       - name: Changesets 릴리즈
         id: changesets
         uses: changesets/action@v1
