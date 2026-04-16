@@ -1,5 +1,12 @@
 # @kalyx/docs
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [ebf4fd7]
+  - @kalyx/react@0.2.2
+
 ## 0.0.2
 
 ### Patch Changes

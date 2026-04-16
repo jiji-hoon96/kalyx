@@ -1,5 +1,13 @@
 # @kalyx/react
 
+## 0.2.2
+
+### Patch Changes
+
+- ebf4fd7: Add repository/homepage/bugs/keywords metadata to @kalyx/core for npm provenance validation
+- Updated dependencies [ebf4fd7]
+  - @kalyx/core@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes

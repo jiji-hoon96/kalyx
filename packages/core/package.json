@@ -1,6 +1,6 @@
 {
 	"name": "@kalyx/core",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Kalyx core — platform-agnostic date logic",
 	"license": "MIT",
 	"author": "jiji-hoon96",
