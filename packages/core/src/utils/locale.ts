@@ -1,26 +1,25 @@
 import type { WeekStartsOn } from '../types.js';
 
 export interface WeekdayInfo {
-  /** 짧은 이름 (예: "Su", "일") */
+  /** Short name (e.g. "Su", "일") */
   short: string;
-  /** 전체 이름 (예: "Sunday", "일요일") */
+  /** Full name (e.g. "Sunday", "일요일") */
   full: string;
 }
 
 /**
- * Intl.DateTimeFormat으로 월 이름을 반환한다.
+ * Returns a localized month name via Intl.DateTimeFormat.
  * @param month 0-indexed (0 = January)
- * @param year 표시에만 사용 (일부 locale은 년 포함)
- * @param locale BCP 47 locale string (예: "en-US", "ko-KR", "ja-JP")
+ * @param locale BCP 47 locale string (e.g. "en-US", "ko-KR", "ja-JP")
  */
 export function getMonthName(month: number, locale = 'en-US'): string {
-  // 2026년 고정 (어떤 해든 월 이름은 같음)
+  // Fixed to year 2026 (month names are invariant across years)
   const date = new Date(Date.UTC(2026, month, 1));
   return new Intl.DateTimeFormat(locale, { month: 'long', timeZone: 'UTC' }).format(date);
 }
 
 /**
- * "2026년 1월" 또는 "January 2026" 같은 월+년 문자열을 반환한다.
+ * Returns a month+year string like "January 2026" or "2026년 1월".
  */
 export function formatMonthYear(year: number, month: number, locale = 'en-US'): string {
   const date = new Date(Date.UTC(year, month, 1));
@@ -32,18 +31,18 @@ export function formatMonthYear(year: number, month: number, locale = 'en-US'): 
 }
 
 /**
- * Intl.DateTimeFormat으로 주의 요일 이름 배열을 반환한다.
- * weekStartsOn에 맞춰 정렬.
+ * Returns localized weekday names via Intl.DateTimeFormat.
+ * Ordered according to weekStartsOn.
  *
  * @param locale BCP 47 locale string
  * @param weekStartsOn 0 = Sunday, 1 = Monday
- * @returns 7개의 WeekdayInfo 배열
+ * @returns Array of 7 WeekdayInfo entries
  */
 export function getWeekdayNames(
   locale = 'en-US',
   weekStartsOn: WeekStartsOn = 0,
 ): WeekdayInfo[] {
-  // 2026-01-04 = Sunday (기준점)
+  // 2026-01-04 is a Sunday (reference point)
   const shortFormatter = new Intl.DateTimeFormat(locale, {
     weekday: 'short',
     timeZone: 'UTC',
@@ -62,7 +61,7 @@ export function getWeekdayNames(
     });
   }
 
-  // weekStartsOn에 맞게 회전
+  // Rotate to match weekStartsOn
   if (weekStartsOn === 1) {
     const sunday = days.shift()!;
     days.push(sunday);
@@ -72,8 +71,8 @@ export function getWeekdayNames(
 }
 
 /**
- * Intl.DateTimeFormat으로 날짜의 전체 텍스트를 반환한다 (스크린리더용).
- * 예: "2026년 1월 15일 목요일"
+ * Returns a fully formatted date string via Intl.DateTimeFormat (for screen readers).
+ * e.g. "Thursday, January 15, 2026"
  */
 export function formatFullDate(iso: string, locale = 'en-US'): string {
   const date = new Date(iso);

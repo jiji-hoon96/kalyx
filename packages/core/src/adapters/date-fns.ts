@@ -17,7 +17,7 @@ function toISO(date: Date): string {
   return date.toISOString();
 }
 
-/** ISO 날짜 문자열 정규화: "YYYY-MM-DD" → "YYYY-MM-DDTHH:mm:ss.sssZ" */
+/** Normalize an ISO date string: "YYYY-MM-DD" → "YYYY-MM-DDTHH:mm:ss.sssZ" */
 function normalize(value: string): string {
   if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
     return `${value}T00:00:00.000Z`;
@@ -25,29 +25,29 @@ function normalize(value: string): string {
   return value;
 }
 
-/** UTC 기준으로 날짜의 자정을 반환한다 */
+/** Returns midnight of the given date in UTC */
 function utcStartOfDay(d: Date): Date {
   return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
 }
 
-/** UTC 기준으로 월의 첫 날 자정을 반환한다 */
+/** Returns the first day of the month at midnight UTC */
 function utcStartOfMonth(d: Date): Date {
   return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1));
 }
 
-/** UTC 기준으로 월의 마지막 날 23:59:59.999를 반환한다 */
+/** Returns the last day of the month at 23:59:59.999 UTC */
 function utcEndOfMonth(d: Date): Date {
   return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0, 23, 59, 59, 999));
 }
 
-/** UTC 기준 주의 시작일 */
+/** Returns the first day of the week in UTC */
 function utcStartOfWeek(d: Date, weekStartsOn: 0 | 1): Date {
   const day = d.getUTCDay();
   const diff = (day - weekStartsOn + 7) % 7;
   return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - diff));
 }
 
-/** UTC 기준 주의 마지막 날 */
+/** Returns the last day of the week in UTC */
 function utcEndOfWeek(d: Date, weekStartsOn: 0 | 1): Date {
   const start = utcStartOfWeek(d, weekStartsOn);
   return new Date(Date.UTC(
@@ -59,8 +59,8 @@ function utcEndOfWeek(d: Date, weekStartsOn: 0 | 1): Date {
 }
 
 /**
- * date-fns 기반 DateAdapter 구현체.
- * 모든 연산은 UTC 기준으로 동작하여 timezone 간섭을 방지한다.
+ * DateAdapter implementation backed by date-fns.
+ * All operations run in UTC to avoid timezone interference.
  *
  * @example
  * ```ts
@@ -79,7 +79,7 @@ export const DateFnsAdapter: DateAdapter = {
 
   format(iso: string, formatStr: string): string {
     const d = toDate(iso);
-    // UTC 기반 포맷팅 (로컬 timezone 간섭 방지)
+    // Format in UTC to avoid local timezone interference
     const tokens: Record<string, string> = {
       yyyy: String(d.getUTCFullYear()),
       MM: String(d.getUTCMonth() + 1).padStart(2, '0'),
@@ -92,7 +92,7 @@ export const DateFnsAdapter: DateAdapter = {
     };
 
     let result = formatStr;
-    // 긴 토큰부터 치환해서 부분 매칭 방지
+    // Replace longer tokens first to prevent partial matches
     for (const [token, value] of Object.entries(tokens).sort((a, b) => b[0].length - a[0].length)) {
       result = result.split(token).join(value);
     }

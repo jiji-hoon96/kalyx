@@ -1,6 +1,3 @@
-// @kalyx/core — 플랫폼 독립 날짜 로직
-
-// 타입
 export type {
   ISODateString,
   DisabledRule,
@@ -13,10 +10,8 @@ export type {
   WeekStartsOn,
 } from './types.js';
 
-// 어댑터
 export { DateFnsAdapter } from './adapters/date-fns.js';
 
-// 유틸
 export { getCalendarDays, isDateDisabled, minDate, maxDate } from './utils/calendar.js';
 export { normalizeISO, parseInputValue } from './utils/date.js';
 export {

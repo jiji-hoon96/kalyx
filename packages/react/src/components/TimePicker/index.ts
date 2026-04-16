@@ -20,7 +20,7 @@ import type {
 } from './AmPmToggle.js';
 
 /**
- * TimePicker — Headless 시간 선택 컴포넌트
+ * TimePicker — Headless time-picker component
  *
  * @example
  * ```tsx

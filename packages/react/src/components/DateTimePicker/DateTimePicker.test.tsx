@@ -35,7 +35,7 @@ function renderDateTimePicker(props: {
   return { ...result, onChange };
 }
 
-/** 제어 모드 wrapper */
+/** Controlled-mode wrapper. */
 function ControlledDateTimePicker({
   initialValue,
   format = '24h',
@@ -69,19 +69,19 @@ function ControlledDateTimePicker({
   );
 }
 
-describe('DateTimePicker — 기본 렌더링', () => {
-  it('Input이 combobox 역할을 가진다', () => {
+describe('DateTimePicker — basic rendering', () => {
+  it('renders the input with combobox role', () => {
     renderDateTimePicker();
     expect(screen.getByRole('combobox')).toBeInTheDocument();
     expect(screen.getByLabelText('날짜 및 시간')).toBeInTheDocument();
   });
 
-  it('초기에 팝오버가 닫혀 있다', () => {
+  it('keeps the popover closed on initial render', () => {
     renderDateTimePicker();
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('Input 클릭 → 팝오버 열림 (Calendar + TimeList)', async () => {
+  it('opens the popover with Calendar and TimeLists when the input is clicked', async () => {
     const user = userEvent.setup();
     renderDateTimePicker({ value: '2026-01-15T14:30:00.000Z' });
 
@@ -93,19 +93,19 @@ describe('DateTimePicker — 기본 렌더링', () => {
     expect(screen.getByRole('listbox', { name: '분' })).toBeInTheDocument();
   });
 
-  it('값이 "yyyy-MM-dd HH:mm" 형식으로 표시된다', () => {
+  it('formats the value as "yyyy-MM-dd HH:mm" in the input', () => {
     renderDateTimePicker({ value: '2026-01-15T14:30:00.000Z' });
     expect(screen.getByLabelText('날짜 및 시간')).toHaveValue('2026-01-15 14:30');
   });
 
-  it('value=null이면 input이 비어있다', () => {
+  it('renders an empty input when value is null', () => {
     renderDateTimePicker({ value: null });
     expect(screen.getByLabelText('날짜 및 시간')).toHaveValue('');
   });
 });
 
-describe('DateTimePicker — 날짜/시간 분리 보존', () => {
-  it('날짜 클릭 → 날짜만 변경, 시간 보존', async () => {
+describe('DateTimePicker — preserves date and time independently', () => {
+  it('updates only the date and preserves the time when a day is clicked', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -117,18 +117,17 @@ describe('DateTimePicker — 날짜/시간 분리 보존', () => {
 
     await user.click(screen.getByLabelText('날짜 및 시간'));
 
-    // 20일 클릭
     const day20 = screen.getByRole('button', { name: /January 20, 2026/ });
     await user.click(day20);
 
     const newValue = onChange.mock.calls[0]![0] as string;
-    // 날짜는 20일로 변경됐어야 함
+    // Date should change to the 20th
     expect(newValue).toMatch(/^2026-01-20T/);
-    // 시간(14:30)은 보존됐어야 함
+    // Time (14:30) should be preserved
     expect(newValue).toMatch(/T14:30:00/);
   });
 
-  it('시 변경 → 시만 변경, 날짜와 분 보존', async () => {
+  it('updates only the hour and preserves the date and minutes', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -140,17 +139,16 @@ describe('DateTimePicker — 날짜/시간 분리 보존', () => {
 
     await user.click(screen.getByLabelText('날짜 및 시간'));
 
-    // 18시 클릭
     const hour18 = screen.getByRole('option', { name: '18시' });
     await user.click(hour18);
 
     const newValue = onChange.mock.calls[0]![0] as string;
-    // 날짜와 분은 보존
+    // Date and minutes are preserved
     expect(newValue).toMatch(/^2026-01-15T/);
     expect(newValue).toMatch(/T18:30:/);
   });
 
-  it('분 변경 → 분만 변경, 날짜와 시 보존', async () => {
+  it('updates only the minute and preserves the date and hour', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -163,7 +161,6 @@ describe('DateTimePicker — 날짜/시간 분리 보존', () => {
 
     await user.click(screen.getByLabelText('날짜 및 시간'));
 
-    // 45분 클릭
     const min45 = screen.getByRole('option', { name: '45분' });
     await user.click(min45);
 
@@ -171,7 +168,7 @@ describe('DateTimePicker — 날짜/시간 분리 보존', () => {
     expect(newValue).toMatch(/^2026-01-15T14:45:/);
   });
 
-  it('날짜 → 시 → 분 순차 변경 (전체 동기화)', async () => {
+  it('applies sequential date then hour then minute updates coherently', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -184,11 +181,11 @@ describe('DateTimePicker — 날짜/시간 분리 보존', () => {
 
     await user.click(screen.getByLabelText('날짜 및 시간'));
 
-    // 1) 20일 클릭
+    // 1) Click day 20
     await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
-    // 2) 18시 클릭
+    // 2) Click hour 18
     await user.click(screen.getByRole('option', { name: '18시' }));
-    // 3) 30분 클릭
+    // 3) Click minute 30
     await user.click(screen.getByRole('option', { name: '30분' }));
 
     const lastValue = onChange.mock.calls[onChange.mock.calls.length - 1]![0] as string;
@@ -196,22 +193,21 @@ describe('DateTimePicker — 날짜/시간 분리 보존', () => {
   });
 });
 
-describe('DateTimePicker — 자동 닫기 비활성화', () => {
-  it('날짜 선택 후에도 팝오버가 유지된다', async () => {
+describe('DateTimePicker — auto-close is disabled', () => {
+  it('keeps the popover open after a date is selected', async () => {
     const user = userEvent.setup();
     render(<ControlledDateTimePicker initialValue="2026-01-15T10:00:00.000Z" />);
 
     await user.click(screen.getByLabelText('날짜 및 시간'));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
-    // 날짜 클릭
     await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
 
-    // DatePicker와 달리 팝오버가 닫히지 않아야 함
+    // Unlike DatePicker, the popover should stay open
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
-  it('시간 선택 후에도 팝오버가 유지된다', async () => {
+  it('keeps the popover open after a time is selected', async () => {
     const user = userEvent.setup();
     render(<ControlledDateTimePicker initialValue="2026-01-15T10:00:00.000Z" />);
 
@@ -222,7 +218,7 @@ describe('DateTimePicker — 자동 닫기 비활성화', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
-  it('Escape → 팝오버 닫힘', async () => {
+  it('closes the popover when Escape is pressed', async () => {
     const user = userEvent.setup();
     renderDateTimePicker({ value: '2026-01-15T10:00:00.000Z' });
 
@@ -234,8 +230,8 @@ describe('DateTimePicker — 자동 닫기 비활성화', () => {
   });
 });
 
-describe('DateTimePicker — 12시간제', () => {
-  it('12h 모드에서 AmPmToggle 렌더링', async () => {
+describe('DateTimePicker — 12-hour mode', () => {
+  it('renders AmPmToggle in 12-hour mode', async () => {
     const user = userEvent.setup();
     renderDateTimePicker({ value: '2026-01-15T14:30:00.000Z', format: '12h' });
     await user.click(screen.getByLabelText('날짜 및 시간'));
@@ -244,7 +240,7 @@ describe('DateTimePicker — 12시간제', () => {
     expect(screen.getByRole('radio', { name: 'PM' })).toBeChecked();
   });
 
-  it('AM/PM 변경 → 시간 동기화', async () => {
+  it('syncs the hour when AM/PM changes', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -258,27 +254,27 @@ describe('DateTimePicker — 12시간제', () => {
     await user.click(screen.getByLabelText('날짜 및 시간'));
     await user.click(screen.getByRole('radio', { name: 'AM' }));
 
-    // 14:30 PM → 02:30 AM
+    // 14:30 PM -> 02:30 AM
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T02:30:/));
   });
 });
 
-describe('DateTimePicker — 비활성화', () => {
-  it('disabled=true → input 비활성화', () => {
+describe('DateTimePicker — disabled state', () => {
+  it('disables the input when disabled=true', () => {
     renderDateTimePicker({ value: '2026-01-15T14:30:00.000Z', disabled: true });
     expect(screen.getByLabelText('날짜 및 시간')).toBeDisabled();
   });
 });
 
-describe('DateTimePicker — 비제어 모드', () => {
-  it('defaultValue가 초기값으로 표시된다', () => {
+describe('DateTimePicker — uncontrolled mode', () => {
+  it('shows defaultValue as the initial value', () => {
     renderDateTimePicker({ defaultValue: '2026-03-20T09:15:00.000Z' });
     expect(screen.getByLabelText('날짜 및 시간')).toHaveValue('2026-03-20 09:15');
   });
 });
 
-describe('DateTimePicker — 접근성', () => {
-  it('Input ARIA 속성이 올바르다', () => {
+describe('DateTimePicker — accessibility', () => {
+  it('sets the correct ARIA attributes on the input', () => {
     renderDateTimePicker();
     const input = screen.getByLabelText('날짜 및 시간');
     expect(input).toHaveAttribute('role', 'combobox');
@@ -286,13 +282,13 @@ describe('DateTimePicker — 접근성', () => {
     expect(input).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it('axe 검사 통과 (닫힌 상태)', async () => {
+  it('passes axe checks (closed state)', async () => {
     const { container } = renderDateTimePicker({ value: '2026-01-15T14:30:00.000Z' });
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 
-  it('axe 검사 통과 (열린 상태, 24h)', async () => {
+  it('passes axe checks (open state, 24-hour)', async () => {
     const user = userEvent.setup();
     const { container } = renderDateTimePicker({
       value: '2026-01-15T14:30:00.000Z',
@@ -309,8 +305,8 @@ describe('DateTimePicker — 접근성', () => {
   });
 });
 
-describe('DateTimePicker — SSR 안전성', () => {
-  it('서버에서 renderToString이 에러 없이 동작한다', async () => {
+describe('DateTimePicker — SSR safety', () => {
+  it('renderToString runs without errors on the server', async () => {
     const { renderToString } = await import('react-dom/server');
     expect(() => {
       renderToString(

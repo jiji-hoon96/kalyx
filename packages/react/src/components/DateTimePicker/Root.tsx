@@ -21,8 +21,8 @@ import type {
 } from '../../context/TimePickerContext.js';
 
 /**
- * DateTimePicker의 Root 컴포넌트 props.
- * 내부적으로 DatePickerContext + TimePickerContext를 동시에 제공 (Context Bridging).
+ * Props for the DateTimePicker Root component.
+ * Internally provides both DatePickerContext and TimePickerContext (context bridging).
  *
  * @example
  * ```tsx
@@ -37,33 +37,33 @@ import type {
  * ```
  */
 export interface DateTimePickerRootProps {
-  /** 선택된 datetime (제어 모드, ISO 8601 UTC). 날짜+시간 모두 포함. */
+  /** Selected datetime (controlled, ISO 8601 UTC). Includes both date and time. */
   value?: ISODateString | null;
-  /** 초기 datetime (비제어 모드) */
+  /** Initial datetime (uncontrolled) */
   defaultValue?: ISODateString;
-  /** datetime 변경 콜백 */
+  /** Callback fired when the datetime changes */
   onChange?: (value: ISODateString | null) => void;
-  /** 12/24시간제 */
+  /** 12-hour or 24-hour mode */
   format?: TimePickerFormat;
-  /** 분 step (1, 5, 15, 30 등) */
+  /** Minute step (e.g., 1, 5, 15, 30) */
   step?: number;
-  /** 비활성화 규칙 (날짜) */
+  /** Disabled rules (applied to dates) */
   disabled?: DisabledRule[] | boolean;
-  /** 읽기 전용 */
+  /** Read-only */
   readOnly?: boolean;
-  /** 주 시작 요일 */
+  /** Week start day */
   weekStartsOn?: WeekStartsOn;
-  /** 날짜·시간 표시 포맷 (Input용) */
+  /** Date+time display format (for Input) */
   displayFormat?: string;
   /** BCP 47 locale */
   locale?: string;
-  /** 날짜 어댑터 */
+  /** Date adapter */
   adapter?: DateAdapter;
-  /** 자식 컴포넌트 */
+  /** Child components */
   children: ReactNode;
 }
 
-/** value=null 시 fallback ISO (오늘 00:00:00 UTC) */
+/** Fallback ISO used when value is null (today at 00:00:00 UTC) */
 function getDefaultIso(): ISODateString {
   const now = new Date();
   return new Date(
@@ -72,17 +72,16 @@ function getDefaultIso(): ISODateString {
 }
 
 /**
- * DateTimePicker.Root — DatePicker + TimePicker 통합 컴포넌트.
+ * DateTimePicker.Root — Combined DatePicker + TimePicker component.
  *
- * 단일 ISO datetime을 source of truth로 관리하고, 내부적으로
- * DatePickerContext와 TimePickerContext를 동시에 제공한다.
- * 따라서 DatePicker.Calendar, TimePicker.HourList 등 기존 컴포넌트를
- * 그대로 재사용할 수 있다.
+ * Manages a single ISO datetime as the source of truth while providing both
+ * DatePickerContext and TimePickerContext internally. This lets existing
+ * components such as DatePicker.Calendar and TimePicker.HourList be reused as-is.
  *
- * 핵심 동작:
- * - Calendar에서 날짜 클릭 → 날짜 부분만 변경, 시간 부분 보존, 팝오버 유지
- * - TimePicker에서 시간 변경 → 시간 부분만 변경, 날짜 부분 보존
- * - Escape / 바깥 클릭 → 팝오버 닫기 (확정)
+ * Key behavior:
+ * - Clicking a day in Calendar -> changes only the date, preserves the time, keeps popover open
+ * - Changing time in TimePicker -> changes only the time, preserves the date
+ * - Escape / outside click -> close the popover (commit)
  */
 export function DateTimePickerRoot({
   value: controlledValue,
@@ -108,7 +107,6 @@ export function DateTimePickerRoot({
 
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
 
-  // 팝오버 / 캘린더 상태
   const [isOpen, setIsOpen] = useState(false);
   const [viewMonth, setViewMonth] = useState<ISODateString>(
     currentValue ?? adapter.today(),
@@ -120,7 +118,7 @@ export function DateTimePickerRoot({
   const isDisabled = typeof disabled === 'boolean' ? disabled : false;
   const disabledRules: DisabledRule[] = Array.isArray(disabled) ? disabled : [];
 
-  // value가 null이면 시간 추출용 fallback 사용
+  // When value is null, use a fallback for time extraction
   const baseIso = currentValue ?? getDefaultIso();
   const currentTime: TimeValue = useMemo(() => getTime(baseIso), [baseIso]);
 
@@ -136,8 +134,8 @@ export function DateTimePickerRoot({
   );
 
   /**
-   * 날짜 선택: 시간 부분을 보존한다.
-   * DatePicker.Root와 달리 팝오버를 자동으로 닫지 않는다.
+   * Select a date while preserving the time portion.
+   * Unlike DatePicker.Root, this does not automatically close the popover.
    */
   const selectDate = useCallback(
     (newDateIso: ISODateString | null) => {
@@ -145,7 +143,7 @@ export function DateTimePickerRoot({
         updateValue(null);
         return;
       }
-      // 현재 시간 부분을 보존하여 새 날짜에 적용
+      // Preserve the current time portion and apply it to the new date
       const time = currentValue ? getTime(currentValue) : currentTime;
       const merged = setTimeOnIso(newDateIso, time);
       updateValue(merged);
@@ -154,11 +152,11 @@ export function DateTimePickerRoot({
   );
 
   /**
-   * 시간 변경: 날짜 부분을 보존한다.
+   * Change the time while preserving the date portion.
    */
   const setTime = useCallback(
     (partial: Partial<TimeValue>) => {
-      // 날짜가 없으면 오늘 자정으로 시작
+      // If no date yet, start from today at midnight
       const base = currentValue ?? getDefaultIso();
       const merged = setTimeOnIso(base, partial);
       updateValue(merged);
@@ -183,7 +181,7 @@ export function DateTimePickerRoot({
     else open();
   }, [isOpen, open, close]);
 
-  // ─── DatePickerContext (Calendar, Popover 재사용용) ───
+  // DatePickerContext (for reusing Calendar and Popover)
   const dateContext: DatePickerContextValue = useMemo(
     () => ({
       referenceRef,
@@ -226,7 +224,7 @@ export function DateTimePickerRoot({
     ],
   );
 
-  // ─── TimePickerContext (HourList, MinuteList, AmPmToggle 재사용용) ───
+  // TimePickerContext (for reusing HourList, MinuteList, AmPmToggle)
   const timeContext: TimePickerContextValue = useMemo(
     () => ({
       value: currentValue,

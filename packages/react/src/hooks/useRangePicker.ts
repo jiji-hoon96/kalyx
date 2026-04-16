@@ -13,58 +13,58 @@ import type { RangeSelectingTarget } from '../context/RangePickerContext.js';
 const EMPTY_RANGE: DateRange = { start: null, end: null };
 
 export interface UseRangePickerOptions {
-  /** 선택된 범위 (제어 모드) */
+  /** Selected range (controlled mode) */
   value?: DateRange;
-  /** 초기 범위 (비제어 모드) */
+  /** Initial range (uncontrolled mode) */
   defaultValue?: DateRange;
-  /** 범위 변경 콜백 */
+  /** Callback fired when the range changes */
   onChange?: (range: DateRange) => void;
-  /** 비활성화 규칙 */
+  /** Rules that mark days as disabled */
   disabled?: DisabledRule[];
-  /** 주 시작 요일 */
+  /** Day the week starts on */
   weekStartsOn?: WeekStartsOn;
-  /** 날짜 어댑터 */
+  /** Date adapter */
   adapter?: DateAdapter;
 }
 
 export interface UseRangePickerReturn {
-  /** 현재 선택된 범위 */
+  /** Currently selected range */
   value: DateRange;
-  /** 다음에 선택될 부분 */
+  /** Which endpoint will be selected next */
   selectingTarget: RangeSelectingTarget;
-  /** 단일 날짜 클릭 핸들러 */
+  /** Handler for clicking a single date */
   selectDate: (iso: ISODateString) => void;
-  /** 범위 직접 설정 */
+  /** Set the range directly */
   setRange: (range: DateRange) => void;
-  /** 팝오버 열림 상태 */
+  /** Whether the popover is open */
   isOpen: boolean;
   open: () => void;
   close: () => void;
   toggle: () => void;
-  /** hover 날짜 (미리보기용) */
+  /** Hovered date (for range preview) */
   hoverDate: ISODateString | null;
   setHoverDate: (iso: ISODateString | null) => void;
-  /** 현재 표시 중인 월 */
+  /** Month currently displayed */
   viewMonth: ISODateString;
   setViewMonth: (iso: ISODateString) => void;
-  /** 캘린더 그리드 */
+  /** Calendar grid */
   calendar: CalendarGrid;
-  /** 포커스된 날짜 */
+  /** Currently focused date */
   focusedDate: ISODateString;
   setFocusedDate: (iso: ISODateString) => void;
-  /** 이전 달로 이동 */
+  /** Move to the previous month */
   previousMonth: () => void;
-  /** 다음 달로 이동 */
+  /** Move to the next month */
   nextMonth: () => void;
-  /** 고유 ID */
+  /** Unique ID */
   pickerId: string;
-  /** 어댑터 */
+  /** Date adapter */
   adapter: DateAdapter;
 }
 
 /**
- * RangePicker 상태 관리 Hook.
- * 컴포넌트 없이 완전 커스텀 UI를 만들 때 사용한다.
+ * Hook that manages RangePicker state.
+ * Use this when you want to build a fully custom UI without the built-in components.
  *
  * @example
  * ```tsx
@@ -72,8 +72,8 @@ export interface UseRangePickerReturn {
  *   const { value, calendar, selectDate, selectingTarget } = useRangePicker({
  *     onChange: (range) => console.log(range.start, range.end),
  *   });
- *   // selectingTarget === 'start' → 시작일 선택 대기
- *   // selectingTarget === 'end' → 종료일 선택 대기
+ *   // selectingTarget === 'start' -> waiting for start date
+ *   // selectingTarget === 'end'   -> waiting for end date
  * }
  * ```
  */

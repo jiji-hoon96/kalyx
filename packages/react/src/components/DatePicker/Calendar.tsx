@@ -22,11 +22,11 @@ export interface DatePickerCalendarClassNames {
 
 export interface DatePickerCalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
   classNames?: DatePickerCalendarClassNames;
-  /** 타이틀("January 2026") 클릭 시 콜백. Month/Year 뷰 전환에 사용. */
+  /** Called when the title ("January 2026") is clicked. Useful for switching to Month/Year views. */
   onTitleClick?: () => void;
 }
 
-/** 스크린리더 전용 숨김 스타일 */
+/** Visually-hidden style for screen-reader-only content */
 const srOnly: React.CSSProperties = {
   position: 'absolute',
   width: '1px',
@@ -58,7 +58,7 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
   const month = adapter.getMonth(viewMonth);
   const title = formatMonthYear(year, month, locale);
 
-  // 포커스된 날짜 셀에 포커스 이동
+  // Move focus to the focused day cell
   useEffect(() => {
     if (!ctx.isOpen || !gridRef.current) return;
     const focusedButton = gridRef.current.querySelector<HTMLButtonElement>(
@@ -124,7 +124,7 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
           break;
         case 'End':
           newFocused = adapter.endOfWeek(focusedDate, weekStartsOn);
-          // endOfWeek는 23:59:59 반환하므로 startOfDay로 정규화
+          // endOfWeek returns 23:59:59; normalize to start of day
           newFocused = adapter.startOfDay(newFocused);
           break;
         case 'Enter':
@@ -145,7 +145,7 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
         e.preventDefault();
         ctx.setFocusedDate(newFocused);
 
-        // 포커스가 현재 뷰 월을 벗어나면 뷰도 업데이트
+        // Update the view when focus moves outside the current view month
         if (!adapter.isSameMonth(newFocused, viewMonth)) {
           ctx.setViewMonth(newFocused);
         }
@@ -156,7 +156,6 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
 
   return (
     <div className={classNames?.root} {...props}>
-      {/* 헤더: 이전/다음 월 네비게이션 */}
       <div className={classNames?.header}>
         <button
           type="button"
@@ -190,7 +189,6 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
         </button>
       </div>
 
-      {/* 캘린더 그리드 */}
       <table
         ref={gridRef}
         role="grid"
@@ -258,7 +256,6 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
         </tbody>
       </table>
 
-      {/* 스크린리더용 알림 */}
       <div role="status" aria-live="polite" aria-atomic="true" style={srOnly}>
         {announcement}
       </div>

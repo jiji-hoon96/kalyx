@@ -25,14 +25,14 @@ export function DatePickerPopover({ children, ...props }: DatePickerPopoverProps
     whileElementsMounted: autoUpdate,
   });
 
-  // Context의 referenceRef를 Floating UI에 연결
+  // Wire the context's referenceRef into Floating UI
   useEffect(() => {
     if (ctx.referenceRef.current) {
       refs.setReference(ctx.referenceRef.current);
     }
   }, [ctx.referenceRef, refs, ctx.isOpen]);
 
-  // 포커스 복원: 닫힐 때 이전 포커스 요소로 복원
+  // Focus restoration: restore focus to the previous element on close
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export function DatePickerPopover({ children, ...props }: DatePickerPopoverProps
     }
   }, [ctx.isOpen]);
 
-  // 바깥 클릭 감지
+  // Detect outside clicks
   useEffect(() => {
     if (!ctx.isOpen) return;
 
@@ -57,7 +57,7 @@ export function DatePickerPopover({ children, ...props }: DatePickerPopoverProps
       }
     }
 
-    // 다음 틱에 등록해서 현재 클릭 이벤트는 무시
+    // Register on next tick to skip the current click event
     const timer = setTimeout(() => {
       document.addEventListener('mousedown', handleClickOutside);
     }, 0);
@@ -68,7 +68,6 @@ export function DatePickerPopover({ children, ...props }: DatePickerPopoverProps
     };
   }, [ctx.isOpen, ctx]);
 
-  // Escape 키 처리
   useEffect(() => {
     if (!ctx.isOpen) return;
 

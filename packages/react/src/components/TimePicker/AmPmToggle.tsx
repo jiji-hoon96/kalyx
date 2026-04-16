@@ -15,8 +15,8 @@ export interface TimePickerAmPmToggleProps
 }
 
 /**
- * TimePicker.AmPmToggle — 12시간제 모드에서만 표시되는 AM/PM 전환 버튼.
- * 24시간제에서는 null을 반환한다.
+ * TimePicker.AmPmToggle — AM/PM toggle shown only in 12-hour mode.
+ * Returns null in 24-hour mode.
  */
 export function TimePickerAmPmToggle({ classNames, ...props }: TimePickerAmPmToggleProps) {
   const ctx = useTimePickerContext('TimePicker.AmPmToggle');

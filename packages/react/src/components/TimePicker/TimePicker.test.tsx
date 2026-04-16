@@ -34,7 +34,7 @@ function renderTimePicker(props: {
   return { ...result, onChange };
 }
 
-/** 제어 모드 wrapper */
+/** Controlled-mode wrapper. */
 function ControlledTimePicker({
   initialValue,
   format = '24h',
@@ -65,39 +65,39 @@ function ControlledTimePicker({
   );
 }
 
-describe('TimePicker — 기본 렌더링', () => {
-  it('Input, HourList, MinuteList가 렌더된다', () => {
+describe('TimePicker — basic rendering', () => {
+  it('renders Input, HourList, and MinuteList', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z' });
     expect(screen.getByLabelText('시간 입력')).toBeInTheDocument();
     expect(screen.getByRole('listbox', { name: '시' })).toBeInTheDocument();
     expect(screen.getByRole('listbox', { name: '분' })).toBeInTheDocument();
   });
 
-  it('현재 시간이 input에 표시된다', () => {
+  it('shows the current time in the input', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z' });
     expect(screen.getByLabelText('시간 입력')).toHaveValue('14:30');
   });
 
-  it('초 표시 모드', () => {
+  it('shows seconds when withSeconds is enabled', () => {
     renderTimePicker({ value: '2026-01-15T14:30:45.000Z', withSeconds: true });
     expect(screen.getByLabelText('시간 입력')).toHaveValue('14:30:45');
   });
 });
 
-describe('TimePicker — 24시간제 (기본)', () => {
-  it('HourList에 0-23시가 표시된다', () => {
+describe('TimePicker — 24-hour mode (default)', () => {
+  it('renders hours 0-23 in the HourList', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z' });
     const hourList = screen.getByRole('listbox', { name: '시' });
     const options = hourList.querySelectorAll('[role="option"]');
     expect(options).toHaveLength(24);
   });
 
-  it('AmPmToggle은 24시간제에서 렌더되지 않는다', () => {
+  it('does not render AmPmToggle in 24-hour mode', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z', format: '24h' });
     expect(screen.queryByRole('radiogroup')).not.toBeInTheDocument();
   });
 
-  it('현재 시가 aria-selected="true"', () => {
+  it('marks the current hour with aria-selected="true"', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z' });
     const selected = screen
       .getByRole('listbox', { name: '시' })
@@ -106,28 +106,28 @@ describe('TimePicker — 24시간제 (기본)', () => {
   });
 });
 
-describe('TimePicker — 12시간제', () => {
-  it('HourList에 1-12시가 표시된다', () => {
+describe('TimePicker — 12-hour mode', () => {
+  it('renders hours 1-12 in the HourList', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z', format: '12h' });
     const hourList = screen.getByRole('listbox', { name: '시' });
     const options = hourList.querySelectorAll('[role="option"]');
     expect(options).toHaveLength(12);
   });
 
-  it('AmPmToggle이 렌더된다', () => {
+  it('renders AmPmToggle', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z', format: '12h' });
     expect(screen.getByRole('radiogroup', { name: '오전/오후' })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'AM' })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'PM' })).toBeInTheDocument();
   });
 
-  it('14시 → PM이 선택됨', () => {
+  it('selects PM when the hour is 14', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z', format: '12h' });
     expect(screen.getByRole('radio', { name: 'PM' })).toBeChecked();
     expect(screen.getByRole('radio', { name: 'AM' })).not.toBeChecked();
   });
 
-  it('14시(오후 2시) → 2가 selected', () => {
+  it('selects 2 for 14:00 (2 PM)', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z', format: '12h' });
     const selected = screen
       .getByRole('listbox', { name: '시' })
@@ -135,7 +135,7 @@ describe('TimePicker — 12시간제', () => {
     expect(selected).toHaveTextContent('02');
   });
 
-  it('0시 → 12 AM', () => {
+  it('maps 0:00 to 12 AM', () => {
     renderTimePicker({ value: '2026-01-15T00:00:00.000Z', format: '12h' });
     expect(screen.getByRole('radio', { name: 'AM' })).toBeChecked();
     const selected = screen
@@ -145,15 +145,15 @@ describe('TimePicker — 12시간제', () => {
   });
 });
 
-describe('TimePicker — 분 step', () => {
-  it('step=15 → 4개의 옵션 (0, 15, 30, 45)', () => {
+describe('TimePicker — minute step', () => {
+  it('renders 4 options (0, 15, 30, 45) when step=15', () => {
     renderTimePicker({ value: '2026-01-15T14:00:00.000Z', step: 15 });
     const minuteList = screen.getByRole('listbox', { name: '분' });
     const options = minuteList.querySelectorAll('[role="option"]');
     expect(options).toHaveLength(4);
   });
 
-  it('step=5 → 12개의 옵션', () => {
+  it('renders 12 options when step=5', () => {
     renderTimePicker({ value: '2026-01-15T14:00:00.000Z', step: 5 });
     const minuteList = screen.getByRole('listbox', { name: '분' });
     const options = minuteList.querySelectorAll('[role="option"]');
@@ -161,8 +161,8 @@ describe('TimePicker — 분 step', () => {
   });
 });
 
-describe('TimePicker — 인터랙션', () => {
-  it('시 클릭 → onChange 호출', async () => {
+describe('TimePicker — interactions', () => {
+  it('calls onChange when an hour is clicked', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
@@ -173,7 +173,7 @@ describe('TimePicker — 인터랙션', () => {
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T14:00:/));
   });
 
-  it('분 클릭 → onChange 호출', async () => {
+  it('calls onChange when a minute is clicked', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -190,7 +190,7 @@ describe('TimePicker — 인터랙션', () => {
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T14:30:/));
   });
 
-  it('AM/PM 토글 → 시간 변경', async () => {
+  it('updates the hour when the AM/PM toggle changes', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -201,14 +201,14 @@ describe('TimePicker — 인터랙션', () => {
       />,
     );
 
-    // 14시 → PM. AM 클릭 시 02:00 (오전 2시)가 됨
+    // 14:00 is PM; clicking AM switches it to 02:00
     const amButton = screen.getByRole('radio', { name: 'AM' });
     await user.click(amButton);
 
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T02:00:/));
   });
 
-  it('Input에 시간 직접 타이핑 → 파싱', async () => {
+  it('parses a time typed directly into the input', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
@@ -221,7 +221,7 @@ describe('TimePicker — 인터랙션', () => {
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T15:45:/));
   });
 
-  it('Input에 잘못된 시간 → 무시', async () => {
+  it('ignores invalid times typed into the input', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
@@ -231,19 +231,18 @@ describe('TimePicker — 인터랙션', () => {
     await user.type(input, 'invalid');
     await user.tab();
 
-    // 잘못된 입력은 onChange 호출하지 않음 (clear는 불릴 수 있음)
+    // Invalid input should not trigger an onChange with the parsed garbage (clear may still fire)
     const calls = onChange.mock.calls;
-    // 마지막 호출이 'invalid' 파싱 결과가 아니어야 함
     const lastCall = calls[calls.length - 1];
     if (lastCall) {
-      // 만약 호출됐다면, 원래 시간 유지
+      // If onChange did fire, the original time must be preserved
       expect(lastCall[0]).toMatch(/T10:00:/);
     }
   });
 });
 
-describe('TimePicker — 비활성화', () => {
-  it('disabled=true → input 비활성화 + listbox aria-disabled', () => {
+describe('TimePicker — disabled state', () => {
+  it('disables the input and sets aria-disabled on the listboxes when disabled=true', () => {
     renderTimePicker({ value: '2026-01-15T14:00:00.000Z', disabled: true });
     expect(screen.getByLabelText('시간 입력')).toBeDisabled();
     expect(screen.getByRole('listbox', { name: '시' })).toHaveAttribute(
@@ -256,7 +255,7 @@ describe('TimePicker — 비활성화', () => {
     );
   });
 
-  it('disabled=true → 옵션 클릭 시 onChange 호출되지 않음', async () => {
+  it('does not call onChange when an option is clicked while disabled', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     renderTimePicker({
@@ -271,33 +270,33 @@ describe('TimePicker — 비활성화', () => {
   });
 });
 
-describe('TimePicker — Context 에러', () => {
-  it('Root 없이 Input을 사용하면 에러', () => {
+describe('TimePicker — context errors', () => {
+  it('throws when Input is used without Root', () => {
     expect(() => {
       render(<TimePicker.Input />);
     }).toThrow(/TimePicker.Root 내부에서 사용해야 합니다/);
   });
 
-  it('Root 없이 HourList를 사용하면 에러', () => {
+  it('throws when HourList is used without Root', () => {
     expect(() => {
       render(<TimePicker.HourList />);
     }).toThrow(/TimePicker.Root 내부에서 사용해야 합니다/);
   });
 });
 
-describe('TimePicker — 접근성', () => {
-  it('listbox에 aria-label이 있다', () => {
+describe('TimePicker — accessibility', () => {
+  it('sets aria-label on the listboxes', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z' });
     expect(screen.getByRole('listbox', { name: '시' })).toBeInTheDocument();
     expect(screen.getByRole('listbox', { name: '분' })).toBeInTheDocument();
   });
 
-  it('AmPmToggle에 radiogroup 역할이 있다', () => {
+  it('exposes the AmPmToggle as a radiogroup', () => {
     renderTimePicker({ value: '2026-01-15T14:00:00.000Z', format: '12h' });
     expect(screen.getByRole('radiogroup', { name: '오전/오후' })).toBeInTheDocument();
   });
 
-  it('axe 검사 통과 (24h 모드)', async () => {
+  it('passes axe checks in 24-hour mode', async () => {
     const { container } = renderTimePicker({
       value: '2026-01-15T14:30:00.000Z',
       format: '24h',
@@ -306,7 +305,7 @@ describe('TimePicker — 접근성', () => {
     expect(results).toHaveNoViolations();
   });
 
-  it('axe 검사 통과 (12h 모드)', async () => {
+  it('passes axe checks in 12-hour mode', async () => {
     const { container } = renderTimePicker({
       value: '2026-01-15T14:30:00.000Z',
       format: '12h',
@@ -316,8 +315,8 @@ describe('TimePicker — 접근성', () => {
   });
 });
 
-describe('TimePicker — SSR 안전성', () => {
-  it('서버에서 renderToString이 에러 없이 동작한다', async () => {
+describe('TimePicker — SSR safety', () => {
+  it('renderToString runs without errors on the server', async () => {
     const { renderToString } = await import('react-dom/server');
     expect(() => {
       renderToString(

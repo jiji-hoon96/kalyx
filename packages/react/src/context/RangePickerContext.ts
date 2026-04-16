@@ -8,57 +8,57 @@ import type {
   WeekStartsOn,
 } from '@kalyx/core';
 
-/** 다음에 선택할 부분 (start | end) */
+/** Which part to select next (start | end) */
 export type RangeSelectingTarget = 'start' | 'end';
 
 export interface RangePickerContextValue {
-  /** Floating UI reference 요소 */
+  /** Floating UI reference element */
   referenceRef: MutableRefObject<HTMLElement | null>;
-  /** 현재 선택된 범위 */
+  /** Currently selected range */
   value: DateRange;
-  /** 범위 변경 (Range 객체 전체 갱신) */
+  /** Update the entire range object */
   setRange: (range: DateRange) => void;
-  /** 단일 날짜 클릭 → 자동으로 start/end 결정 */
+  /** Single-date click; automatically decides start/end */
   selectDate: (iso: ISODateString) => void;
-  /** 다음에 선택될 부분 (start 먼저 → end 다음) */
+  /** Which part gets selected next (start first, then end) */
   selectingTarget: RangeSelectingTarget;
-  /** hover 중인 날짜 (범위 미리보기용) */
+  /** Hovered date (for range preview) */
   hoverDate: ISODateString | null;
   setHoverDate: (iso: ISODateString | null) => void;
-  /** 팝오버 열림 상태 */
+  /** Popover open state */
   isOpen: boolean;
   open: () => void;
   close: () => void;
   toggle: () => void;
-  /** 현재 표시 중인 월 */
+  /** Currently displayed month */
   viewMonth: ISODateString;
   setViewMonth: (iso: ISODateString) => void;
-  /** 캘린더에서 포커스된 날짜 */
+  /** Currently focused date in the calendar */
   focusedDate: ISODateString;
   setFocusedDate: (iso: ISODateString) => void;
-  /** 날짜 어댑터 */
+  /** Date adapter */
   adapter: DateAdapter;
-  /** 비활성화 규칙 */
+  /** Disabled rules */
   disabled: DisabledRule[];
-  /** 주 시작 요일 */
+  /** Week start day */
   weekStartsOn: WeekStartsOn;
-  /** 날짜 표시 포맷 */
+  /** Date display format */
   displayFormat: string;
   /** BCP 47 locale */
   locale: string;
-  /** 전체 비활성화 */
+  /** Whether entire picker is disabled */
   isDisabled: boolean;
-  /** 읽기 전용 */
+  /** Read-only */
   isReadOnly: boolean;
-  /** 고유 ID */
+  /** Unique ID */
   pickerId: string;
 }
 
 export const RangePickerContext = createContext<RangePickerContextValue | null>(null);
 
 /**
- * RangePickerContext를 소비한다.
- * RangePicker.Root 외부에서 호출하면 명확한 에러를 던진다.
+ * Consume RangePickerContext.
+ * Throws a clear error when called outside of RangePicker.Root.
  */
 export function useRangePickerContext(componentName: string): RangePickerContextValue {
   const context = useContext(RangePickerContext);

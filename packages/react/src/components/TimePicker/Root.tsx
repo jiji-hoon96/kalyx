@@ -9,7 +9,7 @@ import type {
 } from '../../context/TimePickerContext.js';
 
 /**
- * TimePicker의 Root 컴포넌트 props.
+ * Props for the TimePicker Root component.
  *
  * @example
  * ```tsx
@@ -22,27 +22,27 @@ import type {
  * ```
  */
 export interface TimePickerRootProps {
-  /** 선택된 시간 (제어 모드, ISO 8601 UTC). 날짜 부분은 무시되고 시간만 사용. */
+  /** Selected time (controlled, ISO 8601 UTC). The date portion is ignored; only the time is used. */
   value?: ISODateString | null;
-  /** 초기 시간 (비제어 모드) */
+  /** Initial time (uncontrolled) */
   defaultValue?: ISODateString;
-  /** 시간 변경 콜백 */
+  /** Callback fired when the time changes */
   onChange?: (value: ISODateString | null) => void;
-  /** 12시간제 또는 24시간제 */
+  /** 12-hour or 24-hour mode */
   format?: TimePickerFormat;
-  /** 분 step (1, 5, 10, 15, 30 등) */
+  /** Minute step (e.g., 1, 5, 10, 15, 30) */
   step?: number;
-  /** 초 표시 여부 */
+  /** Whether to display seconds */
   withSeconds?: boolean;
-  /** 전체 비활성화 */
+  /** Whether entire picker is disabled */
   disabled?: boolean;
-  /** 읽기 전용 */
+  /** Read-only */
   readOnly?: boolean;
-  /** 자식 컴포넌트 */
+  /** Child components */
   children: ReactNode;
 }
 
-/** value가 null일 때 사용할 기본 ISO (오늘 00:00:00 UTC) */
+/** Fallback ISO used when value is null (today at 00:00:00 UTC) */
 function getDefaultIso(): ISODateString {
   const now = new Date();
   return new Date(
@@ -70,7 +70,7 @@ export function TimePickerRoot({
 
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
 
-  // value가 null이어도 시간 선택은 가능해야 함 → fallback
+  // Allow time selection even when value is null -> fallback
   const baseIso = currentValue ?? getDefaultIso();
   const currentTime = useMemo(() => getTime(baseIso), [baseIso]);
 

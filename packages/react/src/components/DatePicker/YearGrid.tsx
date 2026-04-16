@@ -15,13 +15,13 @@ export interface DatePickerYearGridClassNames {
 
 export interface DatePickerYearGridProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
   classNames?: DatePickerYearGridClassNames;
-  /** 년 선택 시 콜백. 일반적으로 month 뷰로 전환한다. */
+  /** Called when a year is selected. Typically used to switch back to the month view. */
   onSelect?: () => void;
 }
 
 /**
- * DatePicker.YearGrid — 12년 단위 그리드에서 년도를 빠르게 선택.
- * MonthGrid 타이틀 클릭 → YearGrid 표시 → 년 클릭 → MonthGrid로 복귀.
+ * DatePicker.YearGrid — Quickly pick a year from a 12-year grid.
+ * Click MonthGrid title -> YearGrid -> click a year -> back to MonthGrid.
  *
  * @example
  * ```tsx
@@ -41,7 +41,7 @@ export function DatePickerYearGrid({
   const currentYear = adapter.getYear(viewMonth);
   const todayYear = adapter.getYear(adapter.today());
 
-  // 12년 단위 범위 (현재 년도를 포함하는 decade)
+  // 12-year range (decade block containing the current year)
   const decadeStart = currentYear - (currentYear % 12);
 
   const navigateDecade = useCallback(

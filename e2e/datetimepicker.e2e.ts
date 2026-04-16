@@ -5,7 +5,7 @@ test.describe('DateTimePicker', () => {
 		await page.goto('/datetimepicker');
 	});
 
-	test('페이지가 SSR로 에러 없이 로드된다', async ({ page }) => {
+	test('page loads via SSR without errors', async ({ page }) => {
 		const consoleErrors: string[] = [];
 		page.on('console', (msg) => {
 			if (msg.type() === 'error') consoleErrors.push(msg.text());
@@ -22,7 +22,7 @@ test.describe('DateTimePicker', () => {
 		expect(hydrationErrors).toHaveLength(0);
 	});
 
-	test('Input 클릭 → Calendar + TimePicker 동시 표시', async ({ page }) => {
+	test('input click -> shows Calendar + TimePicker together', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
 		await firstDemo.getByLabel('날짜 및 시간').click();
 
@@ -33,7 +33,7 @@ test.describe('DateTimePicker', () => {
 		await expect(dialog.getByRole('listbox', { name: '분' })).toBeVisible();
 	});
 
-	test('날짜 선택 후 팝오버가 유지된다 (시간 선택 가능)', async ({ page }) => {
+	test('popover stays open after date selection (time can still be picked)', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
 		await firstDemo.getByLabel('날짜 및 시간').click();
 
@@ -48,7 +48,7 @@ test.describe('DateTimePicker', () => {
 		await expect(dialog).toBeVisible();
 	});
 
-	test('날짜 + 시간 순차 변경', async ({ page }) => {
+	test('change date and time sequentially', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
 		const input = firstDemo.getByLabel('날짜 및 시간');
 		const initialValue = await input.inputValue();

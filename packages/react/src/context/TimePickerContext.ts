@@ -4,31 +4,31 @@ import type { ISODateString, TimeValue } from '@kalyx/core';
 export type TimePickerFormat = '12h' | '24h';
 
 export interface TimePickerContextValue {
-  /** 현재 선택된 ISO datetime (시간 부분만 의미 있음) */
+  /** Currently selected ISO datetime (only the time portion is meaningful) */
   value: ISODateString | null;
-  /** 시간 변경 (TimeValue 부분만 갱신) */
+  /** Update only the time portion (TimeValue) */
   setTime: (partial: Partial<TimeValue>) => void;
-  /** 12/24시간제 모드 */
+  /** 12-hour or 24-hour mode */
   format: TimePickerFormat;
-  /** 분 step (예: 15면 0,15,30,45) */
+  /** Minute step (e.g., 15 -> 0, 15, 30, 45) */
   step: number;
-  /** 초 표시 여부 */
+  /** Whether to display seconds */
   withSeconds: boolean;
-  /** 전체 비활성화 */
+  /** Whether entire picker is disabled */
   isDisabled: boolean;
-  /** 읽기 전용 */
+  /** Read-only */
   isReadOnly: boolean;
-  /** 현재 시간 (TimeValue) */
+  /** Current time (TimeValue) */
   currentTime: TimeValue;
-  /** 고유 ID */
+  /** Unique ID */
   pickerId: string;
 }
 
 export const TimePickerContext = createContext<TimePickerContextValue | null>(null);
 
 /**
- * TimePickerContext를 소비한다.
- * TimePicker.Root 외부에서 호출하면 명확한 에러를 던진다.
+ * Consume TimePickerContext.
+ * Throws a clear error when called outside of TimePicker.Root.
  */
 export function useTimePickerContext(componentName: string): TimePickerContextValue {
   const context = useContext(TimePickerContext);

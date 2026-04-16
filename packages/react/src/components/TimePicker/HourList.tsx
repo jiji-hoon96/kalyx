@@ -15,11 +15,11 @@ export interface TimePickerHourListProps
 }
 
 /**
- * TimePicker.HourList — `role="listbox"` 패턴의 시간 선택 리스트.
- * 12h/24h 모드에 따라 다르게 렌더링.
+ * TimePicker.HourList — `role="listbox"` pattern for hour selection.
+ * Renders differently depending on 12h/24h mode.
  *
- * ARIA 표준 listbox: <li role="option">이 직접 인터랙티브 요소.
- * 키보드: ↑/↓로 이동, Enter/Space로 선택.
+ * ARIA-standard listbox: the <li role="option"> element itself is interactive.
+ * Keyboard: ArrowUp/ArrowDown to navigate, Enter/Space to select.
  */
 export function TimePickerHourList({ classNames, ...props }: TimePickerHourListProps) {
   const ctx = useTimePickerContext('TimePicker.HourList');
@@ -71,7 +71,7 @@ export function TimePickerHourList({ classNames, ...props }: TimePickerHourListP
       const targetHour = hours[newIndex];
       if (targetHour !== undefined) {
         handleSelect(targetHour);
-        // 다음 렌더에서 새 selected 옵션에 포커스 이동
+        // Move focus to the newly selected option on the next render
         requestAnimationFrame(() => {
           const next = listRef.current?.querySelector<HTMLLIElement>(
             '[data-selected="true"]',

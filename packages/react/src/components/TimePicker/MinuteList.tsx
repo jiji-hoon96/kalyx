@@ -15,8 +15,8 @@ export interface TimePickerMinuteListProps
 }
 
 /**
- * TimePicker.MinuteList — `role="listbox"` 패턴의 분 선택 리스트.
- * step prop에 따라 표시되는 분이 결정된다 (예: step=15 → [0, 15, 30, 45]).
+ * TimePicker.MinuteList — `role="listbox"` pattern for minute selection.
+ * The displayed minutes depend on the `step` prop (e.g., step=15 -> [0, 15, 30, 45]).
  */
 export function TimePickerMinuteList({ classNames, ...props }: TimePickerMinuteListProps) {
   const ctx = useTimePickerContext('TimePicker.MinuteList');

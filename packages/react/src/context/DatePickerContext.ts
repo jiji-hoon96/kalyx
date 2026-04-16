@@ -3,51 +3,51 @@ import type { MutableRefObject } from 'react';
 import type { DateAdapter, DisabledRule, ISODateString, WeekStartsOn } from '@kalyx/core';
 
 export interface DatePickerContextValue {
-  /** Floating UI reference 요소 (Input/Trigger가 설정, Popover가 읽음) */
+  /** Floating UI reference element (set by Input/Trigger, read by Popover) */
   referenceRef: MutableRefObject<HTMLElement | null>;
-  /** 현재 선택된 날짜 (ISO 8601 UTC) */
+  /** Currently selected date (ISO 8601 UTC) */
   value: ISODateString | null;
-  /** 날짜 선택 핸들러 */
+  /** Date selection handler */
   selectDate: (iso: ISODateString | null) => void;
-  /** 팝오버 열림 상태 */
+  /** Popover open state */
   isOpen: boolean;
-  /** 팝오버 열기 */
+  /** Open the popover */
   open: () => void;
-  /** 팝오버 닫기 */
+  /** Close the popover */
   close: () => void;
-  /** 팝오버 토글 */
+  /** Toggle the popover */
   toggle: () => void;
-  /** 현재 표시 중인 월 (ISO string) */
+  /** Currently displayed month (ISO string) */
   viewMonth: ISODateString;
-  /** 표시 월 변경 */
+  /** Change the displayed month */
   setViewMonth: (iso: ISODateString) => void;
-  /** 캘린더에서 포커스된 날짜 */
+  /** Currently focused date in the calendar */
   focusedDate: ISODateString;
-  /** 포커스 날짜 변경 */
+  /** Change the focused date */
   setFocusedDate: (iso: ISODateString) => void;
-  /** 날짜 어댑터 */
+  /** Date adapter */
   adapter: DateAdapter;
-  /** 비활성화 규칙 */
+  /** Disabled rules */
   disabled: DisabledRule[];
-  /** 주 시작 요일 */
+  /** Week start day */
   weekStartsOn: WeekStartsOn;
-  /** 날짜 표시 포맷 */
+  /** Date display format */
   displayFormat: string;
-  /** BCP 47 locale (예: "en-US", "ko-KR") */
+  /** BCP 47 locale (e.g., "en-US", "ko-KR") */
   locale: string;
-  /** 전체 비활성화 */
+  /** Whether entire picker is disabled */
   isDisabled: boolean;
-  /** 읽기 전용 */
+  /** Read-only */
   isReadOnly: boolean;
-  /** 고유 ID (useId 기반) */
+  /** Unique ID (useId-based) */
   pickerId: string;
 }
 
 export const DatePickerContext = createContext<DatePickerContextValue | null>(null);
 
 /**
- * DatePickerContext를 소비한다.
- * DatePicker.Root 외부에서 호출하면 명확한 에러를 던진다.
+ * Consume DatePickerContext.
+ * Throws a clear error when called outside of DatePicker.Root.
  */
 export function useDatePickerContext(componentName: string): DatePickerContextValue {
   const context = useContext(DatePickerContext);

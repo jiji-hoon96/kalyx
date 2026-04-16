@@ -5,14 +5,14 @@ test.describe('TimePicker', () => {
 		await page.goto('/timepicker');
 	});
 
-	test('페이지가 SSR로 에러 없이 로드된다', async ({ page }) => {
+	test('page loads via SSR without errors', async ({ page }) => {
 		const consoleErrors: string[] = [];
 		page.on('console', (msg) => {
 			if (msg.type() === 'error') consoleErrors.push(msg.text());
 		});
 
 		await expect(page.getByRole('heading', { name: 'TimePicker' })).toBeVisible();
-		// HourList와 MinuteList가 표시됨
+		// HourList and MinuteList are visible
 		await expect(page.getByRole('listbox', { name: '시' })).toBeVisible();
 		await expect(page.getByRole('listbox', { name: '분' })).toBeVisible();
 
@@ -22,25 +22,25 @@ test.describe('TimePicker', () => {
 		expect(hydrationErrors).toHaveLength(0);
 	});
 
-	test('시간 선택 → 값 변경', async ({ page }) => {
+	test('selecting a time updates the value', async ({ page }) => {
 		const input = page.getByLabel('시간 입력');
 		const initialValue = await input.inputValue();
 
-		// 다른 시간 선택
+		// select a different hour
 		await page.getByRole('option', { name: '18시' }).click();
 
-		// input 값이 변경됨
+		// input value has changed
 		await expect(input).not.toHaveValue(initialValue);
 	});
 
-	test('12h/24h 모드 전환', async ({ page }) => {
-		// 기본 24h: AmPmToggle 없음
+	test('switch between 12h and 24h modes', async ({ page }) => {
+		// default 24h: no AmPmToggle
 		await expect(page.getByRole('radiogroup')).not.toBeVisible();
 
-		// 12h로 전환
+		// switch to 12h
 		await page.getByLabel('12h').click();
 
-		// AmPmToggle 표시됨
+		// AmPmToggle becomes visible
 		await expect(page.getByRole('radiogroup', { name: '오전/오후' })).toBeVisible();
 		await expect(page.getByRole('radio', { name: 'AM' })).toBeVisible();
 		await expect(page.getByRole('radio', { name: 'PM' })).toBeVisible();

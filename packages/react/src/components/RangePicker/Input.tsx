@@ -6,15 +6,15 @@ export type RangeInputPart = 'start' | 'end';
 
 export interface RangePickerInputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'type'> {
-  /** 어떤 부분의 입력인지 (start | end) */
+  /** Which part this input represents (start | end) */
   part: RangeInputPart;
-  /** 날짜 표시 포맷 (기본: 부모의 displayFormat) */
+  /** Date display format (defaults to parent's displayFormat) */
   format?: string;
 }
 
 /**
- * RangePicker.Input — 시작일/종료일을 위한 별도 input.
- * `part="start"`와 `part="end"` 두 개를 함께 사용한다.
+ * RangePicker.Input — Separate input for start/end dates.
+ * Use one with `part="start"` and another with `part="end"`.
  */
 export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputProps>(
   function RangePickerInput({ part, format: formatProp, onFocus, onKeyDown, ...props }, ref) {
@@ -50,7 +50,7 @@ export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputPro
     return (
       <input
         ref={(node) => {
-          // 첫 번째 Input(start)을 reference로 사용
+          // Use the first Input (start) as the reference
           if (part === 'start' && node) ctx.referenceRef.current = node;
           if (typeof ref === 'function') ref(node);
           else if (ref) ref.current = node;

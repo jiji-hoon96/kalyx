@@ -5,7 +5,7 @@ import { useDatePickerContext } from '../../context/DatePickerContext.js';
 
 export interface DatePickerInputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'type'> {
-  /** 날짜 표시 포맷 (기본: 부모의 displayFormat) */
+  /** Date display format (defaults to parent's displayFormat) */
   format?: string;
 }
 
@@ -14,7 +14,7 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
     const ctx = useDatePickerContext('DatePicker.Input');
     const displayFormat = formatProp ?? ctx.displayFormat;
 
-    // 입력 중인 텍스트 (편집 모드)
+    // Text currently being edited (edit mode)
     const [inputText, setInputText] = useState<string | null>(null);
 
     const displayValue =
@@ -92,9 +92,9 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
     return (
       <input
         ref={(node) => {
-          // Floating UI reference 등록
+          // Register as Floating UI reference
           ctx.referenceRef.current = node;
-          // forwardRef 전달
+          // Forward the ref
           if (typeof ref === 'function') ref(node);
           else if (ref) ref.current = node;
         }}

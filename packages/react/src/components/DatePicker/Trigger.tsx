@@ -24,7 +24,7 @@ export const DatePickerTrigger = forwardRef<HTMLButtonElement, DatePickerTrigger
     return (
       <button
         ref={(node) => {
-          // Input이 없으면 Trigger가 reference
+          // If there's no Input, Trigger becomes the reference
           if (!ctx.referenceRef.current) ctx.referenceRef.current = node;
           if (typeof ref === 'function') ref(node);
           else if (ref) ref.current = node;

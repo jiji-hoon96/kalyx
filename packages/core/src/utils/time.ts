@@ -1,6 +1,6 @@
 import type { DateAdapter, ISODateString } from '../types.js';
 
-/** 시간 표현 (24시간제 기준) */
+/** Time-of-day value (24-hour clock) */
 export interface TimeValue {
   hours: number; // 0-23
   minutes: number; // 0-59
@@ -8,8 +8,8 @@ export interface TimeValue {
 }
 
 /**
- * ISO datetime의 시간 부분을 변경한다.
- * UTC 기준으로 동작한다.
+ * Replaces the time portion of an ISO datetime.
+ * Operates in UTC.
  */
 export function setTime(iso: ISODateString, time: Partial<TimeValue>): ISODateString {
   const date = new Date(iso);
@@ -20,7 +20,7 @@ export function setTime(iso: ISODateString, time: Partial<TimeValue>): ISODateSt
 }
 
 /**
- * ISO datetime에서 시간 부분만 추출한다.
+ * Extracts the time portion of an ISO datetime.
  */
 export function getTime(iso: ISODateString): TimeValue {
   const date = new Date(iso);
@@ -32,8 +32,8 @@ export function getTime(iso: ISODateString): TimeValue {
 }
 
 /**
- * "HH:MM" 또는 "HH:MM:SS" 문자열을 TimeValue로 파싱한다.
- * 잘못된 형식이면 null 반환.
+ * Parses an "HH:MM" or "HH:MM:SS" string into a TimeValue.
+ * Returns null on invalid input.
  */
 export function parseTimeString(input: string): TimeValue | null {
   if (!input) return null;
@@ -52,7 +52,7 @@ export function parseTimeString(input: string): TimeValue | null {
 }
 
 /**
- * TimeValue를 "HH:MM" 또는 "HH:MM:SS" 문자열로 포맷팅한다.
+ * Formats a TimeValue as "HH:MM" or "HH:MM:SS".
  */
 export function formatTimeString(time: TimeValue, withSeconds = false): string {
   const hh = String(time.hours).padStart(2, '0');
@@ -65,8 +65,8 @@ export function formatTimeString(time: TimeValue, withSeconds = false): string {
 }
 
 /**
- * 24시간제 → 12시간제 변환.
- * 0시 → 12 AM, 12시 → 12 PM
+ * Converts a 24-hour value to 12-hour form.
+ * 0 → 12 AM, 12 → 12 PM
  */
 export function to12Hour(hours24: number): { hours12: number; period: 'AM' | 'PM' } {
   const period: 'AM' | 'PM' = hours24 >= 12 ? 'PM' : 'AM';
@@ -76,7 +76,7 @@ export function to12Hour(hours24: number): { hours12: number; period: 'AM' | 'PM
 }
 
 /**
- * 12시간제 → 24시간제 변환.
+ * Converts a 12-hour value to 24-hour form.
  */
 export function to24Hour(hours12: number, period: 'AM' | 'PM'): number {
   if (period === 'AM') {
@@ -86,7 +86,7 @@ export function to24Hour(hours12: number, period: 'AM' | 'PM'): number {
 }
 
 /**
- * 시 리스트 생성 (0-23 또는 1-12)
+ * Builds an hours list (0-23 or 1-12).
  */
 export function generateHours(format: '12h' | '24h' = '24h'): number[] {
   if (format === '12h') {
@@ -96,7 +96,7 @@ export function generateHours(format: '12h' | '24h' = '24h'): number[] {
 }
 
 /**
- * 분 리스트 생성 (step 단위)
+ * Builds a minutes list at the given step.
  * step=1 → [0, 1, 2, ..., 59]
  * step=15 → [0, 15, 30, 45]
  * step=5 → [0, 5, 10, ..., 55]
@@ -113,15 +113,15 @@ export function generateMinutes(step = 1): number[] {
 }
 
 /**
- * 두 TimeValue가 동일한지 비교 (시·분·초 모두).
+ * Checks whether two TimeValues are identical (hours, minutes, and seconds).
  */
 export function isSameTime(a: TimeValue, b: TimeValue): boolean {
   return a.hours === b.hours && a.minutes === b.minutes && a.seconds === b.seconds;
 }
 
 /**
- * ISO datetime을 시간 문자열로 포맷팅 (UTC 기준).
- * 어댑터를 받아서 일관성 유지.
+ * Formats an ISO datetime as a time string (UTC based).
+ * Accepts an adapter for API consistency.
  */
 export function formatTimeFromISO(
   iso: ISODateString,

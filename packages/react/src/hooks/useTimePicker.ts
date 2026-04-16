@@ -11,46 +11,46 @@ import type { ISODateString, TimeValue } from '@kalyx/core';
 import type { TimePickerFormat } from '../context/TimePickerContext.js';
 
 export interface UseTimePickerOptions {
-  /** 선택된 시간 (제어 모드) */
+  /** Selected time (controlled mode) */
   value?: ISODateString | null;
-  /** 초기 시간 (비제어 모드) */
+  /** Initial time (uncontrolled mode) */
   defaultValue?: ISODateString;
-  /** 시간 변경 콜백 */
+  /** Callback fired when the time changes */
   onChange?: (value: ISODateString | null) => void;
-  /** 12/24시간제 */
+  /** 12h or 24h format */
   format?: TimePickerFormat;
-  /** 분 step */
+  /** Minute step */
   step?: number;
-  /** 초 표시 */
+  /** Whether seconds are shown */
   withSeconds?: boolean;
 }
 
 export interface UseTimePickerReturn {
-  /** 현재 ISO datetime 값 */
+  /** Current ISO datetime value */
   value: ISODateString | null;
-  /** 현재 시간 (TimeValue) */
+  /** Current time (TimeValue) */
   currentTime: TimeValue;
-  /** 시간 부분 변경 */
+  /** Update part of the time */
   setTime: (partial: Partial<TimeValue>) => void;
-  /** 시(hour) 직접 설정 (12h 모드면 1-12, 24h 모드면 0-23) */
+  /** Set the hour directly (1-12 in 12h mode, 0-23 in 24h mode) */
   setHour: (hour: number) => void;
-  /** 분 설정 */
+  /** Set the minute */
   setMinute: (minute: number) => void;
-  /** 초 설정 */
+  /** Set the second */
   setSecond: (second: number) => void;
-  /** AM/PM 변경 (12h 모드 전용) */
+  /** Change AM/PM (12h mode only) */
   setPeriod: (period: 'AM' | 'PM') => void;
-  /** 사용 가능한 시 리스트 */
+  /** Available hour list */
   availableHours: number[];
-  /** 사용 가능한 분 리스트 (step 적용) */
+  /** Available minute list (respects step) */
   availableMinutes: number[];
-  /** 12/24h 모드 */
+  /** 12h or 24h mode */
   format: TimePickerFormat;
-  /** 현재 표시용 시 (12h 모드면 1-12) */
+  /** Hour value for display (1-12 in 12h mode) */
   displayHour: number;
-  /** 현재 AM/PM (12h 모드 전용, 24h면 null) */
+  /** Current AM/PM (12h mode only, null in 24h) */
   period: 'AM' | 'PM' | null;
-  /** 고유 ID */
+  /** Unique ID */
   pickerId: string;
 }
 
@@ -62,8 +62,8 @@ function getDefaultIso(): ISODateString {
 }
 
 /**
- * TimePicker 상태 관리 Hook.
- * 컴포넌트 없이 완전 커스텀 UI를 구현할 때 사용한다.
+ * Hook that manages TimePicker state.
+ * Use this when you want to build a fully custom UI without the built-in components.
  *
  * @example
  * ```tsx

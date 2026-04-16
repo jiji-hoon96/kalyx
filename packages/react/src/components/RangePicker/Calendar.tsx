@@ -70,7 +70,7 @@ export function RangePickerCalendar({ classNames, ...props }: RangePickerCalenda
   const month = adapter.getMonth(viewMonth);
   const title = formatMonthYear(year, month, locale);
 
-  // 포커스된 날짜 셀에 포커스 이동
+  // Move focus to the focused day cell
   useEffect(() => {
     if (!ctx.isOpen || !gridRef.current) return;
     const focusedButton = gridRef.current.querySelector<HTMLButtonElement>(
@@ -168,7 +168,7 @@ export function RangePickerCalendar({ classNames, ...props }: RangePickerCalenda
           ctx.setViewMonth(newFocused);
         }
 
-        // 키보드로 이동 중에도 hover 미리보기를 유지
+        // Keep hover preview in sync while keyboard-navigating
         if (selectingTarget === 'end' && value.start) {
           ctx.setHoverDate(newFocused);
         }

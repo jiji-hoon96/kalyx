@@ -4,46 +4,44 @@ import { DateFnsAdapter } from '../adapters/date-fns.js';
 
 const adapter = DateFnsAdapter;
 
-describe('getCalendarDays', () => {
-  it('2026년 1월의 달력을 올바르게 생성한다', () => {
+describe('getCalendarDays — basic month grid', () => {
+  it('builds the calendar for January 2026 correctly', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter);
-    // 1월은 목요일 시작 (일요일 기준 주 시작)
+    // January 2026 starts on Thursday (week starts on Sunday)
     expect(weeks.length).toBeGreaterThanOrEqual(4);
     expect(weeks.length).toBeLessThanOrEqual(6);
 
-    // 모든 주는 7일
     for (const week of weeks) {
       expect(week).toHaveLength(7);
     }
 
-    // 현재 달에 속하는 날짜가 31개
     const currentMonthDays = weeks.flat().filter(d => d.isCurrentMonth);
     expect(currentMonthDays).toHaveLength(31);
   });
 
-  it('윤년 2024년 2월은 29일까지 있다', () => {
+  it('returns 29 days for February 2024 (leap year)', () => {
     const weeks = getCalendarDays('2024-02-01T00:00:00.000Z', adapter);
     const currentMonthDays = weeks.flat().filter(d => d.isCurrentMonth);
     expect(currentMonthDays).toHaveLength(29);
     expect(currentMonthDays[28]!.dayNumber).toBe(29);
   });
 
-  it('비윤년 2026년 2월은 28일까지 있다', () => {
+  it('returns 28 days for February 2026 (non-leap year)', () => {
     const weeks = getCalendarDays('2026-02-01T00:00:00.000Z', adapter);
     const currentMonthDays = weeks.flat().filter(d => d.isCurrentMonth);
     expect(currentMonthDays).toHaveLength(28);
   });
 
-  it('주 시작을 월요일로 설정할 수 있다', () => {
+  it('supports configuring the week to start on Monday', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
       weekStartsOn: 1,
     });
-    // 첫째 주의 첫 날은 월요일이어야 한다
+    // First day of the first row must be Monday
     const firstDay = weeks[0]![0]!;
-    expect(adapter.getDay(firstDay.isoString)).toBe(1); // 월요일
+    expect(adapter.getDay(firstDay.isoString)).toBe(1);
   });
 
-  it('선택된 날짜가 올바르게 표시된다', () => {
+  it('flags the selected date correctly', () => {
     const selected = '2026-01-15T00:00:00.000Z';
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
       selected,
@@ -53,7 +51,7 @@ describe('getCalendarDays', () => {
     expect(selectedDays[0]!.dayNumber).toBe(15);
   });
 
-  it('오늘 날짜가 올바르게 표시된다', () => {
+  it('flags today correctly', () => {
     const today = '2026-01-20T00:00:00.000Z';
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
       today,
@@ -63,12 +61,11 @@ describe('getCalendarDays', () => {
     expect(todayDays[0]!.dayNumber).toBe(20);
   });
 
-  it('비활성화 날짜가 올바르게 표시된다', () => {
+  it('flags disabled dates correctly', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
       disabled: [{ dayOfWeek: [0, 6] }],
     });
     const disabledDays = weeks.flat().filter(d => d.isDisabled && d.isCurrentMonth);
-    // 1월의 주말 수 확인
     expect(disabledDays.length).toBeGreaterThan(0);
     for (const d of disabledDays) {
       const dayOfWeek = adapter.getDay(d.isoString);
@@ -76,45 +73,45 @@ describe('getCalendarDays', () => {
     }
   });
 
-  it('이전/다음 달의 날짜가 포함된다', () => {
+  it('includes leading and trailing days from adjacent months', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter);
     const outsideDays = weeks.flat().filter(d => !d.isCurrentMonth);
     expect(outsideDays.length).toBeGreaterThan(0);
   });
 });
 
-describe('isDateDisabled', () => {
-  it('before 규칙: 이전 날짜는 disabled', () => {
+describe('isDateDisabled — combined rules', () => {
+  it('disables dates earlier than the before rule', () => {
     const rules = [{ before: '2026-01-10T00:00:00.000Z' as const }];
     expect(isDateDisabled('2026-01-09T00:00:00.000Z', rules, adapter)).toBe(true);
     expect(isDateDisabled('2026-01-10T00:00:00.000Z', rules, adapter)).toBe(false);
     expect(isDateDisabled('2026-01-11T00:00:00.000Z', rules, adapter)).toBe(false);
   });
 
-  it('after 규칙: 이후 날짜는 disabled', () => {
+  it('disables dates later than the after rule', () => {
     const rules = [{ after: '2026-01-20T00:00:00.000Z' as const }];
     expect(isDateDisabled('2026-01-21T00:00:00.000Z', rules, adapter)).toBe(true);
     expect(isDateDisabled('2026-01-20T00:00:00.000Z', rules, adapter)).toBe(false);
     expect(isDateDisabled('2026-01-19T00:00:00.000Z', rules, adapter)).toBe(false);
   });
 
-  it('특정 날짜는 disabled', () => {
+  it('disables a specific date', () => {
     const rules = [{ date: '2026-01-15T00:00:00.000Z' as const }];
     expect(isDateDisabled('2026-01-15T00:00:00.000Z', rules, adapter)).toBe(true);
     expect(isDateDisabled('2026-01-14T00:00:00.000Z', rules, adapter)).toBe(false);
   });
 
-  it('dayOfWeek 규칙: 주말은 disabled', () => {
+  it('disables weekends via the dayOfWeek rule', () => {
     const rules = [{ dayOfWeek: [0, 6] }];
-    // 2026-01-11 = 일요일
+    // 2026-01-11 = Sunday
     expect(isDateDisabled('2026-01-11T00:00:00.000Z', rules, adapter)).toBe(true);
-    // 2026-01-10 = 토요일
+    // 2026-01-10 = Saturday
     expect(isDateDisabled('2026-01-10T00:00:00.000Z', rules, adapter)).toBe(true);
-    // 2026-01-12 = 월요일
+    // 2026-01-12 = Monday
     expect(isDateDisabled('2026-01-12T00:00:00.000Z', rules, adapter)).toBe(false);
   });
 
-  it('복합 규칙이 동작한다', () => {
+  it('applies multiple rules together', () => {
     const rules = [
       { before: '2026-01-10T00:00:00.000Z' as const },
       { date: '2026-01-15T00:00:00.000Z' as const },
@@ -122,31 +119,31 @@ describe('isDateDisabled', () => {
     ];
     expect(isDateDisabled('2026-01-09T00:00:00.000Z', rules, adapter)).toBe(true);
     expect(isDateDisabled('2026-01-15T00:00:00.000Z', rules, adapter)).toBe(true);
-    expect(isDateDisabled('2026-01-11T00:00:00.000Z', rules, adapter)).toBe(true); // 일요일
-    expect(isDateDisabled('2026-01-12T00:00:00.000Z', rules, adapter)).toBe(false); // 월요일, 범위 내
+    expect(isDateDisabled('2026-01-11T00:00:00.000Z', rules, adapter)).toBe(true); // Sunday
+    expect(isDateDisabled('2026-01-12T00:00:00.000Z', rules, adapter)).toBe(false); // Monday, within range
   });
 
-  it('빈 규칙 배열이면 모든 날짜가 enabled', () => {
+  it('treats an empty rules array as all dates enabled', () => {
     expect(isDateDisabled('2026-01-15T00:00:00.000Z', [], adapter)).toBe(false);
   });
 });
 
 describe('minDate / maxDate', () => {
-  it('minDate는 더 이른 날짜를 반환한다', () => {
+  it('returns the earlier date from minDate', () => {
     expect(
       minDate('2026-01-15T00:00:00.000Z', '2026-01-20T00:00:00.000Z', adapter),
     ).toBe('2026-01-15T00:00:00.000Z');
   });
 
-  it('maxDate는 더 늦은 날짜를 반환한다', () => {
+  it('returns the later date from maxDate', () => {
     expect(
       maxDate('2026-01-15T00:00:00.000Z', '2026-01-20T00:00:00.000Z', adapter),
     ).toBe('2026-01-20T00:00:00.000Z');
   });
 });
 
-describe('getCalendarDays — Range', () => {
-  it('range가 없으면 모든 날짜의 range 플래그가 false', () => {
+describe('getCalendarDays — range handling', () => {
+  it('leaves every range flag false when no range is provided', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter);
     const allDays = weeks.flat();
     for (const day of allDays) {
@@ -156,7 +153,7 @@ describe('getCalendarDays — Range', () => {
     }
   });
 
-  it('range start와 end가 모두 있으면 올바르게 표시된다', () => {
+  it('marks start, in-range, and end correctly when both bounds are set', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
       range: {
         start: '2026-01-10T00:00:00.000Z',
@@ -187,7 +184,7 @@ describe('getCalendarDays — Range', () => {
     expect(outside?.isInRange).toBe(false);
   });
 
-  it('start > end인 경우 자동으로 정렬한다', () => {
+  it('auto-sorts when start comes after end', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
       range: {
         start: '2026-01-15T00:00:00.000Z',
@@ -202,7 +199,7 @@ describe('getCalendarDays — Range', () => {
     expect(day15?.isRangeEnd).toBe(true);
   });
 
-  it('start만 있고 hover가 있으면 미리보기 범위를 표시한다', () => {
+  it('shows a preview range when only start is set and hover is provided', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
       range: { start: '2026-01-10T00:00:00.000Z', end: null },
       rangeHover: '2026-01-15T00:00:00.000Z',
@@ -212,7 +209,7 @@ describe('getCalendarDays — Range', () => {
     expect(day12?.isInRange).toBe(true);
   });
 
-  it('start만 있고 hover가 start보다 이전이면 hover가 시작이 된다', () => {
+  it('uses hover as the preview start when hover precedes the anchored start', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
       range: { start: '2026-01-15T00:00:00.000Z', end: null },
       rangeHover: '2026-01-10T00:00:00.000Z',
@@ -222,7 +219,7 @@ describe('getCalendarDays — Range', () => {
     expect(day12?.isInRange).toBe(true);
   });
 
-  it('range start = end (단일 날짜)', () => {
+  it('handles range start equal to end (single date)', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
       range: {
         start: '2026-01-15T00:00:00.000Z',

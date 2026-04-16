@@ -25,14 +25,14 @@ export function RangePickerPopover({ children, ...props }: RangePickerPopoverPro
     whileElementsMounted: autoUpdate,
   });
 
-  // Context의 referenceRef를 Floating UI에 연결
+  // Wire the context's referenceRef into Floating UI
   useEffect(() => {
     if (ctx.referenceRef.current) {
       refs.setReference(ctx.referenceRef.current);
     }
   }, [ctx.referenceRef, refs, ctx.isOpen]);
 
-  // 포커스 복원
+  // Focus restoration
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export function RangePickerPopover({ children, ...props }: RangePickerPopoverPro
     }
   }, [ctx.isOpen]);
 
-  // 바깥 클릭 감지
+  // Detect outside clicks
   useEffect(() => {
     if (!ctx.isOpen) return;
 
@@ -67,7 +67,6 @@ export function RangePickerPopover({ children, ...props }: RangePickerPopoverPro
     };
   }, [ctx.isOpen, ctx]);
 
-  // Escape 키
   useEffect(() => {
     if (!ctx.isOpen) return;
 

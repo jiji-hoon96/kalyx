@@ -17,7 +17,7 @@ import type { DatePickerYearGridProps, DatePickerYearGridClassNames } from './Ye
 /**
  * DatePicker — Headless, SSR-safe React DatePicker
  *
- * @example 기본
+ * @example Basic
  * ```tsx
  * <DatePicker value={date} onChange={setDate}>
  *   <DatePicker.Input placeholder="날짜 선택" />
@@ -27,7 +27,7 @@ import type { DatePickerYearGridProps, DatePickerYearGridClassNames } from './Ye
  * </DatePicker>
  * ```
  *
- * @example Month/Year 빠른 네비게이션
+ * @example Month/Year quick navigation
  * ```tsx
  * const [view, setView] = useState('days');
  * <DatePicker value={date} onChange={setDate}>

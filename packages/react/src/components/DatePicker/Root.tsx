@@ -6,9 +6,9 @@ import { DatePickerContext } from '../../context/DatePickerContext.js';
 import type { DatePickerContextValue } from '../../context/DatePickerContext.js';
 
 /**
- * DatePicker의 Root 컴포넌트 props.
+ * Props for the DatePicker Root component.
  *
- * @example 제어 모드
+ * @example Controlled
  * ```tsx
  * <DatePicker value={date} onChange={setDate}>
  *   <DatePicker.Input />
@@ -18,7 +18,7 @@ import type { DatePickerContextValue } from '../../context/DatePickerContext.js'
  * </DatePicker>
  * ```
  *
- * @example 비제어 모드
+ * @example Uncontrolled
  * ```tsx
  * <DatePicker defaultValue="2026-01-15T00:00:00.000Z">
  *   <DatePicker.Input />
@@ -26,25 +26,25 @@ import type { DatePickerContextValue } from '../../context/DatePickerContext.js'
  * ```
  */
 export interface DatePickerRootProps {
-  /** 선택된 날짜 (제어 모드, ISO 8601 UTC). `null`이면 빈 상태. */
+  /** Selected date (controlled, ISO 8601 UTC). `null` means empty. */
   value?: ISODateString | null;
-  /** 초기 날짜 (비제어 모드) */
+  /** Initial date (uncontrolled) */
   defaultValue?: ISODateString;
-  /** 날짜 변경 콜백 */
+  /** Callback fired when the date changes */
   onChange?: (value: ISODateString | null) => void;
-  /** 비활성화 규칙 */
+  /** Disabled rules */
   disabled?: DisabledRule[] | boolean;
-  /** 읽기 전용 */
+  /** Read-only */
   readOnly?: boolean;
-  /** 주 시작 요일 */
+  /** Week start day */
   weekStartsOn?: WeekStartsOn;
-  /** 날짜 표시 포맷 */
+  /** Date display format */
   displayFormat?: string;
-  /** BCP 47 locale (예: "en-US", "ko-KR", "ja-JP") */
+  /** BCP 47 locale (e.g., "en-US", "ko-KR", "ja-JP") */
   locale?: string;
-  /** 날짜 어댑터 */
+  /** Date adapter */
   adapter?: DateAdapter;
-  /** 자식 컴포넌트 */
+  /** Child components */
   children: ReactNode;
 }
 
@@ -64,22 +64,19 @@ export function DatePickerRoot({
   const isControlled = useRef(controlledValue !== undefined).current;
   const referenceRef = useRef<HTMLElement | null>(null);
 
-  // 비제어 모드의 내부 상태
+  // Internal state for uncontrolled mode
   const [uncontrolledValue, setUncontrolledValue] = useState<ISODateString | null>(
     defaultValue ?? null,
   );
 
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
 
-  // 팝오버 상태
   const [isOpen, setIsOpen] = useState(false);
 
-  // 뷰 월 (캘린더에서 현재 보고 있는 달)
   const [viewMonth, setViewMonth] = useState<ISODateString>(
     currentValue ?? adapter.today(),
   );
 
-  // 포커스된 날짜
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
     currentValue ?? adapter.today(),
   );
@@ -96,7 +93,7 @@ export function DatePickerRoot({
       }
       onChange?.(iso);
 
-      // 날짜 선택 후 팝오버 닫기
+      // Close the popover after selection
       setIsOpen(false);
     },
     [isControlled, isDisabled, readOnly, onChange],
@@ -105,7 +102,7 @@ export function DatePickerRoot({
   const open = useCallback(() => {
     if (isDisabled || readOnly) return;
     setIsOpen(true);
-    // 팝오버 열 때 현재 값 또는 오늘로 뷰 초기화
+    // Reset the view to the current value or today when opening
     const target = currentValue ?? adapter.today();
     setViewMonth(target);
     setFocusedDate(target);

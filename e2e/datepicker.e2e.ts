@@ -5,7 +5,7 @@ test.describe('DatePicker', () => {
 		await page.goto('/datepicker');
 	});
 
-	test('페이지가 SSR로 에러 없이 로드된다', async ({ page }) => {
+	test('page loads via SSR without errors', async ({ page }) => {
 		const consoleErrors: string[] = [];
 		page.on('console', (msg) => {
 			if (msg.type() === 'error') consoleErrors.push(msg.text());
@@ -22,7 +22,7 @@ test.describe('DatePicker', () => {
 		expect(hydrationErrors).toHaveLength(0);
 	});
 
-	test('Input 클릭 → 팝오버 열림 → 날짜 선택 → 닫힘', async ({ page }) => {
+	test('input click -> popover opens -> select date -> closes', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
 		const input = firstDemo.getByRole('combobox');
 		await input.click();
@@ -40,7 +40,7 @@ test.describe('DatePicker', () => {
 		await expect(input).not.toHaveValue('');
 	});
 
-	test('Escape로 팝오버 닫기', async ({ page }) => {
+	test('close popover with Escape', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
 		await firstDemo.getByRole('combobox').click();
 
@@ -51,7 +51,7 @@ test.describe('DatePicker', () => {
 		await expect(dialog).not.toBeVisible();
 	});
 
-	test('키보드 내비게이션: Arrow + Enter', async ({ page }) => {
+	test('keyboard navigation: arrow keys + Enter', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
 		const input = firstDemo.getByRole('combobox');
 		await input.click();

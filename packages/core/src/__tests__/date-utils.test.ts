@@ -5,38 +5,38 @@ import { DateFnsAdapter } from '../adapters/date-fns.js';
 const adapter = DateFnsAdapter;
 
 describe('normalizeISO', () => {
-  it('YYYY-MM-DD를 UTC 자정으로 변환한다', () => {
+  it('converts YYYY-MM-DD to UTC midnight', () => {
     expect(normalizeISO('2026-01-15')).toBe('2026-01-15T00:00:00.000Z');
   });
 
-  it('ISO datetime은 그대로 반환한다', () => {
+  it('returns an ISO datetime unchanged', () => {
     expect(normalizeISO('2026-01-15T14:30:00.000Z')).toBe('2026-01-15T14:30:00.000Z');
   });
 
-  it('빈 문자열은 빈 문자열을 반환한다', () => {
+  it('returns an empty string for empty input', () => {
     expect(normalizeISO('')).toBe('');
   });
 });
 
 describe('parseInputValue', () => {
-  it('yyyy-MM-dd 형식을 파싱한다', () => {
+  it('parses yyyy-MM-dd format', () => {
     expect(parseInputValue('2026-01-15', 'yyyy-MM-dd', adapter)).toBe('2026-01-15T00:00:00.000Z');
   });
 
-  it('yyyy/MM/dd 형식을 파싱한다 (슬래시 → 하이픈 변환)', () => {
+  it('parses yyyy/MM/dd by normalizing slashes to hyphens', () => {
     expect(parseInputValue('2026/01/15', 'yyyy-MM-dd', adapter)).toBe('2026-01-15T00:00:00.000Z');
   });
 
-  it('8자리 숫자를 파싱한다', () => {
+  it('parses an 8-digit numeric date', () => {
     expect(parseInputValue('20260115', 'yyyy-MM-dd', adapter)).toBe('2026-01-15T00:00:00.000Z');
   });
 
-  it('빈 입력은 null을 반환한다', () => {
+  it('returns null for empty or whitespace input', () => {
     expect(parseInputValue('', 'yyyy-MM-dd', adapter)).toBeNull();
     expect(parseInputValue('   ', 'yyyy-MM-dd', adapter)).toBeNull();
   });
 
-  it('잘못된 입력은 null을 반환한다', () => {
+  it('returns null for invalid input', () => {
     expect(parseInputValue('hello', 'yyyy-MM-dd', adapter)).toBeNull();
     expect(parseInputValue('2026-13-45', 'yyyy-MM-dd', adapter)).toBeNull();
   });

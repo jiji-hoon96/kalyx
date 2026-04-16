@@ -7,17 +7,17 @@ export interface DateTimePickerInputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'type'> {}
 
 /**
- * DateTimePicker.Input — 날짜와 시간을 결합한 형식으로 표시.
- * 예: "2026-01-15 14:30"
+ * DateTimePicker.Input — Displays date and time combined.
+ * Example: "2026-01-15 14:30"
  *
- * v0.3에서는 readOnly로 동작한다 (Calendar/TimePicker로 선택).
- * 직접 타이핑 파싱은 v0.4에서 지원 예정.
+ * In v0.3 the input is read-only (use Calendar/TimePicker to select).
+ * Direct-typing parsing is planned for v0.4.
  */
 export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerInputProps>(
   function DateTimePickerInput({ onFocus, onKeyDown, ...props }, ref) {
     const ctx = useDatePickerContext('DateTimePicker.Input');
 
-    // 날짜 부분 (yyyy-MM-dd) + 시간 부분 (HH:mm) 결합
+    // Combine the date portion (yyyy-MM-dd) and the time portion (HH:mm)
     const displayValue = ctx.value
       ? `${ctx.adapter.format(ctx.value, 'yyyy-MM-dd')} ${formatTimeString(getTime(ctx.value))}`
       : '';

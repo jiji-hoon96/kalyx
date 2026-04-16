@@ -9,13 +9,13 @@ import type {
 } from '../types.js';
 
 /**
- * 특정 월의 캘린더 그리드를 생성한다.
- * 주(week) 단위로 구분된 2차원 배열(`CalendarGrid`)을 반환한다.
+ * Builds the calendar grid for the given month.
+ * Returns a 2D array (`CalendarGrid`) organized by week.
  *
- * @param monthISO - 표시할 월을 포함하는 ISO datetime
- * @param adapter - 날짜 연산 어댑터 ({@link DateFnsAdapter})
- * @param options - 주 시작 요일, 선택된 날짜, 비활성화 규칙, 범위 등
- * @returns 4~6주의 캘린더 그리드. 각 주는 7개의 {@link CalendarDay} 배열.
+ * @param monthISO - ISO datetime containing the month to display
+ * @param adapter - Date operation adapter ({@link DateFnsAdapter})
+ * @param options - Week start day, selected date, disabled rules, range, etc.
+ * @returns A calendar grid of 4-6 weeks. Each week is an array of 7 {@link CalendarDay}.
  *
  * @example
  * ```ts
@@ -24,8 +24,8 @@ import type {
  *   selected: '2026-01-15T00:00:00.000Z',
  *   disabled: [{ dayOfWeek: [0, 6] }],
  * });
- * // grid[0] = 첫째 주 (CalendarDay[7])
- * // grid[0][0].dayNumber = 28 (이전 달)
+ * // grid[0] = first week (CalendarDay[7])
+ * // grid[0][0].dayNumber = 28 (previous month)
  * ```
  */
 export function getCalendarDays(
@@ -46,16 +46,16 @@ export function getCalendarDays(
   const todayISO = today ?? adapter.today();
   const monthStart = adapter.startOfMonth(monthISO);
 
-  // 캘린더 그리드의 시작: 해당 월 첫째 날이 속한 주의 시작
+  // Start of grid: start of the week containing the first day of the month
   const gridStart = adapter.startOfWeek(monthStart, weekStartsOn);
 
-  // 범위 계산용 정규화 (start <= end 보장)
+  // Normalize for range computation (ensures start <= end)
   const normalizedRange = normalizeRangeForDisplay(range, rangeHover, adapter);
 
   const weeks: CalendarGrid = [];
   let current = gridStart;
 
-  // 최대 6주 (42일)
+  // Up to 6 weeks (42 days)
   for (let week = 0; week < 6; week++) {
     const days: CalendarDay[] = [];
 
@@ -84,7 +84,7 @@ export function getCalendarDays(
 
     weeks.push(days);
 
-    // 다음 주의 시작이 이미 다음 달이면 그리드 종료
+    // Stop if the next week has already moved into the next month
     if (!adapter.isSameMonth(current, monthISO) && week >= 3) {
       break;
     }
@@ -94,8 +94,8 @@ export function getCalendarDays(
 }
 
 /**
- * Range가 한 쪽만 선택된 경우 hover 날짜로 임시 범위를 만들어 표시한다.
- * start > end인 경우 정렬한다.
+ * When only one side of the range is selected, use the hover date to create a preview range.
+ * Swaps if start > end.
  */
 function normalizeRangeForDisplay(
   range: DateRange | null | undefined,
@@ -106,7 +106,7 @@ function normalizeRangeForDisplay(
 
   const { start, end } = range;
 
-  // 둘 다 선택됨 → 정렬해서 반환
+  // Both selected → sort and return
   if (start && end) {
     if (adapter.isAfter(start, end)) {
       return { start: end, end: start };
@@ -114,7 +114,7 @@ function normalizeRangeForDisplay(
     return { start, end };
   }
 
-  // 시작만 선택됨 + hover 있음 → hover까지 미리보기
+  // Only start selected, with hover → preview up to hover
   if (start && !end && hover) {
     if (adapter.isAfter(start, hover)) {
       return { start: hover, end: start };
@@ -122,7 +122,7 @@ function normalizeRangeForDisplay(
     return { start, end: hover };
   }
 
-  // 시작만 선택됨, hover 없음
+  // Only start selected, no hover
   if (start && !end) {
     return { start, end: null };
   }
@@ -164,7 +164,7 @@ function computeRangeFlags(
 }
 
 /**
- * 주어진 날짜가 비활성화 규칙에 해당하는지 검사한다.
+ * Checks whether the given date matches any disable rule.
  */
 export function isDateDisabled(
   iso: string,
@@ -186,7 +186,7 @@ export function isDateDisabled(
 }
 
 /**
- * 두 날짜 중 더 이른 것을 반환한다.
+ * Returns the earlier of two dates.
  */
 export function minDate(
   a: ISODateString,
@@ -197,7 +197,7 @@ export function minDate(
 }
 
 /**
- * 두 날짜 중 더 늦은 것을 반환한다.
+ * Returns the later of two dates.
  */
 export function maxDate(
   a: ISODateString,

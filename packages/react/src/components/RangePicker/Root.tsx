@@ -17,7 +17,7 @@ import type {
 const EMPTY_RANGE: DateRange = { start: null, end: null };
 
 /**
- * RangePicker의 Root 컴포넌트 props.
+ * Props for the RangePicker Root component.
  *
  * @example
  * ```tsx
@@ -31,25 +31,25 @@ const EMPTY_RANGE: DateRange = { start: null, end: null };
  * ```
  */
 export interface RangePickerRootProps {
-  /** 선택된 범위 (제어 모드). `{ start, end }` 형태의 ISO string 또는 null. */
+  /** Selected range (controlled). `{ start, end }` with ISO strings or null. */
   value?: DateRange;
-  /** 초기 범위 (비제어 모드) */
+  /** Initial range (uncontrolled) */
   defaultValue?: DateRange;
-  /** 범위 변경 콜백 */
+  /** Callback fired when the range changes */
   onChange?: (range: DateRange) => void;
-  /** 비활성화 규칙 */
+  /** Disabled rules */
   disabled?: DisabledRule[] | boolean;
-  /** 읽기 전용 */
+  /** Read-only */
   readOnly?: boolean;
-  /** 주 시작 요일 */
+  /** Week start day */
   weekStartsOn?: WeekStartsOn;
-  /** 날짜 표시 포맷 */
+  /** Date display format */
   displayFormat?: string;
   /** BCP 47 locale */
   locale?: string;
-  /** 날짜 어댑터 */
+  /** Date adapter */
   adapter?: DateAdapter;
-  /** 자식 컴포넌트 */
+  /** Child components */
   children: ReactNode;
 }
 
@@ -69,7 +69,7 @@ export function RangePickerRoot({
   const isControlled = useRef(controlledValue !== undefined).current;
   const referenceRef = useRef<HTMLElement | null>(null);
 
-  // 비제어 모드의 내부 상태
+  // Internal state for uncontrolled mode
   const [uncontrolledValue, setUncontrolledValue] = useState<DateRange>(
     defaultValue ?? EMPTY_RANGE,
   );
@@ -78,18 +78,15 @@ export function RangePickerRoot({
 
   const [isOpen, setIsOpen] = useState(false);
 
-  // 다음에 어디를 선택할지 (start 먼저, 이후 end)
+  // Which part to select next (start first, then end)
   const [selectingTarget, setSelectingTarget] = useState<RangeSelectingTarget>('start');
 
-  // hover 상태
   const [hoverDate, setHoverDate] = useState<ISODateString | null>(null);
 
-  // 뷰 월
   const [viewMonth, setViewMonth] = useState<ISODateString>(
     currentValue.start ?? adapter.today(),
   );
 
-  // 포커스된 날짜
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
     currentValue.start ?? adapter.today(),
   );
@@ -109,9 +106,9 @@ export function RangePickerRoot({
   );
 
   /**
-   * 단일 날짜 클릭 핸들러.
-   * - selectingTarget === 'start' → start 선택, target = 'end'
-   * - selectingTarget === 'end' → end 선택 (start보다 이전이면 swap), target = 'start', 닫기
+   * Single-date click handler.
+   * - selectingTarget === 'start' -> pick start, switch target to 'end'
+   * - selectingTarget === 'end' -> pick end (swap if before start), switch target to 'start', close
    */
   const selectDate = useCallback(
     (iso: ISODateString) => {
@@ -123,10 +120,9 @@ export function RangePickerRoot({
         setSelectingTarget('end');
         setHoverDate(null);
       } else {
-        // end 선택
         const start = currentValue.start;
         if (!start) {
-          // 안전장치: start가 없으면 start로 처리
+          // Safety: if start is missing, treat this click as start
           setRange({ start: iso, end: null });
           setSelectingTarget('end');
           return;
@@ -134,7 +130,7 @@ export function RangePickerRoot({
 
         let newRange: DateRange;
         if (adapter.isBefore(iso, start)) {
-          // end가 start보다 이전이면 swap
+          // Swap if the clicked end is earlier than start
           newRange = { start: iso, end: start };
         } else {
           newRange = { start, end: iso };
@@ -155,7 +151,7 @@ export function RangePickerRoot({
     const target = currentValue.start ?? adapter.today();
     setViewMonth(target);
     setFocusedDate(target);
-    // 범위가 완전하면 새로 시작, 아니면 현재 상태 유지
+    // If the range is complete, restart; otherwise preserve current state
     if (currentValue.start && currentValue.end) {
       setSelectingTarget('start');
     }

@@ -19,9 +19,9 @@ import type {
 } from './Presets.js';
 
 /**
- * RangePicker — Headless 날짜 범위 선택 컴포넌트
+ * RangePicker — Headless date-range picker component
  *
- * @example 기본
+ * @example Basic
  * ```tsx
  * <RangePicker value={range} onChange={setRange}>
  *   <RangePicker.Input part="start" />
@@ -32,7 +32,7 @@ import type {
  * </RangePicker>
  * ```
  *
- * @example Presets (대시보드)
+ * @example Presets (dashboard)
  * ```tsx
  * <RangePicker value={range} onChange={setRange}>
  *   <RangePicker.Input part="start" />

@@ -3,7 +3,7 @@ import type { HTMLAttributes, ReactNode } from 'react';
 import type { DateRange, ISODateString } from '@kalyx/core';
 import { useRangePickerContext } from '../../context/RangePickerContext.js';
 
-/** 미리 정의된 프리셋 키. 커스텀 범위도 가능. */
+/** Predefined preset keys. Custom ranges are also supported. */
 export type PresetKey =
   | 'today'
   | 'yesterday'
@@ -27,8 +27,8 @@ export interface RangePickerPresetsProps extends Omit<HTMLAttributes<HTMLDivElem
 }
 
 /**
- * RangePicker.Presets — 프리셋 버튼들을 감싸는 컨테이너.
- * 내부에 `RangePicker.Preset` 버튼들을 배치한다.
+ * RangePicker.Presets — Container that wraps preset buttons.
+ * Place `RangePicker.Preset` buttons inside.
  *
  * @example
  * ```tsx
@@ -48,16 +48,16 @@ export function RangePickerPresets({ classNames, children, ...props }: RangePick
 
 export interface RangePickerPresetProps
   extends Omit<HTMLAttributes<HTMLButtonElement>, 'value'> {
-  /** 미리 정의된 프리셋 키 또는 직접 range 전달 시 생략 */
+  /** Predefined preset key; omit when passing `range` directly */
   value?: PresetKey;
-  /** 직접 범위를 지정할 때 사용 (value 대신) */
+  /** Pass a range directly (alternative to `value`) */
   range?: DateRange;
   children: ReactNode;
   className?: string;
 }
 
 /**
- * 미리 정의된 프리셋 키를 실제 DateRange로 변환한다.
+ * Resolve a predefined preset key into an actual DateRange.
  */
 function resolvePreset(key: PresetKey, today: ISODateString, adapter: { addDays: (iso: string, n: number) => string; addMonths: (iso: string, n: number) => string; addYears: (iso: string, n: number) => string; startOfMonth: (iso: string) => string; endOfMonth: (iso: string) => string; startOfWeek: (iso: string, weekStartsOn?: 0 | 1) => string; endOfWeek: (iso: string, weekStartsOn?: 0 | 1) => string; startOfDay: (iso: string) => string }): DateRange {
   switch (key) {
@@ -105,9 +105,9 @@ function resolvePreset(key: PresetKey, today: ISODateString, adapter: { addDays:
 }
 
 /**
- * RangePicker.Preset — 한 클릭으로 날짜 범위를 선택하는 프리셋 버튼.
+ * RangePicker.Preset — One-click preset button to select a date range.
  *
- * `value` (프리셋 키) 또는 `range` (직접 범위)를 전달한다.
+ * Pass either `value` (a preset key) or `range` (a direct range).
  *
  * @example
  * ```tsx
@@ -146,7 +146,7 @@ export function RangePickerPreset({
     [ctx, presetKey, directRange, onClick],
   );
 
-  // 현재 선택된 범위와 프리셋이 일치하는지 확인
+  // Determine whether the currently selected range matches this preset
   const isActive = (() => {
     if (!ctx.value.start || !ctx.value.end) return false;
     let target: DateRange;

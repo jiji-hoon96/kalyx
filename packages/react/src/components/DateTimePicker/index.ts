@@ -1,13 +1,13 @@
 import { DateTimePickerRoot } from './Root.js';
 import { DateTimePickerInput } from './Input.js';
 
-// 재사용: DatePicker 하위 컴포넌트 (DatePickerContext 소비)
+// Reuse: DatePicker subcomponents (consume DatePickerContext)
 import { DatePickerPopover } from '../DatePicker/Popover.js';
 import { DatePickerCalendar } from '../DatePicker/Calendar.js';
 import { DatePickerMonthGrid } from '../DatePicker/MonthGrid.js';
 import { DatePickerYearGrid } from '../DatePicker/YearGrid.js';
 
-// 재사용: TimePicker 하위 컴포넌트 (TimePickerContext 소비)
+// Reuse: TimePicker subcomponents (consume TimePickerContext)
 import { TimePickerHourList } from '../TimePicker/HourList.js';
 import { TimePickerMinuteList } from '../TimePicker/MinuteList.js';
 import { TimePickerAmPmToggle } from '../TimePicker/AmPmToggle.js';
@@ -16,12 +16,11 @@ import type { DateTimePickerRootProps } from './Root.js';
 import type { DateTimePickerInputProps } from './Input.js';
 
 /**
- * DateTimePicker — 날짜와 시간을 함께 선택하는 통합 컴포넌트.
+ * DateTimePicker — Combined component for selecting both date and time.
  *
- * 단일 ISO datetime을 source of truth로 관리하며, 내부적으로
- * DatePickerContext와 TimePickerContext를 동시에 제공한다.
- * 따라서 DatePicker.Calendar, TimePicker.HourList 등 기존 컴포넌트가
- * 그대로 동작한다.
+ * Manages a single ISO datetime as the source of truth while providing both
+ * DatePickerContext and TimePickerContext internally. This lets existing
+ * components such as DatePicker.Calendar and TimePicker.HourList work as-is.
  *
  * @example
  * ```tsx
@@ -35,7 +34,7 @@ import type { DateTimePickerInputProps } from './Input.js';
  * </DateTimePicker>
  * ```
  *
- * @example 12시간제 모드
+ * @example 12-hour mode
  * ```tsx
  * <DateTimePicker value={dt} onChange={setDt} format="12h" step={15}>
  *   <DateTimePicker.Input />

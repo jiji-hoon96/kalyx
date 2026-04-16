@@ -9,56 +9,56 @@ import type {
 } from '@kalyx/core';
 
 export interface UseDatePickerOptions {
-  /** 선택된 날짜 (제어 모드) */
+  /** Selected date (controlled mode) */
   value?: ISODateString | null;
-  /** 초기 날짜 (비제어 모드) */
+  /** Initial date (uncontrolled mode) */
   defaultValue?: ISODateString;
-  /** 날짜 변경 콜백 */
+  /** Callback fired when the date changes */
   onChange?: (value: ISODateString | null) => void;
-  /** 비활성화 규칙 */
+  /** Rules that mark days as disabled */
   disabled?: DisabledRule[];
-  /** 주 시작 요일 */
+  /** Day the week starts on */
   weekStartsOn?: WeekStartsOn;
-  /** 날짜 어댑터 */
+  /** Date adapter */
   adapter?: DateAdapter;
 }
 
 export interface UseDatePickerReturn {
-  /** 현재 선택된 날짜 (ISO string) */
+  /** Currently selected date (ISO string) */
   value: ISODateString | null;
-  /** 팝오버 열림 상태 */
+  /** Whether the popover is open */
   isOpen: boolean;
-  /** 팝오버 열기 */
+  /** Open the popover */
   open: () => void;
-  /** 팝오버 닫기 */
+  /** Close the popover */
   close: () => void;
-  /** 팝오버 토글 */
+  /** Toggle the popover */
   toggle: () => void;
-  /** 날짜 선택 */
+  /** Select a date */
   selectDate: (iso: ISODateString | null) => void;
-  /** 현재 표시 중인 월 (ISO string) */
+  /** Month currently displayed (ISO string) */
   viewMonth: ISODateString;
-  /** 표시 월 변경 */
+  /** Change the displayed month */
   setViewMonth: (iso: ISODateString) => void;
-  /** 캘린더 그리드 데이터 */
+  /** Calendar grid data */
   calendar: CalendarGrid;
-  /** 포커스된 날짜 */
+  /** Currently focused date */
   focusedDate: ISODateString;
-  /** 포커스 날짜 변경 */
+  /** Update the focused date */
   setFocusedDate: (iso: ISODateString) => void;
-  /** 이전 달로 이동 */
+  /** Move to the previous month */
   previousMonth: () => void;
-  /** 다음 달로 이동 */
+  /** Move to the next month */
   nextMonth: () => void;
-  /** 고유 ID */
+  /** Unique ID */
   pickerId: string;
-  /** 날짜 어댑터 */
+  /** Date adapter */
   adapter: DateAdapter;
 }
 
 /**
- * DatePicker의 상태를 관리하는 Hook.
- * 컴포넌트를 사용하지 않고 완전 커스텀 UI를 구현할 때 사용한다.
+ * Hook that manages DatePicker state.
+ * Use this when you want to implement a fully custom UI without the built-in components.
  *
  * @example
  * ```tsx
@@ -66,7 +66,7 @@ export interface UseDatePickerReturn {
  *   const { value, isOpen, calendar, open, selectDate } = useDatePicker({
  *     onChange: (iso) => console.log(iso),
  *   });
- *   // ... 커스텀 렌더링
+ *   // ... custom rendering
  * }
  * ```
  */

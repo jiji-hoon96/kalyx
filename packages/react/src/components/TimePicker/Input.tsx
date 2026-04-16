@@ -7,8 +7,8 @@ export interface TimePickerInputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'type'> {}
 
 /**
- * TimePicker.Input — HH:MM 또는 HH:MM:SS 형식의 텍스트 입력.
- * 사용자가 직접 타이핑할 수 있다.
+ * TimePicker.Input — Text input for HH:MM or HH:MM:SS format.
+ * Supports direct typing by the user.
  */
 export const TimePickerInput = forwardRef<HTMLInputElement, TimePickerInputProps>(
   function TimePickerInput({ onBlur, onKeyDown, ...props }, ref) {

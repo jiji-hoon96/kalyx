@@ -5,7 +5,7 @@ test.describe('RangePicker', () => {
 		await page.goto('/rangepicker');
 	});
 
-	test('페이지가 SSR로 에러 없이 로드된다', async ({ page }) => {
+	test('page loads via SSR without errors', async ({ page }) => {
 		const consoleErrors: string[] = [];
 		page.on('console', (msg) => {
 			if (msg.type() === 'error') consoleErrors.push(msg.text());
@@ -23,7 +23,7 @@ test.describe('RangePicker', () => {
 		expect(hydrationErrors).toHaveLength(0);
 	});
 
-	test('시작일 → 종료일 순서로 범위 선택', async ({ page }) => {
+	test('select range in start-date -> end-date order', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
 		const startInput = firstDemo.getByLabel('시작일');
 		await startInput.click();

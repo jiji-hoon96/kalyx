@@ -8,7 +8,7 @@ import type { DateRange } from '@kalyx/core';
 
 const EMPTY: DateRange = { start: null, end: null };
 
-/** 제어 모드에서 자동으로 value를 업데이트하는 테스트 wrapper */
+/** Test wrapper that auto-updates value in controlled mode. */
 function ControlledRangePicker({
   initialValue,
   onChange,
@@ -58,8 +58,8 @@ function renderRangePicker(props: {
   return { ...result, onChange };
 }
 
-describe('RangePicker — 기본 인터랙션', () => {
-  it('두 개의 combobox(시작일, 종료일)가 렌더된다', () => {
+describe('RangePicker — basic interactions', () => {
+  it('renders two comboboxes (start and end)', () => {
     renderRangePicker();
     const combos = screen.getAllByRole('combobox');
     expect(combos).toHaveLength(2);
@@ -67,12 +67,12 @@ describe('RangePicker — 기본 인터랙션', () => {
     expect(screen.getByLabelText('종료일')).toBeInTheDocument();
   });
 
-  it('초기에 팝오버가 닫혀 있다', () => {
+  it('keeps the popover closed on initial render', () => {
     renderRangePicker();
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('Input 클릭 시 팝오버가 열린다', async () => {
+  it('opens the popover when an input is clicked', async () => {
     const user = userEvent.setup();
     renderRangePicker();
 
@@ -81,7 +81,7 @@ describe('RangePicker — 기본 인터랙션', () => {
     expect(screen.getByRole('grid')).toBeInTheDocument();
   });
 
-  it('첫 클릭 → start 선택, 두 번째 클릭 → end 선택', async () => {
+  it('selects start on the first click and end on the second click', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -93,7 +93,7 @@ describe('RangePicker — 기본 인터랙션', () => {
 
     await user.click(screen.getByLabelText('시작일'));
 
-    // 1차 클릭: 10일 → start
+    // First click (Jan 10) sets start
     const day10 = screen.getByRole('button', { name: /January 10, 2026/ });
     await user.click(day10);
 
@@ -102,7 +102,7 @@ describe('RangePicker — 기본 인터랙션', () => {
       end: null,
     });
 
-    // 2차 클릭: 20일 → end
+    // Second click (Jan 20) sets end
     const day20 = screen.getByRole('button', { name: /January 20, 2026/ });
     await user.click(day20);
 
@@ -112,7 +112,7 @@ describe('RangePicker — 기본 인터랙션', () => {
     });
   });
 
-  it('end가 start보다 이전이면 자동으로 swap된다', async () => {
+  it('swaps start and end automatically when end is earlier than start', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -124,9 +124,9 @@ describe('RangePicker — 기본 인터랙션', () => {
 
     await user.click(screen.getByLabelText('시작일'));
 
-    // 1차 클릭: 20일 → start
+    // First click (Jan 20) sets start
     await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
-    // 2차 클릭: 10일 → end (swap 발생)
+    // Second click (Jan 10) triggers a swap because end precedes start
     await user.click(screen.getByRole('button', { name: /January 10, 2026/ }));
 
     const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1]![0] as DateRange;
@@ -134,7 +134,7 @@ describe('RangePicker — 기본 인터랙션', () => {
     expect(lastCall.end).toMatch(/^2026-01-20T/);
   });
 
-  it('범위 선택 완료 후 팝오버가 닫힌다', async () => {
+  it('closes the popover after the range is fully selected', async () => {
     const user = userEvent.setup();
     render(
       <ControlledRangePicker
@@ -145,16 +145,16 @@ describe('RangePicker — 기본 인터랙션', () => {
     await user.click(screen.getByLabelText('시작일'));
     await user.click(screen.getByRole('button', { name: /January 10, 2026/ }));
 
-    // start만 선택된 상태에서는 팝오버 유지
+    // Popover stays open while only start is selected
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
 
-    // end 선택 후 팝오버 닫힘
+    // Popover closes once end is selected
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('Escape → 팝오버 닫힘', async () => {
+  it('closes the popover when Escape is pressed', async () => {
     const user = userEvent.setup();
     renderRangePicker();
 
@@ -165,7 +165,7 @@ describe('RangePicker — 기본 인터랙션', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('선택된 범위가 input에 표시된다', () => {
+  it('shows the selected range in the inputs', () => {
     renderRangePicker({
       value: {
         start: '2026-01-10T00:00:00.000Z',
@@ -176,15 +176,15 @@ describe('RangePicker — 기본 인터랙션', () => {
     expect(screen.getByLabelText('종료일')).toHaveValue('2026-01-20');
   });
 
-  it('빈 범위는 input이 비어있다', () => {
+  it('renders empty inputs for an empty range', () => {
     renderRangePicker({ value: EMPTY });
     expect(screen.getByLabelText('시작일')).toHaveValue('');
     expect(screen.getByLabelText('종료일')).toHaveValue('');
   });
 });
 
-describe('RangePicker — 제어/비제어 모드', () => {
-  it('제어 모드: value prop이 반영된다', () => {
+describe('RangePicker — controlled / uncontrolled modes', () => {
+  it('reflects the value prop in controlled mode', () => {
     renderRangePicker({
       value: {
         start: '2026-06-15T00:00:00.000Z',
@@ -195,7 +195,7 @@ describe('RangePicker — 제어/비제어 모드', () => {
     expect(screen.getByLabelText('종료일')).toHaveValue('2026-06-20');
   });
 
-  it('비제어 모드: defaultValue가 초기값으로 표시된다', () => {
+  it('shows defaultValue as the initial value in uncontrolled mode', () => {
     renderRangePicker({
       defaultValue: {
         start: '2026-03-01T00:00:00.000Z',
@@ -207,25 +207,25 @@ describe('RangePicker — 제어/비제어 모드', () => {
   });
 });
 
-describe('RangePicker — 비활성화', () => {
-  it('disabled=true일 때 input이 비활성화된다', () => {
+describe('RangePicker — disabled state', () => {
+  it('disables the inputs when disabled=true', () => {
     renderRangePicker({ disabled: true });
     expect(screen.getByLabelText('시작일')).toBeDisabled();
     expect(screen.getByLabelText('종료일')).toBeDisabled();
   });
 });
 
-describe('RangePicker — 키보드 내비게이션', () => {
-  it('Arrow 키로 날짜 이동 후 Enter로 선택한다', async () => {
+describe('RangePicker — keyboard navigation', () => {
+  it('moves the focused day with arrow keys and selects it with Enter', async () => {
     const user = userEvent.setup();
     const { onChange } = renderRangePicker({
       value: { start: '2026-01-15T00:00:00.000Z', end: '2026-01-20T00:00:00.000Z' },
     });
 
     await user.click(screen.getByLabelText('시작일'));
-    // 포커스는 15일 (start)에 있음. 다시 시작이므로 selectingTarget이 'start'로 리셋됨
+    // Focus lands on the start (Jan 15); opening resets selectingTarget to 'start'
 
-    // → 키 = 다음 날 (16일)
+    // ArrowRight advances by one day (to the 16th)
     await user.keyboard('{ArrowRight}');
     await user.keyboard('{Enter}');
 
@@ -236,8 +236,8 @@ describe('RangePicker — 키보드 내비게이션', () => {
   });
 });
 
-describe('RangePicker — Range 시각화', () => {
-  it('범위 내 날짜에 data-in-range 속성이 있다', async () => {
+describe('RangePicker — range visualization', () => {
+  it('sets data-in-range on days inside the range', async () => {
     const user = userEvent.setup();
     renderRangePicker({
       value: {
@@ -252,7 +252,7 @@ describe('RangePicker — Range 시각화', () => {
     expect(day12).toHaveAttribute('data-in-range', 'true');
   });
 
-  it('start와 end에 각각 data-range-start, data-range-end 속성이 있다', async () => {
+  it('sets data-range-start on the start day and data-range-end on the end day', async () => {
     const user = userEvent.setup();
     renderRangePicker({
       value: {
@@ -271,22 +271,22 @@ describe('RangePicker — Range 시각화', () => {
   });
 });
 
-describe('RangePicker — Context 에러', () => {
-  it('Root 없이 Input을 사용하면 에러가 발생한다', () => {
+describe('RangePicker — context errors', () => {
+  it('throws when Input is used without Root', () => {
     expect(() => {
       render(<RangePicker.Input part="start" />);
     }).toThrow(/RangePicker.Root 내부에서 사용해야 합니다/);
   });
 
-  it('Root 없이 Calendar를 사용하면 에러가 발생한다', () => {
+  it('throws when Calendar is used without Root', () => {
     expect(() => {
       render(<RangePicker.Calendar />);
     }).toThrow(/RangePicker.Root 내부에서 사용해야 합니다/);
   });
 });
 
-describe('RangePicker — 접근성', () => {
-  it('Input ARIA 속성이 올바르다', () => {
+describe('RangePicker — accessibility', () => {
+  it('sets the correct ARIA attributes on the input', () => {
     renderRangePicker();
     const start = screen.getByLabelText('시작일');
     expect(start).toHaveAttribute('role', 'combobox');
@@ -294,7 +294,7 @@ describe('RangePicker — 접근성', () => {
     expect(start).toHaveAttribute('aria-haspopup', 'dialog');
   });
 
-  it('grid에 aria-multiselectable="true"가 있다', async () => {
+  it('sets aria-multiselectable="true" on the grid', async () => {
     const user = userEvent.setup();
     renderRangePicker();
 
@@ -303,7 +303,7 @@ describe('RangePicker — 접근성', () => {
     expect(grid).toHaveAttribute('aria-multiselectable', 'true');
   });
 
-  it('axe 접근성 검사를 통과한다 (닫힌 상태)', async () => {
+  it('passes axe accessibility checks (closed state)', async () => {
     const { container } = renderRangePicker({
       value: {
         start: '2026-01-10T00:00:00.000Z',
@@ -314,7 +314,7 @@ describe('RangePicker — 접근성', () => {
     expect(results).toHaveNoViolations();
   });
 
-  it('axe 접근성 검사를 통과한다 (열린 상태)', async () => {
+  it('passes axe accessibility checks (open state)', async () => {
     const user = userEvent.setup();
     const { container } = renderRangePicker({
       value: {
@@ -355,14 +355,14 @@ describe('RangePicker — Presets', () => {
     return { ...result, onChange: cb };
   }
 
-  it('Presets가 group 역할로 렌더된다', async () => {
+  it('renders Presets as a group', async () => {
     const user = userEvent.setup();
     renderWithPresets();
     await user.click(screen.getByLabelText('시작일'));
     expect(screen.getByRole('group', { name: '날짜 범위 프리셋' })).toBeInTheDocument();
   });
 
-  it('프리셋 클릭 → onChange에 올바른 범위가 전달된다', async () => {
+  it('passes the correct range to onChange when a preset is clicked', async () => {
     const user = userEvent.setup();
     const { onChange } = renderWithPresets();
     await user.click(screen.getByLabelText('시작일'));
@@ -376,12 +376,12 @@ describe('RangePicker — Presets', () => {
       }),
     );
 
-    // Today 프리셋: start === end
+    // Today preset: start === end
     const call = (onChange as ReturnType<typeof vi.fn>).mock.calls[0]![0] as DateRange;
     expect(call.start).toBe(call.end);
   });
 
-  it('Last 7 days 프리셋 → 7일 범위', async () => {
+  it('spans seven days for the "Last 7 days" preset', async () => {
     const user = userEvent.setup();
     const { onChange } = renderWithPresets();
     await user.click(screen.getByLabelText('시작일'));
@@ -391,14 +391,14 @@ describe('RangePicker — Presets', () => {
     const call = (onChange as ReturnType<typeof vi.fn>).mock.calls[0]![0] as DateRange;
     expect(call.start).toBeTruthy();
     expect(call.end).toBeTruthy();
-    // end - start = 6일 (오늘 포함 7일)
+    // end - start = 6 days (7 days inclusive of today)
     const startDate = new Date(call.start!);
     const endDate = new Date(call.end!);
     const diffDays = Math.round((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
     expect(diffDays).toBe(6);
   });
 
-  it('프리셋 클릭 후 팝오버가 닫힌다', async () => {
+  it('closes the popover after a preset is clicked', async () => {
     const user = userEvent.setup();
     renderWithPresets();
     await user.click(screen.getByLabelText('시작일'));
@@ -408,7 +408,7 @@ describe('RangePicker — Presets', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('커스텀 range prop으로 직접 범위 지정', async () => {
+  it('supports explicit ranges via the custom range prop', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
@@ -435,8 +435,8 @@ describe('RangePicker — Presets', () => {
   });
 });
 
-describe('RangePicker — SSR 안전성', () => {
-  it('서버에서 renderToString이 에러 없이 동작한다', async () => {
+describe('RangePicker — SSR safety', () => {
+  it('renderToString runs without errors on the server', async () => {
     const { renderToString } = await import('react-dom/server');
     expect(() => {
       renderToString(

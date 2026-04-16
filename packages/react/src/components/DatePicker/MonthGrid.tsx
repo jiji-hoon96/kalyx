@@ -16,15 +16,15 @@ export interface DatePickerMonthGridClassNames {
 
 export interface DatePickerMonthGridProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
   classNames?: DatePickerMonthGridClassNames;
-  /** 월 선택 시 콜백. 일반적으로 day 뷰로 전환한다. */
+  /** Called when a month is selected. Typically used to switch back to the day view. */
   onSelect?: () => void;
-  /** 타이틀(년도) 클릭 시 콜백. Year 뷰로 전환할 때 사용. */
+  /** Called when the title (year) is clicked. Useful for switching to the year view. */
   onTitleClick?: () => void;
 }
 
 /**
- * DatePicker.MonthGrid — 12개월 그리드에서 월을 빠르게 선택.
- * Calendar 타이틀 클릭 → MonthGrid 표시 → 월 클릭 → Calendar로 복귀.
+ * DatePicker.MonthGrid — Quickly pick a month from a 12-month grid.
+ * Click Calendar title -> MonthGrid -> click a month -> back to Calendar.
  *
  * @example
  * ```tsx
@@ -60,7 +60,7 @@ export function DatePickerMonthGrid({
 
   const handleMonthSelect = useCallback(
     (monthIndex: number) => {
-      // 현재 년도 + 선택된 월의 1일로 viewMonth 설정
+      // Set viewMonth to the first day of the selected month in the current year
       const target = new Date(Date.UTC(currentYear, monthIndex, 1)).toISOString();
       ctx.setViewMonth(target);
       ctx.setFocusedDate(target);

@@ -4,7 +4,7 @@ const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const ISO_DATETIME_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
 
 /**
- * 날짜 문자열을 ISO 8601 UTC 형식으로 정규화한다.
+ * Normalizes a date string to ISO 8601 UTC form.
  * "2026-01-15" → "2026-01-15T00:00:00.000Z"
  */
 export function normalizeISO(value: string): string {
@@ -15,8 +15,8 @@ export function normalizeISO(value: string): string {
 }
 
 /**
- * 사용자 입력 텍스트를 ISO string으로 파싱한다.
- * 실패 시 null을 반환한다.
+ * Parses user input text into an ISO string.
+ * Returns null on failure.
  */
 export function parseInputValue(
   input: string,
@@ -25,7 +25,7 @@ export function parseInputValue(
 ): string | null {
   if (!input.trim()) return null;
 
-  // 기본 포맷: yyyy-MM-dd 또는 yyyy/MM/dd
+  // Default format: yyyy-MM-dd or yyyy/MM/dd
   const cleaned = input.replace(/\//g, '-').trim();
 
   if (ISO_DATE_REGEX.test(cleaned)) {
@@ -35,7 +35,7 @@ export function parseInputValue(
     }
   }
 
-  // 구분자 없는 8자리 숫자: 20260115 → 2026-01-15
+  // 8-digit form without separators: 20260115 → 2026-01-15
   if (/^\d{8}$/.test(cleaned)) {
     const formatted = `${cleaned.slice(0, 4)}-${cleaned.slice(4, 6)}-${cleaned.slice(6, 8)}`;
     const normalized = normalizeISO(formatted);
@@ -47,7 +47,7 @@ export function parseInputValue(
   return null;
 }
 
-/** 주어진 달의 이름을 반환한다 (기본 영어) */
+/** Default weekday labels (English) */
 export const WEEKDAY_LABELS = {
   short: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] as const,
   full: [
@@ -61,7 +61,7 @@ export const WEEKDAY_LABELS = {
   ] as const,
 };
 
-/** 주 시작 요일에 맞춰 요일 배열을 정렬한다 */
+/** Returns weekdays ordered according to the given week start */
 export function getOrderedWeekdays(weekStartsOn: 0 | 1 = 0) {
   const days = WEEKDAY_LABELS.short.map((short, i) => ({
     short,
