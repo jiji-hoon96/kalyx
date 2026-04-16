@@ -30,6 +30,9 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
+      - name: Upgrade npm for Trusted Publishing support
+        run: npm install -g npm@latest
+
       - run: pnpm install --frozen-lockfile
 
       # 릴리즈 전 최종 품질 검사
@@ -48,20 +51,6 @@ jobs:
             echo "❌ 번들 크기 12KB 초과 — 릴리즈 중단"
             exit 1
           fi
-
-      # Diagnostic: decode the OIDC token sent to npm so we can compare with the
-      # Trusted Publisher config (workflow_ref, repository, sub, ref) on npmjs.com
-      - name: OIDC claims diagnostic
-        run: |
-          set -e
-          TOKEN_JSON=$(curl -sS -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=npm:registry.npmjs.org")
-          TOKEN=$(echo "$TOKEN_JSON" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).value))")
-          PAYLOAD=$(echo "$TOKEN" | cut -d. -f2)
-          # base64url decode with padding
-          PADDED="$PAYLOAD$(printf '=%.0s' $(seq 1 $(( (4 - ${#PAYLOAD} % 4) % 4 ))))"
-          echo "=== OIDC claims (audience=npm:registry.npmjs.org) ==="
-          echo "$PADDED" | tr '_-' '/+' | base64 -d 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const j=JSON.parse(s);console.log(JSON.stringify({iss:j.iss,aud:j.aud,repository:j.repository,repository_owner:j.repository_owner,workflow:j.workflow,workflow_ref:j.workflow_ref,job_workflow_ref:j.job_workflow_ref,ref:j.ref,sub:j.sub,environment:j.environment},null,2))})"
 
       - name: Changesets 릴리즈
         id: changesets
