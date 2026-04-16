@@ -1,0 +1,30 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "문서 버전 레이블"
+  },
+  "sidebar.docsSidebar.category.Getting Started": {
+    "message": "시작하기",
+    "description": "사이드바 섹션"
+  },
+  "sidebar.docsSidebar.category.Concepts": {
+    "message": "개념",
+    "description": "사이드바 섹션"
+  },
+  "sidebar.docsSidebar.category.Components": {
+    "message": "컴포넌트",
+    "description": "사이드바 섹션"
+  },
+  "sidebar.docsSidebar.category.Hooks": {
+    "message": "훅",
+    "description": "사이드바 섹션"
+  },
+  "sidebar.docsSidebar.category.Recipes": {
+    "message": "레시피",
+    "description": "사이드바 섹션"
+  },
+  "sidebar.docsSidebar.category.API Reference": {
+    "message": "API 레퍼런스",
+    "description": "사이드바 섹션"
+  }
+}

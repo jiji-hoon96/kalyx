@@ -1,0 +1,54 @@
+{
+  "link.title.Docs": {
+    "message": "문서",
+    "description": "푸터 섹션 Docs"
+  },
+  "link.title.Community": {
+    "message": "커뮤니티",
+    "description": "푸터 섹션 Community"
+  },
+  "link.title.More": {
+    "message": "더 보기",
+    "description": "푸터 섹션 More"
+  },
+  "link.item.label.Introduction": {
+    "message": "소개",
+    "description": "푸터 Introduction"
+  },
+  "link.item.label.Quick Start": {
+    "message": "빠른 시작",
+    "description": "푸터 Quick Start"
+  },
+  "link.item.label.Components": {
+    "message": "컴포넌트",
+    "description": "푸터 Components"
+  },
+  "link.item.label.GitHub": {
+    "message": "GitHub",
+    "description": "푸터 GitHub"
+  },
+  "link.item.label.Issues": {
+    "message": "이슈",
+    "description": "푸터 Issues"
+  },
+  "link.item.label.Discussions": {
+    "message": "토론",
+    "description": "푸터 Discussions"
+  },
+  "link.item.label.@kalyx/react on npm": {
+    "message": "@kalyx/react (npm)",
+    "description": "푸터 npm @kalyx/react"
+  },
+  "link.item.label.@kalyx/core on npm": {
+    "message": "@kalyx/core (npm)",
+    "description": "푸터 npm @kalyx/core"
+  },
+  "link.item.label.Changelog": {
+    "message": "변경 이력",
+    "description": "푸터 Changelog"
+  },
+  "copyright": {
+    "message": "Copyright © 2026 Kalyx. MIT 라이선스로 배포됩니다.",
+    "description": "푸터 저작권 문구"
+  }
+}

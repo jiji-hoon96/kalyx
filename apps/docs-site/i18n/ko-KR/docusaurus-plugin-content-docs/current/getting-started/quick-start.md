@@ -1,0 +1,115 @@
+---
+id: quick-start
+title: 빠른 시작
+sidebar_position: 2
+---
+
+# 빠른 시작
+
+5분이면 동작하는 DatePicker를 만듭니다.
+
+## 1. 설치
+
+```bash
+pnpm add @kalyx/react
+```
+
+## 2. 제어형 DatePicker
+
+```tsx
+import { useState } from 'react';
+import { DatePicker, type ISODateString } from '@kalyx/react';
+
+export function BirthdayPicker() {
+  const [date, setDate] = useState<ISODateString | null>(null);
+
+  return (
+    <DatePicker value={date} onChange={setDate}>
+      <DatePicker.Input placeholder="YYYY-MM-DD" />
+      <DatePicker.Trigger />
+      <DatePicker.Popover>
+        <DatePicker.Calendar />
+      </DatePicker.Popover>
+    </DatePicker>
+  );
+}
+```
+
+**이게 전부입니다.** CSS 임포트 없음, Provider 감싸기 없음, 셋업 파일 없음.
+
+## 3. 스타일링
+
+모든 서브 컴포넌트는 `classNames`를 받고 `className`/`style`/`ref`를 전달합니다.
+
+### Tailwind 예시
+
+```tsx
+<DatePicker value={date} onChange={setDate}>
+  <DatePicker.Input
+    className="w-48 rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500"
+  />
+  <DatePicker.Popover className="mt-2 rounded-lg border bg-white p-3 shadow-lg">
+    <DatePicker.Calendar
+      classNames={{
+        root: 'space-y-2',
+        header: 'flex items-center justify-between mb-2',
+        title: 'font-semibold text-sm',
+        navButton: 'p-1 rounded hover:bg-neutral-100',
+        grid: 'w-full',
+        day: 'h-8 w-8 rounded-md text-sm hover:bg-neutral-100',
+        daySelected: '!bg-indigo-600 !text-white',
+        dayToday: 'ring-1 ring-indigo-400',
+        dayDisabled: 'opacity-40 pointer-events-none',
+        dayOutsideMonth: 'text-neutral-400',
+      }}
+    />
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+자세한 내용은 [Tailwind 레시피 →](../recipes/tailwind.md)에.
+
+## 4. 값 읽기
+
+Kalyx는 항상 ISO 8601 UTC 문자열 (또는 `null`)을 반환합니다.
+
+```tsx
+onChange={(iso) => {
+  // iso === "2026-04-15T00:00:00.000Z" | null
+  fetch('/api/save', { method: 'POST', body: JSON.stringify({ date: iso }) });
+}}
+```
+
+이유는 [ISO 문자열 →](../concepts/iso-string.md)에.
+
+## 5. 범위 선택
+
+```tsx
+import { useState } from 'react';
+import { RangePicker, type DateRange } from '@kalyx/react';
+
+export function VacationRange() {
+  const [range, setRange] = useState<DateRange>({ start: null, end: null });
+
+  return (
+    <RangePicker value={range} onChange={setRange}>
+      <RangePicker.Input part="start" placeholder="시작" />
+      <RangePicker.Input part="end" placeholder="종료" />
+      <RangePicker.Popover>
+        <RangePicker.Presets>
+          <RangePicker.Preset value="last7days">지난 7일</RangePicker.Preset>
+          <RangePicker.Preset value="thisMonth">이번 달</RangePicker.Preset>
+        </RangePicker.Presets>
+        <RangePicker.Calendar />
+      </RangePicker.Popover>
+    </RangePicker>
+  );
+}
+```
+
+## 다음
+
+- [Composition API →](../concepts/composition.md)
+- [컴포넌트 → DatePicker](../components/datepicker.md)
+- [컴포넌트 → RangePicker](../components/rangepicker.md)
+- [훅 → useDatePicker](../hooks/use-date-picker.md)
