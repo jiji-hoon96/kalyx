@@ -1,5 +1,11 @@
 # @kalyx/core
 
+## 0.2.1
+
+### Patch Changes
+
+- fe0e63e: Add full documentation site (Docusaurus, EN/KO), rewrite READMEs for npm, fix CI pnpm version to 10
+
 ## 0.2.0
 
 ### Minor Changes
