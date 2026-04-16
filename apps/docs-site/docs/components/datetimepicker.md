@@ -35,6 +35,56 @@ function Example() {
 
 Selecting a day **does not close the popover** — time can be adjusted after. Use your own close button or outside-click to confirm.
 
+### Try it live
+
+```jsx live
+function BasicDateTime() {
+  const [dt, setDt] = React.useState(null);
+  return (
+    <DateTimePicker value={dt} onChange={setDt} format="24h" step={15}>
+      <DateTimePicker.Input className="kx-live-input" style={{ minWidth: '14rem' }} />
+      <DateTimePicker.Popover className="kx-live-popover">
+        <DateTimePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+        <div
+          className="kx-live-row"
+          style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--kalyx-border)' }}
+        >
+          <DateTimePicker.HourList
+            classNames={{
+              root: 'kx-live-list',
+              option: 'kx-live-option',
+              optionSelected: 'kx-live-option-selected',
+            }}
+          />
+          <DateTimePicker.MinuteList
+            classNames={{
+              root: 'kx-live-list',
+              option: 'kx-live-option',
+              optionSelected: 'kx-live-option-selected',
+            }}
+          />
+        </div>
+      </DateTimePicker.Popover>
+      <div className="kx-live-value" style={{ marginTop: 8 }}>
+        Selected: <code>{dt ?? 'null'}</code>
+      </div>
+    </DateTimePicker>
+  );
+}
+```
+
 ## `<DateTimePicker>` (Root)
 
 | Prop | Type | Default | Description |
@@ -87,6 +137,58 @@ All `classNames` types are re-exported — see [DatePicker](./datepicker.md) and
 </DateTimePicker>
 ```
 
+```jsx live
+function TwelveHourDateTime() {
+  const [dt, setDt] = React.useState(null);
+  return (
+    <DateTimePicker value={dt} onChange={setDt} format="12h" step={30}>
+      <DateTimePicker.Input className="kx-live-input" style={{ minWidth: '14rem' }} />
+      <DateTimePicker.Popover className="kx-live-popover">
+        <DateTimePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+        <div
+          className="kx-live-row"
+          style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--kalyx-border)' }}
+        >
+          <DateTimePicker.HourList
+            classNames={{
+              root: 'kx-live-list',
+              option: 'kx-live-option',
+              optionSelected: 'kx-live-option-selected',
+            }}
+          />
+          <DateTimePicker.MinuteList
+            classNames={{
+              root: 'kx-live-list',
+              option: 'kx-live-option',
+              optionSelected: 'kx-live-option-selected',
+            }}
+          />
+          <DateTimePicker.AmPmToggle
+            classNames={{
+              root: 'kx-live-ampm',
+              button: 'kx-live-ampm-btn',
+              buttonSelected: 'kx-live-ampm-selected',
+            }}
+          />
+        </div>
+      </DateTimePicker.Popover>
+    </DateTimePicker>
+  );
+}
+```
+
 ### Forcing the minute to snap
 
 Combine `step={15}` with a `displayFormat` that hides the minute if you want fixed-slot scheduling:
@@ -123,6 +225,70 @@ Combine `step={15}` with a `displayFormat` that hides the minute if you want fix
     <DateTimePicker.MinuteList />
   </DateTimePicker.Popover>
 </DateTimePicker>
+```
+
+```jsx live
+function BookingFlow() {
+  const [dt, setDt] = React.useState(null);
+  const today = new Date().toISOString();
+  return (
+    <DateTimePicker
+      value={dt}
+      onChange={setDt}
+      format="12h"
+      step={30}
+      disabled={[{ dayOfWeek: [0, 6] }, { before: today }]}
+    >
+      <DateTimePicker.Input
+        className="kx-live-input"
+        style={{ minWidth: '16rem' }}
+        placeholder="Weekday slots only"
+      />
+      <DateTimePicker.Popover className="kx-live-popover">
+        <DateTimePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayToday: 'live-day-today',
+            dayDisabled: 'kx-live-disabled',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+        <div
+          className="kx-live-row"
+          style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--kalyx-border)' }}
+        >
+          <DateTimePicker.HourList
+            classNames={{
+              root: 'kx-live-list',
+              option: 'kx-live-option',
+              optionSelected: 'kx-live-option-selected',
+            }}
+          />
+          <DateTimePicker.MinuteList
+            classNames={{
+              root: 'kx-live-list',
+              option: 'kx-live-option',
+              optionSelected: 'kx-live-option-selected',
+            }}
+          />
+          <DateTimePicker.AmPmToggle
+            classNames={{
+              root: 'kx-live-ampm',
+              button: 'kx-live-ampm-btn',
+              buttonSelected: 'kx-live-ampm-selected',
+            }}
+          />
+        </div>
+      </DateTimePicker.Popover>
+    </DateTimePicker>
+  );
+}
 ```
 
 ## Related

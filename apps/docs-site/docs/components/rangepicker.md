@@ -34,6 +34,42 @@ function Example() {
 
 **Selection flow:** first click sets `start`; second click sets `end`. If the second click is earlier than the first, the two swap automatically.
 
+### Try it live
+
+```jsx live
+function BasicRange() {
+  const [range, setRange] = React.useState({ start: null, end: null });
+  return (
+    <RangePicker value={range} onChange={setRange}>
+      <div className="kx-live-row">
+        <RangePicker.Input part="start" className="kx-live-input" placeholder="Start" />
+        <span aria-hidden>→</span>
+        <RangePicker.Input part="end" className="kx-live-input" placeholder="End" />
+      </div>
+      <RangePicker.Popover className="kx-live-popover">
+        <RangePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayInRange: 'kx-live-inrange',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </RangePicker.Popover>
+      <div className="kx-live-value">
+        <code>{range.start ?? 'null'}</code> → <code>{range.end ?? 'null'}</code>
+      </div>
+    </RangePicker>
+  );
+}
+```
+
 ## `<RangePicker>` (Root)
 
 | Prop | Type | Default | Description |
@@ -162,6 +198,53 @@ type PresetKey =
     <RangePicker.Calendar />
   </RangePicker.Popover>
 </RangePicker>
+```
+
+```jsx live
+function RangeWithPresets() {
+  const [range, setRange] = React.useState({ start: null, end: null });
+  return (
+    <RangePicker value={range} onChange={setRange}>
+      <div className="kx-live-row">
+        <RangePicker.Input part="start" className="kx-live-input" placeholder="Start" />
+        <RangePicker.Input part="end" className="kx-live-input" placeholder="End" />
+      </div>
+      <RangePicker.Popover
+        className="kx-live-popover"
+        style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}
+      >
+        <RangePicker.Presets
+          classNames={{
+            root: 'kx-live-presets',
+            preset: 'kx-live-preset',
+            presetActive: 'kx-live-preset-active',
+          }}
+        >
+          <RangePicker.Preset value="today">Today</RangePicker.Preset>
+          <RangePicker.Preset value="yesterday">Yesterday</RangePicker.Preset>
+          <RangePicker.Preset value="last7days">Last 7 days</RangePicker.Preset>
+          <RangePicker.Preset value="last30days">Last 30 days</RangePicker.Preset>
+          <RangePicker.Preset value="thisMonth">This month</RangePicker.Preset>
+          <RangePicker.Preset value="lastMonth">Last month</RangePicker.Preset>
+        </RangePicker.Presets>
+        <RangePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayInRange: 'kx-live-inrange',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </RangePicker.Popover>
+    </RangePicker>
+  );
+}
 ```
 
 ### Custom preset

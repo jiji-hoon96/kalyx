@@ -8,6 +8,42 @@ sidebar_position: 2
 
 shadcn doesn't ship a DatePicker — its tutorial advises pairing a headless library with a shadcn `Popover` shell. Kalyx slots in cleanly.
 
+## Live preview
+
+A shadcn-flavored approximation using the docs site's CSS variables — the actual code (with `Button`, `Input`, and `cn`) is below.
+
+```jsx live
+function ShadcnLike() {
+  const [date, setDate] = React.useState(null);
+  return (
+    <DatePicker value={date} onChange={setDate}>
+      <div className="kx-live-row">
+        <DatePicker.Input className="kx-live-input" placeholder="Pick a date" />
+        <DatePicker.Trigger className="kx-live-shadcn-btn" aria-label="Open calendar">
+          📅
+        </DatePicker.Trigger>
+      </div>
+      <DatePicker.Popover className="kx-live-popover">
+        <DatePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayToday: 'live-day-today',
+            dayDisabled: 'kx-live-disabled',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </DatePicker.Popover>
+    </DatePicker>
+  );
+}
+```
+
 ## Input + Popover + Calendar
 
 ```tsx
@@ -68,6 +104,38 @@ Kalyx's `.Input` and `.Trigger` don't support `asChild` natively (they render ac
 :::
 
 ## RangePicker in a shadcn Popover
+
+```jsx live
+function ShadcnRangeLike() {
+  const [range, setRange] = React.useState({ start: null, end: null });
+  return (
+    <RangePicker value={range} onChange={setRange}>
+      <div className="kx-live-row">
+        <RangePicker.Input part="start" className="kx-live-input" placeholder="Start" />
+        <span aria-hidden>→</span>
+        <RangePicker.Input part="end" className="kx-live-input" placeholder="End" />
+      </div>
+      <RangePicker.Popover className="kx-live-popover">
+        <RangePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayInRange: 'kx-live-inrange',
+            dayToday: 'live-day-today',
+            dayDisabled: 'kx-live-disabled',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </RangePicker.Popover>
+    </RangePicker>
+  );
+}
+```
 
 Using the shadcn `Popover` wrapper instead of Kalyx's popover:
 

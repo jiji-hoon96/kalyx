@@ -32,6 +32,41 @@ function Example() {
 }
 ```
 
+### Try it live
+
+```jsx live
+function BasicDatePicker() {
+  const [date, setDate] = React.useState(null);
+  return (
+    <DatePicker value={date} onChange={setDate}>
+      <div className="kx-live-row">
+        <DatePicker.Input className="kx-live-input" placeholder="YYYY-MM-DD" />
+        <DatePicker.Trigger className="kx-live-trigger" aria-label="Open calendar" />
+      </div>
+      <DatePicker.Popover className="kx-live-popover">
+        <DatePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayToday: 'live-day-today',
+            dayDisabled: 'kx-live-disabled',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </DatePicker.Popover>
+      <div className="kx-live-value">
+        Selected: <code>{date ?? 'null'}</code>
+      </div>
+    </DatePicker>
+  );
+}
+```
+
 ## `<DatePicker>` (Root)
 
 Holds state and provides context to sub-components. Controlled when `value` is provided; uncontrolled when only `defaultValue` is.
@@ -67,6 +102,38 @@ Disable all weekends and any date before today:
   onChange={setIso}
   disabled={[{ dayOfWeek: [0, 6] }, { before: new Date().toISOString() }]}
 />
+```
+
+```jsx live
+function WeekdayOnly() {
+  const [date, setDate] = React.useState(null);
+  const today = new Date().toISOString();
+  return (
+    <DatePicker
+      value={date}
+      onChange={setDate}
+      disabled={[{ dayOfWeek: [0, 6] }, { before: today }]}
+    >
+      <DatePicker.Input className="kx-live-input" placeholder="Weekdays only" />
+      <DatePicker.Popover className="kx-live-popover">
+        <DatePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayToday: 'live-day-today',
+            dayDisabled: 'kx-live-disabled',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </DatePicker.Popover>
+    </DatePicker>
+  );
+}
 ```
 
 ## `<DatePicker.Input>`
@@ -204,6 +271,67 @@ function WithJump() {
         )}
         {view === 'years' && (
           <DatePicker.YearGrid onSelect={() => setView('months')} />
+        )}
+      </DatePicker.Popover>
+    </DatePicker>
+  );
+}
+```
+
+```jsx live
+function MonthYearJump() {
+  const [date, setDate] = React.useState(null);
+  const [view, setView] = React.useState('days');
+  const baseCal = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+    grid: 'kx-live-grid',
+    weekdayHeader: 'kx-live-weekday',
+    day: 'live-day',
+    daySelected: 'live-day-selected',
+    dayToday: 'live-day-today',
+    dayOutsideMonth: 'kx-live-outside',
+  };
+  const baseGrid = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+  };
+  return (
+    <DatePicker value={date} onChange={setDate}>
+      <DatePicker.Input className="kx-live-input" placeholder="Click the month title" />
+      <DatePicker.Popover className="kx-live-popover">
+        {view === 'days' && (
+          <DatePicker.Calendar
+            onTitleClick={() => setView('months')}
+            classNames={baseCal}
+          />
+        )}
+        {view === 'months' && (
+          <DatePicker.MonthGrid
+            onSelect={() => setView('days')}
+            onTitleClick={() => setView('years')}
+            classNames={{
+              ...baseGrid,
+              grid: 'kx-live-month-grid',
+              month: 'kx-live-cell',
+              monthSelected: 'kx-live-cell-selected',
+              monthCurrent: 'kx-live-cell-current',
+            }}
+          />
+        )}
+        {view === 'years' && (
+          <DatePicker.YearGrid
+            onSelect={() => setView('months')}
+            classNames={{
+              ...baseGrid,
+              grid: 'kx-live-year-grid',
+              year: 'kx-live-cell',
+              yearSelected: 'kx-live-cell-selected',
+              yearCurrent: 'kx-live-cell-current',
+            }}
+          />
         )}
       </DatePicker.Popover>
     </DatePicker>

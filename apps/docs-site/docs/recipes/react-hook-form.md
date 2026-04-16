@@ -8,6 +8,64 @@ sidebar_position: 3
 
 Kalyx stores values as ISO strings, which map cleanly to any form library. Here's the `react-hook-form` version.
 
+## Live: the shape you submit
+
+`react-hook-form` isn't available in this live editor, so the example below uses `useState` to show the exact flow — `onChange` hands you an `ISODateString | null`, which is what RHF would store in `field.value`.
+
+```jsx live
+function FormFlow() {
+  const [state, setState] = React.useState({ date: null, submitted: null });
+  return (
+    <form
+      className="kx-live-form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        setState((s) => ({ ...s, submitted: s.date }));
+      }}
+    >
+      <label htmlFor="startDate">Start date</label>
+      <DatePicker
+        value={state.date}
+        onChange={(iso) => setState((s) => ({ ...s, date: iso }))}
+      >
+        <div className="kx-live-row">
+          <DatePicker.Input id="startDate" className="kx-live-input" placeholder="Required" />
+          <DatePicker.Trigger className="kx-live-trigger" aria-label="Open calendar" />
+        </div>
+        <DatePicker.Popover className="kx-live-popover">
+          <DatePicker.Calendar
+            classNames={{
+              header: 'kx-live-header',
+              title: 'kx-live-title',
+              navButton: 'kx-live-nav',
+              grid: 'kx-live-grid',
+              weekdayHeader: 'kx-live-weekday',
+              day: 'live-day',
+              daySelected: 'live-day-selected',
+              dayToday: 'live-day-today',
+              dayOutsideMonth: 'kx-live-outside',
+            }}
+          />
+        </DatePicker.Popover>
+      </DatePicker>
+      {!state.date && (
+        <span className="kx-live-form-error" role="alert">
+          Please pick a start date
+        </span>
+      )}
+      <button type="submit" className="kx-live-submit" disabled={!state.date}>
+        Submit
+      </button>
+      <div className="kx-live-value">
+        field.value: <code>{state.date ?? 'null'}</code>
+        <br />
+        submitted: <code>{state.submitted ?? '—'}</code>
+      </div>
+    </form>
+  );
+}
+```
+
 ## Controlled with `<Controller>`
 
 ```tsx

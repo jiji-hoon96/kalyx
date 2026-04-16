@@ -8,6 +8,40 @@ sidebar_position: 1
 
 Kalyx has no built-in styles — Tailwind is a natural pairing. Every component exposes either a `classNames` slot map or forwards `className` directly.
 
+## Live preview
+
+The live editor below can't import Tailwind at runtime, so it renders a visually-equivalent version using the docs site's CSS variables. The Tailwind source (including dark-mode tokens) is right underneath.
+
+```jsx live
+function TailwindLike() {
+  const [date, setDate] = React.useState(null);
+  return (
+    <DatePicker value={date} onChange={setDate}>
+      <div className="kx-live-tw-field">
+        <DatePicker.Input className="kx-live-tw-input" placeholder="YYYY-MM-DD" />
+        <DatePicker.Trigger className="kx-live-trigger" aria-label="Open calendar" />
+      </div>
+      <DatePicker.Popover className="kx-live-popover">
+        <DatePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayToday: 'live-day-today',
+            dayDisabled: 'kx-live-disabled',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </DatePicker.Popover>
+    </DatePicker>
+  );
+}
+```
+
 ## Full-featured DatePicker
 
 ```tsx
@@ -48,6 +82,53 @@ import { DatePicker } from '@kalyx/react';
 ```
 
 ## RangePicker with presets
+
+```jsx live
+function TailwindRange() {
+  const [range, setRange] = React.useState({ start: null, end: null });
+  return (
+    <RangePicker value={range} onChange={setRange}>
+      <div className="kx-live-row">
+        <RangePicker.Input part="start" className="kx-live-input" placeholder="Start" />
+        <span aria-hidden>→</span>
+        <RangePicker.Input part="end" className="kx-live-input" placeholder="End" />
+      </div>
+      <RangePicker.Popover
+        className="kx-live-popover"
+        style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}
+      >
+        <RangePicker.Presets
+          classNames={{
+            root: 'kx-live-presets',
+            preset: 'kx-live-preset',
+            presetActive: 'kx-live-preset-active',
+          }}
+        >
+          <RangePicker.Preset value="today">Today</RangePicker.Preset>
+          <RangePicker.Preset value="last7days">Last 7 days</RangePicker.Preset>
+          <RangePicker.Preset value="last30days">Last 30 days</RangePicker.Preset>
+          <RangePicker.Preset value="thisMonth">This month</RangePicker.Preset>
+          <RangePicker.Preset value="lastMonth">Last month</RangePicker.Preset>
+        </RangePicker.Presets>
+        <RangePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayInRange: 'kx-live-inrange',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </RangePicker.Popover>
+    </RangePicker>
+  );
+}
+```
 
 ```tsx
 <RangePicker value={range} onChange={setRange}>
@@ -92,6 +173,48 @@ import { DatePicker } from '@kalyx/react';
 ```
 
 ## TimePicker (12h)
+
+```jsx live
+function TailwindTime() {
+  const [time, setTime] = React.useState(null);
+  return (
+    <TimePicker value={time} onChange={setTime} format="12h" step={15}>
+      <TimePicker.Input className="kx-live-input" style={{ minWidth: '6rem' }} />
+      <div
+        className="kx-live-row"
+        style={{
+          marginTop: 8,
+          padding: 8,
+          border: '1px solid var(--kalyx-border)',
+          borderRadius: 8,
+        }}
+      >
+        <TimePicker.HourList
+          classNames={{
+            root: 'kx-live-list',
+            option: 'kx-live-option',
+            optionSelected: 'kx-live-option-selected',
+          }}
+        />
+        <TimePicker.MinuteList
+          classNames={{
+            root: 'kx-live-list',
+            option: 'kx-live-option',
+            optionSelected: 'kx-live-option-selected',
+          }}
+        />
+        <TimePicker.AmPmToggle
+          classNames={{
+            root: 'kx-live-ampm',
+            button: 'kx-live-ampm-btn',
+            buttonSelected: 'kx-live-ampm-selected',
+          }}
+        />
+      </div>
+    </TimePicker>
+  );
+}
+```
 
 ```tsx
 <TimePicker value={time} onChange={setTime} format="12h" step={15}>

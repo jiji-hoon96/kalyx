@@ -32,6 +32,38 @@ function Example() {
 
 The value is still an ISO 8601 UTC string — the date part acts as a placeholder. Use `getTime(iso)` from `@kalyx/core` if you need just the hours/minutes.
 
+### Try it live
+
+```jsx live
+function Basic24h() {
+  const [time, setTime] = React.useState(null);
+  return (
+    <TimePicker value={time} onChange={setTime} format="24h" step={15}>
+      <TimePicker.Input className="kx-live-input" />
+      <div className="kx-live-row" style={{ marginTop: 8 }}>
+        <TimePicker.HourList
+          classNames={{
+            root: 'kx-live-list',
+            option: 'kx-live-option',
+            optionSelected: 'kx-live-option-selected',
+          }}
+        />
+        <TimePicker.MinuteList
+          classNames={{
+            root: 'kx-live-list',
+            option: 'kx-live-option',
+            optionSelected: 'kx-live-option-selected',
+          }}
+        />
+      </div>
+      <div className="kx-live-value" style={{ marginTop: 8 }}>
+        Selected: <code>{time ?? 'null'}</code>
+      </div>
+    </TimePicker>
+  );
+}
+```
+
 ## `<TimePicker>` (Root)
 
 | Prop | Type | Default | Description |
@@ -113,12 +145,60 @@ type TimePickerAmPmToggleClassNames = {
 </TimePicker>
 ```
 
+```jsx live
+function TwelveHour() {
+  const [time, setTime] = React.useState(null);
+  return (
+    <TimePicker value={time} onChange={setTime} format="12h" step={15}>
+      <TimePicker.Input className="kx-live-input" />
+      <div className="kx-live-row" style={{ marginTop: 8 }}>
+        <TimePicker.HourList
+          classNames={{
+            root: 'kx-live-list',
+            option: 'kx-live-option',
+            optionSelected: 'kx-live-option-selected',
+          }}
+        />
+        <TimePicker.MinuteList
+          classNames={{
+            root: 'kx-live-list',
+            option: 'kx-live-option',
+            optionSelected: 'kx-live-option-selected',
+          }}
+        />
+        <TimePicker.AmPmToggle
+          classNames={{
+            root: 'kx-live-ampm',
+            button: 'kx-live-ampm-btn',
+            buttonSelected: 'kx-live-ampm-selected',
+          }}
+        />
+      </div>
+    </TimePicker>
+  );
+}
+```
+
 ### With seconds
 
 ```tsx
 <TimePicker value={time} onChange={setTime} withSeconds>
   <TimePicker.Input />
 </TimePicker>
+```
+
+```jsx live
+function WithSeconds() {
+  const [time, setTime] = React.useState(null);
+  return (
+    <TimePicker value={time} onChange={setTime} withSeconds>
+      <TimePicker.Input className="kx-live-input" />
+      <div className="kx-live-value" style={{ marginTop: 8 }}>
+        Selected: <code>{time ?? 'null'}</code>
+      </div>
+    </TimePicker>
+  );
+}
 ```
 
 ### Extracting `TimeValue` for logic
