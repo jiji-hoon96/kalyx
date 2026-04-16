@@ -3,7 +3,7 @@
   "framework": "docusaurus-2",
   "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @kalyx/core build && pnpm --filter docs-site build",
   "outputDirectory": "build",
-  "installCommand": "echo skip (handled by buildCommand)",
+  "installCommand": "echo skip",
   "cleanUrls": true,
   "trailingSlash": false,
   "headers": [
