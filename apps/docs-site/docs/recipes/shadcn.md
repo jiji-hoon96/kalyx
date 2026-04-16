@@ -10,36 +10,38 @@ shadcn doesn't ship a DatePicker — its tutorial advises pairing a headless lib
 
 ## Live preview
 
-A shadcn-flavored approximation using the docs site's CSS variables — the actual code (with `Button`, `Input`, and `cn`) is below.
+A shadcn "new-york" approximation — slate palette, 6px radii, muted secondary text — wired to Kalyx's headless parts. The full source (with real shadcn `Button`, `Input`, and `cn`) follows below.
 
 ```jsx live
-function ShadcnLike() {
+function ShadcnDate() {
   const [date, setDate] = React.useState(null);
+  const display = date ? date.slice(0, 10) : 'Pick a date';
   return (
-    <DatePicker value={date} onChange={setDate}>
-      <div className="kx-live-row">
-        <DatePicker.Input className="kx-live-input" placeholder="Pick a date" />
-        <DatePicker.Trigger className="kx-live-shadcn-btn" aria-label="Open calendar">
-          📅
+    <div className="kx-shadcn">
+      <DatePicker value={date} onChange={setDate}>
+        <DatePicker.Trigger className="kx-shadcn-btn" aria-label="Open calendar">
+          <span aria-hidden>📅</span>
+          <span>{display}</span>
         </DatePicker.Trigger>
-      </div>
-      <DatePicker.Popover className="kx-live-popover">
-        <DatePicker.Calendar
-          classNames={{
-            header: 'kx-live-header',
-            title: 'kx-live-title',
-            navButton: 'kx-live-nav',
-            grid: 'kx-live-grid',
-            weekdayHeader: 'kx-live-weekday',
-            day: 'live-day',
-            daySelected: 'live-day-selected',
-            dayToday: 'live-day-today',
-            dayDisabled: 'kx-live-disabled',
-            dayOutsideMonth: 'kx-live-outside',
-          }}
-        />
-      </DatePicker.Popover>
-    </DatePicker>
+        <DatePicker.Popover className="kx-shadcn-popover">
+          <DatePicker.Calendar
+            classNames={{
+              header: 'kx-live-header',
+              title: 'kx-shadcn-title',
+              navButton: 'kx-shadcn-nav',
+              grid: 'kx-live-grid',
+              gridCell: 'kx-live-cell',
+              weekdayHeader: 'kx-shadcn-weekday',
+              day: 'kx-shadcn-day',
+              daySelected: 'kx-shadcn-day-selected',
+              dayToday: 'kx-shadcn-day-today',
+              dayDisabled: 'kx-live-disabled',
+              dayOutsideMonth: 'kx-live-outside',
+            }}
+          />
+        </DatePicker.Popover>
+      </DatePicker>
+    </div>
   );
 }
 ```
@@ -106,33 +108,44 @@ Kalyx's `.Input` and `.Trigger` don't support `asChild` natively (they render ac
 ## RangePicker in a shadcn Popover
 
 ```jsx live
-function ShadcnRangeLike() {
+function ShadcnRange() {
   const [range, setRange] = React.useState({ start: null, end: null });
+  const label = range.start && range.end
+    ? `${range.start.slice(0, 10)} — ${range.end.slice(0, 10)}`
+    : range.start
+      ? `${range.start.slice(0, 10)} — …`
+      : 'Pick a date range';
   return (
-    <RangePicker value={range} onChange={setRange}>
-      <div className="kx-live-row">
-        <RangePicker.Input part="start" className="kx-live-input" placeholder="Start" />
-        <span aria-hidden>→</span>
-        <RangePicker.Input part="end" className="kx-live-input" placeholder="End" />
-      </div>
-      <RangePicker.Popover className="kx-live-popover">
-        <RangePicker.Calendar
-          classNames={{
-            header: 'kx-live-header',
-            title: 'kx-live-title',
-            navButton: 'kx-live-nav',
-            grid: 'kx-live-grid',
-            weekdayHeader: 'kx-live-weekday',
-            day: 'live-day',
-            daySelected: 'live-day-selected',
-            dayInRange: 'kx-live-inrange',
-            dayToday: 'live-day-today',
-            dayDisabled: 'kx-live-disabled',
-            dayOutsideMonth: 'kx-live-outside',
-          }}
+    <div className="kx-shadcn">
+      <RangePicker value={range} onChange={setRange}>
+        <RangePicker.Input
+          part="start"
+          className="kx-shadcn-btn"
+          placeholder={label}
+          style={{ minWidth: '18rem' }}
         />
-      </RangePicker.Popover>
-    </RangePicker>
+        <RangePicker.Input part="end" style={{ display: 'none' }} />
+        <RangePicker.Popover className="kx-shadcn-popover">
+          <RangePicker.Calendar
+            classNames={{
+              header: 'kx-live-header',
+              title: 'kx-shadcn-title',
+              navButton: 'kx-shadcn-nav',
+              grid: 'kx-live-grid',
+              gridCell: 'kx-live-cell',
+              weekdayHeader: 'kx-shadcn-weekday',
+              day: 'kx-live-day-range',
+              dayRangeStart: 'kx-live-range-start',
+              dayRangeEnd: 'kx-live-range-end',
+              dayInRange: 'kx-live-inrange',
+              dayToday: 'kx-shadcn-day-today',
+              dayDisabled: 'kx-live-disabled',
+              dayOutsideMonth: 'kx-live-outside',
+            }}
+          />
+        </RangePicker.Popover>
+      </RangePicker>
+    </div>
   );
 }
 ```

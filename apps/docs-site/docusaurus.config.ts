@@ -35,6 +35,20 @@ const config: Config = {
 
   themes: ['@docusaurus/theme-live-codeblock'],
 
+  // Tailwind Play CDN — lets the Tailwind recipe's live examples render real
+  // Tailwind utility classes at runtime. Scoped via the `tw-enable` class on
+  // the wrapper so the rest of the docs site is unaffected.
+  scripts: [
+    {
+      src: 'https://cdn.tailwindcss.com',
+      async: false,
+    },
+    {
+      src: '/js/tailwind-config.js',
+      async: false,
+    },
+  ],
+
   presets: [
     [
       'classic',
@@ -96,6 +110,11 @@ const config: Config = {
         {
           to: '/docs/components/datepicker',
           label: 'Components',
+          position: 'left',
+        },
+        {
+          to: '/playground',
+          label: 'Playground',
           position: 'left',
         },
         {

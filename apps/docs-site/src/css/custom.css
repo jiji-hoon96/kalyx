@@ -148,32 +148,61 @@
   border-top: 1px solid var(--kalyx-border);
 }
 
-/* Minimal styling for live code examples so headless components are legible */
+/* =========================================================
+ * Live example theme (DatePicker / RangePicker / TimePicker)
+ * =======================================================*/
+
+:root {
+  --kx-ex-bg: var(--kalyx-surface-raised);
+  --kx-ex-border: var(--kalyx-border);
+  --kx-ex-muted: var(--kalyx-text-muted);
+  --kx-ex-primary: var(--ifm-color-primary);
+  --kx-ex-primary-weak: rgba(91, 79, 225, 0.12);
+  --kx-ex-primary-hover: rgba(91, 79, 225, 0.08);
+  --kx-ex-ring: rgba(91, 79, 225, 0.22);
+  --kx-ex-shadow: 0 10px 30px rgba(10, 10, 15, 0.08);
+  --kx-ex-cell: 36px;
+}
+
+[data-theme='dark'] {
+  --kx-ex-primary-weak: rgba(139, 128, 255, 0.2);
+  --kx-ex-primary-hover: rgba(139, 128, 255, 0.12);
+  --kx-ex-ring: rgba(139, 128, 255, 0.28);
+  --kx-ex-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+}
+
+/* Day cell buttons (single-date variant) */
 .live-day {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
+  width: var(--kx-ex-cell);
+  height: var(--kx-ex-cell);
+  padding: 0;
   border: 0;
+  border-radius: 8px;
   background: transparent;
-  font-size: 13px;
-  cursor: pointer;
   color: inherit;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background 120ms;
 }
 
 .live-day:hover {
-  background: rgba(91, 79, 225, 0.08);
+  background: var(--kx-ex-primary-hover);
 }
 
 .live-day-selected {
-  background: var(--ifm-color-primary) !important;
+  background: var(--kx-ex-primary) !important;
   color: #fff !important;
 }
 
 .live-day-today {
-  outline: 1px solid var(--ifm-color-primary);
+  box-shadow: inset 0 0 0 1px var(--kx-ex-primary);
 }
 
-/* Shared surface / input / popover / list styles used across docs live blocks */
+/* -----------------------------------------------------------
+ * Layout primitives
+ * ---------------------------------------------------------*/
+
 .kx-live-row {
   display: flex;
   gap: 0.5rem;
@@ -181,77 +210,129 @@
   flex-wrap: wrap;
 }
 
+.kx-live-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.kx-live-value {
+  font-size: 13px;
+  color: var(--kx-ex-muted);
+}
+
+.kx-live-value code {
+  background: var(--kalyx-surface);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 12px;
+}
+
+/* -----------------------------------------------------------
+ * Input + trigger
+ * ---------------------------------------------------------*/
+
 .kx-live-input {
-  padding: 0.45rem 0.7rem;
-  border: 1px solid var(--kalyx-border);
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--kx-ex-border);
   border-radius: 8px;
-  background: var(--kalyx-surface-raised);
+  background: var(--kx-ex-bg);
   color: inherit;
   font-size: 14px;
   outline: none;
-  min-width: 10rem;
+  min-width: 11rem;
   font-family: var(--ifm-font-family-monospace);
   transition: border-color 120ms, box-shadow 120ms;
 }
 
 .kx-live-input:focus {
-  border-color: var(--ifm-color-primary);
-  box-shadow: 0 0 0 3px rgba(91, 79, 225, 0.18);
+  border-color: var(--kx-ex-primary);
+  box-shadow: 0 0 0 3px var(--kx-ex-ring);
 }
 
 .kx-live-trigger {
-  padding: 0.4rem 0.6rem;
-  border: 1px solid var(--kalyx-border);
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--kx-ex-border);
   border-radius: 8px;
-  background: var(--kalyx-surface-raised);
+  background: var(--kx-ex-bg);
   color: inherit;
   cursor: pointer;
-  font-size: 14px;
   transition: background 120ms;
 }
 
 .kx-live-trigger:hover {
-  background: rgba(91, 79, 225, 0.08);
+  background: var(--kx-ex-primary-hover);
 }
+
+/* -----------------------------------------------------------
+ * Popover surface
+ * ---------------------------------------------------------*/
 
 .kx-live-popover {
-  padding: 12px;
-  border: 1px solid var(--kalyx-border);
-  border-radius: 12px;
-  background: var(--kalyx-surface-raised);
-  box-shadow: 0 10px 30px rgba(10, 10, 15, 0.08);
+  padding: 14px;
+  border: 1px solid var(--kx-ex-border);
+  border-radius: 14px;
+  background: var(--kx-ex-bg);
+  box-shadow: var(--kx-ex-shadow);
   margin-top: 6px;
   z-index: 50;
+  min-width: 280px;
 }
 
-[data-theme='dark'] .kx-live-popover {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+.kx-live-popover--split {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
 }
+
+/* -----------------------------------------------------------
+ * Calendar header + grid
+ * ---------------------------------------------------------*/
 
 .kx-live-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 8px;
+  padding-bottom: 10px;
+  gap: 4px;
 }
 
 .kx-live-title {
   font-weight: 600;
-  font-size: 13px;
+  font-size: 14px;
   background: transparent;
   border: 0;
   color: inherit;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 6px 10px;
   border-radius: 6px;
+  flex: 1;
+  text-align: center;
+  transition: background 120ms;
 }
 
 .kx-live-title:hover {
-  background: rgba(91, 79, 225, 0.08);
+  background: var(--kx-ex-primary-hover);
+}
+
+span.kx-live-title,
+.kx-live-title[aria-live]:not(button) {
+  cursor: default;
 }
 
 .kx-live-nav {
-  padding: 4px 8px;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   border: 0;
   background: transparent;
   color: inherit;
@@ -261,26 +342,34 @@
 }
 
 .kx-live-nav:hover {
-  background: rgba(91, 79, 225, 0.08);
+  background: var(--kx-ex-primary-hover);
 }
 
 .kx-live-grid {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 2px;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .kx-live-weekday {
+  width: var(--kx-ex-cell);
   font-size: 11px;
   font-weight: 500;
-  color: var(--kalyx-text-muted);
+  color: var(--kx-ex-muted);
   text-align: center;
-  padding: 4px 0;
+  padding: 6px 0;
+}
+
+.kx-live-cell {
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+  height: var(--kx-ex-cell);
 }
 
 .kx-live-outside {
-  color: var(--kalyx-text-muted);
-  opacity: 0.55;
+  color: var(--kx-ex-muted);
+  opacity: 0.45;
 }
 
 .kx-live-disabled {
@@ -289,93 +378,138 @@
   text-decoration: line-through;
 }
 
+/* -----------------------------------------------------------
+ * Range visual
+ *
+ * Layout rules:
+ * - gridCell uses .kx-live-cell (padding 0, height 36)
+ * - day button fills the cell via .kx-live-day-range
+ * - in-range days get primary-weak background extending edge to edge
+ * - range-start / range-end get primary background with rounded outer edge
+ * ---------------------------------------------------------*/
+
+.kx-live-day-range {
+  width: 100%;
+  height: var(--kx-ex-cell);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background 120ms;
+  border-radius: 0;
+}
+
+.kx-live-day-range:hover:not(:disabled) {
+  background: var(--kx-ex-primary-hover);
+  border-radius: 8px;
+}
+
 .kx-live-inrange {
-  background: rgba(91, 79, 225, 0.14) !important;
-  color: var(--ifm-color-primary-darker) !important;
+  background: var(--kx-ex-primary-weak) !important;
   border-radius: 0 !important;
 }
 
-[data-theme='dark'] .kx-live-inrange {
-  color: var(--ifm-color-primary-light) !important;
+.kx-live-range-start,
+.kx-live-range-end {
+  background: var(--kx-ex-primary) !important;
+  color: #fff !important;
 }
 
-.kx-live-value {
-  font-size: 13px;
-  color: var(--kalyx-text-muted);
+/* Start of range = round left edge only. End = round right edge only. */
+.kx-live-range-start {
+  border-top-left-radius: 8px !important;
+  border-bottom-left-radius: 8px !important;
 }
 
-.kx-live-value code {
-  background: var(--kalyx-surface);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: var(--ifm-font-family-monospace);
+.kx-live-range-end {
+  border-top-right-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
 }
+
+/* Single-day range — when start === end, round both sides. */
+.kx-live-range-start.kx-live-range-end {
+  border-radius: 8px !important;
+}
+
+/* -----------------------------------------------------------
+ * Time picker lists + AM/PM
+ * ---------------------------------------------------------*/
 
 .kx-live-list {
-  max-height: 160px;
+  max-height: 176px;
   overflow-y: auto;
   margin: 0;
   padding: 4px;
   list-style: none;
-  border: 1px solid var(--kalyx-border);
-  border-radius: 8px;
-  background: var(--kalyx-surface-raised);
-  min-width: 64px;
+  border: 1px solid var(--kx-ex-border);
+  border-radius: 10px;
+  background: var(--kx-ex-bg);
+  min-width: 72px;
+  scrollbar-width: thin;
 }
 
 .kx-live-option {
-  padding: 4px 10px;
-  border-radius: 4px;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
   text-align: center;
   list-style: none;
   color: inherit;
+  font-variant-numeric: tabular-nums;
 }
 
 .kx-live-option:hover {
-  background: rgba(91, 79, 225, 0.08);
+  background: var(--kx-ex-primary-hover);
 }
 
 .kx-live-option-selected {
-  background: var(--ifm-color-primary) !important;
+  background: var(--kx-ex-primary) !important;
   color: #fff !important;
 }
 
 .kx-live-ampm {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .kx-live-ampm-btn {
-  padding: 4px 12px;
-  border: 1px solid var(--kalyx-border);
-  background: var(--kalyx-surface-raised);
-  border-radius: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--kx-ex-border);
+  background: var(--kx-ex-bg);
+  border-radius: 8px;
   cursor: pointer;
   font-size: 12px;
   color: inherit;
-  min-width: 52px;
+  min-width: 56px;
+  font-weight: 500;
 }
 
 .kx-live-ampm-selected {
-  background: var(--ifm-color-primary) !important;
+  background: var(--kx-ex-primary) !important;
   color: #fff !important;
-  border-color: var(--ifm-color-primary) !important;
+  border-color: var(--kx-ex-primary) !important;
 }
+
+/* -----------------------------------------------------------
+ * Presets sidebar
+ * ---------------------------------------------------------*/
 
 .kx-live-presets {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  border-right: 1px solid var(--kalyx-border);
-  padding-right: 10px;
-  min-width: 120px;
+  border-right: 1px solid var(--kx-ex-border);
+  padding-right: 12px;
+  min-width: 140px;
 }
 
 .kx-live-preset {
-  padding: 5px 10px;
+  padding: 6px 12px;
   border: 0;
   background: transparent;
   border-radius: 6px;
@@ -387,119 +521,243 @@
 }
 
 .kx-live-preset:hover {
-  background: rgba(91, 79, 225, 0.08);
+  background: var(--kx-ex-primary-hover);
 }
 
 .kx-live-preset-active {
-  background: rgba(91, 79, 225, 0.14) !important;
+  background: var(--kx-ex-primary-weak) !important;
   color: var(--ifm-color-primary-darker) !important;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 [data-theme='dark'] .kx-live-preset-active {
-  color: var(--ifm-color-primary-light) !important;
+  color: var(--ifm-color-primary-lightest) !important;
 }
+
+/* -----------------------------------------------------------
+ * MonthGrid / YearGrid drill-down
+ * ---------------------------------------------------------*/
 
 .kx-live-month-grid,
 .kx-live-year-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 4px;
+  gap: 6px;
+  padding: 4px 0;
 }
 
-.kx-live-cell {
-  padding: 8px 6px;
+.kx-live-my-cell {
+  padding: 10px 8px;
   border: 0;
   background: transparent;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
   color: inherit;
+  font-weight: 500;
+  transition: background 120ms;
 }
 
-.kx-live-cell:hover {
-  background: rgba(91, 79, 225, 0.08);
+.kx-live-my-cell:hover {
+  background: var(--kx-ex-primary-hover);
 }
 
-.kx-live-cell-selected {
-  background: var(--ifm-color-primary) !important;
+.kx-live-my-selected {
+  background: var(--kx-ex-primary) !important;
   color: #fff !important;
 }
 
-.kx-live-cell-current {
-  outline: 1px solid var(--ifm-color-primary);
+.kx-live-my-current {
+  box-shadow: inset 0 0 0 1px var(--kx-ex-primary);
 }
 
-/* Recipe-specific surfaces */
-.kx-live-tw-field {
+/* -----------------------------------------------------------
+ * Tailwind recipe — uses Tailwind Play CDN at runtime, so the
+ * live example renders real Tailwind classes. These fallback
+ * classes only apply outside Tailwind contexts.
+ * ---------------------------------------------------------*/
+
+/* -----------------------------------------------------------
+ * shadcn recipe surface — approximates the shadcn "new-york"
+ * tokens with neutral slate palette, small radii, muted text.
+ * ---------------------------------------------------------*/
+
+.kx-shadcn {
+  --kx-shadcn-bg: #ffffff;
+  --kx-shadcn-fg: #0f172a;
+  --kx-shadcn-border: #e2e8f0;
+  --kx-shadcn-muted: #64748b;
+  --kx-shadcn-accent: #f1f5f9;
+  --kx-shadcn-primary: #0f172a;
+  --kx-shadcn-primary-fg: #f8fafc;
+  --kx-shadcn-radius: 6px;
+  font-family: 'Inter', var(--ifm-font-family-base);
+}
+
+[data-theme='dark'] .kx-shadcn {
+  --kx-shadcn-bg: #0b0b0f;
+  --kx-shadcn-fg: #f8fafc;
+  --kx-shadcn-border: #1f1f2a;
+  --kx-shadcn-muted: #94a3b8;
+  --kx-shadcn-accent: #1f1f2a;
+  --kx-shadcn-primary: #f8fafc;
+  --kx-shadcn-primary-fg: #0f172a;
+}
+
+.kx-shadcn-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border: 1px solid var(--kalyx-border);
-  border-radius: 8px;
-  background: var(--kalyx-surface-raised);
+  justify-content: center;
+  gap: 6px;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--kx-shadcn-border);
+  border-radius: var(--kx-shadcn-radius);
+  background: var(--kx-shadcn-bg);
+  color: var(--kx-shadcn-fg);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 220px;
+  transition: background 120ms;
 }
 
-.kx-live-tw-field:focus-within {
-  border-color: var(--ifm-color-primary);
-  box-shadow: 0 0 0 3px rgba(91, 79, 225, 0.15);
+.kx-shadcn-btn:hover {
+  background: var(--kx-shadcn-accent);
 }
 
-.kx-live-tw-input {
+.kx-shadcn-btn--icon {
+  min-width: 36px;
+  width: 36px;
+  padding: 0;
+}
+
+.kx-shadcn-popover {
+  padding: 12px;
+  border: 1px solid var(--kx-shadcn-border);
+  border-radius: var(--kx-shadcn-radius);
+  background: var(--kx-shadcn-bg);
+  color: var(--kx-shadcn-fg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  margin-top: 6px;
+}
+
+.kx-shadcn-title {
+  font-weight: 500;
+  font-size: 13.5px;
+  padding: 4px 10px;
+  background: transparent;
   border: 0;
-  outline: none;
+  color: inherit;
+  border-radius: var(--kx-shadcn-radius);
+  cursor: pointer;
+  flex: 1;
+  text-align: center;
+}
+
+.kx-shadcn-title:hover {
+  background: var(--kx-shadcn-accent);
+}
+
+.kx-shadcn-nav {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--kx-shadcn-border);
+  border-radius: var(--kx-shadcn-radius);
+  background: var(--kx-shadcn-bg);
+  color: inherit;
+  cursor: pointer;
+}
+
+.kx-shadcn-nav:hover {
+  background: var(--kx-shadcn-accent);
+}
+
+.kx-shadcn-day {
+  width: var(--kx-ex-cell);
+  height: var(--kx-ex-cell);
+  padding: 0;
+  border: 0;
+  border-radius: var(--kx-shadcn-radius);
   background: transparent;
   color: inherit;
-  font-size: 14px;
-  width: 9rem;
-  font-family: var(--ifm-font-family-monospace);
-}
-
-.kx-live-shadcn-btn {
-  padding: 0.45rem 0.85rem;
-  border: 1px solid var(--kalyx-border);
-  border-radius: 6px;
-  background: var(--kalyx-surface-raised);
-  color: inherit;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 400;
   cursor: pointer;
-  font-weight: 500;
 }
 
-.kx-live-shadcn-btn:hover {
-  background: rgba(91, 79, 225, 0.08);
+.kx-shadcn-day:hover:not(:disabled) {
+  background: var(--kx-shadcn-accent);
 }
+
+.kx-shadcn-day-selected {
+  background: var(--kx-shadcn-primary) !important;
+  color: var(--kx-shadcn-primary-fg) !important;
+}
+
+.kx-shadcn-day-today {
+  background: var(--kx-shadcn-accent);
+}
+
+.kx-shadcn-weekday {
+  font-size: 11px;
+  color: var(--kx-shadcn-muted);
+  font-weight: 400;
+  text-align: center;
+  padding: 4px 0;
+}
+
+/* -----------------------------------------------------------
+ * React Hook Form live example form
+ * ---------------------------------------------------------*/
 
 .kx-live-form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   align-items: flex-start;
+  padding: 14px;
+  border: 1px solid var(--kx-ex-border);
+  border-radius: 12px;
+  background: var(--kx-ex-bg);
+  min-width: 260px;
 }
 
 .kx-live-form label {
   font-size: 13px;
-  font-weight: 500;
-  color: var(--kalyx-text-muted);
+  font-weight: 600;
+  color: inherit;
 }
 
 .kx-live-form-error {
   color: #dc2626;
   font-size: 12px;
-}
-
-.kx-live-submit {
-  padding: 0.45rem 0.9rem;
-  border: 0;
-  border-radius: 6px;
-  background: var(--ifm-color-primary);
-  color: #fff;
-  font-size: 14px;
-  cursor: pointer;
   font-weight: 500;
 }
 
-.kx-live-submit:hover {
+[data-theme='dark'] .kx-live-form-error {
+  color: #f87171;
+}
+
+.kx-live-submit {
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: 8px;
+  background: var(--kx-ex-primary);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 120ms;
+}
+
+.kx-live-submit:hover:not(:disabled) {
   background: var(--ifm-color-primary-dark);
+}
+
+.kx-live-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

@@ -37,6 +37,12 @@ function Example() {
 ```jsx live
 function BasicDatePicker() {
   const [date, setDate] = React.useState(null);
+  const [view, setView] = React.useState('days');
+  const headerCls = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+  };
   return (
     <DatePicker value={date} onChange={setDate}>
       <div className="kx-live-row">
@@ -44,23 +50,50 @@ function BasicDatePicker() {
         <DatePicker.Trigger className="kx-live-trigger" aria-label="Open calendar" />
       </div>
       <DatePicker.Popover className="kx-live-popover">
-        <DatePicker.Calendar
-          classNames={{
-            header: 'kx-live-header',
-            title: 'kx-live-title',
-            navButton: 'kx-live-nav',
-            grid: 'kx-live-grid',
-            weekdayHeader: 'kx-live-weekday',
-            day: 'live-day',
-            daySelected: 'live-day-selected',
-            dayToday: 'live-day-today',
-            dayDisabled: 'kx-live-disabled',
-            dayOutsideMonth: 'kx-live-outside',
-          }}
-        />
+        {view === 'days' && (
+          <DatePicker.Calendar
+            onTitleClick={() => setView('months')}
+            classNames={{
+              ...headerCls,
+              grid: 'kx-live-grid',
+              gridCell: 'kx-live-cell',
+              weekdayHeader: 'kx-live-weekday',
+              day: 'live-day',
+              daySelected: 'live-day-selected',
+              dayToday: 'live-day-today',
+              dayDisabled: 'kx-live-disabled',
+              dayOutsideMonth: 'kx-live-outside',
+            }}
+          />
+        )}
+        {view === 'months' && (
+          <DatePicker.MonthGrid
+            onSelect={() => setView('days')}
+            onTitleClick={() => setView('years')}
+            classNames={{
+              ...headerCls,
+              grid: 'kx-live-month-grid',
+              month: 'kx-live-my-cell',
+              monthSelected: 'kx-live-my-selected',
+              monthCurrent: 'kx-live-my-current',
+            }}
+          />
+        )}
+        {view === 'years' && (
+          <DatePicker.YearGrid
+            onSelect={() => setView('months')}
+            classNames={{
+              ...headerCls,
+              grid: 'kx-live-year-grid',
+              year: 'kx-live-my-cell',
+              yearSelected: 'kx-live-my-selected',
+              yearCurrent: 'kx-live-my-current',
+            }}
+          />
+        )}
       </DatePicker.Popover>
       <div className="kx-live-value">
-        Selected: <code>{date ?? 'null'}</code>
+        Selected: <code>{date ?? 'null'}</code> — click the month title to jump to Month / Year view.
       </div>
     </DatePicker>
   );
@@ -114,7 +147,7 @@ function WeekdayOnly() {
       onChange={setDate}
       disabled={[{ dayOfWeek: [0, 6] }, { before: today }]}
     >
-      <DatePicker.Input className="kx-live-input" placeholder="Weekdays only" />
+      <DatePicker.Input className="kx-live-input" placeholder="Weekdays only, from today" />
       <DatePicker.Popover className="kx-live-popover">
         <DatePicker.Calendar
           classNames={{
@@ -122,6 +155,7 @@ function WeekdayOnly() {
             title: 'kx-live-title',
             navButton: 'kx-live-nav',
             grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
             weekdayHeader: 'kx-live-weekday',
             day: 'live-day',
             daySelected: 'live-day-selected',
@@ -278,66 +312,7 @@ function WithJump() {
 }
 ```
 
-```jsx live
-function MonthYearJump() {
-  const [date, setDate] = React.useState(null);
-  const [view, setView] = React.useState('days');
-  const baseCal = {
-    header: 'kx-live-header',
-    title: 'kx-live-title',
-    navButton: 'kx-live-nav',
-    grid: 'kx-live-grid',
-    weekdayHeader: 'kx-live-weekday',
-    day: 'live-day',
-    daySelected: 'live-day-selected',
-    dayToday: 'live-day-today',
-    dayOutsideMonth: 'kx-live-outside',
-  };
-  const baseGrid = {
-    header: 'kx-live-header',
-    title: 'kx-live-title',
-    navButton: 'kx-live-nav',
-  };
-  return (
-    <DatePicker value={date} onChange={setDate}>
-      <DatePicker.Input className="kx-live-input" placeholder="Click the month title" />
-      <DatePicker.Popover className="kx-live-popover">
-        {view === 'days' && (
-          <DatePicker.Calendar
-            onTitleClick={() => setView('months')}
-            classNames={baseCal}
-          />
-        )}
-        {view === 'months' && (
-          <DatePicker.MonthGrid
-            onSelect={() => setView('days')}
-            onTitleClick={() => setView('years')}
-            classNames={{
-              ...baseGrid,
-              grid: 'kx-live-month-grid',
-              month: 'kx-live-cell',
-              monthSelected: 'kx-live-cell-selected',
-              monthCurrent: 'kx-live-cell-current',
-            }}
-          />
-        )}
-        {view === 'years' && (
-          <DatePicker.YearGrid
-            onSelect={() => setView('months')}
-            classNames={{
-              ...baseGrid,
-              grid: 'kx-live-year-grid',
-              year: 'kx-live-cell',
-              yearSelected: 'kx-live-cell-selected',
-              yearCurrent: 'kx-live-cell-current',
-            }}
-          />
-        )}
-      </DatePicker.Popover>
-    </DatePicker>
-  );
-}
-```
+The “Try it live” example at the top of this page already wires this flow — tap the month title to open `MonthGrid`, tap the year to open `YearGrid`.
 
 ### Uncontrolled with form submission
 

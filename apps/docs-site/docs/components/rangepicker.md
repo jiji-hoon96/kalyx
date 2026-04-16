@@ -53,17 +53,21 @@ function BasicRange() {
             title: 'kx-live-title',
             navButton: 'kx-live-nav',
             grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
             weekdayHeader: 'kx-live-weekday',
-            day: 'live-day',
-            daySelected: 'live-day-selected',
+            day: 'kx-live-day-range',
+            dayRangeStart: 'kx-live-range-start',
+            dayRangeEnd: 'kx-live-range-end',
             dayInRange: 'kx-live-inrange',
             dayToday: 'live-day-today',
             dayOutsideMonth: 'kx-live-outside',
+            dayDisabled: 'kx-live-disabled',
           }}
         />
       </RangePicker.Popover>
       <div className="kx-live-value">
-        <code>{range.start ?? 'null'}</code> → <code>{range.end ?? 'null'}</code>
+        <code>{range.start?.slice(0, 10) ?? 'null'}</code> →
+        <code>{range.end?.slice(0, 10) ?? 'null'}</code>
       </div>
     </RangePicker>
   );
@@ -209,10 +213,7 @@ function RangeWithPresets() {
         <RangePicker.Input part="start" className="kx-live-input" placeholder="Start" />
         <RangePicker.Input part="end" className="kx-live-input" placeholder="End" />
       </div>
-      <RangePicker.Popover
-        className="kx-live-popover"
-        style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}
-      >
+      <RangePicker.Popover className="kx-live-popover kx-live-popover--split">
         <RangePicker.Presets
           classNames={{
             root: 'kx-live-presets',
@@ -233,12 +234,15 @@ function RangeWithPresets() {
             title: 'kx-live-title',
             navButton: 'kx-live-nav',
             grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
             weekdayHeader: 'kx-live-weekday',
-            day: 'live-day',
-            daySelected: 'live-day-selected',
+            day: 'kx-live-day-range',
+            dayRangeStart: 'kx-live-range-start',
+            dayRangeEnd: 'kx-live-range-end',
             dayInRange: 'kx-live-inrange',
             dayToday: 'live-day-today',
             dayOutsideMonth: 'kx-live-outside',
+            dayDisabled: 'kx-live-disabled',
           }}
         />
       </RangePicker.Popover>

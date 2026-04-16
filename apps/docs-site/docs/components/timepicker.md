@@ -39,7 +39,7 @@ function Basic24h() {
   const [time, setTime] = React.useState(null);
   return (
     <TimePicker value={time} onChange={setTime} format="24h" step={15}>
-      <TimePicker.Input className="kx-live-input" />
+      <TimePicker.Input className="kx-live-input" style={{ minWidth: '8rem' }} />
       <div className="kx-live-row" style={{ marginTop: 8 }}>
         <TimePicker.HourList
           classNames={{
@@ -150,7 +150,7 @@ function TwelveHour() {
   const [time, setTime] = React.useState(null);
   return (
     <TimePicker value={time} onChange={setTime} format="12h" step={15}>
-      <TimePicker.Input className="kx-live-input" />
+      <TimePicker.Input className="kx-live-input" style={{ minWidth: '8rem' }} />
       <div className="kx-live-row" style={{ marginTop: 8 }}>
         <TimePicker.HourList
           classNames={{
@@ -192,7 +192,7 @@ function WithSeconds() {
   const [time, setTime] = React.useState(null);
   return (
     <TimePicker value={time} onChange={setTime} withSeconds>
-      <TimePicker.Input className="kx-live-input" />
+      <TimePicker.Input className="kx-live-input" style={{ minWidth: '8rem' }} />
       <div className="kx-live-value" style={{ marginTop: 8 }}>
         Selected: <code>{time ?? 'null'}</code>
       </div>
