@@ -32,17 +32,23 @@ export function DatePickerPopover({ children, ...props }: DatePickerPopoverProps
     }
   }, [ctx.referenceRef, refs, ctx.isOpen]);
 
-  // Focus restoration: restore focus to the previous element on close
+  // Focus restoration: restore focus to the previous element on close.
+  // We use preventScroll so closing the popover doesn't yank the page back
+  // to the trigger/input; and we skip restoration to the reference element
+  // itself (Input auto-opens on focus, which would immediately reopen us).
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (ctx.isOpen) {
       previousFocusRef.current = document.activeElement as HTMLElement;
     } else if (previousFocusRef.current) {
-      previousFocusRef.current.focus();
+      const el = previousFocusRef.current;
       previousFocusRef.current = null;
+      if (el !== ctx.referenceRef.current && typeof el.focus === 'function') {
+        el.focus({ preventScroll: true });
+      }
     }
-  }, [ctx.isOpen]);
+  }, [ctx.isOpen, ctx.referenceRef]);
 
   // Detect outside clicks
   useEffect(() => {

@@ -17,19 +17,22 @@ export interface RangePickerInputProps
  * Use one with `part="start"` and another with `part="end"`.
  */
 export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputProps>(
-  function RangePickerInput({ part, format: formatProp, onFocus, onKeyDown, ...props }, ref) {
+  function RangePickerInput(
+    { part, format: formatProp, onClick, onKeyDown, ...props },
+    ref,
+  ) {
     const ctx = useRangePickerContext('RangePicker.Input');
     const displayFormat = formatProp ?? ctx.displayFormat;
 
     const value = ctx.value[part];
     const displayValue = value ? ctx.adapter.format(value, displayFormat) : '';
 
-    const handleFocus = useCallback(
-      (e: React.FocusEvent<HTMLInputElement>) => {
-        ctx.open();
-        onFocus?.(e);
+    const handleClick = useCallback(
+      (e: React.MouseEvent<HTMLInputElement>) => {
+        if (!ctx.isOpen) ctx.open();
+        onClick?.(e);
       },
-      [ctx, onFocus],
+      [ctx, onClick],
     );
 
     const handleKeyDown = useCallback(
@@ -66,7 +69,7 @@ export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputPro
         autoComplete="off"
         value={displayValue}
         disabled={ctx.isDisabled || props.disabled}
-        onFocus={handleFocus}
+        onClick={handleClick}
         onKeyDown={handleKeyDown}
         data-part={part}
         {...props}

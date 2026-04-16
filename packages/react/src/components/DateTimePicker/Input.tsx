@@ -14,7 +14,7 @@ export interface DateTimePickerInputProps
  * Direct-typing parsing is planned for v0.4.
  */
 export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerInputProps>(
-  function DateTimePickerInput({ onFocus, onKeyDown, ...props }, ref) {
+  function DateTimePickerInput({ onClick, onKeyDown, ...props }, ref) {
     const ctx = useDatePickerContext('DateTimePicker.Input');
 
     // Combine the date portion (yyyy-MM-dd) and the time portion (HH:mm)
@@ -22,12 +22,12 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
       ? `${ctx.adapter.format(ctx.value, 'yyyy-MM-dd')} ${formatTimeString(getTime(ctx.value))}`
       : '';
 
-    const handleFocus = useCallback(
-      (e: React.FocusEvent<HTMLInputElement>) => {
-        ctx.open();
-        onFocus?.(e);
+    const handleClick = useCallback(
+      (e: React.MouseEvent<HTMLInputElement>) => {
+        if (!ctx.isOpen) ctx.open();
+        onClick?.(e);
       },
-      [ctx, onFocus],
+      [ctx, onClick],
     );
 
     const handleKeyDown = useCallback(
@@ -63,7 +63,7 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
         autoComplete="off"
         value={displayValue}
         disabled={ctx.isDisabled || props.disabled}
-        onFocus={handleFocus}
+        onClick={handleClick}
         onKeyDown={handleKeyDown}
         {...props}
       />

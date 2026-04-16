@@ -58,13 +58,15 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
   const month = adapter.getMonth(viewMonth);
   const title = formatMonthYear(year, month, locale);
 
-  // Move focus to the focused day cell
+  // Move focus to the focused day cell. `preventScroll` avoids the page
+  // jumping when the calendar mounts below an input/trigger that's already
+  // scrolled into view.
   useEffect(() => {
     if (!ctx.isOpen || !gridRef.current) return;
     const focusedButton = gridRef.current.querySelector<HTMLButtonElement>(
       '[data-focused="true"]',
     );
-    focusedButton?.focus();
+    focusedButton?.focus({ preventScroll: true });
   }, [focusedDate, ctx.isOpen]);
 
   const navigateMonth = useCallback(

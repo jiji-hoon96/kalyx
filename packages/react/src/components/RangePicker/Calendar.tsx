@@ -70,13 +70,12 @@ export function RangePickerCalendar({ classNames, ...props }: RangePickerCalenda
   const month = adapter.getMonth(viewMonth);
   const title = formatMonthYear(year, month, locale);
 
-  // Move focus to the focused day cell
   useEffect(() => {
     if (!ctx.isOpen || !gridRef.current) return;
     const focusedButton = gridRef.current.querySelector<HTMLButtonElement>(
       '[data-focused="true"]',
     );
-    focusedButton?.focus();
+    focusedButton?.focus({ preventScroll: true });
   }, [focusedDate, ctx.isOpen]);
 
   const navigateMonth = useCallback(

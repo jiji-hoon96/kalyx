@@ -10,7 +10,10 @@ export interface DatePickerInputProps
 }
 
 export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps>(
-  function DatePickerInput({ format: formatProp, onFocus, onBlur, onKeyDown, ...props }, ref) {
+  function DatePickerInput(
+    { format: formatProp, onClick, onBlur, onKeyDown, ...props },
+    ref,
+  ) {
     const ctx = useDatePickerContext('DatePicker.Input');
     const displayFormat = formatProp ?? ctx.displayFormat;
 
@@ -24,12 +27,15 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
           ? ctx.adapter.format(ctx.value, displayFormat)
           : '';
 
-    const handleFocus = useCallback(
-      (e: React.FocusEvent<HTMLInputElement>) => {
-        ctx.open();
-        onFocus?.(e);
+    // Open on an explicit pointer click, not on focus — tabbing between form
+    // fields should not pop the calendar open, and restoring focus after a
+    // selection would otherwise loop us back to open.
+    const handleClick = useCallback(
+      (e: React.MouseEvent<HTMLInputElement>) => {
+        if (!ctx.isOpen) ctx.open();
+        onClick?.(e);
       },
-      [ctx, onFocus],
+      [ctx, onClick],
     );
 
     const handleBlur = useCallback(
@@ -109,7 +115,7 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
         disabled={ctx.isDisabled || props.disabled}
         readOnly={ctx.isReadOnly}
         onChange={handleChange}
-        onFocus={handleFocus}
+        onClick={handleClick}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         {...props}

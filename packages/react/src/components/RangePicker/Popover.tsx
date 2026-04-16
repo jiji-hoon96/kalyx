@@ -32,17 +32,19 @@ export function RangePickerPopover({ children, ...props }: RangePickerPopoverPro
     }
   }, [ctx.referenceRef, refs, ctx.isOpen]);
 
-  // Focus restoration
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (ctx.isOpen) {
       previousFocusRef.current = document.activeElement as HTMLElement;
     } else if (previousFocusRef.current) {
-      previousFocusRef.current.focus();
+      const el = previousFocusRef.current;
       previousFocusRef.current = null;
+      if (el !== ctx.referenceRef.current && typeof el.focus === 'function') {
+        el.focus({ preventScroll: true });
+      }
     }
-  }, [ctx.isOpen]);
+  }, [ctx.isOpen, ctx.referenceRef]);
 
   // Detect outside clicks
   useEffect(() => {
