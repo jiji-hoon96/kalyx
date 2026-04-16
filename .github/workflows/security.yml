@@ -2,7 +2,7 @@ name: Security Audit
 
 on:
   schedule:
-    # 매주 월요일 오전 9시 KST (= UTC 00:00)
+    # Monday 09:00 KST (UTC 00:00)
     - cron: '0 0 * * 1'
   push:
     paths:
@@ -13,10 +13,22 @@ on:
 permissions:
   contents: read
   issues: write
+  security-events: write
 
 jobs:
-  audit:
-    name: Dependency Security Audit
+  osv-scan:
+    # OSV-Scanner (Google) consumes pnpm-lock.yaml directly and queries the
+    # osv.dev vulnerability database — independent of npm's deprecated
+    # audit endpoint that `pnpm audit` still calls.
+    name: OSV Vulnerability Scan
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.0.0
+    with:
+      scan-args: |-
+        --lockfile=pnpm-lock.yaml
+        --fail-on-vuln
+
+  license-check:
+    name: License Compatibility
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,41 +38,40 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-
-      - name: 취약점 스캔 (high, critical만 실패)
-        run: pnpm audit --audit-level=high
-
-      - name: 라이선스 호환성 확인
+      - name: Verify production dependencies use permissive licenses
         run: |
-          # MIT, Apache-2.0, ISC, BSD 계열만 허용 (프로덕션 의존성만)
           npx license-checker \
             --production \
             --onlyAllow "MIT;Apache-2.0;ISC;BSD-2-Clause;BSD-3-Clause;0BSD;BlueOak-1.0.0;Python-2.0;CC0-1.0;Unlicense" \
             --excludePrivatePackages \
             --summary
 
-      - name: 취약점 발견 시 이슈 자동 생성
-        if: failure()
-        uses: actions/github-script@v7
+  notify-on-failure:
+    name: Create issue on failure
+    needs: [osv-scan, license-check]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
         with:
           script: |
             const date = new Date().toISOString().split('T')[0];
             github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `🔒 [${date}] 의존성 보안 취약점 발견`,
+              title: `🔒 [${date}] Dependency security issue detected`,
               body: [
-                '## 보안 감사 결과',
+                '## Security audit findings',
                 '',
-                '자동 보안 감사에서 취약점 또는 라이선스 문제가 발견됐습니다.',
+                'The automated security audit detected a vulnerability or license issue.',
                 '',
-                `워크플로우: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 '',
-                '## 조치 방법',
-                '1. 워크플로우 로그에서 취약점 목록 확인',
-                '2. `pnpm audit` 로컬 실행',
-                '3. 영향받는 패키지 업데이트: `pnpm update <package>`',
-                '4. 업데이트 불가 시 대안 패키지 검토',
+                '## Next steps',
+                '1. Inspect the failed job logs for details',
+                '2. Reproduce locally with `pnpm exec osv-scanner --lockfile=pnpm-lock.yaml`',
+                '3. Update the affected package: `pnpm update <package>`',
+                '4. If no fix is available, add a `pnpm.overrides` entry pinning a safe version',
               ].join('\n'),
               labels: ['security', 'dependencies', 'automated'],
             });
