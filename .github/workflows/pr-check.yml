@@ -168,9 +168,8 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-  
-  
       - run: pnpm --filter @kalyx/core build
+      - run: pnpm --filter @kalyx/react build
       - run: pnpm --filter docs-site build
 
   all-pass:
