@@ -1,6 +1,6 @@
 {
 	"name": "@kalyx/docs",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"private": true,
 	"description": "Kalyx documentation site (Next.js App Router)",
 	"type": "module",
