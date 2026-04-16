@@ -3,6 +3,25 @@
 	"version": "0.2.1",
 	"description": "Kalyx core — platform-agnostic date logic",
 	"license": "MIT",
+	"author": "jiji-hoon96",
+	"homepage": "https://github.com/jiji-hoon96/kalyx#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jiji-hoon96/kalyx.git",
+		"directory": "packages/core"
+	},
+	"bugs": {
+		"url": "https://github.com/jiji-hoon96/kalyx/issues"
+	},
+	"keywords": [
+		"date",
+		"datepicker",
+		"calendar",
+		"timezone",
+		"iso8601",
+		"utc",
+		"date-fns"
+	],
 	"type": "module",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
