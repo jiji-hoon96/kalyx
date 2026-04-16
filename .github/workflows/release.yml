@@ -31,7 +31,9 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - name: Upgrade npm for Trusted Publishing support
-        run: npm install -g npm@latest
+        run: |
+          npm install -g --force npm@11
+          npm --version
 
       - run: pnpm install --frozen-lockfile
 
