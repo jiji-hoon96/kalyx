@@ -31,10 +31,16 @@ test.describe('RangePicker', () => {
 		const dialog = page.getByRole('dialog');
 		await expect(dialog).toBeVisible();
 
-		await dialog.getByRole('button', { name: '10' }).click();
+		await dialog
+			.locator('button:not([data-outside-month])')
+			.filter({ hasText: /^10$/ })
+			.click();
 		await expect(dialog).toBeVisible();
 
-		await dialog.getByRole('button', { name: '20' }).click();
+		await dialog
+			.locator('button:not([data-outside-month])')
+			.filter({ hasText: /^20$/ })
+			.click();
 		await expect(dialog).not.toBeVisible();
 
 		await expect(startInput).not.toHaveValue('');

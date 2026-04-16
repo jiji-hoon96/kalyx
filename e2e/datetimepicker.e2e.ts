@@ -40,7 +40,10 @@ test.describe('DateTimePicker', () => {
 		const dialog = page.getByRole('dialog');
 		await expect(dialog).toBeVisible();
 
-		await dialog.getByRole('button', { name: '15' }).click();
+		await dialog
+			.locator('button:not([data-outside-month])')
+			.filter({ hasText: /^15$/ })
+			.click();
 
 		await expect(dialog).toBeVisible();
 	});
@@ -55,8 +58,12 @@ test.describe('DateTimePicker', () => {
 		const dialog = page.getByRole('dialog');
 		await expect(dialog).toBeVisible();
 
-		await dialog.getByRole('button', { name: '20' }).click();
-		await dialog.getByRole('option', { name: '18' }).first().click();
+		await dialog
+			.locator('button:not([data-outside-month])')
+			.filter({ hasText: /^20$/ })
+			.click();
+
+		await dialog.getByRole('option').filter({ hasText: /^18$/ }).first().click();
 
 		await page.keyboard.press('Escape');
 

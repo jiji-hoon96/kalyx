@@ -31,7 +31,10 @@ test.describe('DatePicker', () => {
 		await expect(dialog).toBeVisible();
 		await expect(dialog.getByRole('grid')).toBeVisible();
 
-		await dialog.getByRole('button', { name: '15' }).click();
+		await dialog
+			.locator('button:not([data-outside-month])')
+			.filter({ hasText: /^15$/ })
+			.click();
 
 		await expect(dialog).not.toBeVisible();
 		await expect(input).not.toHaveValue('');
