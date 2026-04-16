@@ -10,6 +10,10 @@ on:
       - 'pnpm-lock.yaml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   audit:
     name: Dependency Security Audit
