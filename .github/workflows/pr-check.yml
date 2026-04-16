@@ -5,16 +5,11 @@ on:
     branches: [main]
   push:
     branches: [main]
-
-# 같은 PR에 새 커밋이 오면 이전 실행 취소
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  # ─────────────────────────────────────
-  # 1. 타입 체크
-  # ─────────────────────────────────────
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest
@@ -28,9 +23,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
 
-  # ─────────────────────────────────────
-  # 2. 린트
-  # ─────────────────────────────────────
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -44,9 +36,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
 
-  # ─────────────────────────────────────
-  # 3. 테스트 (Node.js 20, 22에서 모두)
-  # ─────────────────────────────────────
   test:
     name: Test (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
@@ -71,9 +60,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
 
-  # ─────────────────────────────────────
-  # 4. 빌드
-  # ─────────────────────────────────────
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -93,9 +79,6 @@ jobs:
           path: packages/react/dist/
           retention-days: 1
 
-  # ─────────────────────────────────────
-  # 5. 번들 크기 게이팅 (≤ 12KB gzip)
-  # ─────────────────────────────────────
   bundle-size:
     name: Bundle Size (≤12KB gzip)
     runs-on: ubuntu-latest
@@ -129,7 +112,7 @@ jobs:
             const ok   = parseFloat(kb) <= 12;
             const icon = ok ? '✅' : '❌';
             const body = [
-              `## ${icon} Bundle Size`,
+              
               '',
               '| | gzip |',
               '|---|---|',
@@ -147,9 +130,6 @@ jobs:
               body,
             });
 
-  # ─────────────────────────────────────
-  # 6. SSR 안전성 검증
-  # ─────────────────────────────────────
   ssr-check:
     name: SSR Safety Check
     runs-on: ubuntu-latest
@@ -177,13 +157,26 @@ jobs:
             });
           "
 
-  # ─────────────────────────────────────
-  # 7. 전체 통과 게이트 (Branch Protection용)
-  # ─────────────────────────────────────
+  docs-site:
+    name: Docs Site Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+  
+  
+      - run: pnpm --filter @kalyx/core build
+      - run: pnpm --filter docs-site build
+
   all-pass:
     name: All Checks Pass
     runs-on: ubuntu-latest
-    needs: [typecheck, lint, test, build, bundle-size, ssr-check]
+    needs: [typecheck, lint, test, build, bundle-size, ssr-check, docs-site]
     if: always()
     steps:
       - name: 결과 확인

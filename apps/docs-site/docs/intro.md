@@ -63,6 +63,6 @@ useTimePicker               …and more
 ## Next steps
 
 - [Install the package →](./getting-started/installation.md)
-- [Quick Start (5 min) →](./getting-started/quick-start.md)
+- [Quick Start (5 min) →](./getting-started/quick-start.mdx)
 - [Composition API →](./concepts/composition.md)
 - [Components →](./components/datepicker.md)

@@ -147,3 +147,27 @@
   background-color: var(--kalyx-surface);
   border-top: 1px solid var(--kalyx-border);
 }
+
+/* Minimal styling for live code examples so headless components are legible */
+.live-day {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.live-day:hover {
+  background: rgba(91, 79, 225, 0.08);
+}
+
+.live-day-selected {
+  background: var(--ifm-color-primary) !important;
+  color: #fff !important;
+}
+
+.live-day-today {
+  outline: 1px solid var(--ifm-color-primary);
+}

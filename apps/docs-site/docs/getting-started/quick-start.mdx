@@ -8,6 +8,46 @@ sidebar_position: 2
 
 Build a working DatePicker in five minutes.
 
+## Try it live
+
+Edit the code below — changes update the preview instantly. Kalyx is headless, so what you see is raw HTML plus the `classNames` you provide.
+
+```jsx live
+function LiveExample() {
+  const [date, setDate] = React.useState(null);
+  return (
+    <DatePicker value={date} onChange={setDate}>
+      <DatePicker.Input
+        placeholder="YYYY-MM-DD"
+        style={{ padding: '0.5rem', border: '1px solid #ddd', borderRadius: 6 }}
+      />
+      <DatePicker.Trigger style={{ marginLeft: 4 }} />
+      <DatePicker.Popover
+        style={{
+          marginTop: 4,
+          padding: 12,
+          border: '1px solid #ddd',
+          borderRadius: 8,
+          background: 'white',
+          boxShadow: '0 4px 14px rgba(0,0,0,0.08)',
+        }}
+      >
+        <DatePicker.Calendar
+          classNames={{
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayToday: 'live-day-today',
+          }}
+        />
+      </DatePicker.Popover>
+      <div style={{ marginTop: 12, fontSize: 13, color: '#555' }}>
+        Selected: <code>{date ?? 'null'}</code>
+      </div>
+    </DatePicker>
+  );
+}
+```
+
 ## 1. Install
 
 ```bash

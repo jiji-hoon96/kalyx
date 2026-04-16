@@ -63,6 +63,6 @@ useTimePicker               …외 다수
 ## 다음 단계
 
 - [설치 →](./getting-started/installation.md)
-- [빠른 시작 (5분) →](./getting-started/quick-start.md)
+- [빠른 시작 (5분) →](./getting-started/quick-start.mdx)
 - [Composition API →](./concepts/composition.md)
 - [컴포넌트 →](./components/datepicker.md)

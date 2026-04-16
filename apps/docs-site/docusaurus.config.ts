@@ -33,6 +33,8 @@ const config: Config = {
     },
   },
 
+  themes: ['@docusaurus/theme-live-codeblock'],
+
   presets: [
     [
       'classic',
@@ -41,14 +43,14 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           routeBasePath: 'docs',
           include: [
-            'intro.md',
-            'migration.md',
-            'getting-started/**/*.md',
-            'concepts/**/*.md',
-            'components/**/*.md',
-            'hooks/**/*.md',
-            'recipes/**/*.md',
-            'api/**/*.md',
+            'intro.{md,mdx}',
+            'migration.{md,mdx}',
+            'getting-started/**/*.{md,mdx}',
+            'concepts/**/*.{md,mdx}',
+            'components/**/*.{md,mdx}',
+            'hooks/**/*.{md,mdx}',
+            'recipes/**/*.{md,mdx}',
+            'api/**/*.{md,mdx}',
           ],
           editUrl: ({locale, docPath}) => {
             if (locale !== 'en') {
