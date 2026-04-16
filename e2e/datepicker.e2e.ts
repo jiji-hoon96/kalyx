@@ -27,36 +27,40 @@ test.describe('DatePicker', () => {
 		const input = firstDemo.getByRole('combobox');
 		await input.click();
 
-		await expect(page.getByRole('dialog')).toBeVisible();
-		await expect(page.getByRole('grid')).toBeVisible();
+		const dialog = page.getByRole('dialog');
+		await expect(dialog).toBeVisible();
+		await expect(dialog.getByRole('grid')).toBeVisible();
 
-		await page.getByRole('button', { name: /15일/ }).first().click();
+		await dialog.getByRole('button', { name: '15' }).click();
 
-		await expect(page.getByRole('dialog')).not.toBeVisible();
-
+		await expect(dialog).not.toBeVisible();
 		await expect(input).not.toHaveValue('');
 	});
 
 	test('Escape로 팝오버 닫기', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
 		await firstDemo.getByRole('combobox').click();
-		await expect(page.getByRole('dialog')).toBeVisible();
+
+		const dialog = page.getByRole('dialog');
+		await expect(dialog).toBeVisible();
 
 		await page.keyboard.press('Escape');
-		await expect(page.getByRole('dialog')).not.toBeVisible();
+		await expect(dialog).not.toBeVisible();
 	});
 
 	test('키보드 내비게이션: Arrow + Enter', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
 		const input = firstDemo.getByRole('combobox');
 		await input.click();
-		await expect(page.getByRole('dialog')).toBeVisible();
+
+		const dialog = page.getByRole('dialog');
+		await expect(dialog).toBeVisible();
 
 		await page.keyboard.press('ArrowRight');
 		await page.keyboard.press('ArrowDown');
 		await page.keyboard.press('Enter');
 
-		await expect(page.getByRole('dialog')).not.toBeVisible();
+		await expect(dialog).not.toBeVisible();
 		await expect(input).not.toHaveValue('');
 	});
 });

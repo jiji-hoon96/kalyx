@@ -26,21 +26,23 @@ test.describe('DateTimePicker', () => {
 		const firstDemo = page.locator('.demo').first();
 		await firstDemo.getByLabel('날짜 및 시간').click();
 
-		await expect(page.getByRole('dialog')).toBeVisible();
-		await expect(page.getByRole('grid')).toBeVisible();
-		await expect(page.getByRole('listbox', { name: '시' })).toBeVisible();
-		await expect(page.getByRole('listbox', { name: '분' })).toBeVisible();
+		const dialog = page.getByRole('dialog');
+		await expect(dialog).toBeVisible();
+		await expect(dialog.getByRole('grid')).toBeVisible();
+		await expect(dialog.getByRole('listbox', { name: '시' })).toBeVisible();
+		await expect(dialog.getByRole('listbox', { name: '분' })).toBeVisible();
 	});
 
 	test('날짜 선택 후 팝오버가 유지된다 (시간 선택 가능)', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
 		await firstDemo.getByLabel('날짜 및 시간').click();
-		await expect(page.getByRole('dialog')).toBeVisible();
 
-		const dayButton = page.getByRole('dialog').getByRole('button', { name: /15/ }).first();
-		await dayButton.click();
+		const dialog = page.getByRole('dialog');
+		await expect(dialog).toBeVisible();
 
-		await expect(page.getByRole('dialog')).toBeVisible();
+		await dialog.getByRole('button', { name: '15' }).click();
+
+		await expect(dialog).toBeVisible();
 	});
 
 	test('날짜 + 시간 순차 변경', async ({ page }) => {
@@ -49,12 +51,12 @@ test.describe('DateTimePicker', () => {
 		const initialValue = await input.inputValue();
 
 		await input.click();
-		await expect(page.getByRole('dialog')).toBeVisible();
 
-		const dayButton = page.getByRole('dialog').getByRole('button', { name: /20/ }).first();
-		await dayButton.click();
+		const dialog = page.getByRole('dialog');
+		await expect(dialog).toBeVisible();
 
-		await page.getByRole('option', { name: '18' }).first().click();
+		await dialog.getByRole('button', { name: '20' }).click();
+		await dialog.getByRole('option', { name: '18' }).first().click();
 
 		await page.keyboard.press('Escape');
 
