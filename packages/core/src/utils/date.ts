@@ -1,11 +1,14 @@
 import type { DateAdapter } from '../types.js';
 
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
-const ISO_DATETIME_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
+const ISO_DATETIME_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
 
 /**
  * Normalizes a date string to ISO 8601 UTC form.
  * "2026-01-15" → "2026-01-15T00:00:00.000Z"
+ *
+ * Full datetime strings must include a timezone suffix (Z or ±HH:MM).
+ * Strings without a timezone suffix are treated as-is (not matched as datetime).
  */
 export function normalizeISO(value: string): string {
   if (!value) return '';
@@ -20,7 +23,6 @@ export function normalizeISO(value: string): string {
  */
 export function parseInputValue(
   input: string,
-  format: string,
   adapter: DateAdapter,
 ): string | null {
   if (!input.trim()) return null;
@@ -68,10 +70,6 @@ export function getOrderedWeekdays(weekStartsOn: 0 | 1 = 0) {
     full: WEEKDAY_LABELS.full[i]!,
   }));
 
-  if (weekStartsOn === 1) {
-    const sunday = days.shift()!;
-    days.push(sunday);
-  }
-
-  return days;
+  if (weekStartsOn === 0) return days;
+  return [...days.slice(weekStartsOn), ...days.slice(0, weekStartsOn)];
 }

@@ -1,4 +1,4 @@
-import type { DateAdapter, ISODateString } from '../types.js';
+import type { ISODateString } from '../types.js';
 
 /** Time-of-day value (24-hour clock) */
 export interface TimeValue {
@@ -102,8 +102,8 @@ export function generateHours(format: '12h' | '24h' = '24h'): number[] {
  * step=5 → [0, 5, 10, ..., 55]
  */
 export function generateMinutes(step = 1): number[] {
-  if (step < 1 || step > 60) {
-    throw new Error(`[generateMinutes] step must be between 1 and 60, got ${step}`);
+  if (step < 1 || step > 30) {
+    throw new Error(`[generateMinutes] step must be between 1 and 30, got ${step}`);
   }
   const result: number[] = [];
   for (let i = 0; i < 60; i += step) {
@@ -126,7 +126,6 @@ export function isSameTime(a: TimeValue, b: TimeValue): boolean {
 export function formatTimeFromISO(
   iso: ISODateString,
   format: 'HH:mm' | 'HH:mm:ss' | 'h:mm a' | 'h:mm:ss a',
-  _adapter?: DateAdapter,
 ): string {
   const time = getTime(iso);
 
