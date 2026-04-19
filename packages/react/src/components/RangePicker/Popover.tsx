@@ -23,7 +23,7 @@ export function RangePickerPopover({ children, ...props }: RangePickerPopoverPro
       ref={setFloatingRef}
       id={calendarId}
       role="dialog"
-      aria-label="날짜 범위 선택"
+      aria-label={ctx.labels.popoverLabel}
       aria-modal="false"
       style={floatingStyles}
       {...props}

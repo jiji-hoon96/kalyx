@@ -83,7 +83,7 @@ export function DatePickerMonthGrid({
           type="button"
           className={classNames?.navButton}
           onClick={() => navigateYear(-1)}
-          aria-label="이전 년"
+          aria-label={ctx.labels.prevYear}
         >
           &lt;
         </button>
@@ -102,7 +102,7 @@ export function DatePickerMonthGrid({
           type="button"
           className={classNames?.navButton}
           onClick={() => navigateYear(1)}
-          aria-label="다음 년"
+          aria-label={ctx.labels.nextYear}
         >
           &gt;
         </button>

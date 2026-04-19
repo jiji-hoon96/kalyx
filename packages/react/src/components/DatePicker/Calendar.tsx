@@ -172,7 +172,7 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
           type="button"
           className={classNames?.navButton}
           onClick={() => navigateMonth(-1)}
-          aria-label="이전 달"
+          aria-label={ctx.labels.prevMonth}
         >
           &lt;
         </button>
@@ -194,7 +194,7 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
           type="button"
           className={classNames?.navButton}
           onClick={() => navigateMonth(1)}
-          aria-label="다음 달"
+          aria-label={ctx.labels.nextMonth}
         >
           &gt;
         </button>

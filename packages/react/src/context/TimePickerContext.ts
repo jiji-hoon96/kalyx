@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { ISODateString, TimeValue } from '@kalyx/core';
+import type { ISODateString, TimePickerLabels, TimeValue } from '@kalyx/core';
 
 export type TimePickerFormat = '12h' | '24h';
 
@@ -22,6 +22,8 @@ export interface TimePickerContextValue {
   currentTime: TimeValue;
   /** Unique ID */
   pickerId: string;
+  /** ARIA labels */
+  labels: TimePickerLabels;
 }
 
 export const TimePickerContext = createContext<TimePickerContextValue | null>(null);

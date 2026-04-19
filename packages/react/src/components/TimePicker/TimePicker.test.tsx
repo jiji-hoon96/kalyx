@@ -68,26 +68,26 @@ function ControlledTimePicker({
 describe('TimePicker — basic rendering', () => {
   it('renders Input, HourList, and MinuteList', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z' });
-    expect(screen.getByLabelText('시간 입력')).toBeInTheDocument();
-    expect(screen.getByRole('listbox', { name: '시' })).toBeInTheDocument();
-    expect(screen.getByRole('listbox', { name: '분' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Time')).toBeInTheDocument();
+    expect(screen.getByRole('listbox', { name: 'Hour' })).toBeInTheDocument();
+    expect(screen.getByRole('listbox', { name: 'Minute' })).toBeInTheDocument();
   });
 
   it('shows the current time in the input', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z' });
-    expect(screen.getByLabelText('시간 입력')).toHaveValue('14:30');
+    expect(screen.getByLabelText('Time')).toHaveValue('14:30');
   });
 
   it('shows seconds when withSeconds is enabled', () => {
     renderTimePicker({ value: '2026-01-15T14:30:45.000Z', withSeconds: true });
-    expect(screen.getByLabelText('시간 입력')).toHaveValue('14:30:45');
+    expect(screen.getByLabelText('Time')).toHaveValue('14:30:45');
   });
 });
 
 describe('TimePicker — 24-hour mode (default)', () => {
   it('renders hours 0-23 in the HourList', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z' });
-    const hourList = screen.getByRole('listbox', { name: '시' });
+    const hourList = screen.getByRole('listbox', { name: 'Hour' });
     const options = hourList.querySelectorAll('[role="option"]');
     expect(options).toHaveLength(24);
   });
@@ -100,7 +100,7 @@ describe('TimePicker — 24-hour mode (default)', () => {
   it('marks the current hour with aria-selected="true"', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z' });
     const selected = screen
-      .getByRole('listbox', { name: '시' })
+      .getByRole('listbox', { name: 'Hour' })
       .querySelector('[aria-selected="true"]');
     expect(selected).toHaveTextContent('14');
   });
@@ -109,14 +109,14 @@ describe('TimePicker — 24-hour mode (default)', () => {
 describe('TimePicker — 12-hour mode', () => {
   it('renders hours 1-12 in the HourList', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z', format: '12h' });
-    const hourList = screen.getByRole('listbox', { name: '시' });
+    const hourList = screen.getByRole('listbox', { name: 'Hour' });
     const options = hourList.querySelectorAll('[role="option"]');
     expect(options).toHaveLength(12);
   });
 
   it('renders AmPmToggle', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z', format: '12h' });
-    expect(screen.getByRole('radiogroup', { name: '오전/오후' })).toBeInTheDocument();
+    expect(screen.getByRole('radiogroup', { name: 'AM/PM' })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'AM' })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'PM' })).toBeInTheDocument();
   });
@@ -130,7 +130,7 @@ describe('TimePicker — 12-hour mode', () => {
   it('selects 2 for 14:00 (2 PM)', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z', format: '12h' });
     const selected = screen
-      .getByRole('listbox', { name: '시' })
+      .getByRole('listbox', { name: 'Hour' })
       .querySelector('[aria-selected="true"]');
     expect(selected).toHaveTextContent('02');
   });
@@ -139,7 +139,7 @@ describe('TimePicker — 12-hour mode', () => {
     renderTimePicker({ value: '2026-01-15T00:00:00.000Z', format: '12h' });
     expect(screen.getByRole('radio', { name: 'AM' })).toBeChecked();
     const selected = screen
-      .getByRole('listbox', { name: '시' })
+      .getByRole('listbox', { name: 'Hour' })
       .querySelector('[aria-selected="true"]');
     expect(selected).toHaveTextContent('12');
   });
@@ -148,14 +148,14 @@ describe('TimePicker — 12-hour mode', () => {
 describe('TimePicker — minute step', () => {
   it('renders 4 options (0, 15, 30, 45) when step=15', () => {
     renderTimePicker({ value: '2026-01-15T14:00:00.000Z', step: 15 });
-    const minuteList = screen.getByRole('listbox', { name: '분' });
+    const minuteList = screen.getByRole('listbox', { name: 'Minute' });
     const options = minuteList.querySelectorAll('[role="option"]');
     expect(options).toHaveLength(4);
   });
 
   it('renders 12 options when step=5', () => {
     renderTimePicker({ value: '2026-01-15T14:00:00.000Z', step: 5 });
-    const minuteList = screen.getByRole('listbox', { name: '분' });
+    const minuteList = screen.getByRole('listbox', { name: 'Minute' });
     const options = minuteList.querySelectorAll('[role="option"]');
     expect(options).toHaveLength(12);
   });
@@ -167,7 +167,7 @@ describe('TimePicker — interactions', () => {
     const onChange = vi.fn();
     render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
 
-    const hour14 = screen.getByRole('option', { name: '14시' });
+    const hour14 = screen.getByRole('option', { name: '14 hours' });
     await user.click(hour14);
 
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T14:00:/));
@@ -184,7 +184,7 @@ describe('TimePicker — interactions', () => {
       />,
     );
 
-    const min30 = screen.getByRole('option', { name: '30분' });
+    const min30 = screen.getByRole('option', { name: '30 minutes' });
     await user.click(min30);
 
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T14:30:/));
@@ -213,7 +213,7 @@ describe('TimePicker — interactions', () => {
     const onChange = vi.fn();
     render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
 
-    const input = screen.getByLabelText('시간 입력');
+    const input = screen.getByLabelText('Time');
     await user.clear(input);
     await user.type(input, '15:45');
     await user.tab(); // blur
@@ -226,7 +226,7 @@ describe('TimePicker — interactions', () => {
     const onChange = vi.fn();
     render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
 
-    const input = screen.getByLabelText('시간 입력');
+    const input = screen.getByLabelText('Time');
     await user.clear(input);
     await user.type(input, 'invalid');
     await user.tab();
@@ -248,7 +248,7 @@ describe('TimePicker — keyboard navigation', () => {
     render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
 
     // Focus hour 10 and press ArrowDown -> selects 11
-    const hour10 = screen.getByRole('option', { name: '10시' });
+    const hour10 = screen.getByRole('option', { name: '10 hours' });
     hour10.focus();
     await user.keyboard('{ArrowDown}');
 
@@ -260,7 +260,7 @@ describe('TimePicker — keyboard navigation', () => {
     const onChange = vi.fn();
     render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
 
-    const hour10 = screen.getByRole('option', { name: '10시' });
+    const hour10 = screen.getByRole('option', { name: '10 hours' });
     hour10.focus();
     await user.keyboard('{ArrowUp}');
 
@@ -272,7 +272,7 @@ describe('TimePicker — keyboard navigation', () => {
     const onChange = vi.fn();
     render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
 
-    const hour10 = screen.getByRole('option', { name: '10시' });
+    const hour10 = screen.getByRole('option', { name: '10 hours' });
     hour10.focus();
     await user.keyboard('{Home}');
 
@@ -284,7 +284,7 @@ describe('TimePicker — keyboard navigation', () => {
     const onChange = vi.fn();
     render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
 
-    const hour10 = screen.getByRole('option', { name: '10시' });
+    const hour10 = screen.getByRole('option', { name: '10 hours' });
     hour10.focus();
     await user.keyboard('{Enter}');
 
@@ -296,7 +296,7 @@ describe('TimePicker — keyboard navigation', () => {
     const onChange = vi.fn();
     render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
 
-    const hour10 = screen.getByRole('option', { name: '10시' });
+    const hour10 = screen.getByRole('option', { name: '10 hours' });
     hour10.focus();
     await user.keyboard(' ');
 
@@ -314,7 +314,7 @@ describe('TimePicker — keyboard navigation', () => {
       />,
     );
 
-    const min0 = screen.getByRole('option', { name: '0분' });
+    const min0 = screen.getByRole('option', { name: '0 minutes' });
     min0.focus();
     await user.keyboard('{ArrowDown}');
 
@@ -326,7 +326,7 @@ describe('TimePicker — keyboard navigation', () => {
     const onChange = vi.fn();
     render(<ControlledTimePicker initialValue="2026-01-15T23:00:00.000Z" onChange={onChange} />);
 
-    const hour23 = screen.getByRole('option', { name: '23시' });
+    const hour23 = screen.getByRole('option', { name: '23 hours' });
     hour23.focus();
     await user.keyboard('{ArrowDown}');
 
@@ -338,12 +338,12 @@ describe('TimePicker — keyboard navigation', () => {
 describe('TimePicker — disabled state', () => {
   it('disables the input and sets aria-disabled on the listboxes when disabled=true', () => {
     renderTimePicker({ value: '2026-01-15T14:00:00.000Z', disabled: true });
-    expect(screen.getByLabelText('시간 입력')).toBeDisabled();
-    expect(screen.getByRole('listbox', { name: '시' })).toHaveAttribute(
+    expect(screen.getByLabelText('Time')).toBeDisabled();
+    expect(screen.getByRole('listbox', { name: 'Hour' })).toHaveAttribute(
       'aria-disabled',
       'true',
     );
-    expect(screen.getByRole('listbox', { name: '분' })).toHaveAttribute(
+    expect(screen.getByRole('listbox', { name: 'Minute' })).toHaveAttribute(
       'aria-disabled',
       'true',
     );
@@ -358,7 +358,7 @@ describe('TimePicker — disabled state', () => {
       onChange,
     });
 
-    const hour10 = screen.getByRole('option', { name: '10시' });
+    const hour10 = screen.getByRole('option', { name: '10 hours' });
     await user.click(hour10);
     expect(onChange).not.toHaveBeenCalled();
   });
@@ -381,13 +381,13 @@ describe('TimePicker — context errors', () => {
 describe('TimePicker — accessibility', () => {
   it('sets aria-label on the listboxes', () => {
     renderTimePicker({ value: '2026-01-15T14:30:00.000Z' });
-    expect(screen.getByRole('listbox', { name: '시' })).toBeInTheDocument();
-    expect(screen.getByRole('listbox', { name: '분' })).toBeInTheDocument();
+    expect(screen.getByRole('listbox', { name: 'Hour' })).toBeInTheDocument();
+    expect(screen.getByRole('listbox', { name: 'Minute' })).toBeInTheDocument();
   });
 
   it('exposes the AmPmToggle as a radiogroup', () => {
     renderTimePicker({ value: '2026-01-15T14:00:00.000Z', format: '12h' });
-    expect(screen.getByRole('radiogroup', { name: '오전/오후' })).toBeInTheDocument();
+    expect(screen.getByRole('radiogroup', { name: 'AM/PM' })).toBeInTheDocument();
   });
 
   it('passes axe checks in 24-hour mode', async () => {

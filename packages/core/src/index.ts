@@ -41,3 +41,15 @@ export {
   todayInTimezone,
   getTimezoneOffsetMinutes,
 } from './utils/timezone.js';
+export type {
+  DatePickerLabels,
+  RangePickerLabels,
+  TimePickerLabels,
+  DateTimePickerLabels,
+} from './utils/labels.js';
+export {
+  DEFAULT_DATEPICKER_LABELS,
+  DEFAULT_RANGEPICKER_LABELS,
+  DEFAULT_TIMEPICKER_LABELS,
+  DEFAULT_DATETIMEPICKER_LABELS,
+} from './utils/labels.js';

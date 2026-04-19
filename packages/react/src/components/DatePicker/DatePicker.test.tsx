@@ -118,10 +118,10 @@ describe('DatePicker — calendar navigation', () => {
     await user.click(screen.getByRole('combobox'));
     expect(screen.getByRole('grid')).toHaveAttribute('aria-label', 'January 2026');
 
-    await user.click(screen.getByRole('button', { name: '다음 달' }));
+    await user.click(screen.getByRole('button', { name: 'Next month' }));
     expect(screen.getByRole('grid')).toHaveAttribute('aria-label', 'February 2026');
 
-    await user.click(screen.getByRole('button', { name: '이전 달' }));
+    await user.click(screen.getByRole('button', { name: 'Previous month' }));
     expect(screen.getByRole('grid')).toHaveAttribute('aria-label', 'January 2026');
   });
 });
@@ -350,7 +350,7 @@ describe('DatePicker — Trigger', () => {
 
   it('renders a button with the calendar icon', () => {
     renderWithTrigger();
-    const trigger = screen.getByRole('button', { name: '캘린더 열기' });
+    const trigger = screen.getByRole('button', { name: 'Open calendar' });
     expect(trigger).toBeInTheDocument();
     expect(trigger.querySelector('svg')).toBeInTheDocument();
   });
@@ -359,17 +359,17 @@ describe('DatePicker — Trigger', () => {
     const user = userEvent.setup();
     renderWithTrigger({ value: '2026-01-15T00:00:00.000Z' });
 
-    const trigger = screen.getByRole('button', { name: '캘린더 열기' });
+    const trigger = screen.getByRole('button', { name: 'Open calendar' });
     await user.click(trigger);
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(trigger).toHaveAttribute('aria-label', '캘린더 닫기');
+    expect(trigger).toHaveAttribute('aria-label', 'Close calendar');
   });
 
   it('closes the popover when Escape is pressed after Trigger opens it', async () => {
     const user = userEvent.setup();
     renderWithTrigger({ value: '2026-01-15T00:00:00.000Z' });
 
-    await user.click(screen.getByRole('button', { name: '캘린더 열기' }));
+    await user.click(screen.getByRole('button', { name: 'Open calendar' }));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
     await user.keyboard('{Escape}');
@@ -380,7 +380,7 @@ describe('DatePicker — Trigger', () => {
     const user = userEvent.setup();
     renderWithTrigger({ value: '2026-01-15T00:00:00.000Z' });
 
-    const trigger = screen.getByRole('button', { name: '캘린더 열기' });
+    const trigger = screen.getByRole('button', { name: 'Open calendar' });
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
 
     await user.click(trigger);
@@ -390,7 +390,7 @@ describe('DatePicker — Trigger', () => {
 
   it('is disabled when the picker is disabled', () => {
     renderWithTrigger({ disabled: true });
-    expect(screen.getByRole('button', { name: '캘린더 열기' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Open calendar' })).toBeDisabled();
   });
 
   it('renders custom children instead of the default icon', () => {
@@ -402,7 +402,7 @@ describe('DatePicker — Trigger', () => {
         </DatePicker.Popover>
       </DatePicker>,
     );
-    expect(screen.getByRole('button', { name: '캘린더 열기' })).toHaveTextContent('Open');
+    expect(screen.getByRole('button', { name: 'Open calendar' })).toHaveTextContent('Open');
   });
 
   it('calls the custom onClick handler alongside toggling', async () => {
@@ -416,7 +416,7 @@ describe('DatePicker — Trigger', () => {
         </DatePicker.Popover>
       </DatePicker>,
     );
-    await user.click(screen.getByRole('button', { name: '캘린더 열기' }));
+    await user.click(screen.getByRole('button', { name: 'Open calendar' }));
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 });

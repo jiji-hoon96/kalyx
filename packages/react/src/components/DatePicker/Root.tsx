@@ -1,7 +1,7 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { DateFnsAdapter } from '@kalyx/core';
-import type { DateAdapter, DisabledRule, ISODateString, WeekStartsOn } from '@kalyx/core';
+import { DateFnsAdapter, DEFAULT_DATEPICKER_LABELS } from '@kalyx/core';
+import type { DateAdapter, DatePickerLabels, DisabledRule, ISODateString, WeekStartsOn } from '@kalyx/core';
 import { DatePickerContext } from '../../context/DatePickerContext.js';
 import type { DatePickerContextValue } from '../../context/DatePickerContext.js';
 
@@ -44,6 +44,8 @@ export interface DatePickerRootProps {
   locale?: string;
   /** Date adapter */
   adapter?: DateAdapter;
+  /** Override ARIA labels (defaults to English) */
+  labels?: Partial<DatePickerLabels>;
   /** Child components */
   children: ReactNode;
 }
@@ -58,6 +60,7 @@ export function DatePickerRoot({
   displayFormat = 'yyyy-MM-dd',
   locale = 'en-US',
   adapter = DateFnsAdapter,
+  labels: labelsProp,
   children,
 }: DatePickerRootProps) {
   const pickerId = useId();
@@ -79,6 +82,11 @@ export function DatePickerRoot({
 
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
     currentValue ?? adapter.today(),
+  );
+
+  const mergedLabels = useMemo(
+    () => ({ ...DEFAULT_DATEPICKER_LABELS, ...labelsProp }),
+    [labelsProp],
   );
 
   const isDisabled = typeof disabled === 'boolean' ? disabled : false;
@@ -144,6 +152,7 @@ export function DatePickerRoot({
       isDisabled,
       isReadOnly: readOnly,
       pickerId,
+      labels: mergedLabels,
     }),
     [
       currentValue,
@@ -162,6 +171,7 @@ export function DatePickerRoot({
       isDisabled,
       readOnly,
       pickerId,
+      mergedLabels,
     ],
   );
 

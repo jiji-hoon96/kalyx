@@ -55,7 +55,7 @@ export function TimePickerHourList({ classNames, ...props }: TimePickerHourListP
     <ul
       ref={listRef}
       role="listbox"
-      aria-label="시"
+      aria-label={ctx.labels.hourList}
       aria-disabled={isDisabled || undefined}
       className={classNames?.root}
       {...props}
@@ -73,7 +73,7 @@ export function TimePickerHourList({ classNames, ...props }: TimePickerHourListP
             role="option"
             aria-selected={isSelected}
             aria-disabled={isDisabled || undefined}
-            aria-label={`${hour}시`}
+            aria-label={ctx.labels.hourOption(hour)}
             data-selected={isSelected || undefined}
             tabIndex={isSelected ? 0 : -1}
             className={optionClass}

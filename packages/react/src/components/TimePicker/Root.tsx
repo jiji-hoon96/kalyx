@@ -1,7 +1,7 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { DateFnsAdapter, getTime, setTime as setTimeOnIso } from '@kalyx/core';
-import type { ISODateString, TimeValue } from '@kalyx/core';
+import { DateFnsAdapter, DEFAULT_TIMEPICKER_LABELS, getTime, setTime as setTimeOnIso } from '@kalyx/core';
+import type { ISODateString, TimePickerLabels, TimeValue } from '@kalyx/core';
 import { TimePickerContext } from '../../context/TimePickerContext.js';
 import type {
   TimePickerContextValue,
@@ -38,6 +38,8 @@ export interface TimePickerRootProps {
   disabled?: boolean;
   /** Read-only */
   readOnly?: boolean;
+  /** Override ARIA labels (defaults to English) */
+  labels?: Partial<TimePickerLabels>;
   /** Child components */
   children: ReactNode;
 }
@@ -56,9 +58,14 @@ export function TimePickerRoot({
   withSeconds = false,
   disabled = false,
   readOnly = false,
+  labels: labelsProp,
   children,
 }: TimePickerRootProps) {
   const pickerId = useId();
+  const mergedLabels = useMemo(
+    () => ({ ...DEFAULT_TIMEPICKER_LABELS, ...labelsProp }),
+    [labelsProp],
+  );
   const isControlled = useRef(controlledValue !== undefined).current;
 
   const [uncontrolledValue, setUncontrolledValue] = useState<ISODateString | null>(
@@ -94,8 +101,9 @@ export function TimePickerRoot({
       isReadOnly: readOnly,
       currentTime,
       pickerId,
+      labels: mergedLabels,
     }),
-    [currentValue, setTime, format, step, withSeconds, disabled, readOnly, currentTime, pickerId],
+    [currentValue, setTime, format, step, withSeconds, disabled, readOnly, currentTime, pickerId, mergedLabels],
   );
 
   return (
