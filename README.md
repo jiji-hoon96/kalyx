@@ -41,13 +41,19 @@ import { DatePicker } from '@kalyx/react';
 
 The React ecosystem in 2026 has two extremes — Kalyx fills the gap.
 
-| Library | Headless | Input | TimePicker | RangePicker | SSR | Bundle (gzip) |
-| --- | --- | --- | --- | --- | --- | --- |
-| react-day-picker | ✅ | ❌ | ❌ | ✅ | ✅ | ~22 KB |
-| react-datepicker | ❌ (CSS required) | ✅ | ✅ | ✅ | △ | ~60 KB |
-| Ark UI | ✅ | ✅ | ❌ (removed) | ✅ | ✅ | Large |
-| React Aria | ✅ | ✅ | ✅ | ✅ | ✅ | Large |
-| **Kalyx** | ✅ | ✅ | ✅ | ✅ | ✅ | **~9 KB** |
+| | Kalyx | react-datepicker | react-day-picker | Ark UI | React Aria |
+|---|---|---|---|---|---|
+| Bundle (gzip) | **9.4 KB** | ~40-60 KB | ~22 KB | ~45 KB (full) | Large |
+| Headless (Zero CSS) | ✅ | ❌ CSS required | ✅ | ✅ | ✅ |
+| DatePicker | ✅ | ✅ | ✅ | ✅ | ✅ |
+| RangePicker | ✅ | ✅ | ✅ | ✅ | ✅ |
+| TimePicker | ✅ | ✅ | ❌ | ❌ (removed) | ✅ |
+| DateTimePicker | ✅ | ✅ | ❌ | ❌ | ✅ |
+| Composition API | ✅ | ❌ 100+ props | ❌ | ✅ | ✅ |
+| SSR Safe | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| TypeScript Strict | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| date-fns compatible | ✅ | ✅ | ✅ | ❌ | ❌ |
+| React 19+ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ## Features
 
@@ -96,6 +102,53 @@ Value is always an `ISODateString | null`:
 ```
 
 See the [Quick Start guide →](https://kalyx-docs.vercel.app/docs/getting-started/quick-start)
+
+## Styling with Tailwind CSS
+
+Kalyx is headless — bring your own styles via `classNames` and `data-*` attributes.
+
+### Using classNames
+
+```tsx
+<DatePicker value={date} onChange={setDate}>
+  <DatePicker.Input
+    className="w-64 rounded-lg border border-gray-300 px-3 py-2 text-sm
+               focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+    placeholder="Select a date"
+  />
+  <DatePicker.Popover className="mt-1 rounded-xl border bg-white p-4 shadow-lg">
+    <DatePicker.Calendar
+      classNames={{
+        header: "flex items-center justify-between mb-2",
+        title: "text-sm font-semibold",
+        navButton: "p-1 rounded hover:bg-gray-100",
+        grid: "w-full border-collapse",
+        weekdayHeader: "text-xs font-medium text-gray-500 pb-2",
+        day: "h-9 w-9 rounded-lg text-sm hover:bg-gray-100",
+        daySelected: "bg-blue-600 text-white hover:bg-blue-700",
+        dayToday: "font-bold text-blue-600",
+        dayDisabled: "text-gray-300 cursor-not-allowed",
+        dayOutsideMonth: "text-gray-300",
+      }}
+    />
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+### Using data attributes
+
+All interactive states are exposed as `data-*` attributes for CSS or Tailwind arbitrary selectors:
+
+```css
+[data-selected] { @apply bg-blue-600 text-white; }
+[data-today] { @apply font-bold ring-1 ring-blue-400; }
+[data-disabled] { @apply opacity-30 cursor-not-allowed; }
+[data-in-range] { @apply bg-blue-100; }
+[data-range-start] { @apply rounded-l-lg bg-blue-600 text-white; }
+[data-range-end] { @apply rounded-r-lg bg-blue-600 text-white; }
+```
+
+See more recipes: [Tailwind](https://kalyx-docs.vercel.app/docs/recipes/tailwind) · [shadcn/ui](https://kalyx-docs.vercel.app/docs/recipes/shadcn) · [React Hook Form](https://kalyx-docs.vercel.app/docs/recipes/react-hook-form)
 
 ## Components
 
