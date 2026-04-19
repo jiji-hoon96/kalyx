@@ -1,11 +1,12 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { DateFnsAdapter } from '@kalyx/core';
+import { DateFnsAdapter, DEFAULT_RANGEPICKER_LABELS } from '@kalyx/core';
 import type {
   DateAdapter,
   DateRange,
   DisabledRule,
   ISODateString,
+  RangePickerLabels,
   WeekStartsOn,
 } from '@kalyx/core';
 import { RangePickerContext } from '../../context/RangePickerContext.js';
@@ -49,6 +50,8 @@ export interface RangePickerRootProps {
   locale?: string;
   /** Date adapter */
   adapter?: DateAdapter;
+  /** Override ARIA labels (defaults to English) */
+  labels?: Partial<RangePickerLabels>;
   /** Child components */
   children: ReactNode;
 }
@@ -63,6 +66,7 @@ export function RangePickerRoot({
   displayFormat = 'yyyy-MM-dd',
   locale = 'en-US',
   adapter = DateFnsAdapter,
+  labels: labelsProp,
   children,
 }: RangePickerRootProps) {
   const pickerId = useId();
@@ -89,6 +93,11 @@ export function RangePickerRoot({
 
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
     currentValue.start ?? adapter.today(),
+  );
+
+  const mergedLabels = useMemo(
+    () => ({ ...DEFAULT_RANGEPICKER_LABELS, ...labelsProp }),
+    [labelsProp],
   );
 
   const isDisabled = typeof disabled === 'boolean' ? disabled : false;
@@ -195,6 +204,7 @@ export function RangePickerRoot({
       isDisabled,
       isReadOnly: readOnly,
       pickerId,
+      labels: mergedLabels,
     }),
     [
       currentValue,
@@ -216,6 +226,7 @@ export function RangePickerRoot({
       isDisabled,
       readOnly,
       pickerId,
+      mergedLabels,
     ],
   );
 

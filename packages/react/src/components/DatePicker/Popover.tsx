@@ -23,7 +23,7 @@ export function DatePickerPopover({ children, ...props }: DatePickerPopoverProps
       ref={setFloatingRef}
       id={calendarId}
       role="dialog"
-      aria-label="날짜 선택"
+      aria-label={ctx.labels.popoverLabel}
       aria-modal="false"
       style={floatingStyles}
       {...props}

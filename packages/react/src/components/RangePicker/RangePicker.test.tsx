@@ -63,8 +63,8 @@ describe('RangePicker — basic interactions', () => {
     renderRangePicker();
     const combos = screen.getAllByRole('combobox');
     expect(combos).toHaveLength(2);
-    expect(screen.getByLabelText('시작일')).toBeInTheDocument();
-    expect(screen.getByLabelText('종료일')).toBeInTheDocument();
+    expect(screen.getByLabelText('Start date')).toBeInTheDocument();
+    expect(screen.getByLabelText('End date')).toBeInTheDocument();
   });
 
   it('keeps the popover closed on initial render', () => {
@@ -76,7 +76,7 @@ describe('RangePicker — basic interactions', () => {
     const user = userEvent.setup();
     renderRangePicker();
 
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByRole('grid')).toBeInTheDocument();
   });
@@ -91,7 +91,7 @@ describe('RangePicker — basic interactions', () => {
       />,
     );
 
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
 
     // First click (Jan 10) sets start
     const day10 = screen.getByRole('button', { name: /January 10, 2026/ });
@@ -122,7 +122,7 @@ describe('RangePicker — basic interactions', () => {
       />,
     );
 
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
 
     // First click (Jan 20) sets start
     await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
@@ -142,7 +142,7 @@ describe('RangePicker — basic interactions', () => {
       />,
     );
 
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
     await user.click(screen.getByRole('button', { name: /January 10, 2026/ }));
 
     // Popover stays open while only start is selected
@@ -158,7 +158,7 @@ describe('RangePicker — basic interactions', () => {
     const user = userEvent.setup();
     renderRangePicker();
 
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
     await user.keyboard('{Escape}');
@@ -172,14 +172,14 @@ describe('RangePicker — basic interactions', () => {
         end: '2026-01-20T00:00:00.000Z',
       },
     });
-    expect(screen.getByLabelText('시작일')).toHaveValue('2026-01-10');
-    expect(screen.getByLabelText('종료일')).toHaveValue('2026-01-20');
+    expect(screen.getByLabelText('Start date')).toHaveValue('2026-01-10');
+    expect(screen.getByLabelText('End date')).toHaveValue('2026-01-20');
   });
 
   it('renders empty inputs for an empty range', () => {
     renderRangePicker({ value: EMPTY });
-    expect(screen.getByLabelText('시작일')).toHaveValue('');
-    expect(screen.getByLabelText('종료일')).toHaveValue('');
+    expect(screen.getByLabelText('Start date')).toHaveValue('');
+    expect(screen.getByLabelText('End date')).toHaveValue('');
   });
 });
 
@@ -191,8 +191,8 @@ describe('RangePicker — controlled / uncontrolled modes', () => {
         end: '2026-06-20T00:00:00.000Z',
       },
     });
-    expect(screen.getByLabelText('시작일')).toHaveValue('2026-06-15');
-    expect(screen.getByLabelText('종료일')).toHaveValue('2026-06-20');
+    expect(screen.getByLabelText('Start date')).toHaveValue('2026-06-15');
+    expect(screen.getByLabelText('End date')).toHaveValue('2026-06-20');
   });
 
   it('shows defaultValue as the initial value in uncontrolled mode', () => {
@@ -202,16 +202,16 @@ describe('RangePicker — controlled / uncontrolled modes', () => {
         end: '2026-03-15T00:00:00.000Z',
       },
     });
-    expect(screen.getByLabelText('시작일')).toHaveValue('2026-03-01');
-    expect(screen.getByLabelText('종료일')).toHaveValue('2026-03-15');
+    expect(screen.getByLabelText('Start date')).toHaveValue('2026-03-01');
+    expect(screen.getByLabelText('End date')).toHaveValue('2026-03-15');
   });
 });
 
 describe('RangePicker — disabled state', () => {
   it('disables the inputs when disabled=true', () => {
     renderRangePicker({ disabled: true });
-    expect(screen.getByLabelText('시작일')).toBeDisabled();
-    expect(screen.getByLabelText('종료일')).toBeDisabled();
+    expect(screen.getByLabelText('Start date')).toBeDisabled();
+    expect(screen.getByLabelText('End date')).toBeDisabled();
   });
 });
 
@@ -222,7 +222,7 @@ describe('RangePicker — keyboard navigation', () => {
       value: { start: '2026-01-15T00:00:00.000Z', end: '2026-01-20T00:00:00.000Z' },
     });
 
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
     // Focus lands on the start (Jan 15); opening resets selectingTarget to 'start'
 
     // ArrowRight advances by one day (to the 16th)
@@ -246,7 +246,7 @@ describe('RangePicker — range visualization', () => {
       },
     });
 
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
 
     const day12 = screen.getByRole('button', { name: /January 12, 2026/ });
     expect(day12).toHaveAttribute('data-in-range', 'true');
@@ -261,7 +261,7 @@ describe('RangePicker — range visualization', () => {
       },
     });
 
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
 
     const day10 = screen.getByRole('button', { name: /January 10, 2026/ });
     const day15 = screen.getByRole('button', { name: /January 15, 2026/ });
@@ -288,7 +288,7 @@ describe('RangePicker — context errors', () => {
 describe('RangePicker — accessibility', () => {
   it('sets the correct ARIA attributes on the input', () => {
     renderRangePicker();
-    const start = screen.getByLabelText('시작일');
+    const start = screen.getByLabelText('Start date');
     expect(start).toHaveAttribute('role', 'combobox');
     expect(start).toHaveAttribute('aria-expanded', 'false');
     expect(start).toHaveAttribute('aria-haspopup', 'dialog');
@@ -298,7 +298,7 @@ describe('RangePicker — accessibility', () => {
     const user = userEvent.setup();
     renderRangePicker();
 
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
     const grid = screen.getByRole('grid');
     expect(grid).toHaveAttribute('aria-multiselectable', 'true');
   });
@@ -323,7 +323,7 @@ describe('RangePicker — accessibility', () => {
       },
     });
 
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
 
     const results = await axe(container, {
       rules: {
@@ -358,14 +358,14 @@ describe('RangePicker — Presets', () => {
   it('renders Presets as a group', async () => {
     const user = userEvent.setup();
     renderWithPresets();
-    await user.click(screen.getByLabelText('시작일'));
-    expect(screen.getByRole('group', { name: '날짜 범위 프리셋' })).toBeInTheDocument();
+    await user.click(screen.getByLabelText('Start date'));
+    expect(screen.getByRole('group', { name: 'Date range presets' })).toBeInTheDocument();
   });
 
   it('passes the correct range to onChange when a preset is clicked', async () => {
     const user = userEvent.setup();
     const { onChange } = renderWithPresets();
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
 
     await user.click(screen.getByRole('option', { name: 'Today' }));
 
@@ -384,7 +384,7 @@ describe('RangePicker — Presets', () => {
   it('spans seven days for the "Last 7 days" preset', async () => {
     const user = userEvent.setup();
     const { onChange } = renderWithPresets();
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
 
     await user.click(screen.getByRole('option', { name: 'Last 7 days' }));
 
@@ -401,7 +401,7 @@ describe('RangePicker — Presets', () => {
   it('closes the popover after a preset is clicked', async () => {
     const user = userEvent.setup();
     renderWithPresets();
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
     await user.click(screen.getByRole('option', { name: 'Today' }));
@@ -411,13 +411,13 @@ describe('RangePicker — Presets', () => {
   it('marks the active preset with aria-selected', async () => {
     const user = userEvent.setup();
     renderWithPresets();
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
 
     // Click "Today"
     await user.click(screen.getByRole('option', { name: 'Today' }));
 
     // Reopen the popover
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
 
     // The "Today" option should be active
     const todayOption = screen.getByRole('option', { name: 'Today' });
@@ -427,7 +427,7 @@ describe('RangePicker — Presets', () => {
   it('sets the correct range for "Last 30 days"', async () => {
     const user = userEvent.setup();
     const { onChange } = renderWithPresets();
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
 
     await user.click(screen.getByRole('option', { name: 'Last 30 days' }));
 
@@ -443,7 +443,7 @@ describe('RangePicker — Presets', () => {
   it('sets the correct range for "This month"', async () => {
     const user = userEvent.setup();
     const { onChange } = renderWithPresets();
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
 
     await user.click(screen.getByRole('option', { name: 'This month' }));
 
@@ -471,7 +471,7 @@ describe('RangePicker — Presets', () => {
         </RangePicker.Popover>
       </RangePicker>,
     );
-    await user.click(screen.getByLabelText('시작일'));
+    await user.click(screen.getByLabelText('Start date'));
     await user.click(screen.getByRole('option', { name: 'Q1 2026' }));
 
     expect(onChange).toHaveBeenCalledWith({

@@ -72,7 +72,7 @@ export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputPro
         aria-haspopup="dialog"
         aria-controls={ctx.isOpen ? calendarId : undefined}
         aria-autocomplete="none"
-        aria-label={part === 'start' ? '시작일' : '종료일'}
+        aria-label={part === 'start' ? ctx.labels.startInput : ctx.labels.endInput}
         autoComplete="off"
         value={displayValue}
         disabled={ctx.isDisabled || props.disabled}

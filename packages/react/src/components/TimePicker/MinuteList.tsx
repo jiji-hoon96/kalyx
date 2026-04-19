@@ -43,7 +43,7 @@ export function TimePickerMinuteList({ classNames, ...props }: TimePickerMinuteL
     <ul
       ref={listRef}
       role="listbox"
-      aria-label="분"
+      aria-label={ctx.labels.minuteList}
       aria-disabled={isDisabled || undefined}
       className={classNames?.root}
       {...props}
@@ -61,7 +61,7 @@ export function TimePickerMinuteList({ classNames, ...props }: TimePickerMinuteL
             role="option"
             aria-selected={isSelected}
             aria-disabled={isDisabled || undefined}
-            aria-label={`${minute}분`}
+            aria-label={ctx.labels.minuteOption(minute)}
             data-selected={isSelected || undefined}
             tabIndex={isSelected ? 0 : -1}
             className={optionClass}

@@ -60,7 +60,8 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
         type="text"
         role="combobox"
         readOnly
-        aria-label="날짜 및 시간"
+        aria-label={ctx.labels.dateTimeInput ?? 'Date and time'}
+
         aria-expanded={ctx.isOpen}
         aria-haspopup="dialog"
         aria-controls={ctx.isOpen ? calendarId : undefined}

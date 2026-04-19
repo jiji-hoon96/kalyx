@@ -5,6 +5,7 @@ import type {
   DateRange,
   DisabledRule,
   ISODateString,
+  RangePickerLabels,
   WeekStartsOn,
 } from '@kalyx/core';
 
@@ -52,6 +53,8 @@ export interface RangePickerContextValue {
   isReadOnly: boolean;
   /** Unique ID */
   pickerId: string;
+  /** ARIA labels */
+  labels: RangePickerLabels;
 }
 
 export const RangePickerContext = createContext<RangePickerContextValue | null>(null);

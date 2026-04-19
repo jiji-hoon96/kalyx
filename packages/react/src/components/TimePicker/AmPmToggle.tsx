@@ -57,7 +57,7 @@ export function TimePickerAmPmToggle({ classNames, ...props }: TimePickerAmPmTog
   };
 
   return (
-    <div role="radiogroup" aria-label="오전/오후" className={classNames?.root} {...props}>
+    <div role="radiogroup" aria-label={ctx.labels.amPmToggle} className={classNames?.root} {...props}>
       {renderButton('AM')}
       {renderButton('PM')}
     </div>

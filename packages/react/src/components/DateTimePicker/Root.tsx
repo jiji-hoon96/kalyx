@@ -2,11 +2,14 @@ import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import {
   DateFnsAdapter,
+  DEFAULT_DATEPICKER_LABELS,
+  DEFAULT_TIMEPICKER_LABELS,
   getTime,
   setTime as setTimeOnIso,
 } from '@kalyx/core';
 import type {
   DateAdapter,
+  DateTimePickerLabels,
   DisabledRule,
   ISODateString,
   TimeValue,
@@ -59,6 +62,8 @@ export interface DateTimePickerRootProps {
   locale?: string;
   /** Date adapter */
   adapter?: DateAdapter;
+  /** Override ARIA labels (defaults to English) */
+  labels?: Partial<DateTimePickerLabels>;
   /** Child components */
   children: ReactNode;
 }
@@ -92,9 +97,18 @@ export function DateTimePickerRoot({
   displayFormat = 'yyyy-MM-dd HH:mm',
   locale = 'en-US',
   adapter = DateFnsAdapter,
+  labels: labelsProp,
   children,
 }: DateTimePickerRootProps) {
   const pickerId = useId();
+  const mergedDateLabels = useMemo(
+    () => ({ ...DEFAULT_DATEPICKER_LABELS, ...labelsProp }),
+    [labelsProp],
+  );
+  const mergedTimeLabels = useMemo(
+    () => ({ ...DEFAULT_TIMEPICKER_LABELS, ...labelsProp }),
+    [labelsProp],
+  );
   const isControlled = useRef(controlledValue !== undefined).current;
   const referenceRef = useRef<HTMLElement | null>(null);
 
@@ -203,6 +217,7 @@ export function DateTimePickerRoot({
       isDisabled,
       isReadOnly: readOnly,
       pickerId,
+      labels: mergedDateLabels,
     }),
     [
       currentValue,
@@ -221,6 +236,7 @@ export function DateTimePickerRoot({
       isDisabled,
       readOnly,
       pickerId,
+      mergedDateLabels,
     ],
   );
 
@@ -236,8 +252,9 @@ export function DateTimePickerRoot({
       isReadOnly: readOnly,
       currentTime,
       pickerId,
+      labels: mergedTimeLabels,
     }),
-    [currentValue, setTime, format, step, isDisabled, readOnly, currentTime, pickerId],
+    [currentValue, setTime, format, step, isDisabled, readOnly, currentTime, pickerId, mergedTimeLabels],
   );
 
   return (

@@ -39,8 +39,9 @@ export interface RangePickerPresetsProps extends Omit<HTMLAttributes<HTMLDivElem
  * ```
  */
 export function RangePickerPresets({ classNames, children, ...props }: RangePickerPresetsProps) {
+  const ctx = useRangePickerContext('RangePicker.Presets');
   return (
-    <div role="group" aria-label="날짜 범위 프리셋" className={classNames?.root} {...props}>
+    <div role="group" aria-label={ctx.labels.presetsGroup} className={classNames?.root} {...props}>
       {children}
     </div>
   );

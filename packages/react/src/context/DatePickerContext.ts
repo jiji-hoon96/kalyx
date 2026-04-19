@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import type { MutableRefObject } from 'react';
-import type { DateAdapter, DisabledRule, ISODateString, WeekStartsOn } from '@kalyx/core';
+import type { DateAdapter, DatePickerLabels, DisabledRule, ISODateString, WeekStartsOn } from '@kalyx/core';
 
 export interface DatePickerContextValue {
   /** Floating UI reference element (set by Input/Trigger, read by Popover) */
@@ -41,6 +41,8 @@ export interface DatePickerContextValue {
   isReadOnly: boolean;
   /** Unique ID (useId-based) */
   pickerId: string;
+  /** ARIA labels */
+  labels: DatePickerLabels;
 }
 
 export const DatePickerContext = createContext<DatePickerContextValue | null>(null);

@@ -31,7 +31,7 @@ export const DatePickerTrigger = forwardRef<HTMLButtonElement, DatePickerTrigger
         }}
         type="button"
         tabIndex={0}
-        aria-label={ctx.isOpen ? '캘린더 닫기' : '캘린더 열기'}
+        aria-label={ctx.isOpen ? ctx.labels.triggerClose : ctx.labels.triggerOpen}
         aria-expanded={ctx.isOpen}
         aria-controls={ctx.isOpen ? calendarId : undefined}
         disabled={ctx.isDisabled || props.disabled}

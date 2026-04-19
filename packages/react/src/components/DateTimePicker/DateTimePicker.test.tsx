@@ -73,7 +73,7 @@ describe('DateTimePicker — basic rendering', () => {
   it('renders the input with combobox role', () => {
     renderDateTimePicker();
     expect(screen.getByRole('combobox')).toBeInTheDocument();
-    expect(screen.getByLabelText('날짜 및 시간')).toBeInTheDocument();
+    expect(screen.getByLabelText('Date and time')).toBeInTheDocument();
   });
 
   it('keeps the popover closed on initial render', () => {
@@ -85,22 +85,22 @@ describe('DateTimePicker — basic rendering', () => {
     const user = userEvent.setup();
     renderDateTimePicker({ value: '2026-01-15T14:30:00.000Z' });
 
-    await user.click(screen.getByLabelText('날짜 및 시간'));
+    await user.click(screen.getByLabelText('Date and time'));
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByRole('grid')).toBeInTheDocument(); // Calendar
-    expect(screen.getByRole('listbox', { name: '시' })).toBeInTheDocument();
-    expect(screen.getByRole('listbox', { name: '분' })).toBeInTheDocument();
+    expect(screen.getByRole('listbox', { name: 'Hour' })).toBeInTheDocument();
+    expect(screen.getByRole('listbox', { name: 'Minute' })).toBeInTheDocument();
   });
 
   it('formats the value as "yyyy-MM-dd HH:mm" in the input', () => {
     renderDateTimePicker({ value: '2026-01-15T14:30:00.000Z' });
-    expect(screen.getByLabelText('날짜 및 시간')).toHaveValue('2026-01-15 14:30');
+    expect(screen.getByLabelText('Date and time')).toHaveValue('2026-01-15 14:30');
   });
 
   it('renders an empty input when value is null', () => {
     renderDateTimePicker({ value: null });
-    expect(screen.getByLabelText('날짜 및 시간')).toHaveValue('');
+    expect(screen.getByLabelText('Date and time')).toHaveValue('');
   });
 });
 
@@ -115,7 +115,7 @@ describe('DateTimePicker — preserves date and time independently', () => {
       />,
     );
 
-    await user.click(screen.getByLabelText('날짜 및 시간'));
+    await user.click(screen.getByLabelText('Date and time'));
 
     const day20 = screen.getByRole('button', { name: /January 20, 2026/ });
     await user.click(day20);
@@ -137,9 +137,9 @@ describe('DateTimePicker — preserves date and time independently', () => {
       />,
     );
 
-    await user.click(screen.getByLabelText('날짜 및 시간'));
+    await user.click(screen.getByLabelText('Date and time'));
 
-    const hour18 = screen.getByRole('option', { name: '18시' });
+    const hour18 = screen.getByRole('option', { name: '18 hours' });
     await user.click(hour18);
 
     const newValue = onChange.mock.calls[0]![0] as string;
@@ -159,9 +159,9 @@ describe('DateTimePicker — preserves date and time independently', () => {
       />,
     );
 
-    await user.click(screen.getByLabelText('날짜 및 시간'));
+    await user.click(screen.getByLabelText('Date and time'));
 
-    const min45 = screen.getByRole('option', { name: '45분' });
+    const min45 = screen.getByRole('option', { name: '45 minutes' });
     await user.click(min45);
 
     const newValue = onChange.mock.calls[0]![0] as string;
@@ -179,14 +179,14 @@ describe('DateTimePicker — preserves date and time independently', () => {
       />,
     );
 
-    await user.click(screen.getByLabelText('날짜 및 시간'));
+    await user.click(screen.getByLabelText('Date and time'));
 
     // 1) Click day 20
     await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
     // 2) Click hour 18
-    await user.click(screen.getByRole('option', { name: '18시' }));
+    await user.click(screen.getByRole('option', { name: '18 hours' }));
     // 3) Click minute 30
-    await user.click(screen.getByRole('option', { name: '30분' }));
+    await user.click(screen.getByRole('option', { name: '30 minutes' }));
 
     const lastValue = onChange.mock.calls[onChange.mock.calls.length - 1]![0] as string;
     expect(lastValue).toMatch(/^2026-01-20T18:30:/);
@@ -198,7 +198,7 @@ describe('DateTimePicker — auto-close is disabled', () => {
     const user = userEvent.setup();
     render(<ControlledDateTimePicker initialValue="2026-01-15T10:00:00.000Z" />);
 
-    await user.click(screen.getByLabelText('날짜 및 시간'));
+    await user.click(screen.getByLabelText('Date and time'));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
@@ -211,9 +211,9 @@ describe('DateTimePicker — auto-close is disabled', () => {
     const user = userEvent.setup();
     render(<ControlledDateTimePicker initialValue="2026-01-15T10:00:00.000Z" />);
 
-    await user.click(screen.getByLabelText('날짜 및 시간'));
+    await user.click(screen.getByLabelText('Date and time'));
 
-    await user.click(screen.getByRole('option', { name: '18시' }));
+    await user.click(screen.getByRole('option', { name: '18 hours' }));
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
@@ -222,7 +222,7 @@ describe('DateTimePicker — auto-close is disabled', () => {
     const user = userEvent.setup();
     renderDateTimePicker({ value: '2026-01-15T10:00:00.000Z' });
 
-    await user.click(screen.getByLabelText('날짜 및 시간'));
+    await user.click(screen.getByLabelText('Date and time'));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
     await user.keyboard('{Escape}');
@@ -234,9 +234,9 @@ describe('DateTimePicker — 12-hour mode', () => {
   it('renders AmPmToggle in 12-hour mode', async () => {
     const user = userEvent.setup();
     renderDateTimePicker({ value: '2026-01-15T14:30:00.000Z', format: '12h' });
-    await user.click(screen.getByLabelText('날짜 및 시간'));
+    await user.click(screen.getByLabelText('Date and time'));
 
-    expect(screen.getByRole('radiogroup', { name: '오전/오후' })).toBeInTheDocument();
+    expect(screen.getByRole('radiogroup', { name: 'AM/PM' })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'PM' })).toBeChecked();
   });
 
@@ -251,7 +251,7 @@ describe('DateTimePicker — 12-hour mode', () => {
       />,
     );
 
-    await user.click(screen.getByLabelText('날짜 및 시간'));
+    await user.click(screen.getByLabelText('Date and time'));
     await user.click(screen.getByRole('radio', { name: 'AM' }));
 
     // 14:30 PM -> 02:30 AM
@@ -262,21 +262,21 @@ describe('DateTimePicker — 12-hour mode', () => {
 describe('DateTimePicker — disabled state', () => {
   it('disables the input when disabled=true', () => {
     renderDateTimePicker({ value: '2026-01-15T14:30:00.000Z', disabled: true });
-    expect(screen.getByLabelText('날짜 및 시간')).toBeDisabled();
+    expect(screen.getByLabelText('Date and time')).toBeDisabled();
   });
 });
 
 describe('DateTimePicker — uncontrolled mode', () => {
   it('shows defaultValue as the initial value', () => {
     renderDateTimePicker({ defaultValue: '2026-03-20T09:15:00.000Z' });
-    expect(screen.getByLabelText('날짜 및 시간')).toHaveValue('2026-03-20 09:15');
+    expect(screen.getByLabelText('Date and time')).toHaveValue('2026-03-20 09:15');
   });
 });
 
 describe('DateTimePicker — accessibility', () => {
   it('sets the correct ARIA attributes on the input', () => {
     renderDateTimePicker();
-    const input = screen.getByLabelText('날짜 및 시간');
+    const input = screen.getByLabelText('Date and time');
     expect(input).toHaveAttribute('role', 'combobox');
     expect(input).toHaveAttribute('aria-haspopup', 'dialog');
     expect(input).toHaveAttribute('aria-expanded', 'false');
@@ -294,7 +294,7 @@ describe('DateTimePicker — accessibility', () => {
       value: '2026-01-15T14:30:00.000Z',
       format: '24h',
     });
-    await user.click(screen.getByLabelText('날짜 및 시간'));
+    await user.click(screen.getByLabelText('Date and time'));
 
     const results = await axe(container, {
       rules: {
