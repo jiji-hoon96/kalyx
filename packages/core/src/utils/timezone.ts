@@ -1,22 +1,35 @@
 import { parseISO } from 'date-fns';
 import type { ISODateString } from '../types.js';
 
+// ── Intl formatter cache ──
+const formatterCache = new Map<string, Intl.DateTimeFormat>();
+
+function getCachedPartsFormatter(timeZone: string): Intl.DateTimeFormat {
+  const key = `parts:${timeZone}`;
+  let fmt = formatterCache.get(key);
+  if (!fmt) {
+    fmt = new Intl.DateTimeFormat('en-US', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hourCycle: 'h23',
+    });
+    formatterCache.set(key, fmt);
+  }
+  return fmt;
+}
+
 /**
  * Extract the calendar parts (year, month, day, hour, minute, second) of a UTC instant
  * as observed in the given IANA timezone. Runner-agnostic: driven by `Intl.DateTimeFormat`
  * so the result is identical regardless of the process's local timezone.
  */
 function partsInTimezone(utc: Date, timeZone: string) {
-  const dtf = new Intl.DateTimeFormat('en-US', {
-    timeZone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hourCycle: 'h23',
-  });
+  const dtf = getCachedPartsFormatter(timeZone);
   const parts = Object.fromEntries(
     dtf.formatToParts(utc).map((p) => [p.type, p.value]),
   ) as Record<string, string>;
@@ -24,6 +37,7 @@ function partsInTimezone(utc: Date, timeZone: string) {
     year: Number(parts.year),
     month: Number(parts.month),
     day: Number(parts.day),
+    // Some locales/engines return '24' instead of '0' at midnight
     hour: parts.hour === '24' ? 0 : Number(parts.hour),
     minute: Number(parts.minute),
     second: Number(parts.second),

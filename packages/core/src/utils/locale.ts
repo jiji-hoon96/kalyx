@@ -7,15 +7,35 @@ export interface WeekdayInfo {
   full: string;
 }
 
+// ── Intl formatter cache ──
+// Avoid creating new Intl.DateTimeFormat on every call.
+// Key: serialized options string, Value: cached formatter.
+const formatterCache = new Map<string, Intl.DateTimeFormat>();
+
+function getCachedFormatter(
+  locale: string,
+  options: Intl.DateTimeFormatOptions,
+): Intl.DateTimeFormat {
+  const key = `${locale}:${JSON.stringify(options)}`;
+  let fmt = formatterCache.get(key);
+  if (!fmt) {
+    fmt = new Intl.DateTimeFormat(locale, options);
+    formatterCache.set(key, fmt);
+  }
+  return fmt;
+}
+
+/** Reference date for month-invariant operations (any year works) */
+const REFERENCE_YEAR = 2026;
+
 /**
  * Returns a localized month name via Intl.DateTimeFormat.
  * @param month 0-indexed (0 = January)
  * @param locale BCP 47 locale string (e.g. "en-US", "ko-KR", "ja-JP")
  */
 export function getMonthName(month: number, locale = 'en-US'): string {
-  // Fixed to year 2026 (month names are invariant across years)
-  const date = new Date(Date.UTC(2026, month, 1));
-  return new Intl.DateTimeFormat(locale, { month: 'long', timeZone: 'UTC' }).format(date);
+  const date = new Date(Date.UTC(REFERENCE_YEAR, month, 1));
+  return getCachedFormatter(locale, { month: 'long', timeZone: 'UTC' }).format(date);
 }
 
 /**
@@ -23,7 +43,7 @@ export function getMonthName(month: number, locale = 'en-US'): string {
  */
 export function formatMonthYear(year: number, month: number, locale = 'en-US'): string {
   const date = new Date(Date.UTC(year, month, 1));
-  return new Intl.DateTimeFormat(locale, {
+  return getCachedFormatter(locale, {
     year: 'numeric',
     month: 'long',
     timeZone: 'UTC',
@@ -43,18 +63,12 @@ export function getWeekdayNames(
   weekStartsOn: WeekStartsOn = 0,
 ): WeekdayInfo[] {
   // 2026-01-04 is a Sunday (reference point)
-  const shortFormatter = new Intl.DateTimeFormat(locale, {
-    weekday: 'short',
-    timeZone: 'UTC',
-  });
-  const fullFormatter = new Intl.DateTimeFormat(locale, {
-    weekday: 'long',
-    timeZone: 'UTC',
-  });
+  const shortFormatter = getCachedFormatter(locale, { weekday: 'short', timeZone: 'UTC' });
+  const fullFormatter = getCachedFormatter(locale, { weekday: 'long', timeZone: 'UTC' });
 
   const days: WeekdayInfo[] = [];
   for (let i = 0; i < 7; i++) {
-    const date = new Date(Date.UTC(2026, 0, 4 + i)); // Sun..Sat
+    const date = new Date(Date.UTC(REFERENCE_YEAR, 0, 4 + i)); // Sun..Sat
     days.push({
       short: shortFormatter.format(date),
       full: fullFormatter.format(date),
@@ -76,7 +90,7 @@ export function getWeekdayNames(
  */
 export function formatFullDate(iso: string, locale = 'en-US'): string {
   const date = new Date(iso);
-  return new Intl.DateTimeFormat(locale, {
+  return getCachedFormatter(locale, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

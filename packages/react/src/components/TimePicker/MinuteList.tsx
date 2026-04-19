@@ -1,7 +1,8 @@
-import { useCallback, useRef } from 'react';
-import type { HTMLAttributes, KeyboardEvent } from 'react';
+import { useCallback } from 'react';
+import type { HTMLAttributes } from 'react';
 import { generateMinutes } from '@kalyx/core';
 import { useTimePickerContext } from '../../context/TimePickerContext.js';
+import { useListboxNavigation } from '../../hooks/useListboxNavigation.js';
 
 export interface TimePickerMinuteListClassNames {
   root?: string;
@@ -21,7 +22,6 @@ export interface TimePickerMinuteListProps
 export function TimePickerMinuteList({ classNames, ...props }: TimePickerMinuteListProps) {
   const ctx = useTimePickerContext('TimePicker.MinuteList');
   const { step, currentTime, isDisabled, isReadOnly } = ctx;
-  const listRef = useRef<HTMLUListElement>(null);
 
   const minutes = generateMinutes(step);
 
@@ -33,42 +33,11 @@ export function TimePickerMinuteList({ classNames, ...props }: TimePickerMinuteL
     [ctx, isDisabled, isReadOnly],
   );
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLLIElement>, minute: number) => {
-      if (isDisabled || isReadOnly) return;
-      const currentIndex = minutes.indexOf(minute);
-
-      let newIndex = -1;
-      if (e.key === 'ArrowDown') {
-        newIndex = Math.min(currentIndex + 1, minutes.length - 1);
-      } else if (e.key === 'ArrowUp') {
-        newIndex = Math.max(currentIndex - 1, 0);
-      } else if (e.key === 'Home') {
-        newIndex = 0;
-      } else if (e.key === 'End') {
-        newIndex = minutes.length - 1;
-      } else if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        handleSelect(minute);
-        return;
-      } else {
-        return;
-      }
-
-      e.preventDefault();
-      const target = minutes[newIndex];
-      if (target !== undefined) {
-        handleSelect(target);
-        requestAnimationFrame(() => {
-          const next = listRef.current?.querySelector<HTMLLIElement>(
-            '[data-selected="true"]',
-          );
-          next?.focus();
-        });
-      }
-    },
-    [minutes, handleSelect, isDisabled, isReadOnly],
-  );
+  const { listRef, handleKeyDown } = useListboxNavigation({
+    items: minutes,
+    onSelect: handleSelect,
+    disabled: isDisabled || isReadOnly,
+  });
 
   return (
     <ul

@@ -96,8 +96,10 @@ function resolvePreset(key: PresetKey, today: ISODateString, adapter: { addDays:
       };
     }
     case 'thisYear': {
+      // Navigate back to January of the current year
+      const currentMonth = new Date(today).getUTCMonth();
       const yearStart = adapter.startOfMonth(
-        adapter.addMonths(today, -(new Date(today).getUTCMonth())),
+        adapter.addMonths(today, -currentMonth),
       );
       return { start: yearStart, end: today };
     }

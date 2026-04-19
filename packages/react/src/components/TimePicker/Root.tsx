@@ -1,6 +1,6 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { getTime, setTime as setTimeOnIso } from '@kalyx/core';
+import { DateFnsAdapter, getTime, setTime as setTimeOnIso } from '@kalyx/core';
 import type { ISODateString, TimeValue } from '@kalyx/core';
 import { TimePickerContext } from '../../context/TimePickerContext.js';
 import type {
@@ -44,10 +44,7 @@ export interface TimePickerRootProps {
 
 /** Fallback ISO used when value is null (today at 00:00:00 UTC) */
 function getDefaultIso(): ISODateString {
-  const now = new Date();
-  return new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
-  ).toISOString();
+  return DateFnsAdapter.today();
 }
 
 export function TimePickerRoot({

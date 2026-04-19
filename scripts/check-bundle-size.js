@@ -5,7 +5,11 @@ import { gzipSync } from "zlib";
 import { readFileSync, statSync } from "fs";
 
 const TARGET_KB = 12;
-const DIST_PATH = "packages/react/dist/index.js";
+
+const BUNDLES = [
+	{ label: "ESM", path: "packages/react/dist/index.js" },
+	{ label: "CJS", path: "packages/react/dist/index.cjs" },
+];
 
 function getGzipKB(filePath) {
 	const content = readFileSync(filePath);
@@ -18,21 +22,28 @@ function getRawKB(filePath) {
 }
 
 try {
-	const gzipKB = parseFloat(getGzipKB(DIST_PATH));
-	const rawKB = parseFloat(getRawKB(DIST_PATH));
-	const ok = gzipKB <= TARGET_KB;
-
 	console.log("\n📦 Bundle Size Report");
-	console.log("─".repeat(40));
-	console.log(`  파일: ${DIST_PATH}`);
-	console.log(`  원본: ${rawKB}KB`);
-	console.log(`  gzip: ${gzipKB}KB`);
-	console.log(`  목표: ≤ ${TARGET_KB}KB (gzip)`);
-	console.log(`  상태: ${ok ? "✅ OK" : "❌ 초과!"}`);
-	console.log("─".repeat(40));
+	console.log("─".repeat(48));
 
-	if (!ok) {
-		console.error(`\n❌ 번들 크기 초과: ${gzipKB}KB > ${TARGET_KB}KB`);
+	let allOk = true;
+
+	for (const { label, path } of BUNDLES) {
+		const gzipKB = parseFloat(getGzipKB(path));
+		const rawKB = parseFloat(getRawKB(path));
+		const ok = gzipKB <= TARGET_KB;
+		if (!ok) allOk = false;
+
+		console.log(`  [${label}] ${path}`);
+		console.log(`    원본: ${rawKB}KB | gzip: ${gzipKB}KB | ${ok ? "✅" : "❌ 초과!"}`);
+	}
+
+	console.log("─".repeat(48));
+	console.log(`  목표: ≤ ${TARGET_KB}KB (gzip)`);
+	console.log(`  결과: ${allOk ? "✅ PASS" : "❌ FAIL"}`);
+	console.log("─".repeat(48));
+
+	if (!allOk) {
+		console.error("\n❌ 번들 크기 초과!");
 		console.error(
 			"   분석: npx source-map-explorer packages/react/dist/index.js",
 		);

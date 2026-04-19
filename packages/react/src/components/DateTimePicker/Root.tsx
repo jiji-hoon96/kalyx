@@ -65,10 +65,7 @@ export interface DateTimePickerRootProps {
 
 /** Fallback ISO used when value is null (today at 00:00:00 UTC) */
 function getDefaultIso(): ISODateString {
-  const now = new Date();
-  return new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
-  ).toISOString();
+  return DateFnsAdapter.today();
 }
 
 /**

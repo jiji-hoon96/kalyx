@@ -1,7 +1,8 @@
-import { useCallback, useRef } from 'react';
-import type { HTMLAttributes, KeyboardEvent } from 'react';
+import { useCallback } from 'react';
+import type { HTMLAttributes } from 'react';
 import { generateHours, to12Hour, to24Hour } from '@kalyx/core';
 import { useTimePickerContext } from '../../context/TimePickerContext.js';
+import { useListboxNavigation } from '../../hooks/useListboxNavigation.js';
 
 export interface TimePickerHourListClassNames {
   root?: string;
@@ -24,7 +25,6 @@ export interface TimePickerHourListProps
 export function TimePickerHourList({ classNames, ...props }: TimePickerHourListProps) {
   const ctx = useTimePickerContext('TimePicker.HourList');
   const { format, currentTime, isDisabled, isReadOnly } = ctx;
-  const listRef = useRef<HTMLUListElement>(null);
 
   const hours = generateHours(format);
 
@@ -45,43 +45,11 @@ export function TimePickerHourList({ classNames, ...props }: TimePickerHourListP
     [format, currentPeriod, ctx, isDisabled, isReadOnly],
   );
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLLIElement>, hour: number) => {
-      if (isDisabled || isReadOnly) return;
-      const currentIndex = hours.indexOf(hour);
-
-      let newIndex = -1;
-      if (e.key === 'ArrowDown') {
-        newIndex = Math.min(currentIndex + 1, hours.length - 1);
-      } else if (e.key === 'ArrowUp') {
-        newIndex = Math.max(currentIndex - 1, 0);
-      } else if (e.key === 'Home') {
-        newIndex = 0;
-      } else if (e.key === 'End') {
-        newIndex = hours.length - 1;
-      } else if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        handleSelect(hour);
-        return;
-      } else {
-        return;
-      }
-
-      e.preventDefault();
-      const targetHour = hours[newIndex];
-      if (targetHour !== undefined) {
-        handleSelect(targetHour);
-        // Move focus to the newly selected option on the next render
-        requestAnimationFrame(() => {
-          const next = listRef.current?.querySelector<HTMLLIElement>(
-            '[data-selected="true"]',
-          );
-          next?.focus();
-        });
-      }
-    },
-    [hours, handleSelect, isDisabled, isReadOnly],
-  );
+  const { listRef, handleKeyDown } = useListboxNavigation({
+    items: hours,
+    onSelect: handleSelect,
+    disabled: isDisabled || isReadOnly,
+  });
 
   return (
     <ul

@@ -41,7 +41,7 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
     const handleBlur = useCallback(
       (e: React.FocusEvent<HTMLInputElement>) => {
         if (inputText !== null) {
-          const parsed = parseInputValue(inputText, displayFormat, ctx.adapter);
+          const parsed = parseInputValue(inputText, ctx.adapter);
           if (parsed) {
             ctx.selectDate(parsed);
           }
@@ -63,7 +63,7 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
           return;
         }
 
-        const parsed = parseInputValue(text, displayFormat, ctx.adapter);
+        const parsed = parseInputValue(text, ctx.adapter);
         if (parsed) {
           ctx.selectDate(parsed);
           setInputText(null);
@@ -78,7 +78,7 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
           ctx.close();
         } else if (e.key === 'Enter') {
           if (inputText !== null) {
-            const parsed = parseInputValue(inputText, displayFormat, ctx.adapter);
+            const parsed = parseInputValue(inputText, ctx.adapter);
             if (parsed) {
               ctx.selectDate(parsed);
               setInputText(null);
