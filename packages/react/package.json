@@ -1,6 +1,6 @@
 {
 	"name": "@kalyx/react",
-	"version": "0.2.2",
+	"version": "0.3.0",
 	"description": "Headless, SSR-safe React DatePicker",
 	"license": "MIT",
 	"author": "jiji-hoon96",
