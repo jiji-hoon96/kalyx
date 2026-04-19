@@ -1,0 +1,72 @@
+name: Bug Report
+description: Report a bug in Kalyx
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please fill out the sections below.
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: |
+        Provide a minimal reproduction. A CodeSandbox or StackBlitz link is ideal.
+      placeholder: |
+        1. Install @kalyx/react
+        2. Render <DatePicker ...>
+        3. Click on ...
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Kalyx version
+      placeholder: "0.2.2"
+    validations:
+      required: true
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge
+        - Other
+    validations:
+      required: false
+  - type: dropdown
+    id: react-version
+    attributes:
+      label: React version
+      options:
+        - "19.x"
+        - "18.x"
+        - Other
+    validations:
+      required: false
+  - type: checkboxes
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - label: SSR (Next.js App Router)
+        - label: SSR (Next.js Pages Router)
+        - label: Client-side only (Vite, CRA, etc.)
