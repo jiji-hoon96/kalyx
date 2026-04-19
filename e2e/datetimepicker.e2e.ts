@@ -14,7 +14,7 @@ test.describe('DateTimePicker', () => {
 		await expect(page.getByRole('heading', { name: 'DateTimePicker' })).toBeVisible();
 
 		const firstDemo = page.locator('.demo').first();
-		await expect(firstDemo.getByLabel('날짜 및 시간')).toBeVisible();
+		await expect(firstDemo.getByLabel('Date and time')).toBeVisible();
 
 		const hydrationErrors = consoleErrors.filter(
 			(msg) => msg.includes('Hydration') || msg.includes('hydrat'),
@@ -24,18 +24,18 @@ test.describe('DateTimePicker', () => {
 
 	test('input click -> shows Calendar + TimePicker together', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
-		await firstDemo.getByLabel('날짜 및 시간').click();
+		await firstDemo.getByLabel('Date and time').click();
 
 		const dialog = page.getByRole('dialog');
 		await expect(dialog).toBeVisible();
 		await expect(dialog.getByRole('grid')).toBeVisible();
-		await expect(dialog.getByRole('listbox', { name: '시' })).toBeVisible();
-		await expect(dialog.getByRole('listbox', { name: '분' })).toBeVisible();
+		await expect(dialog.getByRole('listbox', { name: 'Hour' })).toBeVisible();
+		await expect(dialog.getByRole('listbox', { name: 'Minute' })).toBeVisible();
 	});
 
 	test('popover stays open after date selection (time can still be picked)', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
-		await firstDemo.getByLabel('날짜 및 시간').click();
+		await firstDemo.getByLabel('Date and time').click();
 
 		const dialog = page.getByRole('dialog');
 		await expect(dialog).toBeVisible();
@@ -50,7 +50,7 @@ test.describe('DateTimePicker', () => {
 
 	test('change date and time sequentially', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
-		const input = firstDemo.getByLabel('날짜 및 시간');
+		const input = firstDemo.getByLabel('Date and time');
 		const initialValue = await input.inputValue();
 
 		await input.click();

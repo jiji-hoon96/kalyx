@@ -25,7 +25,7 @@ test.describe('RangePicker', () => {
 
 	test('select range in start-date -> end-date order', async ({ page }) => {
 		const firstDemo = page.locator('.demo').first();
-		const startInput = firstDemo.getByLabel('시작일');
+		const startInput = firstDemo.getByLabel('Start date');
 		await startInput.click();
 
 		const dialog = page.getByRole('dialog');
@@ -44,6 +44,6 @@ test.describe('RangePicker', () => {
 		await expect(dialog).not.toBeVisible();
 
 		await expect(startInput).not.toHaveValue('');
-		await expect(firstDemo.getByLabel('종료일')).not.toHaveValue('');
+		await expect(firstDemo.getByLabel('End date')).not.toHaveValue('');
 	});
 });

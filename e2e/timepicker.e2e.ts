@@ -13,8 +13,8 @@ test.describe('TimePicker', () => {
 
 		await expect(page.getByRole('heading', { name: 'TimePicker' })).toBeVisible();
 		// HourList and MinuteList are visible
-		await expect(page.getByRole('listbox', { name: '시' })).toBeVisible();
-		await expect(page.getByRole('listbox', { name: '분' })).toBeVisible();
+		await expect(page.getByRole('listbox', { name: 'Hour' })).toBeVisible();
+		await expect(page.getByRole('listbox', { name: 'Minute' })).toBeVisible();
 
 		const hydrationErrors = consoleErrors.filter(
 			(msg) => msg.includes('Hydration') || msg.includes('hydrat'),
@@ -23,11 +23,11 @@ test.describe('TimePicker', () => {
 	});
 
 	test('selecting a time updates the value', async ({ page }) => {
-		const input = page.getByLabel('시간 입력');
+		const input = page.getByLabel('Time');
 		const initialValue = await input.inputValue();
 
 		// select a different hour
-		await page.getByRole('option', { name: '18시' }).click();
+		await page.getByRole('option', { name: '18 hours' }).click();
 
 		// input value has changed
 		await expect(input).not.toHaveValue(initialValue);
@@ -41,7 +41,7 @@ test.describe('TimePicker', () => {
 		await page.getByLabel('12h').click();
 
 		// AmPmToggle becomes visible
-		await expect(page.getByRole('radiogroup', { name: '오전/오후' })).toBeVisible();
+		await expect(page.getByRole('radiogroup', { name: 'AM/PM' })).toBeVisible();
 		await expect(page.getByRole('radio', { name: 'AM' })).toBeVisible();
 		await expect(page.getByRole('radio', { name: 'PM' })).toBeVisible();
 	});
