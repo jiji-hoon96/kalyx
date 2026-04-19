@@ -26,7 +26,7 @@ jobs:
     with:
       scan-args: |-
         --lockfile=pnpm-lock.yaml
-        --fail-on-vuln
+      fail-on-vuln: true
 
   license-check:
     name: License Compatibility
