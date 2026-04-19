@@ -329,6 +329,98 @@ describe('DatePicker — YearGrid', () => {
   });
 });
 
+describe('DatePicker — Trigger', () => {
+  function renderWithTrigger(props: {
+    value?: string | null;
+    onChange?: (v: string | null) => void;
+    disabled?: boolean;
+  } = {}) {
+    const onChange = props.onChange ?? vi.fn();
+    const result = render(
+      <DatePicker value={props.value} onChange={onChange} disabled={props.disabled}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Trigger />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    return { ...result, onChange };
+  }
+
+  it('renders a button with the calendar icon', () => {
+    renderWithTrigger();
+    const trigger = screen.getByRole('button', { name: '캘린더 열기' });
+    expect(trigger).toBeInTheDocument();
+    expect(trigger.querySelector('svg')).toBeInTheDocument();
+  });
+
+  it('opens the popover when clicked', async () => {
+    const user = userEvent.setup();
+    renderWithTrigger({ value: '2026-01-15T00:00:00.000Z' });
+
+    const trigger = screen.getByRole('button', { name: '캘린더 열기' });
+    await user.click(trigger);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(trigger).toHaveAttribute('aria-label', '캘린더 닫기');
+  });
+
+  it('closes the popover when Escape is pressed after Trigger opens it', async () => {
+    const user = userEvent.setup();
+    renderWithTrigger({ value: '2026-01-15T00:00:00.000Z' });
+
+    await user.click(screen.getByRole('button', { name: '캘린더 열기' }));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('sets aria-expanded and aria-controls correctly', async () => {
+    const user = userEvent.setup();
+    renderWithTrigger({ value: '2026-01-15T00:00:00.000Z' });
+
+    const trigger = screen.getByRole('button', { name: '캘린더 열기' });
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    expect(trigger).toHaveAttribute('aria-controls');
+  });
+
+  it('is disabled when the picker is disabled', () => {
+    renderWithTrigger({ disabled: true });
+    expect(screen.getByRole('button', { name: '캘린더 열기' })).toBeDisabled();
+  });
+
+  it('renders custom children instead of the default icon', () => {
+    render(
+      <DatePicker onChange={vi.fn()}>
+        <DatePicker.Trigger>Open</DatePicker.Trigger>
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    expect(screen.getByRole('button', { name: '캘린더 열기' })).toHaveTextContent('Open');
+  });
+
+  it('calls the custom onClick handler alongside toggling', async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    render(
+      <DatePicker onChange={vi.fn()}>
+        <DatePicker.Trigger onClick={onClick} />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('button', { name: '캘린더 열기' }));
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe('DatePicker — SSR safety', () => {
   it('renderToString runs without errors on the server', async () => {
     const { renderToString } = await import('react-dom/server');

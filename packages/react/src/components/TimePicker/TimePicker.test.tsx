@@ -241,6 +241,100 @@ describe('TimePicker — interactions', () => {
   });
 });
 
+describe('TimePicker — keyboard navigation', () => {
+  it('navigates HourList with ArrowDown and selects with Enter', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
+
+    // Focus hour 10 and press ArrowDown -> selects 11
+    const hour10 = screen.getByRole('option', { name: '10시' });
+    hour10.focus();
+    await user.keyboard('{ArrowDown}');
+
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T11:00:/));
+  });
+
+  it('navigates HourList with ArrowUp', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
+
+    const hour10 = screen.getByRole('option', { name: '10시' });
+    hour10.focus();
+    await user.keyboard('{ArrowUp}');
+
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T09:00:/));
+  });
+
+  it('navigates HourList with Home and End', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
+
+    const hour10 = screen.getByRole('option', { name: '10시' });
+    hour10.focus();
+    await user.keyboard('{Home}');
+
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T00:00:/));
+  });
+
+  it('selects hour with Enter key on focused option', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
+
+    const hour10 = screen.getByRole('option', { name: '10시' });
+    hour10.focus();
+    await user.keyboard('{Enter}');
+
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T10:00:/));
+  });
+
+  it('selects hour with Space key', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<ControlledTimePicker initialValue="2026-01-15T10:00:00.000Z" onChange={onChange} />);
+
+    const hour10 = screen.getByRole('option', { name: '10시' });
+    hour10.focus();
+    await user.keyboard(' ');
+
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T10:00:/));
+  });
+
+  it('navigates MinuteList with ArrowDown', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <ControlledTimePicker
+        initialValue="2026-01-15T14:00:00.000Z"
+        step={15}
+        onChange={onChange}
+      />,
+    );
+
+    const min0 = screen.getByRole('option', { name: '0분' });
+    min0.focus();
+    await user.keyboard('{ArrowDown}');
+
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T14:15:/));
+  });
+
+  it('does not navigate past the last item with ArrowDown', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<ControlledTimePicker initialValue="2026-01-15T23:00:00.000Z" onChange={onChange} />);
+
+    const hour23 = screen.getByRole('option', { name: '23시' });
+    hour23.focus();
+    await user.keyboard('{ArrowDown}');
+
+    // Should stay at 23
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T23:00:/));
+  });
+});
+
 describe('TimePicker — disabled state', () => {
   it('disables the input and sets aria-disabled on the listboxes when disabled=true', () => {
     renderTimePicker({ value: '2026-01-15T14:00:00.000Z', disabled: true });

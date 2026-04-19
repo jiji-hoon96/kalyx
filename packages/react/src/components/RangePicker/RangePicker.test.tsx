@@ -408,6 +408,52 @@ describe('RangePicker — Presets', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
+  it('marks the active preset with aria-selected', async () => {
+    const user = userEvent.setup();
+    renderWithPresets();
+    await user.click(screen.getByLabelText('시작일'));
+
+    // Click "Today"
+    await user.click(screen.getByRole('option', { name: 'Today' }));
+
+    // Reopen the popover
+    await user.click(screen.getByLabelText('시작일'));
+
+    // The "Today" option should be active
+    const todayOption = screen.getByRole('option', { name: 'Today' });
+    expect(todayOption).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('sets the correct range for "Last 30 days"', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderWithPresets();
+    await user.click(screen.getByLabelText('시작일'));
+
+    await user.click(screen.getByRole('option', { name: 'Last 30 days' }));
+
+    const call = (onChange as ReturnType<typeof vi.fn>).mock.calls[0]![0] as DateRange;
+    expect(call.start).toBeTruthy();
+    expect(call.end).toBeTruthy();
+    const diffDays = Math.round(
+      (new Date(call.end!).getTime() - new Date(call.start!).getTime()) / (1000 * 60 * 60 * 24),
+    );
+    expect(diffDays).toBe(29);
+  });
+
+  it('sets the correct range for "This month"', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderWithPresets();
+    await user.click(screen.getByLabelText('시작일'));
+
+    await user.click(screen.getByRole('option', { name: 'This month' }));
+
+    const call = (onChange as ReturnType<typeof vi.fn>).mock.calls[0]![0] as DateRange;
+    expect(call.start).toBeTruthy();
+    expect(call.end).toBeTruthy();
+    // Start should be the first of the month
+    expect(call.start).toMatch(/-01T/);
+  });
+
   it('supports explicit ranges via the custom range prop', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
