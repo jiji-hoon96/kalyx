@@ -25,7 +25,14 @@ export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputPro
     const displayFormat = formatProp ?? ctx.displayFormat;
 
     const value = ctx.value[part];
-    const displayValue = value ? ctx.adapter.format(value, displayFormat) : '';
+    let displayValue = '';
+    if (value) {
+      try {
+        displayValue = ctx.adapter.format(value, displayFormat);
+      } catch {
+        displayValue = value;
+      }
+    }
 
     const handleClick = useCallback(
       (e: React.MouseEvent<HTMLInputElement>) => {

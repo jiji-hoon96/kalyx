@@ -27,6 +27,15 @@ export interface RangePickerCalendarProps extends Omit<HTMLAttributes<HTMLDivEle
   classNames?: RangePickerCalendarClassNames;
 }
 
+/** Safe wrapper for formatFullDate — falls back to ISO string on error */
+function safeFormatFullDate(iso: string, locale: string): string {
+  try {
+    return formatFullDate(iso, locale);
+  } catch {
+    return iso;
+  }
+}
+
 const srOnly: React.CSSProperties = {
   position: 'absolute',
   width: '1px',
@@ -94,7 +103,7 @@ export function RangePickerCalendar({ classNames, ...props }: RangePickerCalenda
     (day: CalendarDay) => {
       if (day.isDisabled) return;
       ctx.selectDate(day.isoString);
-      setAnnouncement(formatFullDate(day.isoString, locale));
+      setAnnouncement(safeFormatFullDate(day.isoString, locale));
     },
     [ctx, locale],
   );
@@ -263,7 +272,7 @@ export function RangePickerCalendar({ classNames, ...props }: RangePickerCalenda
                       className={dayClasses}
                       onClick={() => handleDayClick(day)}
                       onMouseEnter={() => handleDayMouseEnter(day)}
-                      aria-label={formatFullDate(day.isoString, locale)}
+                      aria-label={safeFormatFullDate(day.isoString, locale)}
                     >
                       {day.dayNumber}
                     </button>

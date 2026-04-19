@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import type { KeyboardEvent, RefObject } from 'react';
 
 export interface UseListboxNavigationOptions<T> {
@@ -25,6 +25,12 @@ export function useListboxNavigation<T>({
   disabled = false,
 }: UseListboxNavigationOptions<T>): UseListboxNavigationReturn<T> {
   const listRef = useRef<HTMLUListElement>(null);
+  const rafIdRef = useRef<number>(0);
+
+  // Cancel any pending rAF on unmount to avoid focusing a dead ref
+  useEffect(() => {
+    return () => cancelAnimationFrame(rafIdRef.current);
+  }, []);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLLIElement>, item: T) => {
@@ -52,7 +58,8 @@ export function useListboxNavigation<T>({
       const target = items[newIndex];
       if (target !== undefined) {
         onSelect(target);
-        requestAnimationFrame(() => {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = requestAnimationFrame(() => {
           const next = listRef.current?.querySelector<HTMLLIElement>(
             '[data-selected="true"]',
           );

@@ -82,7 +82,10 @@ export function DatePickerRoot({
   );
 
   const isDisabled = typeof disabled === 'boolean' ? disabled : false;
-  const disabledRules: DisabledRule[] = Array.isArray(disabled) ? disabled : [];
+  const disabledRules: DisabledRule[] = useMemo(
+    () => (Array.isArray(disabled) ? disabled : []),
+    [disabled],
+  );
 
   const selectDate = useCallback(
     (iso: ISODateString | null) => {

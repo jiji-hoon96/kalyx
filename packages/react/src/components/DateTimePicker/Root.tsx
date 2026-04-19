@@ -113,7 +113,10 @@ export function DateTimePickerRoot({
   );
 
   const isDisabled = typeof disabled === 'boolean' ? disabled : false;
-  const disabledRules: DisabledRule[] = Array.isArray(disabled) ? disabled : [];
+  const disabledRules: DisabledRule[] = useMemo(
+    () => (Array.isArray(disabled) ? disabled : []),
+    [disabled],
+  );
 
   // When value is null, use a fallback for time extraction
   const baseIso = currentValue ?? getDefaultIso();

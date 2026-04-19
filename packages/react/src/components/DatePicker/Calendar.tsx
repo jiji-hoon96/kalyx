@@ -26,6 +26,15 @@ export interface DatePickerCalendarProps extends Omit<HTMLAttributes<HTMLDivElem
   onTitleClick?: () => void;
 }
 
+/** Safe wrapper for formatFullDate — falls back to ISO string on error */
+function safeFormatFullDate(iso: string, locale: string): string {
+  try {
+    return formatFullDate(iso, locale);
+  } catch {
+    return iso;
+  }
+}
+
 /** Visually-hidden style for screen-reader-only content */
 const srOnly: React.CSSProperties = {
   position: 'absolute',
@@ -85,7 +94,7 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
     (day: CalendarDay) => {
       if (day.isDisabled) return;
       ctx.selectDate(day.isoString);
-      setAnnouncement(formatFullDate(day.isoString, locale));
+      setAnnouncement(safeFormatFullDate(day.isoString, locale));
     },
     [ctx, locale],
   );
@@ -246,7 +255,7 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
                       data-outside-month={!day.isCurrentMonth || undefined}
                       className={dayClasses}
                       onClick={() => handleDayClick(day)}
-                      aria-label={formatFullDate(day.isoString, locale)}
+                      aria-label={safeFormatFullDate(day.isoString, locale)}
                     >
                       {day.dayNumber}
                     </button>

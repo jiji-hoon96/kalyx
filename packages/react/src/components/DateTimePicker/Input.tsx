@@ -18,9 +18,14 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
     const ctx = useDatePickerContext('DateTimePicker.Input');
 
     // Combine the date portion (yyyy-MM-dd) and the time portion (HH:mm)
-    const displayValue = ctx.value
-      ? `${ctx.adapter.format(ctx.value, 'yyyy-MM-dd')} ${formatTimeString(getTime(ctx.value))}`
-      : '';
+    let displayValue = '';
+    if (ctx.value) {
+      try {
+        displayValue = `${ctx.adapter.format(ctx.value, 'yyyy-MM-dd')} ${formatTimeString(getTime(ctx.value))}`;
+      } catch {
+        displayValue = ctx.value;
+      }
+    }
 
     const handleClick = useCallback(
       (e: React.MouseEvent<HTMLInputElement>) => {

@@ -20,12 +20,15 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
     // Text currently being edited (edit mode)
     const [inputText, setInputText] = useState<string | null>(null);
 
-    const displayValue =
-      inputText !== null
-        ? inputText
-        : ctx.value
-          ? ctx.adapter.format(ctx.value, displayFormat)
-          : '';
+    let formattedValue = '';
+    if (ctx.value) {
+      try {
+        formattedValue = ctx.adapter.format(ctx.value, displayFormat);
+      } catch {
+        formattedValue = ctx.value;
+      }
+    }
+    const displayValue = inputText !== null ? inputText : formattedValue;
 
     // Open on an explicit pointer click, not on focus — tabbing between form
     // fields should not pop the calendar open, and restoring focus after a
