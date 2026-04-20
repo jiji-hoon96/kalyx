@@ -87,9 +87,10 @@ parseInputValue('15/04/2026', 'dd/MM/yyyy', DateFnsAdapter); // → ISO or null
 
 `TimePicker` and `DateTimePicker` also return ISO strings. The date part of a pure `TimePicker` value is a stable placeholder — consume only the time fields (`getTime(iso)` in `@kalyx/core` helps).
 
-Full IANA time-zone display (e.g., rendering "2026-04-15T00:00:00Z" as `"2026-04-15 09:00 KST"`) lands in v0.4. Until then, treat display formatting as your application's responsibility.
+For IANA time-zone-aware display and input — rendering `"2026-04-15T00:00:00Z"` as `"2026-04-15 09:00 KST"`, or making a calendar click emit the civil midnight of that day in the user's zone — use the `displayTimezone` prop introduced in v0.4. See the dedicated [Timezone concept page](./timezone.md).
 
 ## Next
 
+- [Timezone (displayTimezone) →](./timezone.md)
 - [Adapters →](./adapters.md)
 - [SSR safety →](./ssr.md)

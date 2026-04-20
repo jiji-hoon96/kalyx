@@ -39,6 +39,7 @@ Kalyx fills the gap:
 - **Under 12 KB gzip** — measured, enforced in CI.
 - **SSR-safe** — tested with Next.js App Router.
 - **ISO 8601 UTC strings** as the value contract — no Date-object footguns.
+- **Timezone-aware** — opt-in `displayTimezone` prop handles DST and civil-day semantics without changing the UTC storage contract. See the [Timezone concept page](./concepts/timezone.md).
 
 ## Who it's for
 

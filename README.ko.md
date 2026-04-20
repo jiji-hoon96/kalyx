@@ -56,6 +56,7 @@ import { DatePicker } from '@kalyx/react';
 - **Headless** — Tailwind, shadcn/ui, Chakra, 어떤 CSS와도 짝 지을 수 있음.
 - **SSR 안전** — Next.js App Router에서 검증. `useId` 기반 안정 ID.
 - **ISO 8601 UTC 문자열** — `Date` 객체의 함정 없음.
+- **타임존 인지** — v0.4부터 `displayTimezone` prop으로 IANA 타임존과 DST를 안전하게 처리. UTC 저장 계약은 그대로.
 - **접근성** — WAI-ARIA, 풀 키보드, axe 자동 통과.
 - **트리셰이킹** — 렌더하는 만큼만 비용.
 - **TypeScript 우선** — strict, `any` 없음.

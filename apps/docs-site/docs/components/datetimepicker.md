@@ -100,6 +100,7 @@ function BasicDateTime() {
 | `weekStartsOn` | `0 \| 1` | `0` | Week start. |
 | `displayFormat` | `string` | `'yyyy-MM-dd HH:mm'` | date-fns format. |
 | `locale` | `string` | `'en-US'` | BCP 47 locale. |
+| `displayTimezone` | `string` | — | IANA zone. Calendar highlights by civil day in this zone, TimePicker reads/writes time-of-day in this zone, and `onChange` emits the UTC instant that corresponds to the zone-local date+time. See [Timezone](../concepts/timezone.md). |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom adapter. |
 | `children` | `ReactNode` | — | Sub-components. |
 

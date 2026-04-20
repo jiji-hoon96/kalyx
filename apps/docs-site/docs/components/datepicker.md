@@ -114,6 +114,7 @@ Holds state and provides context to sub-components. Controlled when `value` is p
 | `weekStartsOn` | `0 \| 1` | `0` | `0` = Sunday, `1` = Monday. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | date-fns format string. |
 | `locale` | `string` | `'en-US'` | BCP 47 locale tag. |
+| `displayTimezone` | `string` | — | IANA zone (e.g., `"Asia/Seoul"`). When set, Input formats in this zone, Calendar highlights match civil days, and `onChange` emits civil midnight in this zone. See [Timezone](../concepts/timezone.md). |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom date adapter. |
 | `children` | `ReactNode` | — | Sub-components. |
 

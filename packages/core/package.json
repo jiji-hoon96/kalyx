@@ -1,7 +1,7 @@
 {
 	"name": "@kalyx/core",
 	"version": "0.3.0",
-	"description": "Kalyx core — platform-agnostic date logic",
+	"description": "Kalyx core — platform-agnostic date logic, IANA timezone helpers, and the DateAdapter contract used by @kalyx/react",
 	"license": "MIT",
 	"author": "jiji-hoon96",
 	"homepage": "https://github.com/jiji-hoon96/kalyx#readme",
@@ -18,6 +18,8 @@
 		"datepicker",
 		"calendar",
 		"timezone",
+		"iana",
+		"dst",
 		"iso8601",
 		"utc",
 		"date-fns"

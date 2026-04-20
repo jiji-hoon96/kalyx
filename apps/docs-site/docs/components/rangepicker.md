@@ -86,6 +86,7 @@ function BasicRange() {
 | `weekStartsOn` | `0 \| 1` | `0` | Week start. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | Format string. |
 | `locale` | `string` | `'en-US'` | BCP 47 locale. |
+| `displayTimezone` | `string` | — | IANA zone. When set, `start`/`end` are civil midnight of the clicked day in this zone. See [Timezone](../concepts/timezone.md). |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom adapter. |
 | `children` | `ReactNode` | — | Sub-components. |
 

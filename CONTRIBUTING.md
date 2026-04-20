@@ -51,6 +51,7 @@ apps/
 
 - **TypeScript strict** — `any` is forbidden (`@typescript-eslint/no-explicit-any: error`).
 - **ISO 8601 UTC strings** — All date values are `string` (e.g., `"2026-01-15T00:00:00.000Z"`). Never use native `Date` objects as component values.
+- **Timezone awareness** — For display-zone-specific behavior, route through the `displayTimezone` prop (v0.4+) or `@kalyx/core` helpers (`civilMidnightFromUtcDay`, `getTimeInTimezone`, `setTimeInTimezone`). Avoid ad-hoc `new Date()` math in features.
 - **Composition API** — Sub-components via Dot Notation (`DatePicker.Input`, `DatePicker.Calendar`), not props explosion.
 - **SSR safe** — No `window`/`document` outside `useEffect`. Use `useId()` for IDs.
 - **Headless** — Zero CSS. Styling is done via `classNames` prop and `data-*` attributes.

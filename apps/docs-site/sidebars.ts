@@ -18,6 +18,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'concepts/composition',
         'concepts/iso-string',
+        'concepts/timezone',
         'concepts/ssr',
         'concepts/adapters',
         'concepts/accessibility',

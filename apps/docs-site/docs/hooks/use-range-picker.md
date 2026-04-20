@@ -28,6 +28,7 @@ function useRangePicker(options?: UseRangePickerOptions): UseRangePickerReturn;
 | `disabled` | `DisabledRule[]` | `[]` | Disable rules. |
 | `weekStartsOn` | `0 \| 1` | `0` | Week start. |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom adapter. |
+| `displayTimezone` | `string` | — | IANA zone. Same semantics as [`useDatePicker#displayTimezone`](./use-date-picker.md); applies to both `start` and `end`. |
 
 ### Return (delta over `useDatePicker`)
 

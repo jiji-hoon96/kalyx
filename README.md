@@ -53,6 +53,7 @@ The React ecosystem in 2026 has two extremes — Kalyx fills the gap.
 | SSR Safe | ✅ | ⚠️ | ✅ | ✅ | ✅ |
 | TypeScript Strict | ✅ | ⚠️ | ✅ | ✅ | ✅ |
 | date-fns compatible | ✅ | ✅ | ✅ | ❌ | ❌ |
+| Timezone-aware (IANA, DST) | ✅ `displayTimezone` | ⚠️ native `Date` pitfalls | ❌ | ⚠️ partial | ✅ `@internationalized/date` |
 | React 19+ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ## Features
@@ -62,6 +63,7 @@ The React ecosystem in 2026 has two extremes — Kalyx fills the gap.
 - **Headless** — pair with Tailwind, shadcn/ui, Chakra, or any CSS.
 - **SSR-safe** — verified on Next.js App Router. `useId` for stable IDs.
 - **ISO 8601 UTC strings** — no `Date` object footguns.
+- **Timezone-aware** — opt-in `displayTimezone` prop handles IANA zones and DST without changing the UTC storage contract.
 - **Accessible** — WAI-ARIA, full keyboard, passes axe out of the box.
 - **Tree-shakable** — pay only for what you render.
 - **TypeScript first** — strict types, zero `any`.
