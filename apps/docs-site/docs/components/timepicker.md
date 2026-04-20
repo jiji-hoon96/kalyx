@@ -77,6 +77,7 @@ function Basic24h() {
 | `displayTimezone` | `string` | — | IANA zone. When set, the hour/minute controls read and write time as observed in this zone (DST-aware). See [Timezone](../concepts/timezone.md). |
 | `disabled` | `boolean` | `false` | Disable the whole picker. |
 | `readOnly` | `boolean` | `false` | Prevent changes. |
+| `labels` | `Partial<TimePickerLabels>` | — | Override ARIA labels. Keys: `timeInput`, `hourList`, `minuteList`, `amPmToggle`, `hourOption(h)`, `minuteOption(m)`. |
 | `children` | `ReactNode` | — | Sub-components. |
 
 ## `<TimePicker.Input>`

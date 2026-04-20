@@ -116,6 +116,7 @@ Holds state and provides context to sub-components. Controlled when `value` is p
 | `locale` | `string` | `'en-US'` | BCP 47 locale tag. |
 | `displayTimezone` | `string` | — | IANA zone (e.g., `"Asia/Seoul"`). When set, Input formats in this zone, Calendar highlights match civil days, and `onChange` emits civil midnight in this zone. See [Timezone](../concepts/timezone.md). |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom date adapter. |
+| `labels` | `Partial<DatePickerLabels>` | — | Override ARIA labels (defaults to English). Keys: `triggerOpen`, `triggerClose`, `popoverLabel`, `prevMonth`, `nextMonth`, `prevYear`, `nextYear`, `prevDecade`, `nextDecade`. |
 | `children` | `ReactNode` | — | Sub-components. |
 
 ### `DisabledRule`

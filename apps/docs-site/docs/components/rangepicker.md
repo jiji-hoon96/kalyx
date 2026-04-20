@@ -88,6 +88,7 @@ function BasicRange() {
 | `locale` | `string` | `'en-US'` | BCP 47 locale. |
 | `displayTimezone` | `string` | — | IANA zone. When set, `start`/`end` are civil midnight of the clicked day in this zone. See [Timezone](../concepts/timezone.md). |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom adapter. |
+| `labels` | `Partial<RangePickerLabels>` | — | Override ARIA labels. Adds `startInput`, `endInput`, `presetsGroup` on top of DatePicker's label keys. |
 | `children` | `ReactNode` | — | Sub-components. |
 
 ### `DateRange`
