@@ -47,6 +47,8 @@ export interface RangePickerContextValue {
   displayFormat: string;
   /** BCP 47 locale */
   locale: string;
+  /** IANA timezone for display (see DatePickerContext#displayTimezone) */
+  displayTimezone?: string;
   /** Whether entire picker is disabled */
   isDisabled: boolean;
   /** Read-only */

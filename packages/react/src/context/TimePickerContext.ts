@@ -14,6 +14,11 @@ export interface TimePickerContextValue {
   step: number;
   /** Whether to display seconds */
   withSeconds: boolean;
+  /**
+   * IANA timezone for time interpretation. When set, the hour/minute controls read and write
+   * the time as observed in this zone rather than UTC.
+   */
+  displayTimezone?: string;
   /** Whether entire picker is disabled */
   isDisabled: boolean;
   /** Read-only */

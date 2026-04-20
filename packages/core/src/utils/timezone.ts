@@ -150,3 +150,81 @@ export function isSameDayInTimezone(
 export function todayInTimezone(timeZone: string): ISODateString {
   return startOfDayInTimezone(new Date().toISOString(), timeZone);
 }
+
+/**
+ * Converts a UTC-midnight ISO (as produced by the default calendar grid iteration) into the
+ * civil midnight of the same calendar day in `timeZone`.
+ *
+ * This is the bridge used by DatePicker/RangePicker when `displayTimezone` is set: the grid
+ * iterates in UTC, so a cell's `isoString` is `YYYY-MM-DDT00:00:00.000Z`. When the user clicks
+ * that cell we want to emit an ISO representing the same civil day's midnight in the display
+ * timezone. A probe at noon UTC is used so the target civil day is unambiguous across any zone.
+ *
+ * @example
+ * civilMidnightFromUtcDay('2026-01-15T00:00:00.000Z', 'Asia/Seoul');
+ * // → '2026-01-14T15:00:00.000Z'  (Seoul Jan 15 00:00 = UTC Jan 14 15:00)
+ */
+export function civilMidnightFromUtcDay(
+  gridUtcIso: ISODateString,
+  timeZone: string,
+): ISODateString {
+  const utc = parseISO(gridUtcIso);
+  const probe = new Date(Date.UTC(
+    utc.getUTCFullYear(),
+    utc.getUTCMonth(),
+    utc.getUTCDate(),
+    12, 0, 0,
+  )).toISOString();
+  return startOfDayInTimezone(probe, timeZone);
+}
+
+/**
+ * Extracts the time-of-day (hours / minutes / seconds) of a UTC instant as observed in
+ * `timeZone`. The result differs from reading UTC hours when the zone has a non-zero offset.
+ *
+ * @example
+ * getTimeInTimezone('2026-01-15T00:00:00.000Z', 'Asia/Seoul');
+ * // → { hours: 9, minutes: 0, seconds: 0 }  (Seoul is UTC+9)
+ */
+export function getTimeInTimezone(
+  iso: ISODateString,
+  timeZone: string,
+): { hours: number; minutes: number; seconds: number } {
+  const p = partsInTimezone(parseISO(iso), timeZone);
+  return { hours: p.hour, minutes: p.minute, seconds: p.second };
+}
+
+/**
+ * Returns a new ISO UTC string where the civil date in `timeZone` is preserved and the time
+ * portion is replaced according to `partial` (as observed in that same timezone). Undefined
+ * fields keep their current value.
+ *
+ * Implementation note: the civil target (Y,M,D,H,m,s) is first mapped to a UTC epoch as if
+ * the wall-clock reading lived in UTC; then we subtract the timezone offset at that instant
+ * to recover the real UTC instant. The offset is refined once to absorb DST transitions.
+ *
+ * @example
+ * // In Asia/Seoul (UTC+9): set the hour to 10
+ * setTimeInTimezone('2026-01-15T00:00:00.000Z', { hours: 10 }, 'Asia/Seoul');
+ * // → '2026-01-15T01:00:00.000Z'   (Seoul Jan 15 10:00 = UTC 01:00)
+ */
+export function setTimeInTimezone(
+  iso: ISODateString,
+  partial: { hours?: number; minutes?: number; seconds?: number },
+  timeZone: string,
+): ISODateString {
+  const p = partsInTimezone(parseISO(iso), timeZone);
+  const targetHours = partial.hours ?? p.hour;
+  const targetMinutes = partial.minutes ?? p.minute;
+  const targetSeconds = partial.seconds ?? p.second;
+  const civilEpoch = Date.UTC(p.year, p.month - 1, p.day, targetHours, targetMinutes, targetSeconds);
+
+  // First pass: use the offset at the civil-as-UTC probe, correct once to absorb DST.
+  const probe1 = new Date(civilEpoch).toISOString();
+  const offset1 = getTimezoneOffsetMinutes(probe1, timeZone);
+  const realEpoch1 = civilEpoch - offset1 * 60_000;
+  const probe2 = new Date(realEpoch1).toISOString();
+  const offset2 = getTimezoneOffsetMinutes(probe2, timeZone);
+  const realEpoch2 = civilEpoch - offset2 * 60_000;
+  return new Date(realEpoch2).toISOString();
+}

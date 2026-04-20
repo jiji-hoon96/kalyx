@@ -6,6 +6,9 @@ import {
   DEFAULT_TIMEPICKER_LABELS,
   getTime,
   setTime as setTimeOnIso,
+  getTimeInTimezone,
+  setTimeInTimezone,
+  civilMidnightFromUtcDay,
 } from '@kalyx/core';
 import type {
   DateAdapter,
@@ -60,6 +63,12 @@ export interface DateTimePickerRootProps {
   displayFormat?: string;
   /** BCP 47 locale */
   locale?: string;
+  /**
+   * IANA timezone used for display (e.g., "Asia/Seoul"). When set, Calendar highlights match
+   * civil days in this zone, TimePicker reads/writes the time in this zone, and the Input
+   * formats the combined date+time in this zone.
+   */
+  displayTimezone?: string;
   /** Date adapter */
   adapter?: DateAdapter;
   /** Override ARIA labels (defaults to English) */
@@ -96,6 +105,7 @@ export function DateTimePickerRoot({
   weekStartsOn = 0,
   displayFormat = 'yyyy-MM-dd HH:mm',
   locale = 'en-US',
+  displayTimezone,
   adapter = DateFnsAdapter,
   labels: labelsProp,
   children,
@@ -120,10 +130,10 @@ export function DateTimePickerRoot({
 
   const [isOpen, setIsOpen] = useState(false);
   const [viewMonth, setViewMonth] = useState<ISODateString>(
-    currentValue ?? adapter.today(),
+    currentValue ?? adapter.today(displayTimezone),
   );
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
-    currentValue ?? adapter.today(),
+    currentValue ?? adapter.today(displayTimezone),
   );
 
   const isDisabled = typeof disabled === 'boolean' ? disabled : false;
@@ -134,7 +144,10 @@ export function DateTimePickerRoot({
 
   // When value is null, use a fallback for time extraction
   const baseIso = currentValue ?? getDefaultIso();
-  const currentTime: TimeValue = useMemo(() => getTime(baseIso), [baseIso]);
+  const currentTime: TimeValue = useMemo(
+    () => (displayTimezone ? getTimeInTimezone(baseIso, displayTimezone) : getTime(baseIso)),
+    [baseIso, displayTimezone],
+  );
 
   const updateValue = useCallback(
     (next: ISODateString | null) => {
@@ -157,12 +170,22 @@ export function DateTimePickerRoot({
         updateValue(null);
         return;
       }
-      // Preserve the current time portion and apply it to the new date
-      const time = currentValue ? getTime(currentValue) : currentTime;
-      const merged = setTimeOnIso(newDateIso, time);
+      // Map UTC-grid ISO to civil-midnight in display timezone when set
+      const normalizedDate = displayTimezone
+        ? civilMidnightFromUtcDay(newDateIso, displayTimezone)
+        : newDateIso;
+      // Preserve the current time portion (tz-aware when applicable)
+      const time = currentValue
+        ? displayTimezone
+          ? getTimeInTimezone(currentValue, displayTimezone)
+          : getTime(currentValue)
+        : currentTime;
+      const merged = displayTimezone
+        ? setTimeInTimezone(normalizedDate, time, displayTimezone)
+        : setTimeOnIso(normalizedDate, time);
       updateValue(merged);
     },
-    [currentValue, currentTime, updateValue],
+    [currentValue, currentTime, updateValue, displayTimezone],
   );
 
   /**
@@ -170,21 +193,23 @@ export function DateTimePickerRoot({
    */
   const setTime = useCallback(
     (partial: Partial<TimeValue>) => {
-      // If no date yet, start from today at midnight
+      // If no date yet, start from today at midnight (tz-aware)
       const base = currentValue ?? getDefaultIso();
-      const merged = setTimeOnIso(base, partial);
+      const merged = displayTimezone
+        ? setTimeInTimezone(base, partial, displayTimezone)
+        : setTimeOnIso(base, partial);
       updateValue(merged);
     },
-    [currentValue, updateValue],
+    [currentValue, updateValue, displayTimezone],
   );
 
   const open = useCallback(() => {
     if (isDisabled || readOnly) return;
     setIsOpen(true);
-    const target = currentValue ?? adapter.today();
+    const target = currentValue ?? adapter.today(displayTimezone);
     setViewMonth(target);
     setFocusedDate(target);
-  }, [isDisabled, readOnly, currentValue, adapter]);
+  }, [isDisabled, readOnly, currentValue, adapter, displayTimezone]);
 
   const close = useCallback(() => {
     setIsOpen(false);
@@ -214,6 +239,7 @@ export function DateTimePickerRoot({
       weekStartsOn,
       displayFormat,
       locale,
+      displayTimezone,
       isDisabled,
       isReadOnly: readOnly,
       pickerId,
@@ -233,6 +259,7 @@ export function DateTimePickerRoot({
       weekStartsOn,
       displayFormat,
       locale,
+      displayTimezone,
       isDisabled,
       readOnly,
       pickerId,
@@ -248,13 +275,14 @@ export function DateTimePickerRoot({
       format,
       step,
       withSeconds: false,
+      displayTimezone,
       isDisabled,
       isReadOnly: readOnly,
       currentTime,
       pickerId,
       labels: mergedTimeLabels,
     }),
-    [currentValue, setTime, format, step, isDisabled, readOnly, currentTime, pickerId, mergedTimeLabels],
+    [currentValue, setTime, format, step, displayTimezone, isDisabled, readOnly, currentTime, pickerId, mergedTimeLabels],
   );
 
   return (

@@ -28,7 +28,7 @@ export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputPro
     let displayValue = '';
     if (value) {
       try {
-        displayValue = ctx.adapter.format(value, displayFormat);
+        displayValue = ctx.adapter.format(value, displayFormat, ctx.displayTimezone);
       } catch {
         displayValue = value;
       }

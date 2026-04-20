@@ -1,6 +1,6 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { DateFnsAdapter, DEFAULT_RANGEPICKER_LABELS } from '@kalyx/core';
+import { DateFnsAdapter, DEFAULT_RANGEPICKER_LABELS, civilMidnightFromUtcDay } from '@kalyx/core';
 import type {
   DateAdapter,
   DateRange,
@@ -48,6 +48,12 @@ export interface RangePickerRootProps {
   displayFormat?: string;
   /** BCP 47 locale */
   locale?: string;
+  /**
+   * IANA timezone for display (e.g., "Asia/Seoul"). When set, inputs format in this zone,
+   * calendar highlighting uses civil-day comparison in this zone, and selected start/end are
+   * emitted as civil midnight of the clicked day in this zone (UTC-ISO form).
+   */
+  displayTimezone?: string;
   /** Date adapter */
   adapter?: DateAdapter;
   /** Override ARIA labels (defaults to English) */
@@ -65,6 +71,7 @@ export function RangePickerRoot({
   weekStartsOn = 0,
   displayFormat = 'yyyy-MM-dd',
   locale = 'en-US',
+  displayTimezone,
   adapter = DateFnsAdapter,
   labels: labelsProp,
   children,
@@ -88,11 +95,11 @@ export function RangePickerRoot({
   const [hoverDate, setHoverDate] = useState<ISODateString | null>(null);
 
   const [viewMonth, setViewMonth] = useState<ISODateString>(
-    currentValue.start ?? adapter.today(),
+    currentValue.start ?? adapter.today(displayTimezone),
   );
 
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
-    currentValue.start ?? adapter.today(),
+    currentValue.start ?? adapter.today(displayTimezone),
   );
 
   const mergedLabels = useMemo(
@@ -126,8 +133,11 @@ export function RangePickerRoot({
     (iso: ISODateString) => {
       if (isDisabled || readOnly) return;
 
+      // Normalize UTC-grid ISOs to civil-midnight-in-tz before storing (see DatePicker.Root).
+      const normalized = displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
+
       if (selectingTarget === 'start') {
-        const newRange: DateRange = { start: iso, end: null };
+        const newRange: DateRange = { start: normalized, end: null };
         setRange(newRange);
         setSelectingTarget('end');
         setHoverDate(null);
@@ -135,17 +145,17 @@ export function RangePickerRoot({
         const start = currentValue.start;
         if (!start) {
           // Safety: if start is missing, treat this click as start
-          setRange({ start: iso, end: null });
+          setRange({ start: normalized, end: null });
           setSelectingTarget('end');
           return;
         }
 
         let newRange: DateRange;
-        if (adapter.isBefore(iso, start)) {
+        if (adapter.isBefore(normalized, start)) {
           // Swap if the clicked end is earlier than start
-          newRange = { start: iso, end: start };
+          newRange = { start: normalized, end: start };
         } else {
-          newRange = { start, end: iso };
+          newRange = { start, end: normalized };
         }
 
         setRange(newRange);
@@ -154,20 +164,20 @@ export function RangePickerRoot({
         setIsOpen(false);
       }
     },
-    [isDisabled, readOnly, selectingTarget, currentValue.start, adapter, setRange],
+    [isDisabled, readOnly, selectingTarget, currentValue.start, adapter, setRange, displayTimezone],
   );
 
   const open = useCallback(() => {
     if (isDisabled || readOnly) return;
     setIsOpen(true);
-    const target = currentValue.start ?? adapter.today();
+    const target = currentValue.start ?? adapter.today(displayTimezone);
     setViewMonth(target);
     setFocusedDate(target);
     // If the range is complete, restart; otherwise preserve current state
     if (currentValue.start && currentValue.end) {
       setSelectingTarget('start');
     }
-  }, [isDisabled, readOnly, currentValue, adapter]);
+  }, [isDisabled, readOnly, currentValue, adapter, displayTimezone]);
 
   const close = useCallback(() => {
     setIsOpen(false);
@@ -201,6 +211,7 @@ export function RangePickerRoot({
       weekStartsOn,
       displayFormat,
       locale,
+      displayTimezone,
       isDisabled,
       isReadOnly: readOnly,
       pickerId,
@@ -223,6 +234,7 @@ export function RangePickerRoot({
       weekStartsOn,
       displayFormat,
       locale,
+      displayTimezone,
       isDisabled,
       readOnly,
       pickerId,

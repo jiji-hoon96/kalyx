@@ -5,6 +5,8 @@ import {
   generateMinutes,
   getTime,
   setTime as setTimeOnIso,
+  getTimeInTimezone,
+  setTimeInTimezone,
   to12Hour,
   to24Hour,
 } from '@kalyx/core';
@@ -24,6 +26,8 @@ export interface UseTimePickerOptions {
   step?: number;
   /** Whether seconds are shown */
   withSeconds?: boolean;
+  /** IANA timezone for time interpretation (see TimePickerRoot#displayTimezone) */
+  displayTimezone?: string;
 }
 
 export interface UseTimePickerReturn {
@@ -83,6 +87,7 @@ export function useTimePicker(options: UseTimePickerOptions = {}): UseTimePicker
     onChange,
     format = '24h',
     step = 1,
+    displayTimezone,
   } = options;
 
   const pickerId = useId();
@@ -94,17 +99,22 @@ export function useTimePicker(options: UseTimePickerOptions = {}): UseTimePicker
 
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
   const baseIso = currentValue ?? getDefaultIso();
-  const currentTime = useMemo(() => getTime(baseIso), [baseIso]);
+  const currentTime = useMemo(
+    () => (displayTimezone ? getTimeInTimezone(baseIso, displayTimezone) : getTime(baseIso)),
+    [baseIso, displayTimezone],
+  );
 
   const setTime = useCallback(
     (partial: Partial<TimeValue>) => {
-      const newIso = setTimeOnIso(baseIso, partial);
+      const newIso = displayTimezone
+        ? setTimeInTimezone(baseIso, partial, displayTimezone)
+        : setTimeOnIso(baseIso, partial);
       if (!isControlled) {
         setUncontrolledValue(newIso);
       }
       onChange?.(newIso);
     },
-    [baseIso, isControlled, onChange],
+    [baseIso, isControlled, onChange, displayTimezone],
   );
 
   const period = format === '12h' ? to12Hour(currentTime.hours).period : null;

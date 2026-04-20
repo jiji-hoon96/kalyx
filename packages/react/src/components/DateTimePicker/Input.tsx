@@ -1,6 +1,6 @@
 import { forwardRef, useCallback } from 'react';
 import type { InputHTMLAttributes } from 'react';
-import { formatTimeString, getTime } from '@kalyx/core';
+import { formatTimeString, getTime, getTimeInTimezone } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
 
 export interface DateTimePickerInputProps
@@ -21,7 +21,11 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
     let displayValue = '';
     if (ctx.value) {
       try {
-        displayValue = `${ctx.adapter.format(ctx.value, 'yyyy-MM-dd')} ${formatTimeString(getTime(ctx.value))}`;
+        const datePart = ctx.adapter.format(ctx.value, 'yyyy-MM-dd', ctx.displayTimezone);
+        const time = ctx.displayTimezone
+          ? getTimeInTimezone(ctx.value, ctx.displayTimezone)
+          : getTime(ctx.value);
+        displayValue = `${datePart} ${formatTimeString(time)}`;
       } catch {
         displayValue = ctx.value;
       }
