@@ -30,6 +30,23 @@ src/
 - 새 유틸 함수는 반드시 `__tests__/`에 테스트 추가
 - `index.ts`에서 내부 구현 export 금지
 
+## 플랫폼 독립성
+
+`@kalyx/core`는 DOM / React / Node 전용 API를 참조하지 않아 React Native / 웹 어디서든 동작한다.
+
+| 검사 항목 | 상태 |
+|---|---|
+| `window` / `document` / `navigator` / `localStorage` | ❌ 미사용 |
+| `process.env` / `require()` | ❌ 미사용 |
+| `react` import | ❌ 미사용 |
+| `new Date()` | ✅ `now()` / `today()` 내부에서만 (의도적) |
+| `Intl.DateTimeFormat` | ✅ 사용 — RN Hermes 0.72+ (React Native 0.71+) 기본 지원. 이전 버전은 `hermes-intl` 또는 폴리필 필요 |
+
+핵심 원칙을 유지하려면:
+- 외부 IO를 여기에 넣지 말 것 (fetch / fs / storage / analytics 등)
+- 브라우저 전용 API에 의존하지 말 것 — React 레이어로 이동시킬 것
+- 새 파일 추가 시 "이 모듈을 Node · 브라우저 · React Native 모두에서 import했을 때 깨지는가?"를 확인
+
 ## 빌드
 
 ```bash
