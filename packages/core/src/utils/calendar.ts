@@ -41,16 +41,17 @@ export function getCalendarDays(
     disabled = [],
     range,
     rangeHover,
+    timezone,
   } = options;
 
-  const todayISO = today ?? adapter.today();
+  const todayISO = today ?? adapter.today(timezone);
   const monthStart = adapter.startOfMonth(monthISO);
 
   // Start of grid: start of the week containing the first day of the month
   const gridStart = adapter.startOfWeek(monthStart, weekStartsOn);
 
   // Normalize for range computation (ensures start <= end)
-  const normalizedRange = normalizeRangeForDisplay(range, rangeHover, adapter);
+  const normalizedRange = normalizeRangeForDisplay(range, rangeHover, adapter, timezone);
 
   const weeks: CalendarGrid = [];
   let current = gridStart;
@@ -61,12 +62,12 @@ export function getCalendarDays(
 
     for (let day = 0; day < 7; day++) {
       const isCurrentMonth = adapter.isSameMonth(current, monthISO);
-      const isTodayDate = adapter.isSameDay(current, todayISO);
-      const isSelected_ = selected ? adapter.isSameDay(current, selected) : false;
-      const isFocused_ = focusedDate ? adapter.isSameDay(current, focusedDate) : false;
+      const isTodayDate = adapter.isSameDay(current, todayISO, timezone);
+      const isSelected_ = selected ? adapter.isSameDay(current, selected, timezone) : false;
+      const isFocused_ = focusedDate ? adapter.isSameDay(current, focusedDate, timezone) : false;
       const isDisabled_ = isDateDisabled(current, disabled, adapter);
 
-      const rangeFlags = computeRangeFlags(current, normalizedRange, adapter);
+      const rangeFlags = computeRangeFlags(current, normalizedRange, adapter, timezone);
 
       days.push({
         isoString: current,
@@ -101,6 +102,7 @@ function normalizeRangeForDisplay(
   range: DateRange | null | undefined,
   hover: ISODateString | null | undefined,
   adapter: DateAdapter,
+  _timezone?: string,
 ): { start: ISODateString | null; end: ISODateString | null } {
   if (!range) return { start: null, end: null };
 
@@ -140,6 +142,7 @@ function computeRangeFlags(
   iso: ISODateString,
   range: { start: ISODateString | null; end: ISODateString | null },
   adapter: DateAdapter,
+  timezone?: string,
 ): RangeFlags {
   const { start, end } = range;
 
@@ -147,13 +150,13 @@ function computeRangeFlags(
     return { isRangeStart: false, isRangeEnd: false, isInRange: false };
   }
 
-  const isRangeStart = adapter.isSameDay(iso, start);
+  const isRangeStart = adapter.isSameDay(iso, start, timezone);
 
   if (!end) {
     return { isRangeStart, isRangeEnd: false, isInRange: false };
   }
 
-  const isRangeEnd = adapter.isSameDay(iso, end);
+  const isRangeEnd = adapter.isSameDay(iso, end, timezone);
   const isInRange =
     !isRangeStart &&
     !isRangeEnd &&

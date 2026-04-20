@@ -1,5 +1,5 @@
 import { useCallback, useId, useRef, useState } from 'react';
-import { DateFnsAdapter, getCalendarDays } from '@kalyx/core';
+import { DateFnsAdapter, civilMidnightFromUtcDay, getCalendarDays } from '@kalyx/core';
 import type {
   CalendarGrid,
   DateAdapter,
@@ -25,6 +25,8 @@ export interface UseRangePickerOptions {
   weekStartsOn?: WeekStartsOn;
   /** Date adapter */
   adapter?: DateAdapter;
+  /** IANA timezone for display (see RangePickerRoot#displayTimezone) */
+  displayTimezone?: string;
 }
 
 export interface UseRangePickerReturn {
@@ -85,6 +87,7 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
     disabled = [],
     weekStartsOn = 0,
     adapter = DateFnsAdapter,
+    displayTimezone,
   } = options;
 
   const pickerId = useId();
@@ -100,10 +103,10 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
   const [selectingTarget, setSelectingTarget] = useState<RangeSelectingTarget>('start');
   const [hoverDate, setHoverDate] = useState<ISODateString | null>(null);
   const [viewMonth, setViewMonth] = useState<ISODateString>(
-    currentValue.start ?? adapter.today(),
+    currentValue.start ?? adapter.today(displayTimezone),
   );
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
-    currentValue.start ?? adapter.today(),
+    currentValue.start ?? adapter.today(displayTimezone),
   );
 
   const setRange = useCallback(
@@ -118,21 +121,22 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
 
   const selectDate = useCallback(
     (iso: ISODateString) => {
+      const normalized = displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
       if (selectingTarget === 'start') {
-        setRange({ start: iso, end: null });
+        setRange({ start: normalized, end: null });
         setSelectingTarget('end');
         setHoverDate(null);
       } else {
         const start = currentValue.start;
         if (!start) {
-          setRange({ start: iso, end: null });
+          setRange({ start: normalized, end: null });
           setSelectingTarget('end');
           return;
         }
 
-        const newRange: DateRange = adapter.isBefore(iso, start)
-          ? { start: iso, end: start }
-          : { start, end: iso };
+        const newRange: DateRange = adapter.isBefore(normalized, start)
+          ? { start: normalized, end: start }
+          : { start, end: normalized };
 
         setRange(newRange);
         setSelectingTarget('start');
@@ -140,18 +144,18 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
         setIsOpen(false);
       }
     },
-    [selectingTarget, currentValue.start, adapter, setRange],
+    [selectingTarget, currentValue.start, adapter, setRange, displayTimezone],
   );
 
   const open = useCallback(() => {
     setIsOpen(true);
-    const target = currentValue.start ?? adapter.today();
+    const target = currentValue.start ?? adapter.today(displayTimezone);
     setViewMonth(target);
     setFocusedDate(target);
     if (currentValue.start && currentValue.end) {
       setSelectingTarget('start');
     }
-  }, [currentValue, adapter]);
+  }, [currentValue, adapter, displayTimezone]);
 
   const close = useCallback(() => {
     setIsOpen(false);
@@ -181,6 +185,7 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
     disabled,
     range: currentValue,
     rangeHover: hoverDate,
+    timezone: displayTimezone,
   });
 
   return {

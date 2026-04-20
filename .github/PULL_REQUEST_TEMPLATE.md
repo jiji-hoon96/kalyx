@@ -15,3 +15,4 @@
 - [ ] Bundle size checked (`pnpm check-bundle` ≤ 12KB)
 - [ ] Changeset added (if public API changed)
 - [ ] New public APIs have JSDoc comments
+- [ ] If the change touches date/time math, `displayTimezone` behavior verified (format, onChange, DST-safe)

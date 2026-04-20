@@ -117,6 +117,47 @@ const toISO = (cal: CalendarDate | null): ISODateString | null =>
   cal ? new Date(Date.UTC(cal.year, cal.month - 1, cal.day)).toISOString() : null;
 ```
 
+## v0.3 → v0.4 — adding `displayTimezone`
+
+v0.4 introduces `displayTimezone` on all four pickers (plus the matching hooks). No breaking changes — omitting the prop keeps v0.3 semantics. Adopt it when the user's displayed zone differs from the server runtime, or when you want an explicit barrier against "day off by one" bugs.
+
+### Before (v0.3, implicit UTC / runtime local)
+
+```tsx
+<DatePicker value={iso} onChange={setIso}>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+### After (v0.4)
+
+```tsx
+<DatePicker
+  value={iso}
+  onChange={setIso}
+  displayTimezone={user.timezone ?? 'UTC'}
+>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+The ISO contract does not change. What *does* change with the prop set:
+
+- The `Input` formats the value in `displayTimezone`.
+- The `Calendar` highlights today / selected by civil-day equality in the zone.
+- `onChange` on a calendar click now emits the civil midnight of the clicked day *in the zone* (not UTC midnight of the clicked cell).
+- `TimePicker` / `DateTimePicker` hour+minute controls read and write time-of-day as observed in the zone, DST-aware.
+
+Custom `DateAdapter` implementations should honor the `timezone?: string` argument on `format`, `isSameDay`, `startOfDay`, and `today` — the built-in `DateFnsAdapter` already does.
+
+See the [Timezone concept page](./concepts/timezone.md) for the full story.
+
 ## General checklist
 
 When migrating:

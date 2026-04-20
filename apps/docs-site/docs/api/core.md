@@ -191,7 +191,57 @@ formatFullDate('2026-04-15T00:00:00.000Z', 'en-US');
 // → "April 15, 2026"
 ```
 
+## Timezone utilities
+
+Introduced in v0.4. Used internally by every picker when `displayTimezone` is set; exposed publicly so you can run the same math yourself.
+
+### `formatInTimezone(iso, formatStr, timeZone)`
+
+Format a UTC instant in the requested zone. Handles DST transitions.
+
+```ts
+formatInTimezone('2026-03-08T07:30:00.000Z', 'yyyy-MM-dd HH:mm', 'America/New_York');
+// → '2026-03-08 03:30'   (post spring-forward EDT)
+```
+
+### `startOfDayInTimezone(iso, timeZone)`
+
+Civil midnight of the given UTC instant's day, expressed as a UTC ISO string.
+
+```ts
+startOfDayInTimezone('2026-01-15T12:00:00.000Z', 'Asia/Seoul');
+// → '2026-01-14T15:00:00.000Z'
+```
+
+### `isSameDayInTimezone(a, b, timeZone)`
+
+Civil-day equality in the zone. Timezone-safe alternative to comparing `iso.slice(0, 10)`.
+
+### `todayInTimezone(timeZone)`
+
+"Today" expressed as civil midnight in the zone.
+
+### `getTimezoneOffsetMinutes(iso, timeZone)`
+
+UTC offset (minutes east of UTC) at the given instant. Differs before and after DST transitions.
+
+### `civilMidnightFromUtcDay(gridUtcIso, timeZone)`
+
+The bridge Calendar uses: maps a UTC-midnight grid cell ISO to civil midnight of the same calendar day in the zone. You rarely need this directly — it is exported for custom calendar renderers.
+
+### `getTimeInTimezone(iso, timeZone)` / `setTimeInTimezone(iso, partial, timeZone)`
+
+Read and write time-of-day as observed in the zone. `setTimeInTimezone` preserves the civil date and replaces the time portion, iterating once to absorb DST offsets.
+
+```ts
+setTimeInTimezone('2026-01-15T00:00:00.000Z', { hours: 10 }, 'Asia/Seoul');
+// → '2026-01-15T01:00:00.000Z'   (Seoul 10:00 = UTC 01:00)
+```
+
+See the [Timezone concept page](../concepts/timezone.md) for usage patterns.
+
 ## See also
 
 - [Concepts → ISO strings](../concepts/iso-string.md)
 - [Concepts → Adapters](../concepts/adapters.md)
+- [Concepts → Timezone](../concepts/timezone.md)

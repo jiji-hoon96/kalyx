@@ -62,6 +62,7 @@ export function RangePickerCalendar({ classNames, ...props }: RangePickerCalenda
     value,
     hoverDate,
     selectingTarget,
+    displayTimezone,
   } = ctx;
 
   const { locale } = ctx;
@@ -73,6 +74,7 @@ export function RangePickerCalendar({ classNames, ...props }: RangePickerCalenda
     disabled,
     range: value,
     rangeHover: hoverDate,
+    timezone: displayTimezone,
   });
 
   const year = adapter.getYear(viewMonth);

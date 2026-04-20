@@ -1,6 +1,6 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { DateFnsAdapter, DEFAULT_DATEPICKER_LABELS } from '@kalyx/core';
+import { DateFnsAdapter, DEFAULT_DATEPICKER_LABELS, civilMidnightFromUtcDay } from '@kalyx/core';
 import type { DateAdapter, DatePickerLabels, DisabledRule, ISODateString, WeekStartsOn } from '@kalyx/core';
 import { DatePickerContext } from '../../context/DatePickerContext.js';
 import type { DatePickerContextValue } from '../../context/DatePickerContext.js';
@@ -42,6 +42,12 @@ export interface DatePickerRootProps {
   displayFormat?: string;
   /** BCP 47 locale (e.g., "en-US", "ko-KR", "ja-JP") */
   locale?: string;
+  /**
+   * IANA timezone used for display and selection semantics (e.g., "Asia/Seoul").
+   * When set, the Input formats the value in this zone, Calendar highlights the matching civil
+   * day, and selecting a date emits the civil midnight of that day (UTC-ISO form).
+   */
+  displayTimezone?: string;
   /** Date adapter */
   adapter?: DateAdapter;
   /** Override ARIA labels (defaults to English) */
@@ -59,6 +65,7 @@ export function DatePickerRoot({
   weekStartsOn = 0,
   displayFormat = 'yyyy-MM-dd',
   locale = 'en-US',
+  displayTimezone,
   adapter = DateFnsAdapter,
   labels: labelsProp,
   children,
@@ -77,11 +84,11 @@ export function DatePickerRoot({
   const [isOpen, setIsOpen] = useState(false);
 
   const [viewMonth, setViewMonth] = useState<ISODateString>(
-    currentValue ?? adapter.today(),
+    currentValue ?? adapter.today(displayTimezone),
   );
 
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
-    currentValue ?? adapter.today(),
+    currentValue ?? adapter.today(displayTimezone),
   );
 
   const mergedLabels = useMemo(
@@ -99,25 +106,31 @@ export function DatePickerRoot({
     (iso: ISODateString | null) => {
       if (isDisabled || readOnly) return;
 
+      // The grid emits UTC-midnight ISO strings. When displayTimezone is set, map those to the
+      // civil midnight of the same calendar day in that zone — otherwise "picking Jan 15 in KST"
+      // would save Jan 14 15:00 UTC shifted incorrectly.
+      const normalized =
+        iso && displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
+
       if (!isControlled) {
-        setUncontrolledValue(iso);
+        setUncontrolledValue(normalized);
       }
-      onChange?.(iso);
+      onChange?.(normalized);
 
       // Close the popover after selection
       setIsOpen(false);
     },
-    [isControlled, isDisabled, readOnly, onChange],
+    [isControlled, isDisabled, readOnly, onChange, displayTimezone],
   );
 
   const open = useCallback(() => {
     if (isDisabled || readOnly) return;
     setIsOpen(true);
     // Reset the view to the current value or today when opening
-    const target = currentValue ?? adapter.today();
+    const target = currentValue ?? adapter.today(displayTimezone);
     setViewMonth(target);
     setFocusedDate(target);
-  }, [isDisabled, readOnly, currentValue, adapter]);
+  }, [isDisabled, readOnly, currentValue, adapter, displayTimezone]);
 
   const close = useCallback(() => {
     setIsOpen(false);
@@ -149,6 +162,7 @@ export function DatePickerRoot({
       weekStartsOn,
       displayFormat,
       locale,
+      displayTimezone,
       isDisabled,
       isReadOnly: readOnly,
       pickerId,
@@ -168,6 +182,7 @@ export function DatePickerRoot({
       weekStartsOn,
       displayFormat,
       locale,
+      displayTimezone,
       isDisabled,
       readOnly,
       pickerId,

@@ -28,6 +28,7 @@ function useDatePicker(options?: UseDatePickerOptions): UseDatePickerReturn;
 | `disabled` | `DisabledRule[]` | `[]` | Disable rules. |
 | `weekStartsOn` | `0 \| 1` | `0` | Week start. |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom adapter. |
+| `displayTimezone` | `string` | — | IANA zone. When set, `selectDate` stores civil-midnight-in-tz and today/selected highlighting uses civil-day comparison. See [Timezone](../concepts/timezone.md). |
 
 ### Return
 

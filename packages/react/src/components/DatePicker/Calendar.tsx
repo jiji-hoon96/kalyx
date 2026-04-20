@@ -53,14 +53,17 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
   const gridRef = useRef<HTMLTableElement>(null);
   const [announcement, setAnnouncement] = useState('');
 
-  const { adapter, viewMonth, focusedDate, weekStartsOn, disabled, locale } = ctx;
+  const { adapter, viewMonth, focusedDate, weekStartsOn, disabled, locale, displayTimezone } = ctx;
   const weekdays = getWeekdayNames(locale, weekStartsOn);
 
+  // Recompute cell flags with a timezone-aware today/selected matcher when displayTimezone is set.
+  // The grid iteration stays in UTC — only the `isSelected` / `isToday` highlighting shifts.
   const weeks = getCalendarDays(viewMonth, adapter, {
     weekStartsOn,
     selected: ctx.value,
     focusedDate,
     disabled,
+    timezone: displayTimezone,
   });
 
   const year = adapter.getYear(viewMonth);

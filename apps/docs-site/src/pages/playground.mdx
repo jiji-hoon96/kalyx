@@ -226,6 +226,60 @@ function PlaygroundDateTime() {
 }
 ```
 
+## displayTimezone — pick the same civil day across zones
+
+Switch the timezone radio and watch the emitted ISO change while the *civil day you clicked* stays the same. This is Kalyx's structural answer to the "day off by one" bug (react-datepicker #1018).
+
+```jsx live
+function PlaygroundTimezone() {
+  const [date, setDate] = React.useState('2026-01-15T00:00:00.000Z');
+  const [tz, setTz] = React.useState('Asia/Seoul');
+  const zones = ['UTC', 'Asia/Seoul', 'America/New_York', 'Europe/London'];
+  return (
+    <div>
+      <div className="kx-live-row" style={{ marginBottom: 10, flexWrap: 'wrap' }}>
+        {zones.map((z) => (
+          <label key={z} style={{ fontSize: 13, marginRight: 12 }}>
+            <input
+              type="radio"
+              checked={tz === z}
+              onChange={() => setTz(z)}
+            />{' '}
+            {z}
+          </label>
+        ))}
+      </div>
+      <DatePicker value={date} onChange={setDate} displayTimezone={tz}>
+        <DatePicker.Input className="kx-live-input" />
+        <DatePicker.Popover className="kx-live-popover">
+          <DatePicker.Calendar
+            classNames={{
+              header: 'kx-live-header',
+              title: 'kx-live-title',
+              navButton: 'kx-live-nav',
+              grid: 'kx-live-grid',
+              gridCell: 'kx-live-cell',
+              weekdayHeader: 'kx-live-weekday',
+              day: 'live-day',
+              daySelected: 'live-day-selected',
+              dayToday: 'live-day-today',
+              dayOutsideMonth: 'kx-live-outside',
+            }}
+          />
+        </DatePicker.Popover>
+      </DatePicker>
+      <div className="kx-live-value" style={{ marginTop: 10 }}>
+        Emitted ISO (UTC): <code>{date ?? 'null'}</code>
+        <br />
+        <em style={{ fontSize: 12 }}>
+          The instant represents civil midnight of the clicked day in <code>{tz}</code>.
+        </em>
+      </div>
+    </div>
+  );
+}
+```
+
 ## Mix and match
 
 The scope includes `React`, `DatePicker`, `RangePicker`, `TimePicker`, `DateTimePicker`, `useDatePicker`, `useRangePicker`, `useTimePicker`, and `DateFnsAdapter`. Start typing — the editor is yours.

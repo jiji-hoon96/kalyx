@@ -1,7 +1,7 @@
 {
 	"name": "@kalyx/react",
 	"version": "0.3.0",
-	"description": "Headless, SSR-safe React DatePicker",
+	"description": "Headless, SSR-safe React DatePicker / RangePicker / TimePicker / DateTimePicker — ISO 8601 UTC strings, IANA timezone support, under 10 KB gzipped",
 	"license": "MIT",
 	"author": "jiji-hoon96",
 	"homepage": "https://github.com/jiji-hoon96/kalyx#readme",
@@ -16,12 +16,20 @@
 	"keywords": [
 		"react",
 		"datepicker",
+		"daterangepicker",
+		"timepicker",
+		"datetimepicker",
 		"calendar",
 		"headless",
 		"typescript",
 		"tailwind",
 		"accessible",
-		"SSR"
+		"a11y",
+		"SSR",
+		"timezone",
+		"iana",
+		"dst",
+		"date-fns"
 	],
 	"type": "module",
 	"sideEffects": false,

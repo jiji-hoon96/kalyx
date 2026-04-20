@@ -113,4 +113,10 @@ export interface CalendarOptions {
   range?: DateRange | null;
   /** Currently hovered date (for RangePicker preview) */
   rangeHover?: ISODateString | null;
+  /**
+   * IANA timezone. When set, `isSameDay` comparisons for today/selected/range flags are
+   * evaluated in this zone — required when the picker stores values in display-tz civil
+   * midnight form while the grid iterates in UTC.
+   */
+  timezone?: string;
 }

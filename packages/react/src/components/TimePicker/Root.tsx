@@ -1,6 +1,13 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { DateFnsAdapter, DEFAULT_TIMEPICKER_LABELS, getTime, setTime as setTimeOnIso } from '@kalyx/core';
+import {
+  DateFnsAdapter,
+  DEFAULT_TIMEPICKER_LABELS,
+  getTime,
+  setTime as setTimeOnIso,
+  getTimeInTimezone,
+  setTimeInTimezone,
+} from '@kalyx/core';
 import type { ISODateString, TimePickerLabels, TimeValue } from '@kalyx/core';
 import { TimePickerContext } from '../../context/TimePickerContext.js';
 import type {
@@ -34,6 +41,11 @@ export interface TimePickerRootProps {
   step?: number;
   /** Whether to display seconds */
   withSeconds?: boolean;
+  /**
+   * IANA timezone used to interpret time. When set, the hour/minute controls read and write
+   * the time as observed in this zone.
+   */
+  displayTimezone?: string;
   /** Whether entire picker is disabled */
   disabled?: boolean;
   /** Read-only */
@@ -56,6 +68,7 @@ export function TimePickerRoot({
   format = '24h',
   step = 1,
   withSeconds = false,
+  displayTimezone,
   disabled = false,
   readOnly = false,
   labels: labelsProp,
@@ -76,18 +89,23 @@ export function TimePickerRoot({
 
   // Allow time selection even when value is null -> fallback
   const baseIso = currentValue ?? getDefaultIso();
-  const currentTime = useMemo(() => getTime(baseIso), [baseIso]);
+  const currentTime = useMemo(
+    () => (displayTimezone ? getTimeInTimezone(baseIso, displayTimezone) : getTime(baseIso)),
+    [baseIso, displayTimezone],
+  );
 
   const setTime = useCallback(
     (partial: Partial<TimeValue>) => {
       if (disabled || readOnly) return;
-      const newIso = setTimeOnIso(baseIso, partial);
+      const newIso = displayTimezone
+        ? setTimeInTimezone(baseIso, partial, displayTimezone)
+        : setTimeOnIso(baseIso, partial);
       if (!isControlled) {
         setUncontrolledValue(newIso);
       }
       onChange?.(newIso);
     },
-    [disabled, readOnly, baseIso, isControlled, onChange],
+    [disabled, readOnly, baseIso, isControlled, onChange, displayTimezone],
   );
 
   const contextValue: TimePickerContextValue = useMemo(
@@ -97,13 +115,14 @@ export function TimePickerRoot({
       format,
       step,
       withSeconds,
+      displayTimezone,
       isDisabled: disabled,
       isReadOnly: readOnly,
       currentTime,
       pickerId,
       labels: mergedLabels,
     }),
-    [currentValue, setTime, format, step, withSeconds, disabled, readOnly, currentTime, pickerId, mergedLabels],
+    [currentValue, setTime, format, step, withSeconds, displayTimezone, disabled, readOnly, currentTime, pickerId, mergedLabels],
   );
 
   return (

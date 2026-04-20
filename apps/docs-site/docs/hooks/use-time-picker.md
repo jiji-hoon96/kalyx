@@ -28,6 +28,7 @@ function useTimePicker(options?: UseTimePickerOptions): UseTimePickerReturn;
 | `format` | `'12h' \| '24h'` | `'24h'` | Time format. |
 | `step` | `number` | `1` | Minute granularity. |
 | `withSeconds` | `boolean` | `false` | Include seconds. |
+| `displayTimezone` | `string` | — | IANA zone. When set, `currentTime` / `setHour` / `setMinute` read and write time-of-day as observed in this zone (DST-aware). See [Timezone](../concepts/timezone.md). |
 
 ### Return
 

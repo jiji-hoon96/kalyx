@@ -23,7 +23,7 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
     let formattedValue = '';
     if (ctx.value) {
       try {
-        formattedValue = ctx.adapter.format(ctx.value, displayFormat);
+        formattedValue = ctx.adapter.format(ctx.value, displayFormat, ctx.displayTimezone);
       } catch {
         formattedValue = ctx.value;
       }

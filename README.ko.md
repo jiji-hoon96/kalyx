@@ -9,7 +9,7 @@
 [문서](https://kalyx-docs.vercel.app/ko) · [English Docs](https://kalyx-docs.vercel.app) · [npm](https://www.npmjs.com/package/@kalyx/react) · [GitHub](https://github.com/jiji-hoon96/kalyx)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-9.2KB-brightgreen)](#번들-크기)
+[![Bundle](https://img.shields.io/badge/gzip-9.73KB-brightgreen)](#번들-크기)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -41,13 +41,18 @@ import { DatePicker } from '@kalyx/react';
 
 2026년 React 생태계는 양극단만 있습니다 — Kalyx가 그 공백을 채웁니다.
 
-| 라이브러리 | Headless | Input | TimePicker | RangePicker | SSR | 번들 (gzip) |
-| --- | --- | --- | --- | --- | --- | --- |
-| react-day-picker | ✅ | ❌ | ❌ | ✅ | ✅ | ~22 KB |
-| react-datepicker | ❌ (CSS 필수) | ✅ | ✅ | ✅ | △ | ~60 KB |
-| Ark UI | ✅ | ✅ | ❌ (제거됨) | ✅ | ✅ | 큼 |
-| React Aria | ✅ | ✅ | ✅ | ✅ | ✅ | 큼 |
-| **Kalyx** | ✅ | ✅ | ✅ | ✅ | ✅ | **~9 KB** |
+bundlephobia 기준 (2026년 4월). 각주는 표 아래를 참조.
+
+| 라이브러리 | 버전 | 번들 (min+gzip) | Headless | Input | TimePicker | DateTimePicker | RangePicker | 값 계약 | Timezone |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| react-day-picker | 9.14 | 2.4 KB¹ | ✅ | ❌ BYO | ❌ | ❌ | ✅ | `Date` | ⚠️ |
+| react-datepicker | 9.1 | 44 KB | ❌ (CSS 필수) | ✅ | ⚠️ prop | ⚠️ 결합형 | ✅ 분리형 | `Date` | ⚠️ |
+| Ark UI | 5.36 | 265 KB² | ✅ | ✅ | ❌ (제거됨) | ❌ | ✅ | `Date` | ⚠️ |
+| React Aria | 1.17 | 247 KB² | ✅ | ✅ | ✅ | ✅ | ✅ | `CalendarDate` | ✅ |
+| **Kalyx** | 0.3 | **9.73 KB** | ✅ | ✅ | ✅ 전용 | ✅ 전용 | ✅ 전용 | ISO 8601 UTC | ✅ `displayTimezone` |
+
+1. react-day-picker는 캘린더 그리드만 제공 — Kalyx와 동일한 스콥을 맞추려면 Input·Popover·TimePicker를 직접 조합해야 함. 2.4 KB는 기본 엔트리 기준.
+2. `@ark-ui/react`와 `react-aria-components`는 40+ 컴포넌트를 포함한 모노리스 패키지 — 트리셰이킹 시 더 작아지지만 `@internationalized/date` 등 생태계를 통째로 끌어들임.
 
 ## 특징
 
@@ -56,6 +61,7 @@ import { DatePicker } from '@kalyx/react';
 - **Headless** — Tailwind, shadcn/ui, Chakra, 어떤 CSS와도 짝 지을 수 있음.
 - **SSR 안전** — Next.js App Router에서 검증. `useId` 기반 안정 ID.
 - **ISO 8601 UTC 문자열** — `Date` 객체의 함정 없음.
+- **타임존 인지** — v0.4부터 `displayTimezone` prop으로 IANA 타임존과 DST를 안전하게 처리. UTC 저장 계약은 그대로.
 - **접근성** — WAI-ARIA, 풀 키보드, axe 자동 통과.
 - **트리셰이킹** — 렌더하는 만큼만 비용.
 - **TypeScript 우선** — strict, `any` 없음.
@@ -142,10 +148,10 @@ import { useDatePicker, useRangePicker, useTimePicker } from '@kalyx/react';
 ## 번들 크기
 
 ```
-packages/react/dist/index.js  →  gzip 9.2 KB
+packages/react/dist/index.js  →  gzip 9.73 KB  (v0.4 기준)
 ```
 
-CI에서 `< 12 KB`로 강제. 임포트 단위 트리셰이킹 — `TimePicker`만 쓰면 DatePicker 코드가 사라집니다.
+CI에서 `< 12 KB`로 강제. `@kalyx/core`에 `sideEffects: false`가 설정돼 있어 임포트 단위 트리셰이킹이 작동합니다 — `TimePicker`만 쓰면 DatePicker 코드가 사라집니다.
 
 ## 지원 환경
 

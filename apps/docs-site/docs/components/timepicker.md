@@ -74,8 +74,10 @@ function Basic24h() {
 | `format` | `'12h' \| '24h'` | `'24h'` | Time format. |
 | `step` | `number` | `1` | Minute granularity (e.g. `5`, `15`, `30`). |
 | `withSeconds` | `boolean` | `false` | Show seconds in display + input. |
+| `displayTimezone` | `string` | — | IANA zone. When set, the hour/minute controls read and write time as observed in this zone (DST-aware). See [Timezone](../concepts/timezone.md). |
 | `disabled` | `boolean` | `false` | Disable the whole picker. |
 | `readOnly` | `boolean` | `false` | Prevent changes. |
+| `labels` | `Partial<TimePickerLabels>` | — | Override ARIA labels. Keys: `timeInput`, `hourList`, `minuteList`, `amPmToggle`, `hourOption(h)`, `minuteOption(m)`. |
 | `children` | `ReactNode` | — | Sub-components. |
 
 ## `<TimePicker.Input>`

@@ -1,4 +1,4 @@
-import { DatePickerDemo, DatePickerWithNavDemo, DatePickerLocaleDemo } from './demo';
+import { DatePickerDemo, DatePickerWithNavDemo, DatePickerLocaleDemo, DatePickerTimezoneDemo } from './demo';
 
 export default function DatePickerPage() {
 	return (
@@ -18,6 +18,16 @@ export default function DatePickerPage() {
 			</p>
 			<div className="demo">
 				<DatePickerWithNavDemo />
+			</div>
+
+			<h2>Timezone (displayTimezone)</h2>
+			<p>
+				<code>displayTimezone</code> prop으로 IANA 타임존을 지정하면, 같은 시민 날짜를
+				클릭해도 타임존에 맞는 UTC 자정이 저장된다. 서버에서 구동해도 동일한 결과를
+				보장한다 (react-datepicker #1018 방지).
+			</p>
+			<div className="demo" data-testid="timezone-demo">
+				<DatePickerTimezoneDemo />
 			</div>
 
 			<h2>다국어 (Locale)</h2>

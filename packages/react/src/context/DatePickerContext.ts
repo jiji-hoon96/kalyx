@@ -35,6 +35,12 @@ export interface DatePickerContextValue {
   displayFormat: string;
   /** BCP 47 locale (e.g., "en-US", "ko-KR") */
   locale: string;
+  /**
+   * IANA timezone for display (e.g., "Asia/Seoul"). When set, the Input formats the value in
+   * this zone, Calendar highlights the matching civil day, and selecting a date emits the civil
+   * midnight of that day in the zone (UTC-ISO form).
+   */
+  displayTimezone?: string;
   /** Whether entire picker is disabled */
   isDisabled: boolean;
   /** Read-only */

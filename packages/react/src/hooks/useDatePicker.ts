@@ -1,5 +1,5 @@
 import { useCallback, useId, useRef, useState } from 'react';
-import { DateFnsAdapter, getCalendarDays } from '@kalyx/core';
+import { DateFnsAdapter, civilMidnightFromUtcDay, getCalendarDays } from '@kalyx/core';
 import type {
   CalendarGrid,
   DateAdapter,
@@ -21,6 +21,8 @@ export interface UseDatePickerOptions {
   weekStartsOn?: WeekStartsOn;
   /** Date adapter */
   adapter?: DateAdapter;
+  /** IANA timezone for display (see DatePickerRoot#displayTimezone) */
+  displayTimezone?: string;
 }
 
 export interface UseDatePickerReturn {
@@ -78,6 +80,7 @@ export function useDatePicker(options: UseDatePickerOptions = {}): UseDatePicker
     disabled = [],
     weekStartsOn = 0,
     adapter = DateFnsAdapter,
+    displayTimezone,
   } = options;
 
   const pickerId = useId();
@@ -90,26 +93,32 @@ export function useDatePicker(options: UseDatePickerOptions = {}): UseDatePicker
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [viewMonth, setViewMonth] = useState<ISODateString>(currentValue ?? adapter.today());
-  const [focusedDate, setFocusedDate] = useState<ISODateString>(currentValue ?? adapter.today());
+  const [viewMonth, setViewMonth] = useState<ISODateString>(
+    currentValue ?? adapter.today(displayTimezone),
+  );
+  const [focusedDate, setFocusedDate] = useState<ISODateString>(
+    currentValue ?? adapter.today(displayTimezone),
+  );
 
   const selectDate = useCallback(
     (iso: ISODateString | null) => {
+      const normalized =
+        iso && displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
       if (!isControlled) {
-        setUncontrolledValue(iso);
+        setUncontrolledValue(normalized);
       }
-      onChange?.(iso);
+      onChange?.(normalized);
       setIsOpen(false);
     },
-    [isControlled, onChange],
+    [isControlled, onChange, displayTimezone],
   );
 
   const open = useCallback(() => {
     setIsOpen(true);
-    const target = currentValue ?? adapter.today();
+    const target = currentValue ?? adapter.today(displayTimezone);
     setViewMonth(target);
     setFocusedDate(target);
-  }, [currentValue, adapter]);
+  }, [currentValue, adapter, displayTimezone]);
 
   const close = useCallback(() => {
     setIsOpen(false);
@@ -137,6 +146,7 @@ export function useDatePicker(options: UseDatePickerOptions = {}): UseDatePicker
     selected: currentValue,
     focusedDate,
     disabled,
+    timezone: displayTimezone,
   });
 
   return {

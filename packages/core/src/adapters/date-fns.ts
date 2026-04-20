@@ -8,6 +8,12 @@ import {
   isValid as dfIsValid,
 } from 'date-fns';
 import type { DateAdapter } from '../types.js';
+import {
+  formatInTimezone,
+  isSameDayInTimezone,
+  startOfDayInTimezone,
+  todayInTimezone,
+} from '../utils/timezone.js';
 
 function toDate(iso: string): Date {
   return parseISO(iso);
@@ -77,7 +83,10 @@ export const DateFnsAdapter: DateAdapter = {
     return normalize(value);
   },
 
-  format(iso: string, formatStr: string): string {
+  format(iso: string, formatStr: string, timezone?: string): string {
+    if (timezone) {
+      return formatInTimezone(iso, formatStr, timezone);
+    }
     const d = toDate(iso);
     // Format in UTC to avoid local timezone interference
     const tokens: Record<string, string> = {
@@ -119,8 +128,11 @@ export const DateFnsAdapter: DateAdapter = {
     return dfIsAfter(toDate(a), toDate(b));
   },
 
-  isSameDay(a: string, b: string): boolean {
+  isSameDay(a: string, b: string, timezone?: string): boolean {
     if (!a || !b) return false;
+    if (timezone) {
+      return isSameDayInTimezone(a, b, timezone);
+    }
     const da = toDate(a);
     const db = toDate(b);
     return (
@@ -139,7 +151,10 @@ export const DateFnsAdapter: DateAdapter = {
     );
   },
 
-  startOfDay(iso: string): string {
+  startOfDay(iso: string, timezone?: string): string {
+    if (timezone) {
+      return startOfDayInTimezone(iso, timezone);
+    }
     return toISO(utcStartOfDay(toDate(iso)));
   },
 
@@ -163,7 +178,10 @@ export const DateFnsAdapter: DateAdapter = {
     return new Date().toISOString();
   },
 
-  today(): string {
+  today(timezone?: string): string {
+    if (timezone) {
+      return todayInTimezone(timezone);
+    }
     return toISO(utcStartOfDay(new Date()));
   },
 

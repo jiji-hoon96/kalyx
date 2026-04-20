@@ -9,7 +9,7 @@
 [Docs](https://kalyx-docs.vercel.app) · [한국어 문서](https://kalyx-docs.vercel.app/ko) · [npm](https://www.npmjs.com/package/@kalyx/react) · [GitHub](https://github.com/jiji-hoon96/kalyx)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-9.2KB-brightgreen)](#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-9.73KB-brightgreen)](#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -41,19 +41,30 @@ import { DatePicker } from '@kalyx/react';
 
 The React ecosystem in 2026 has two extremes — Kalyx fills the gap.
 
+Numbers come from bundlephobia (April 2026). See [notes below the table](#footnotes).
+
 | | Kalyx | react-datepicker | react-day-picker | Ark UI | React Aria |
 |---|---|---|---|---|---|
-| Bundle (gzip) | **9.4 KB** | ~40-60 KB | ~22 KB | ~45 KB (full) | Large |
-| Headless (Zero CSS) | ✅ | ❌ CSS required | ✅ | ✅ | ✅ |
+| Version measured | 0.3.0 | 9.1.0 | 9.14.0 | 5.36.1 | 1.17.0 |
+| Bundle (min+gzip) | **9.73 KB** | 44 KB | 2.4 KB¹ | 265 KB² | 247 KB² |
 | DatePicker | ✅ | ✅ | ✅ | ✅ | ✅ |
-| RangePicker | ✅ | ✅ | ✅ | ✅ | ✅ |
-| TimePicker | ✅ | ✅ | ❌ | ❌ (removed) | ✅ |
-| DateTimePicker | ✅ | ✅ | ❌ | ❌ | ✅ |
-| Composition API | ✅ | ❌ 100+ props | ❌ | ✅ | ✅ |
+| RangePicker | ✅ dedicated | ✅ two-picker pattern | ✅ `mode="range"` | ✅ | ✅ |
+| TimePicker | ✅ dedicated | ⚠️ `showTimeSelect` prop | ❌ | ❌ (removed) | ✅ |
+| DateTimePicker | ✅ dedicated | ⚠️ combined picker | ❌ | ❌ | ✅ |
+| Text Input included | ✅ | ✅ | ❌ BYO | ✅ | ✅ |
+| Headless (Zero CSS) | ✅ | ❌ CSS required | ✅ | ✅ | ✅ |
+| Composition API | ✅ dot notation | ❌ 100+ props | ✅ | ✅ | ✅ |
 | SSR Safe | ✅ | ⚠️ | ✅ | ✅ | ✅ |
 | TypeScript Strict | ✅ | ⚠️ | ✅ | ✅ | ✅ |
+| Value contract | ISO 8601 UTC string | `Date` object | `Date` object | `Date` object | `CalendarDate` (internationalized/date) |
 | date-fns compatible | ✅ | ✅ | ✅ | ❌ | ❌ |
+| Timezone-aware (IANA, DST) | ✅ `displayTimezone` | ⚠️ native `Date` pitfalls | ⚠️ via adapter | ⚠️ partial | ✅ `@internationalized/date` |
 | React 19+ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+#### Footnotes
+
+1. react-day-picker ships only a calendar grid — no Input, no TimePicker, no DateTimePicker. Matching Kalyx's feature surface means composing it with your own input, popover, and time components. The 2.4 KB figure is the default entry point.
+2. `@ark-ui/react` and `react-aria-components` are full component monoliths covering 40+ patterns. Both are tree-shakeable, so an app that only imports DatePicker will ship substantially less — but also inherits a multi-package ecosystem (`@internationalized/date`, Ark's state-chart engine). Kalyx targets the "I want a DatePicker, not a framework" use case.
 
 ## Features
 
@@ -62,6 +73,7 @@ The React ecosystem in 2026 has two extremes — Kalyx fills the gap.
 - **Headless** — pair with Tailwind, shadcn/ui, Chakra, or any CSS.
 - **SSR-safe** — verified on Next.js App Router. `useId` for stable IDs.
 - **ISO 8601 UTC strings** — no `Date` object footguns.
+- **Timezone-aware** — opt-in `displayTimezone` prop handles IANA zones and DST without changing the UTC storage contract.
 - **Accessible** — WAI-ARIA, full keyboard, passes axe out of the box.
 - **Tree-shakable** — pay only for what you render.
 - **TypeScript first** — strict types, zero `any`.
@@ -195,10 +207,10 @@ Full documentation is at **[kalyx-docs.vercel.app](https://kalyx-docs.vercel.app
 ## Bundle size
 
 ```
-packages/react/dist/index.js  →  9.2 KB gzip
+packages/react/dist/index.js  →  9.73 KB gzip  (as of v0.4)
 ```
 
-Enforced in CI at `< 12 KB`. Tree-shakable per import — using only `TimePicker` drops the DatePicker code.
+Enforced in CI at `< 12 KB`. Tree-shakable per import — `@kalyx/core` is published with `sideEffects: false`, so using only `TimePicker` drops the DatePicker code.
 
 ## Browser support
 

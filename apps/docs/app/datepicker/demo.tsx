@@ -56,6 +56,43 @@ export function DatePickerWithNavDemo() {
 	);
 }
 
+export function DatePickerTimezoneDemo() {
+	const [date, setDate] = useState<string | null>(null);
+	const [tz, setTz] = useState('Asia/Seoul');
+	const zones = ['UTC', 'Asia/Seoul', 'America/New_York', 'Europe/London'];
+
+	return (
+		<>
+			<div style={{ marginBottom: 12, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+				{zones.map((z) => (
+					<label key={z} style={{ fontSize: 13 }}>
+						<input
+							type="radio"
+							name="tz"
+							checked={tz === z}
+							onChange={() => setTz(z)}
+							data-testid={`tz-${z}`}
+						/>{' '}
+						{z}
+					</label>
+				))}
+			</div>
+			<DatePicker value={date} onChange={setDate} displayTimezone={tz}>
+				<DatePicker.Input className="kalyx-input" placeholder="날짜 선택" />
+				<DatePicker.Popover>
+					<DatePicker.Calendar />
+				</DatePicker.Popover>
+			</DatePicker>
+			<div className="demo-result">
+				<strong>displayTimezone:</strong> <code>{tz}</code>
+				<br />
+				<strong>저장 ISO (UTC):</strong>{' '}
+				<code data-testid="tz-emitted-iso">{date ?? '(없음)'}</code>
+			</div>
+		</>
+	);
+}
+
 export function DatePickerLocaleDemo() {
 	const [date, setDate] = useState<string | null>(null);
 	const [locale, setLocale] = useState('en-US');

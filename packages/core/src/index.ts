@@ -40,6 +40,9 @@ export {
   isSameDayInTimezone,
   todayInTimezone,
   getTimezoneOffsetMinutes,
+  civilMidnightFromUtcDay,
+  getTimeInTimezone,
+  setTimeInTimezone,
 } from './utils/timezone.js';
 export type {
   DatePickerLabels,
