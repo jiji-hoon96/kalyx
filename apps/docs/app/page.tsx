@@ -17,8 +17,8 @@ export default function HomePage() {
 				2026년 React 생태계의 DatePicker는 두 극단만 존재한다:{' '}
 				<strong>Headless지만 Calendar Grid만 제공하는 react-day-picker</strong>
 				와, <strong>통합됐지만 CSS 필수 import에 timezone 버그가 만성인 react-datepicker</strong>.
-				Kalyx는 이 빈자리를 채운다 — Headless, Composition API, 통합된 4개
-				picker, SSR 안전, 7.71KB.
+				Kalyx는 이 빈자리를 채운다 — Headless, Composition API, 통합된 7개
+				picker (Date/Range/Time/DateTime/Month/Year/Week), SSR 안전, &lt; 12KB.
 			</p>
 
 			<h2>핵심 특징</h2>
@@ -45,12 +45,20 @@ export default function HomePage() {
 					radiogroup. axe 검사 통과.
 				</li>
 				<li>
-					<strong>4개 picker 통합</strong> — DatePicker, RangePicker, TimePicker,
-					DateTimePicker.
+					<strong>7개 picker 통합</strong> — DatePicker, RangePicker, TimePicker,
+					DateTimePicker, MonthPicker, YearPicker, WeekPicker.
 				</li>
 				<li>
-					<strong>{'< 12KB gzip'}</strong> — 현재 7.71KB. react-datepicker (40-60KB)
-					대비 1/8.
+					<strong>이벤트 API</strong> — <code>onOpenChange</code>,{' '}
+					<code>onCalendarNavigate</code>로 팝오버·월 이동 감지.
+				</li>
+				<li>
+					<strong>Presets 지원</strong> — <code>DatePicker.Presets</code>,{' '}
+					<code>RangePicker.Presets</code>로 원클릭 빠른 선택.
+				</li>
+				<li>
+					<strong>{'< 12KB gzip'}</strong> — 현재 11.37KB (7개 picker 전체).
+					react-datepicker (40-60KB) 대비 1/4 이상 가벼움.
 				</li>
 			</ul>
 
@@ -78,7 +86,7 @@ function MyForm() {
 			</pre>
 
 			<p>
-				왼쪽 메뉴에서 4개 picker의 실제 동작 예제를 볼 수 있다. 모든 페이지는
+				왼쪽 메뉴에서 7개 picker의 실제 동작 예제를 볼 수 있다. 모든 페이지는
 				Next.js App Router 환경에서 SSR로 렌더링된다.
 			</p>
 		</>

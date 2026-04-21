@@ -4,6 +4,9 @@ export { DatePicker } from './components/DatePicker/index.js';
 export { RangePicker } from './components/RangePicker/index.js';
 export { TimePicker } from './components/TimePicker/index.js';
 export { DateTimePicker } from './components/DateTimePicker/index.js';
+export { MonthPicker } from './components/MonthPicker/index.js';
+export { YearPicker } from './components/YearPicker/index.js';
+export { WeekPicker } from './components/WeekPicker/index.js';
 
 export { useDatePicker } from './hooks/useDatePicker.js';
 export { useRangePicker } from './hooks/useRangePicker.js';
@@ -20,6 +23,10 @@ export type {
   DatePickerMonthGridClassNames,
   DatePickerYearGridProps,
   DatePickerYearGridClassNames,
+  DatePickerPresetsProps,
+  DatePickerPresetsClassNames,
+  DatePickerPresetProps,
+  DatePickerPresetKey,
 } from './components/DatePicker/index.js';
 
 export type {
@@ -50,6 +57,32 @@ export type {
   DateTimePickerRootProps,
   DateTimePickerInputProps,
 } from './components/DateTimePicker/index.js';
+
+export type {
+  MonthPickerRootProps,
+  MonthPickerInputProps,
+  MonthPickerTriggerProps,
+  MonthPickerPopoverProps,
+  MonthPickerGridProps,
+  MonthPickerGridClassNames,
+} from './components/MonthPicker/index.js';
+
+export type {
+  YearPickerRootProps,
+  YearPickerInputProps,
+  YearPickerTriggerProps,
+  YearPickerPopoverProps,
+  YearPickerGridProps,
+  YearPickerGridClassNames,
+} from './components/YearPicker/index.js';
+
+export type {
+  WeekPickerRootProps,
+  WeekPickerInputProps,
+  WeekPickerPopoverProps,
+  WeekPickerCalendarProps,
+  WeekPickerCalendarClassNames,
+} from './components/WeekPicker/index.js';
 
 export type { UseDatePickerOptions, UseDatePickerReturn } from './hooks/useDatePicker.js';
 export type { UseRangePickerOptions, UseRangePickerReturn } from './hooks/useRangePicker.js';

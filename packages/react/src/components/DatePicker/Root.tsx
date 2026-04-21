@@ -4,6 +4,7 @@ import { DateFnsAdapter, DEFAULT_DATEPICKER_LABELS, civilMidnightFromUtcDay } fr
 import type { DateAdapter, DatePickerLabels, DisabledRule, ISODateString, WeekStartsOn } from '@kalyx/core';
 import { DatePickerContext } from '../../context/DatePickerContext.js';
 import type { DatePickerContextValue } from '../../context/DatePickerContext.js';
+import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 
 /**
  * Props for the DatePicker Root component.
@@ -32,6 +33,13 @@ export interface DatePickerRootProps {
   defaultValue?: ISODateString;
   /** Callback fired when the date changes */
   onChange?: (value: ISODateString | null) => void;
+  /** Callback fired when the popover open state changes */
+  onOpenChange?: (isOpen: boolean) => void;
+  /**
+   * Callback fired when the calendar view navigates to a different month.
+   * The value is the ISO string of the first day of the newly-visible month (UTC).
+   */
+  onCalendarNavigate?: (viewMonth: ISODateString) => void;
   /** Disabled rules */
   disabled?: DisabledRule[] | boolean;
   /** Read-only */
@@ -60,6 +68,8 @@ export function DatePickerRoot({
   value: controlledValue,
   defaultValue,
   onChange,
+  onOpenChange,
+  onCalendarNavigate,
   disabled = false,
   readOnly = false,
   weekStartsOn = 0,
@@ -90,6 +100,10 @@ export function DatePickerRoot({
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
     currentValue ?? adapter.today(displayTimezone),
   );
+
+  useChangeEffect(isOpen, onOpenChange);
+  const viewMonthStart = useMemo(() => adapter.startOfMonth(viewMonth), [viewMonth, adapter]);
+  useChangeEffect(viewMonthStart, onCalendarNavigate);
 
   const mergedLabels = useMemo(
     () => ({ ...DEFAULT_DATEPICKER_LABELS, ...labelsProp }),

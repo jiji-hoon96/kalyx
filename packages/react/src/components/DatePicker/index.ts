@@ -5,6 +5,7 @@ import { DatePickerPopover } from './Popover.js';
 import { DatePickerCalendar } from './Calendar.js';
 import { DatePickerMonthGrid } from './MonthGrid.js';
 import { DatePickerYearGrid } from './YearGrid.js';
+import { DatePickerPresets, DatePickerPreset } from './Presets.js';
 
 import type { DatePickerRootProps } from './Root.js';
 import type { DatePickerInputProps } from './Input.js';
@@ -13,6 +14,12 @@ import type { DatePickerPopoverProps } from './Popover.js';
 import type { DatePickerCalendarProps, DatePickerCalendarClassNames } from './Calendar.js';
 import type { DatePickerMonthGridProps, DatePickerMonthGridClassNames } from './MonthGrid.js';
 import type { DatePickerYearGridProps, DatePickerYearGridClassNames } from './YearGrid.js';
+import type {
+  DatePickerPresetsProps,
+  DatePickerPresetsClassNames,
+  DatePickerPresetProps,
+  DatePickerPresetKey,
+} from './Presets.js';
 
 /**
  * DatePicker — Headless, SSR-safe React DatePicker
@@ -47,6 +54,8 @@ export const DatePicker = Object.assign(DatePickerRoot, {
   Calendar: DatePickerCalendar,
   MonthGrid: DatePickerMonthGrid,
   YearGrid: DatePickerYearGrid,
+  Presets: DatePickerPresets,
+  Preset: DatePickerPreset,
 });
 
 export type {
@@ -60,4 +69,8 @@ export type {
   DatePickerMonthGridClassNames,
   DatePickerYearGridProps,
   DatePickerYearGridClassNames,
+  DatePickerPresetsProps,
+  DatePickerPresetsClassNames,
+  DatePickerPresetProps,
+  DatePickerPresetKey,
 };

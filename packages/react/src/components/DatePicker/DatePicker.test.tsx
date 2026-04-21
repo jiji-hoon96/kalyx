@@ -421,6 +421,175 @@ describe('DatePicker — Trigger', () => {
   });
 });
 
+describe('DatePicker — event callbacks', () => {
+  it('fires onOpenChange(true) when the popover opens', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()} onOpenChange={onOpenChange}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
+  });
+
+  it('fires onOpenChange(false) when the popover closes', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()} onOpenChange={onOpenChange}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    await user.keyboard('{Escape}');
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+  });
+
+  it('does not fire onOpenChange on initial mount', () => {
+    const onOpenChange = vi.fn();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()} onOpenChange={onOpenChange}>
+        <DatePicker.Input aria-label="날짜 선택" />
+      </DatePicker>,
+    );
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
+
+  it('fires onCalendarNavigate when the user navigates months', async () => {
+    const user = userEvent.setup();
+    const onCalendarNavigate = vi.fn();
+    render(
+      <DatePicker
+        value="2026-01-15T00:00:00.000Z"
+        onChange={vi.fn()}
+        onCalendarNavigate={onCalendarNavigate}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    onCalendarNavigate.mockClear();
+
+    await user.click(screen.getByRole('button', { name: 'Next month' }));
+
+    expect(onCalendarNavigate).toHaveBeenCalledTimes(1);
+    expect(onCalendarNavigate).toHaveBeenLastCalledWith(
+      expect.stringMatching(/^2026-02-01T/),
+    );
+  });
+});
+
+describe('DatePicker — Presets', () => {
+  it('renders preset buttons inside a group', () => {
+    render(
+      <DatePicker onChange={vi.fn()}>
+        <DatePicker.Presets>
+          <DatePicker.Preset value="today">Today</DatePicker.Preset>
+          <DatePicker.Preset value="tomorrow">Tomorrow</DatePicker.Preset>
+        </DatePicker.Presets>
+      </DatePicker>,
+    );
+    expect(screen.getByRole('option', { name: 'Today' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'Tomorrow' })).toBeInTheDocument();
+  });
+
+  it('commits today when the today preset is clicked', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DatePicker onChange={onChange}>
+        <DatePicker.Presets>
+          <DatePicker.Preset value="today">Today</DatePicker.Preset>
+        </DatePicker.Presets>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('option', { name: 'Today' }));
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/));
+  });
+
+  it('commits the exact ISO when a direct date is passed via `date`', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DatePicker onChange={onChange}>
+        <DatePicker.Presets>
+          <DatePicker.Preset date="2026-12-25T00:00:00.000Z">Christmas</DatePicker.Preset>
+        </DatePicker.Presets>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('option', { name: 'Christmas' }));
+
+    expect(onChange).toHaveBeenCalledWith('2026-12-25T00:00:00.000Z');
+  });
+
+  it('marks the matching preset as aria-selected', () => {
+    render(
+      <DatePicker value="2026-12-25T00:00:00.000Z" onChange={vi.fn()}>
+        <DatePicker.Presets>
+          <DatePicker.Preset date="2026-12-25T00:00:00.000Z">Christmas</DatePicker.Preset>
+          <DatePicker.Preset date="2026-01-01T00:00:00.000Z">New Year's</DatePicker.Preset>
+        </DatePicker.Presets>
+      </DatePicker>,
+    );
+
+    expect(screen.getByRole('option', { name: 'Christmas' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('option', { name: "New Year's" })).toHaveAttribute(
+      'aria-selected',
+      'false',
+    );
+  });
+
+  it('resolves startOfMonth relative to today', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DatePicker onChange={onChange}>
+        <DatePicker.Presets>
+          <DatePicker.Preset value="startOfMonth">Start of month</DatePicker.Preset>
+        </DatePicker.Presets>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('option', { name: 'Start of month' }));
+
+    // The first day of the current month (any month) — ends with "01T..."
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/-01T00:00:00\.000Z$/));
+  });
+
+  it('does nothing when the picker is disabled', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DatePicker onChange={onChange} disabled>
+        <DatePicker.Presets>
+          <DatePicker.Preset value="today">Today</DatePicker.Preset>
+        </DatePicker.Presets>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('option', { name: 'Today' }));
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});
+
 describe('DatePicker — SSR safety', () => {
   it('renderToString runs without errors on the server', async () => {
     const { renderToString } = await import('react-dom/server');

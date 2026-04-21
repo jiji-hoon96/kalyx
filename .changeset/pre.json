@@ -1,0 +1,11 @@
+{
+  "mode": "pre",
+  "tag": "rc",
+  "initialVersions": {
+    "@kalyx/docs": "0.0.5",
+    "docs-site": "0.0.2",
+    "@kalyx/core": "0.4.0",
+    "@kalyx/react": "0.4.0"
+  },
+  "changesets": []
+}
