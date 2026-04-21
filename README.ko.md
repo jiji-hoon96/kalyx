@@ -9,7 +9,8 @@
 [문서](https://kalyx-docs.vercel.app/ko) · [English Docs](https://kalyx-docs.vercel.app) · [npm](https://www.npmjs.com/package/@kalyx/react) · [GitHub](https://github.com/jiji-hoon96/kalyx)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-9.73KB-brightgreen)](#번들-크기)
+[![RC](https://img.shields.io/npm/v/@kalyx/react/next?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
+[![Bundle](https://img.shields.io/badge/gzip-11.39KB-brightgreen)](#번들-크기)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -25,6 +26,9 @@ Kalyx는 **완결된 채로** 배포되는 Headless React DatePicker 라이브�
 ```bash
 pnpm add @kalyx/react
 ```
+
+> **v1.0 릴리즈 후보(RC)를 사용해 보세요!**
+> `pnpm add @kalyx/react@next` — 이슈는 [`v1-rc`](https://github.com/jiji-hoon96/kalyx/issues?q=label%3Av1-rc) 라벨로 등록해 주세요.
 
 ```tsx
 import { DatePicker } from '@kalyx/react';
@@ -49,7 +53,7 @@ bundlephobia 기준 (2026년 4월). 각주는 표 아래를 참조.
 | react-datepicker | 9.1 | 44 KB | ❌ (CSS 필수) | ✅ | ⚠️ prop | ⚠️ 결합형 | ✅ 분리형 | `Date` | ⚠️ |
 | Ark UI | 5.36 | 265 KB² | ✅ | ✅ | ❌ (제거됨) | ❌ | ✅ | `Date` | ⚠️ |
 | React Aria | 1.17 | 247 KB² | ✅ | ✅ | ✅ | ✅ | ✅ | `CalendarDate` | ✅ |
-| **Kalyx** | 0.3 | **9.73 KB** | ✅ | ✅ | ✅ 전용 | ✅ 전용 | ✅ 전용 | ISO 8601 UTC | ✅ `displayTimezone` |
+| **Kalyx** | 1.0.0-rc.0 | **11.39 KB** | ✅ | ✅ | ✅ 전용 | ✅ 전용 | ✅ 전용 | ISO 8601 UTC | ✅ `displayTimezone` |
 
 1. react-day-picker는 캘린더 그리드만 제공 — Kalyx와 동일한 스콥을 맞추려면 Input·Popover·TimePicker를 직접 조합해야 함. 2.4 KB는 기본 엔트리 기준.
 2. `@ark-ui/react`와 `react-aria-components`는 40+ 컴포넌트를 포함한 모노리스 패키지 — 트리셰이킹 시 더 작아지지만 `@internationalized/date` 등 생태계를 통째로 끌어들임.

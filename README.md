@@ -9,7 +9,8 @@
 [Docs](https://kalyx-docs.vercel.app) · [한국어 문서](https://kalyx-docs.vercel.app/ko) · [npm](https://www.npmjs.com/package/@kalyx/react) · [GitHub](https://github.com/jiji-hoon96/kalyx)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-9.73KB-brightgreen)](#bundle-size)
+[![RC](https://img.shields.io/npm/v/@kalyx/react/next?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
+[![Bundle](https://img.shields.io/badge/gzip-11.39KB-brightgreen)](#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -25,6 +26,9 @@ Kalyx is a headless React DatePicker library that ships **complete**. One compos
 ```bash
 pnpm add @kalyx/react
 ```
+
+> **Trying the v1.0 release candidate?**
+> `pnpm add @kalyx/react@next` — please report issues with the [`v1-rc`](https://github.com/jiji-hoon96/kalyx/issues?q=label%3Av1-rc) label.
 
 ```tsx
 import { DatePicker } from '@kalyx/react';
@@ -45,8 +49,8 @@ Numbers come from bundlephobia (April 2026). See [notes below the table](#footno
 
 | | Kalyx | react-datepicker | react-day-picker | Ark UI | React Aria |
 |---|---|---|---|---|---|
-| Version measured | 0.3.0 | 9.1.0 | 9.14.0 | 5.36.1 | 1.17.0 |
-| Bundle (min+gzip) | **9.73 KB** | 44 KB | 2.4 KB¹ | 265 KB² | 247 KB² |
+| Version measured | 1.0.0-rc.0 | 9.1.0 | 9.14.0 | 5.36.1 | 1.17.0 |
+| Bundle (min+gzip) | **11.39 KB** | 44 KB | 2.4 KB¹ | 265 KB² | 247 KB² |
 | DatePicker | ✅ | ✅ | ✅ | ✅ | ✅ |
 | RangePicker | ✅ dedicated | ✅ two-picker pattern | ✅ `mode="range"` | ✅ | ✅ |
 | TimePicker | ✅ dedicated | ⚠️ `showTimeSelect` prop | ❌ | ❌ (removed) | ✅ |

@@ -86,6 +86,14 @@ const config: Config = {
   ],
 
   themeConfig: {
+    announcementBar: {
+      id: 'v1-rc',
+      content:
+        'Kalyx v1.0 RC is out — try <code>pnpm add @kalyx/react@next</code> and share feedback on <a target="_blank" rel="noopener noreferrer" href="https://github.com/jiji-hoon96/kalyx/issues">GitHub</a>.',
+      backgroundColor: '#5b4fe1',
+      textColor: '#ffffff',
+      isCloseable: true,
+    },
     image: 'img/social-card.jpeg',
     colorMode: {
       respectPrefersColorScheme: true,
