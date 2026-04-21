@@ -1,15 +1,12 @@
-import { RangePickerRoot } from '../RangePicker/Root.js';
+import { WeekPickerRoot } from './Root.js';
 import { RangePickerInput } from '../RangePicker/Input.js';
 import { RangePickerPopover } from '../RangePicker/Popover.js';
 import { WeekPickerCalendar } from './Calendar.js';
 
-import type { RangePickerRootProps } from '../RangePicker/Root.js';
+import type { WeekPickerRootProps } from './Root.js';
 import type { RangePickerInputProps } from '../RangePicker/Input.js';
 import type { RangePickerPopoverProps } from '../RangePicker/Popover.js';
 import type { WeekPickerCalendarProps, WeekPickerCalendarClassNames } from './Calendar.js';
-
-/** Props for WeekPicker.Root — reuses RangePicker.Root. */
-type WeekPickerRootPropsType = RangePickerRootProps;
 
 /**
  * WeekPicker — Headless week selector. Value is a `DateRange` spanning the entire week (start
@@ -30,14 +27,14 @@ type WeekPickerRootPropsType = RangePickerRootProps;
  * </WeekPicker>
  * ```
  */
-export const WeekPicker = Object.assign(RangePickerRoot, {
+export const WeekPicker = Object.assign(WeekPickerRoot, {
   Input: RangePickerInput,
   Popover: RangePickerPopover,
   Calendar: WeekPickerCalendar,
 });
 
 export type {
-  WeekPickerRootPropsType as WeekPickerRootProps,
+  WeekPickerRootProps,
   RangePickerInputProps as WeekPickerInputProps,
   RangePickerPopoverProps as WeekPickerPopoverProps,
   WeekPickerCalendarProps,
