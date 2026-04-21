@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { HTMLAttributes } from 'react';
 import { getCalendarDays, isDateDisabled, getWeekdayNames, formatMonthYear, formatFullDate } from '@kalyx/core';
-import type { CalendarDay } from '@kalyx/core';
+import type { CalendarDay, DateRange } from '@kalyx/core';
 import { useRangePickerContext } from '../../context/RangePickerContext.js';
 
 export interface RangePickerCalendarClassNames {
@@ -23,8 +23,17 @@ export interface RangePickerCalendarClassNames {
   weekdayHeader?: string;
 }
 
+/**
+ * Selection mode for the calendar grid.
+ * - `'range'` (default): RangePicker behavior — two clicks (start, end) commit a custom range.
+ * - `'week'`: WeekPicker behavior — a single click commits the entire week containing the clicked day.
+ */
+export type RangePickerCalendarSelectionMode = 'range' | 'week';
+
 export interface RangePickerCalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
   classNames?: RangePickerCalendarClassNames;
+  /** @default 'range' */
+  selectionMode?: RangePickerCalendarSelectionMode;
 }
 
 /** Safe wrapper for formatFullDate — falls back to ISO string on error */
@@ -48,7 +57,11 @@ const srOnly: React.CSSProperties = {
   border: 0,
 };
 
-export function RangePickerCalendar({ classNames, ...props }: RangePickerCalendarProps) {
+export function RangePickerCalendar({
+  classNames,
+  selectionMode = 'range',
+  ...props
+}: RangePickerCalendarProps) {
   const ctx = useRangePickerContext('RangePicker.Calendar');
   const gridRef = useRef<HTMLTableElement>(null);
   const [announcement, setAnnouncement] = useState('');
@@ -101,22 +114,42 @@ export function RangePickerCalendar({ classNames, ...props }: RangePickerCalenda
     [adapter, viewMonth, ctx, locale],
   );
 
+  const commitDay = useCallback(
+    (iso: string) => {
+      if (selectionMode === 'week') {
+        const weekStart = adapter.startOfWeek(iso, weekStartsOn);
+        const weekEnd = adapter.startOfDay(adapter.endOfWeek(iso, weekStartsOn));
+        const range: DateRange = { start: weekStart, end: weekEnd };
+        ctx.setRange(range);
+        ctx.close();
+        setAnnouncement(
+          `${safeFormatFullDate(weekStart, locale)} – ${safeFormatFullDate(weekEnd, locale)}`,
+        );
+      } else {
+        ctx.selectDate(iso);
+        setAnnouncement(safeFormatFullDate(iso, locale));
+      }
+    },
+    [selectionMode, adapter, weekStartsOn, ctx, locale],
+  );
+
   const handleDayClick = useCallback(
     (day: CalendarDay) => {
       if (day.isDisabled) return;
-      ctx.selectDate(day.isoString);
-      setAnnouncement(safeFormatFullDate(day.isoString, locale));
+      commitDay(day.isoString);
     },
-    [ctx, locale],
+    [commitDay],
   );
 
   const handleDayMouseEnter = useCallback(
     (day: CalendarDay) => {
+      // Week mode has no two-click flow and therefore no hover preview.
+      if (selectionMode === 'week') return;
       if (selectingTarget === 'end' && value.start && !day.isDisabled) {
         ctx.setHoverDate(day.isoString);
       }
     },
-    [selectingTarget, value.start, ctx],
+    [selectionMode, selectingTarget, value.start, ctx],
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -160,7 +193,7 @@ export function RangePickerCalendar({ classNames, ...props }: RangePickerCalenda
         case ' ':
           e.preventDefault();
           if (!isDateDisabled(focusedDate, disabled, adapter)) {
-            ctx.selectDate(focusedDate);
+            commitDay(focusedDate);
           }
           return;
         case 'Escape':
@@ -178,13 +211,13 @@ export function RangePickerCalendar({ classNames, ...props }: RangePickerCalenda
           ctx.setViewMonth(newFocused);
         }
 
-        // Keep hover preview in sync while keyboard-navigating
-        if (selectingTarget === 'end' && value.start) {
+        // Keep hover preview in sync while keyboard-navigating (range mode only)
+        if (selectionMode === 'range' && selectingTarget === 'end' && value.start) {
           ctx.setHoverDate(newFocused);
         }
       }
     },
-    [adapter, focusedDate, viewMonth, weekStartsOn, disabled, ctx, selectingTarget, value.start],
+    [adapter, focusedDate, viewMonth, weekStartsOn, disabled, ctx, selectionMode, selectingTarget, value.start, commitDay],
   );
 
   return (
@@ -250,7 +283,10 @@ export function RangePickerCalendar({ classNames, ...props }: RangePickerCalenda
                   .filter(Boolean)
                   .join(' ') || undefined;
 
-                const isSelected = day.isRangeStart || day.isRangeEnd;
+                const isSelected =
+                  selectionMode === 'week'
+                    ? day.isRangeStart || day.isRangeEnd || day.isInRange
+                    : day.isRangeStart || day.isRangeEnd;
 
                 return (
                   <td
