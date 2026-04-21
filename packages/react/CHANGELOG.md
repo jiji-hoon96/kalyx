@@ -1,5 +1,133 @@
 # @kalyx/react
 
+## 1.0.0-rc.0
+
+### Major Changes
+
+- ca7180e: chore: v1.0 milestone — API freeze.
+
+  Kalyx v1.0 declares the public API stable. This is a milestone release bundling the v0.5 surface additions (MonthPicker, YearPicker, WeekPicker, DatePicker.Presets, `onOpenChange`/`onCalendarNavigate` event callbacks) with an explicit commitment to semantic versioning going forward.
+
+  ### What v1.0 commits to
+
+  - **Public API surface** — exports from `@kalyx/react` and `@kalyx/core` listed in their `index.ts` files. Any breaking change requires a major bump.
+  - **Compositional structure** — Root + subcomponent names (`DatePicker.Input`, `DatePicker.Calendar`, …) are stable. Removal or renaming requires a major bump.
+  - **Value semantics** — ISO 8601 UTC strings for single dates, `DateRange` `{start, end}` for ranges. `displayTimezone` behavior (civil-midnight-in-tz for date selection) is stable.
+  - **Accessibility contracts** — role/aria-\* attributes emitted by each component are stable.
+
+  ### What v1.0 does NOT freeze
+
+  - Internal implementation details (non-exported functions, component file layout).
+  - CSS class name strings on elements — no classes are applied by default; only when a consumer passes them via `classNames` props.
+  - Error message text.
+  - Peer dependency version ranges (may expand to cover new React majors).
+
+  ### Breaking changes vs 0.4.x
+
+  None. v1.0 is API-compatible with 0.4.x — existing code continues to work. The major bump communicates stability commitment, not breakage.
+
+### Minor Changes
+
+- 3db8444: feat: add `DatePicker.Presets` and `DatePicker.Preset` for single-date quick selection.
+
+  Mirrors the existing `RangePicker.Presets` API. Pass a predefined `value` key (`today`, `tomorrow`, `yesterday`, `startOfMonth`, `endOfMonth`, `startOfYear`) or a direct ISO via `date`.
+
+  ```tsx
+  <DatePicker value={date} onChange={setDate}>
+    <DatePicker.Input />
+    <DatePicker.Popover>
+      <DatePicker.Presets>
+        <DatePicker.Preset value="today">Today</DatePicker.Preset>
+        <DatePicker.Preset value="tomorrow">Tomorrow</DatePicker.Preset>
+        <DatePicker.Preset date="2026-12-25T00:00:00.000Z">
+          Christmas
+        </DatePicker.Preset>
+      </DatePicker.Presets>
+      <DatePicker.Calendar />
+    </DatePicker.Popover>
+  </DatePicker>
+  ```
+
+  - Active preset is marked `aria-selected="true"` when its resolved date matches the current value (timezone-aware).
+  - Clicking a preset commits and closes the popover.
+  - `displayTimezone` is honored when resolving "today"-relative presets.
+
+- 56e1ce9: feat: add `onOpenChange` and `onCalendarNavigate` callbacks on `DatePicker`, `RangePicker`, and `DateTimePicker` Root components.
+
+  - `onOpenChange(isOpen: boolean)` fires whenever the popover opens or closes (regardless of trigger — click, keyboard, outside click, selection).
+  - `onCalendarNavigate(viewMonth: ISODateString)` fires when the calendar view moves to a different month. The emitted value is the first day of the newly-visible month in UTC.
+
+  Neither callback fires on initial mount. `TimePicker` does not expose these callbacks since it has no popover or calendar.
+
+- 6fc7c59: feat: add `MonthPicker` — a headless month selector.
+
+  `MonthPicker` stores the selected month as the first day of that month in UTC-ISO form (e.g., `"2026-04-01T00:00:00.000Z"`). It reuses `DatePicker` infrastructure (Input, Trigger, Popover), so the only new primitive is `MonthPicker.Grid`, a 12-month commit grid with year navigation.
+
+  ```tsx
+  <MonthPicker value={month} onChange={setMonth}>
+    <MonthPicker.Input placeholder="Pick a month" />
+    <MonthPicker.Popover>
+      <MonthPicker.Grid />
+    </MonthPicker.Popover>
+  </MonthPicker>
+  ```
+
+  - Default `displayFormat` is `"yyyy-MM"`.
+  - `displayTimezone` is supported (commits map to civil midnight of month-start in the target zone).
+  - Month selection highlighting is timezone-aware — the grid reflects the month of the current value even when stored in zone-adjusted UTC form.
+  - Primary UX is click-to-select; full `yyyy-MM-dd` typed input still works via the inherited Input behavior.
+
+- 6fdf8fe: feat: add `WeekPicker` — a headless week selector.
+
+  `WeekPicker` stores the selected week as a `DateRange` covering all seven days (based on `weekStartsOn`). Unlike `RangePicker`, a single click on any day selects the entire week containing that day.
+
+  ```tsx
+  <WeekPicker value={week} onChange={setWeek} weekStartsOn={1}>
+    <WeekPicker.Input part="start" />
+    <WeekPicker.Input part="end" />
+    <WeekPicker.Popover>
+      <WeekPicker.Calendar />
+    </WeekPicker.Popover>
+  </WeekPicker>
+  ```
+
+  - Reuses `RangePicker` Root / Input / Popover; only `WeekPicker.Calendar` is new.
+  - `weekStartsOn` (0=Sunday, 1=Monday) controls which seven days constitute a week.
+  - Enter / Space on the focused day commits the full week containing it.
+  - `displayTimezone`, `disabled` rules, and all other RangePicker props are supported.
+
+- 6fc7c59: feat: add `YearPicker` — a headless year selector.
+
+  `YearPicker` stores the selected year as Jan 1 of that year in UTC-ISO form (e.g., `"2026-01-01T00:00:00.000Z"`). It reuses `DatePicker` infrastructure (Input, Trigger, Popover) and exposes `YearPicker.Grid`, a 12-year decade commit grid with decade navigation.
+
+  ```tsx
+  <YearPicker value={year} onChange={setYear}>
+    <YearPicker.Input placeholder="Pick a year" />
+    <YearPicker.Popover>
+      <YearPicker.Grid />
+    </YearPicker.Popover>
+  </YearPicker>
+  ```
+
+  - Default `displayFormat` is `"yyyy"`.
+  - `displayTimezone` is supported with timezone-aware year highlighting.
+  - Primary UX is click-to-select; full `yyyy-MM-dd` typed input still works via the inherited Input behavior.
+
+### Patch Changes
+
+- 1ca818c: fix(react): prevent WeekPicker from mutating RangePicker.Calendar
+
+  `WeekPicker` previously called `Object.assign(RangePickerRoot, { ..., Calendar: WeekPickerCalendar })`, which mutates the shared `RangePickerRoot` function object. Because `RangePicker.Calendar` is attached to the same object (via the earlier `Object.assign` in `RangePicker/index.ts`), importing `WeekPicker` would overwrite `RangePicker.Calendar` with `WeekPickerCalendar`.
+
+  Users of `RangePicker` would then see week-selection behavior (single click commits a full week and closes the popover) instead of the documented two-click range flow — even without importing `WeekPicker` directly, because both pickers share the module graph.
+
+  Added an internal `WeekPickerRoot` wrapper that the `Object.assign` target now uses, preserving `RangePickerRoot.Calendar` intact.
+
+  Caught by the `RangePicker › select range in start-date -> end-date order` Playwright test; all existing behavior is restored.
+
+- Updated dependencies [ca7180e]
+  - @kalyx/core@1.0.0-rc.0
+
 ## 0.4.0
 
 ### Minor Changes
