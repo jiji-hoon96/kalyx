@@ -32,6 +32,9 @@ const sidebars: SidebarsConfig = {
         'components/rangepicker',
         'components/timepicker',
         'components/datetimepicker',
+        'components/monthpicker',
+        'components/yearpicker',
+        'components/weekpicker',
       ],
     },
     {
