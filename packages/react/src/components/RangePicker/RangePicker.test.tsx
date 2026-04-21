@@ -481,6 +481,71 @@ describe('RangePicker — Presets', () => {
   });
 });
 
+describe('RangePicker — event callbacks', () => {
+  it('fires onOpenChange(true) when the popover opens', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <RangePicker value={EMPTY} onChange={vi.fn()} onOpenChange={onOpenChange}>
+        <RangePicker.Input part="start" />
+        <RangePicker.Input part="end" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
+  });
+
+  it('fires onOpenChange(false) when Escape closes the popover', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <RangePicker value={EMPTY} onChange={vi.fn()} onOpenChange={onOpenChange}>
+        <RangePicker.Input part="start" />
+        <RangePicker.Input part="end" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    await user.keyboard('{Escape}');
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+  });
+
+  it('fires onCalendarNavigate when the user clicks next month', async () => {
+    const user = userEvent.setup();
+    const onCalendarNavigate = vi.fn();
+    render(
+      <RangePicker
+        value={{ start: '2026-01-15T00:00:00.000Z', end: null }}
+        onChange={vi.fn()}
+        onCalendarNavigate={onCalendarNavigate}
+      >
+        <RangePicker.Input part="start" />
+        <RangePicker.Input part="end" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    onCalendarNavigate.mockClear();
+
+    await user.click(screen.getByRole('button', { name: 'Next month' }));
+
+    expect(onCalendarNavigate).toHaveBeenCalledTimes(1);
+    expect(onCalendarNavigate).toHaveBeenLastCalledWith(
+      expect.stringMatching(/^2026-02-01T/),
+    );
+  });
+});
+
 describe('RangePicker — SSR safety', () => {
   it('renderToString runs without errors on the server', async () => {
     const { renderToString } = await import('react-dom/server');

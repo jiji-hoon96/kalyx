@@ -305,6 +305,57 @@ describe('DateTimePicker — accessibility', () => {
   });
 });
 
+describe('DateTimePicker — event callbacks', () => {
+  it('fires onOpenChange(true/false) when the popover opens and closes', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <DateTimePicker
+        value="2026-01-15T14:30:00.000Z"
+        onChange={vi.fn()}
+        onOpenChange={onOpenChange}
+      >
+        <DateTimePicker.Input />
+        <DateTimePicker.Popover>
+          <DateTimePicker.Calendar />
+        </DateTimePicker.Popover>
+      </DateTimePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
+
+    await user.keyboard('{Escape}');
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+  });
+
+  it('fires onCalendarNavigate when the user navigates months', async () => {
+    const user = userEvent.setup();
+    const onCalendarNavigate = vi.fn();
+    render(
+      <DateTimePicker
+        value="2026-01-15T14:30:00.000Z"
+        onChange={vi.fn()}
+        onCalendarNavigate={onCalendarNavigate}
+      >
+        <DateTimePicker.Input />
+        <DateTimePicker.Popover>
+          <DateTimePicker.Calendar />
+        </DateTimePicker.Popover>
+      </DateTimePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    onCalendarNavigate.mockClear();
+
+    await user.click(screen.getByRole('button', { name: 'Next month' }));
+
+    expect(onCalendarNavigate).toHaveBeenLastCalledWith(
+      expect.stringMatching(/^2026-02-01T/),
+    );
+  });
+});
+
 describe('DateTimePicker — SSR safety', () => {
   it('renderToString runs without errors on the server', async () => {
     const { renderToString } = await import('react-dom/server');

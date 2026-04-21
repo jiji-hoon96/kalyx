@@ -25,6 +25,7 @@ import type {
   TimePickerContextValue,
   TimePickerFormat,
 } from '../../context/TimePickerContext.js';
+import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 
 /**
  * Props for the DateTimePicker Root component.
@@ -49,6 +50,13 @@ export interface DateTimePickerRootProps {
   defaultValue?: ISODateString;
   /** Callback fired when the datetime changes */
   onChange?: (value: ISODateString | null) => void;
+  /** Callback fired when the popover open state changes */
+  onOpenChange?: (isOpen: boolean) => void;
+  /**
+   * Callback fired when the calendar view navigates to a different month.
+   * The value is the ISO string of the first day of the newly-visible month (UTC).
+   */
+  onCalendarNavigate?: (viewMonth: ISODateString) => void;
   /** 12-hour or 24-hour mode */
   format?: TimePickerFormat;
   /** Minute step (e.g., 1, 5, 15, 30) */
@@ -98,6 +106,8 @@ export function DateTimePickerRoot({
   value: controlledValue,
   defaultValue,
   onChange,
+  onOpenChange,
+  onCalendarNavigate,
   format = '24h',
   step = 1,
   disabled = false,
@@ -135,6 +145,10 @@ export function DateTimePickerRoot({
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
     currentValue ?? adapter.today(displayTimezone),
   );
+
+  useChangeEffect(isOpen, onOpenChange);
+  const viewMonthStart = useMemo(() => adapter.startOfMonth(viewMonth), [viewMonth, adapter]);
+  useChangeEffect(viewMonthStart, onCalendarNavigate);
 
   const isDisabled = typeof disabled === 'boolean' ? disabled : false;
   const disabledRules: DisabledRule[] = useMemo(

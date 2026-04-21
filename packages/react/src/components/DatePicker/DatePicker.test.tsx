@@ -421,6 +421,78 @@ describe('DatePicker — Trigger', () => {
   });
 });
 
+describe('DatePicker — event callbacks', () => {
+  it('fires onOpenChange(true) when the popover opens', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()} onOpenChange={onOpenChange}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
+  });
+
+  it('fires onOpenChange(false) when the popover closes', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()} onOpenChange={onOpenChange}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    await user.keyboard('{Escape}');
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+  });
+
+  it('does not fire onOpenChange on initial mount', () => {
+    const onOpenChange = vi.fn();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()} onOpenChange={onOpenChange}>
+        <DatePicker.Input aria-label="날짜 선택" />
+      </DatePicker>,
+    );
+    expect(onOpenChange).not.toHaveBeenCalled();
+  });
+
+  it('fires onCalendarNavigate when the user navigates months', async () => {
+    const user = userEvent.setup();
+    const onCalendarNavigate = vi.fn();
+    render(
+      <DatePicker
+        value="2026-01-15T00:00:00.000Z"
+        onChange={vi.fn()}
+        onCalendarNavigate={onCalendarNavigate}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    onCalendarNavigate.mockClear();
+
+    await user.click(screen.getByRole('button', { name: 'Next month' }));
+
+    expect(onCalendarNavigate).toHaveBeenCalledTimes(1);
+    expect(onCalendarNavigate).toHaveBeenLastCalledWith(
+      expect.stringMatching(/^2026-02-01T/),
+    );
+  });
+});
+
 describe('DatePicker — SSR safety', () => {
   it('renderToString runs without errors on the server', async () => {
     const { renderToString } = await import('react-dom/server');

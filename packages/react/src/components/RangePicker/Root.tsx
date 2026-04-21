@@ -14,6 +14,7 @@ import type {
   RangePickerContextValue,
   RangeSelectingTarget,
 } from '../../context/RangePickerContext.js';
+import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
 
@@ -38,6 +39,13 @@ export interface RangePickerRootProps {
   defaultValue?: DateRange;
   /** Callback fired when the range changes */
   onChange?: (range: DateRange) => void;
+  /** Callback fired when the popover open state changes */
+  onOpenChange?: (isOpen: boolean) => void;
+  /**
+   * Callback fired when the calendar view navigates to a different month.
+   * The value is the ISO string of the first day of the newly-visible month (UTC).
+   */
+  onCalendarNavigate?: (viewMonth: ISODateString) => void;
   /** Disabled rules */
   disabled?: DisabledRule[] | boolean;
   /** Read-only */
@@ -66,6 +74,8 @@ export function RangePickerRoot({
   value: controlledValue,
   defaultValue,
   onChange,
+  onOpenChange,
+  onCalendarNavigate,
   disabled = false,
   readOnly = false,
   weekStartsOn = 0,
@@ -101,6 +111,10 @@ export function RangePickerRoot({
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
     currentValue.start ?? adapter.today(displayTimezone),
   );
+
+  useChangeEffect(isOpen, onOpenChange);
+  const viewMonthStart = useMemo(() => adapter.startOfMonth(viewMonth), [viewMonth, adapter]);
+  useChangeEffect(viewMonthStart, onCalendarNavigate);
 
   const mergedLabels = useMemo(
     () => ({ ...DEFAULT_RANGEPICKER_LABELS, ...labelsProp }),
