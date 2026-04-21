@@ -23,6 +23,10 @@ export type {
   DatePickerMonthGridClassNames,
   DatePickerYearGridProps,
   DatePickerYearGridClassNames,
+  DatePickerPresetsProps,
+  DatePickerPresetsClassNames,
+  DatePickerPresetProps,
+  DatePickerPresetKey,
 } from './components/DatePicker/index.js';
 
 export type {
