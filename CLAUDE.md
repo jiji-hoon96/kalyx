@@ -22,6 +22,7 @@
 | 참고할 외부 스킬 | [§11 외부 스킬 참조](#11-외부-스킬-참조) |
 | 버전·배포는 어떻게? | [§12 릴리즈 워크플로우](#12-릴리즈-워크플로우-요약) |
 | CI/CD 구조는? | [§13 CI/CD 구조](#13-cicd-구조) |
+| 지금 진행 중인 큰 작업? | [§14 현재 이니셔티브](#14-현재-이니셔티브-2026-04-기준) |
 
 ---
 
@@ -66,7 +67,7 @@ Ark UI가 포기한 TimePicker 통합
 | 프레임워크 | React 19+ 전용 | RSC 최적화, 가장 큰 시장 |
 | 언어 | TypeScript strict | `any` 전면 금지 |
 | 스타일링 | Zero CSS (Headless) | CSS 충돌 원천 차단 |
-| 날짜 코어 | Adapter 패턴 + date-fns 기본 | Temporal API 전환 대비 |
+| 날짜 코어 | Adapter 패턴 + date-fns 기본 (v1.1에서 `@kalyx/adapter-date-fns`로 분리 예정 — [§14](#14-현재-이니셔티브-2026-04-기준)) | Temporal API 전환 대비, 사용자가 dayjs/luxon 선택 가능 |
 | 포지셔닝 | Floating UI | 3KB, SSR 안전, Popper.js 후계자 |
 | 번들 목표 | **< 12KB gzip** | react-datepicker 62KB 대비 |
 | 테스트 | Vitest + Testing Library + jest-axe | |
@@ -506,7 +507,31 @@ pnpm changeset publish # npm 배포 (CI 자동)
 
 ---
 
-## 14. Claude에게: 작업 전 체크리스트
+## 14. 현재 이니셔티브 (2026-04 기준)
+
+> v1.0 정식 릴리즈까지의 두 축. 각 이니셔티브의 상세 실행 계획은 `.claude/skills/` 해당 파일 참조.
+
+### A. v1.0 Release Candidate 공지
+
+- **상태**: `1.0.0-rc.0` pre-mode 진입 완료 (`.changeset/pre.json`), main에 머지됨
+- **남은 작업**: npm publish 검증, GitHub Release 드래프트, docs 공지 배너, README 배지 갱신, 피드백 채널(`v1-rc` 라벨) 설정
+- **스킬 파일**: `.claude/skills/rc-announcement.md`
+- **졸업 조건**: RC 기간 2주 + `v1-rc` open 이슈 0건 + 번들 ≤12KB + axe/SSR 그린
+
+### C. 어댑터 중립 추출 (Option C — Hybrid)
+
+- **상태**: C1 진단 완료. 구현 착수 전.
+- **방향**: `@kalyx/core`에서 date-fns 제거 → `@kalyx/adapter-date-fns` 별도 패키지로 분리. `@kalyx/react`는 이중 엔트리(`.` / `./headless`)로 "그냥 쓰면 기본 어댑터 자동 주입 / 고급 사용 시 직접 선택"을 동시 제공.
+- **결정 근거**: 사용자의 약 절반이 dayjs 사용 → baked-in은 번들 중복. 동시에 "설치하면 바로 동작" 경험은 유지해야 함. TanStack Query / Zustand의 entry-split 선례 채택.
+- **Breaking 영향**: `@kalyx/react` 기본 엔트리는 **0건 breaking**. `@kalyx/core`만 major (직접 사용자 극소수).
+- **스킬 파일**: `.claude/skills/adapter-extraction.md`
+- **후속**: v1.1+에서 `@kalyx/adapter-dayjs`, `@kalyx/adapter-luxon` 추가
+
+> 이 두 이니셔티브는 서로 독립. A는 RC 창 동안만 유효하고, C는 v1.1까지 이어짐. 우선순위는 A → C 순.
+
+---
+
+## 15. Claude에게: 작업 전 체크리스트
 
 새 코드를 작성하기 전 반드시 확인:
 
@@ -521,6 +546,8 @@ pnpm changeset publish # npm 배포 (CI 자동)
   - 버전·배포           → release-workflow.md
   - GitHub Actions      → ci-cd.md
   - 외부 스킬 참조      → oss-references.md
+  - v1.0 RC 공지        → rc-announcement.md
+  - 어댑터 중립 추출(C) → adapter-extraction.md
 
 □ Composition API를 따르는가? (Props 폭발 없는가?)
 □ SSR에서 동작하는가? (window/document 없는가?)
