@@ -22,6 +22,7 @@ const sidebars: SidebarsConfig = {
         'concepts/ssr',
         'concepts/adapters',
         'concepts/accessibility',
+        'concepts/internationalization',
       ],
     },
     {

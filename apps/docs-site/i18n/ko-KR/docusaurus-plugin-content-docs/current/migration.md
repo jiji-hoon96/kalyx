@@ -117,6 +117,82 @@ const toISO = (cal: CalendarDate | null): ISODateString | null =>
   cal ? new Date(Date.UTC(cal.year, cal.month - 1, cal.day)).toISOString() : null;
 ```
 
+## v0.2 → v0.3 — ARIA 라벨 i18n
+
+v0.3에서 기본 ARIA 라벨이 한국어에서 영어로 변경되었습니다. 한국어 사용자라면 `labels` prop으로 복원하세요.
+
+### Breaking change
+
+모든 하드코딩된 한국어 aria-label (`"캘린더 열기"`, `"이전 달"` 등)이 영어 기본값으로 교체됐습니다.
+
+### 한국어 라벨 복원
+
+```tsx
+<DatePicker
+  value={date}
+  onChange={setDate}
+  labels={{
+    triggerOpen: '캘린�� 열기',
+    triggerClose: '캘린더 닫���',
+    popoverLabel: '날짜 선택',
+    prevMonth: '이��� 달',
+    nextMonth: '다음 달',
+    prevYear: '���전 년',
+    nextYear: '다음 년',
+    prevDecade: '이전 10년',
+    nextDecade: '다음 10년',
+  }}
+>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+변경하고 싶은 키만 넘기면 됩니다 — 나머지는 영어 기본값이 유지됩니다.
+
+전체 키 목록과 재사용 가능한 로케일 프리셋은 [다국어 가이드](./concepts/internationalization.md)를 참고하세요.
+
+## v0.3 → v0.4 — `displayTimezone` 추가
+
+v0.4���서 네 가지 Picker(와 대응 Hook)에 `displayTimezone` prop이 추가되었습니다. Breaking change 없음 — prop을 생략하면 v0.3 동작과 동일합니다.
+
+### Before (v0.3)
+
+```tsx
+<DatePicker value={iso} onChange={setIso}>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+### After (v0.4)
+
+```tsx
+<DatePicker
+  value={iso}
+  onChange={setIso}
+  displayTimezone={user.timezone ?? 'UTC'}
+>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+ISO 계약은 바뀌지 않습니다. prop을 설정하면:
+
+- `Input`이 `displayTimezone` 기준으로 값을 포맷합니다.
+- `Calendar`가 해당 타임존 기준으로 오늘/선택 날짜를 하이라이트합니다.
+- `onChange`가 해당 타임존의 시민 자정(civil midnight)을 반환합니다.
+- `TimePicker` / `DateTimePicker`의 시/분이 DST를 반영합니다.
+
+자세한 내용은 [타임존 개념 페이지](./concepts/timezone.md)를 참고하세요.
+
 ## 일반 체크리스트
 
 이전 시:

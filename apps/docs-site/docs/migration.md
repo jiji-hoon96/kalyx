@@ -117,6 +117,43 @@ const toISO = (cal: CalendarDate | null): ISODateString | null =>
   cal ? new Date(Date.UTC(cal.year, cal.month - 1, cal.day)).toISOString() : null;
 ```
 
+## v0.2 → v0.3 — ARIA labels i18n
+
+v0.3 changes the default ARIA labels from Korean to English. If your app targets Korean users, restore the labels with the `labels` prop.
+
+### Breaking change
+
+All hardcoded Korean aria-labels (`"캘린더 열기"`, `"이전 달"`, etc.) are now English by default.
+
+### Restore Korean labels
+
+```tsx
+<DatePicker
+  value={date}
+  onChange={setDate}
+  labels={{
+    triggerOpen: '캘린더 열기',
+    triggerClose: '캘린더 닫기',
+    popoverLabel: '날짜 선택',
+    prevMonth: '이전 달',
+    nextMonth: '다음 달',
+    prevYear: '이전 년',
+    nextYear: '다음 년',
+    prevDecade: '이전 10년',
+    nextDecade: '다음 10년',
+  }}
+>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+You only need to override the keys you care about — unspecified keys keep the English defaults.
+
+For the full key reference and reusable locale presets, see the [Internationalization guide](./concepts/internationalization.md).
+
 ## v0.3 → v0.4 — adding `displayTimezone`
 
 v0.4 introduces `displayTimezone` on all four pickers (plus the matching hooks). No breaking changes — omitting the prop keeps v0.3 semantics. Adopt it when the user's displayed zone differs from the server runtime, or when you want an explicit barrier against "day off by one" bugs.
