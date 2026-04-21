@@ -268,25 +268,27 @@
 }
 
 .compareTable {
-  max-width: 860px;
+  max-width: 1160px;
   margin: 0 auto;
   background: var(--kalyx-surface-raised);
   border: 1px solid var(--kalyx-border);
   border-radius: 14px;
-  overflow: hidden;
+  overflow-x: auto;
 }
 
 .compareTable table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 720px;
 }
 
 .compareTable th,
 .compareTable td {
-  padding: 0.85rem 1rem;
+  padding: 0.8rem 0.85rem;
   text-align: left;
   border-bottom: 1px solid var(--kalyx-border);
-  font-size: 0.93rem;
+  font-size: 0.9rem;
+  vertical-align: top;
 }
 
 .compareTable th {

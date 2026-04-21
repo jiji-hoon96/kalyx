@@ -207,6 +207,8 @@ function Compare(): ReactNode {
                 <th className={styles.kalyxCell}>Kalyx</th>
                 <th>react-datepicker</th>
                 <th>react-day-picker</th>
+                <th>Ark UI</th>
+                <th>React Aria</th>
               </tr>
             </thead>
             <tbody>
@@ -214,9 +216,11 @@ function Compare(): ReactNode {
                 <td>
                   <Translate id="home.compare.row.bundle">Bundle (gzip)</Translate>
                 </td>
-                <td className={styles.kalyxCell}>~9KB</td>
+                <td className={styles.kalyxCell}>~11KB</td>
                 <td>~60KB</td>
                 <td>~22KB</td>
+                <td>~18KB</td>
+                <td>~45KB</td>
               </tr>
               <tr>
                 <td>
@@ -224,6 +228,8 @@ function Compare(): ReactNode {
                 </td>
                 <td className={styles.kalyxCell}>None</td>
                 <td>Required</td>
+                <td>None</td>
+                <td>None</td>
                 <td>None</td>
               </tr>
               <tr>
@@ -233,6 +239,8 @@ function Compare(): ReactNode {
                 <td className={styles.kalyxCell}>✓</td>
                 <td>✓</td>
                 <td>✗</td>
+                <td>✗</td>
+                <td>✓</td>
               </tr>
               <tr>
                 <td>
@@ -241,6 +249,18 @@ function Compare(): ReactNode {
                 <td className={styles.kalyxCell}>✓</td>
                 <td>✓</td>
                 <td>✓</td>
+                <td>✓</td>
+                <td>✓</td>
+              </tr>
+              <tr>
+                <td>
+                  <Translate id="home.compare.row.month">MonthPicker / YearPicker</Translate>
+                </td>
+                <td className={styles.kalyxCell}>✓</td>
+                <td>△ (drop-down)</td>
+                <td>✗</td>
+                <td>✗</td>
+                <td>✗</td>
               </tr>
               <tr>
                 <td>
@@ -248,6 +268,8 @@ function Compare(): ReactNode {
                 </td>
                 <td className={styles.kalyxCell}>✓</td>
                 <td>△</td>
+                <td>✓</td>
+                <td>✓</td>
                 <td>✓</td>
               </tr>
               <tr>
@@ -257,6 +279,38 @@ function Compare(): ReactNode {
                 <td className={styles.kalyxCell}>✓</td>
                 <td>✗ (Date objects)</td>
                 <td>✗ (Date objects)</td>
+                <td>✗ (Date objects)</td>
+                <td>✗ (@internationalized/date)</td>
+              </tr>
+              <tr>
+                <td>
+                  <Translate id="home.compare.row.tz">IANA timezone</Translate>
+                </td>
+                <td className={styles.kalyxCell}>✓</td>
+                <td>✗ (#1018 bug)</td>
+                <td>✗</td>
+                <td>✗</td>
+                <td>✓</td>
+              </tr>
+              <tr>
+                <td>
+                  <Translate id="home.compare.row.composition">Composition API</Translate>
+                </td>
+                <td className={styles.kalyxCell}>✓</td>
+                <td>✗ (100+ props)</td>
+                <td>✓</td>
+                <td>✓</td>
+                <td>△ (hooks-based)</td>
+              </tr>
+              <tr>
+                <td>
+                  <Translate id="home.compare.row.adapter">Date library adapter</Translate>
+                </td>
+                <td className={styles.kalyxCell}>✓ (date-fns / custom)</td>
+                <td>✗</td>
+                <td>✗</td>
+                <td>✗</td>
+                <td>✗ (locked)</td>
               </tr>
             </tbody>
           </table>
