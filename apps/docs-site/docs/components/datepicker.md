@@ -282,6 +282,48 @@ type DatePickerYearGridClassNames = {
 };
 ```
 
+## `<DatePicker.Presets>` / `<DatePicker.Preset>` (optional)
+
+Quick-select buttons for common dates. `<DatePicker.Presets>` is a `role="group"` container; each `<DatePicker.Preset>` is a `role="option"` button that commits and closes the popover on click.
+
+```tsx
+<DatePicker value={date} onChange={setDate}>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Presets>
+      <DatePicker.Preset value="today">Today</DatePicker.Preset>
+      <DatePicker.Preset value="tomorrow">Tomorrow</DatePicker.Preset>
+      <DatePicker.Preset value="startOfMonth">Start of month</DatePicker.Preset>
+      <DatePicker.Preset date="2026-12-25T00:00:00.000Z">Christmas</DatePicker.Preset>
+    </DatePicker.Presets>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+Preset keys: `today`, `tomorrow`, `yesterday`, `startOfMonth`, `endOfMonth`, `startOfYear`. Or pass a concrete `date` (ISO 8601 UTC) for anything else. Active presets get `aria-selected="true"` when the resolved date matches the current `value` (timezone-aware via `displayTimezone`).
+
+## Event callbacks
+
+All `DatePicker.Root` callbacks are optional. Neither of the two newer ones fires on initial mount.
+
+| Prop | Signature | Fires when |
+| --- | --- | --- |
+| `onChange` | `(value: ISODateString \| null) => void` | A date is committed (click / Enter / preset / input typed). |
+| `onOpenChange` | `(isOpen: boolean) => void` | The popover opens or closes (any reason — click, keyboard, outside click, selection). |
+| `onCalendarNavigate` | `(viewMonth: ISODateString) => void` | The calendar view moves to a different month. Emits the first day of the newly-visible month in UTC. |
+
+```tsx
+<DatePicker
+  value={date}
+  onChange={setDate}
+  onOpenChange={(open) => analytics.track('picker_toggle', { open })}
+  onCalendarNavigate={(month) => prefetchEventsForMonth(month)}
+>
+  {/* ... */}
+</DatePicker>
+```
+
 ## Patterns
 
 ### Month / Year navigation

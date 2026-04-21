@@ -276,7 +276,16 @@ function RangeWithPresets() {
 </RangePicker>
 ```
 
+## Event callbacks
+
+| Prop | Signature | Fires when |
+| --- | --- | --- |
+| `onChange` | `(range: DateRange) => void` | The range changes (start click, end click, preset, input). |
+| `onOpenChange` | `(isOpen: boolean) => void` | The popover opens or closes. Not fired on initial mount. |
+| `onCalendarNavigate` | `(viewMonth: ISODateString) => void` | The calendar view moves to a different month. Not fired on initial mount. |
+
 ## Related
 
 - [DatePicker →](./datepicker.md)
+- [WeekPicker →](./weekpicker.md)
 - [useRangePicker →](../hooks/use-range-picker.md)

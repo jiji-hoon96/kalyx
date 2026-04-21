@@ -296,6 +296,14 @@ function BookingFlow() {
 }
 ```
 
+## Event callbacks
+
+| Prop | Signature | Fires when |
+| --- | --- | --- |
+| `onChange` | `(value: ISODateString \| null) => void` | Date or time changes. |
+| `onOpenChange` | `(isOpen: boolean) => void` | The popover opens or closes. Not fired on initial mount. |
+| `onCalendarNavigate` | `(viewMonth: ISODateString) => void` | The calendar view moves to a different month. Not fired on initial mount. |
+
 ## Related
 
 - [DatePicker →](./datepicker.md)
