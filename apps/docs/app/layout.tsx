@@ -15,6 +15,9 @@ const NAV_ITEMS = [
 	{ href: '/rangepicker', label: 'RangePicker' },
 	{ href: '/timepicker', label: 'TimePicker' },
 	{ href: '/datetimepicker', label: 'DateTimePicker' },
+	{ href: '/monthpicker', label: 'MonthPicker' },
+	{ href: '/yearpicker', label: 'YearPicker' },
+	{ href: '/weekpicker', label: 'WeekPicker' },
 ];
 
 export default function RootLayout({ children }: { children: ReactNode }) {
