@@ -80,6 +80,22 @@ RangePicker에서는 각 입력에 라벨을 붙이세요.
 <RangePicker.Input id="to" part="end" />
 ```
 
+### 내장 ARIA 라벨 (`labels` prop)
+
+Kalyx는 트리거, 네비게이션 버튼, popover 다이얼로그에 영어 ARIA 라벨을 자동 적용합���다. 다른 언어로 오버라이드하려면 Root 컴포넌트에 `labels` prop을 전달하세요:
+
+```tsx
+<DatePicker
+  labels={{ triggerOpen: '캘린더 열기', prevMonth: '이전 달', nextMonth: '다음 달' }}
+  value={iso}
+  onChange={setIso}
+>
+  {/* ... */}
+</DatePicker>
+```
+
+전체 키 레퍼런스는 [다국어 가이드 →](./internationalization.md)를 참고하세요.
+
 ## 색상 대비
 
 Kalyx는 색상을 전혀 제공하지 않습니다. **팔레트를 여러분이 소유**하므로 대비도 여러분의 책임입니다. 최소 WCAG AA (텍스트 4.5:1, 큰 텍스트/포커스 인디케이터 3:1)를 확보해야 합니다. 특히 점검할 지점:

@@ -80,6 +80,22 @@ For RangePicker, pair each input:
 <RangePicker.Input id="to" part="end" />
 ```
 
+### Built-in ARIA labels (`labels` prop)
+
+Kalyx auto-applies English ARIA labels to triggers, navigation buttons, and popover dialogs. Override them for other languages via the `labels` prop on any Root component:
+
+```tsx
+<DatePicker
+  labels={{ triggerOpen: '캘린더 열기', prevMonth: '이전 달', nextMonth: '���음 달' }}
+  value={iso}
+  onChange={setIso}
+>
+  {/* ... */}
+</DatePicker>
+```
+
+See the full key reference in the [Internationalization guide →](./internationalization.md).
+
 ## Color contrast
 
 Kalyx ships zero colors. **You own the palette** — which means you also own the contrast. A minimum of WCAG AA (4.5:1 for text, 3:1 for large text and focus indicators) is your responsibility. A few places to double-check:
