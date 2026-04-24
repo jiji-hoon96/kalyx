@@ -10,8 +10,10 @@ export interface TimePickerHourListClassNames {
   optionSelected?: string;
 }
 
-export interface TimePickerHourListProps
-  extends Omit<HTMLAttributes<HTMLUListElement>, 'role' | 'children'> {
+export interface TimePickerHourListProps extends Omit<
+  HTMLAttributes<HTMLUListElement>,
+  'role' | 'children'
+> {
   classNames?: TimePickerHourListClassNames;
 }
 
@@ -37,9 +39,7 @@ export function TimePickerHourList({ classNames, ...props }: TimePickerHourListP
     (hourDisplay: number) => {
       if (isDisabled || isReadOnly) return;
       const hours24 =
-        format === '12h' && currentPeriod
-          ? to24Hour(hourDisplay, currentPeriod)
-          : hourDisplay;
+        format === '12h' && currentPeriod ? to24Hour(hourDisplay, currentPeriod) : hourDisplay;
       ctx.setTime({ hours: hours24 });
     },
     [format, currentPeriod, ctx, isDisabled, isReadOnly],

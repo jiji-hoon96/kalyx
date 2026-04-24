@@ -34,12 +34,14 @@ function ControlledRangePicker({
   );
 }
 
-function renderRangePicker(props: {
-  value?: DateRange;
-  defaultValue?: DateRange;
-  onChange?: (r: DateRange) => void;
-  disabled?: boolean;
-} = {}) {
+function renderRangePicker(
+  props: {
+    value?: DateRange;
+    defaultValue?: DateRange;
+    onChange?: (r: DateRange) => void;
+    disabled?: boolean;
+  } = {},
+) {
   const onChange = props.onChange ?? vi.fn();
   const result = render(
     <RangePicker
@@ -540,9 +542,7 @@ describe('RangePicker — event callbacks', () => {
     await user.click(screen.getByRole('button', { name: 'Next month' }));
 
     expect(onCalendarNavigate).toHaveBeenCalledTimes(1);
-    expect(onCalendarNavigate).toHaveBeenLastCalledWith(
-      expect.stringMatching(/^2026-02-01T/),
-    );
+    expect(onCalendarNavigate).toHaveBeenLastCalledWith(expect.stringMatching(/^2026-02-01T/));
   });
 });
 

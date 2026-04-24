@@ -37,12 +37,7 @@ export interface DatePickerPresetsProps extends Omit<HTMLAttributes<HTMLDivEleme
 export function DatePickerPresets({ classNames, children, ...props }: DatePickerPresetsProps) {
   const ctx = useDatePickerContext('DatePicker.Presets');
   return (
-    <div
-      role="group"
-      aria-label={ctx.labels.popoverLabel}
-      className={classNames?.root}
-      {...props}
-    >
+    <div role="group" aria-label={ctx.labels.popoverLabel} className={classNames?.root} {...props}>
       {children}
     </div>
   );
@@ -80,8 +75,7 @@ function resolveDatePreset(
   }
 }
 
-export interface DatePickerPresetProps
-  extends Omit<HTMLAttributes<HTMLButtonElement>, 'value'> {
+export interface DatePickerPresetProps extends Omit<HTMLAttributes<HTMLButtonElement>, 'value'> {
   /** Predefined preset key; omit when passing `date` directly */
   value?: DatePickerPresetKey;
   /** Pass an ISO date directly (alternative to `value`) */
@@ -140,11 +134,7 @@ export function DatePickerPreset({
     if (directDate) {
       target = directDate;
     } else if (presetKey) {
-      target = resolveDatePreset(
-        presetKey,
-        ctx.adapter.today(ctx.displayTimezone),
-        ctx.adapter,
-      );
+      target = resolveDatePreset(presetKey, ctx.adapter.today(ctx.displayTimezone), ctx.adapter);
     } else {
       return false;
     }

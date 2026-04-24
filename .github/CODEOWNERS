@@ -1,0 +1,16 @@
+# Default owner for everything
+* @jiji-hoon96
+
+# Core date logic — critical path
+packages/core/ @jiji-hoon96
+
+# React components
+packages/react/ @jiji-hoon96
+
+# CI/CD and release config
+.github/ @jiji-hoon96
+.changeset/ @jiji-hoon96
+
+# Documentation
+apps/docs/ @jiji-hoon96
+apps/docs-site/ @jiji-hoon96

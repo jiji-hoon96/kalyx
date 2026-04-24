@@ -1,5 +1,6 @@
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
+import prettierConfig from 'eslint-config-prettier';
 
 export default [
 	{
@@ -50,4 +51,6 @@ export default [
 			'e2e/**',
 		],
 	},
+	// Prettier와 충돌하는 ESLint 규칙 비활성화 (반드시 마지막에 위치)
+	prettierConfig,
 ];

@@ -6,10 +6,7 @@ import { useEffect, useRef } from 'react';
  *
  * Internal utility — not exported from the package public API.
  */
-export function useChangeEffect<T>(
-  value: T,
-  callback: ((value: T) => void) | undefined,
-): void {
+export function useChangeEffect<T>(value: T, callback: ((value: T) => void) | undefined): void {
   const callbackRef = useRef(callback);
   callbackRef.current = callback;
 

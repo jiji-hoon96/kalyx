@@ -56,12 +56,9 @@ function utcStartOfWeek(d: Date, weekStartsOn: 0 | 1): Date {
 /** Returns the last day of the week in UTC */
 function utcEndOfWeek(d: Date, weekStartsOn: 0 | 1): Date {
   const start = utcStartOfWeek(d, weekStartsOn);
-  return new Date(Date.UTC(
-    start.getUTCFullYear(),
-    start.getUTCMonth(),
-    start.getUTCDate() + 6,
-    23, 59, 59, 999,
-  ));
+  return new Date(
+    Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate() + 6, 23, 59, 59, 999),
+  );
 }
 
 /**
@@ -145,10 +142,7 @@ export const DateFnsAdapter: DateAdapter = {
   isSameMonth(a: string, b: string): boolean {
     const da = toDate(a);
     const db = toDate(b);
-    return (
-      da.getUTCFullYear() === db.getUTCFullYear() &&
-      da.getUTCMonth() === db.getUTCMonth()
-    );
+    return da.getUTCFullYear() === db.getUTCFullYear() && da.getUTCMonth() === db.getUTCMonth();
   },
 
   startOfDay(iso: string, timezone?: string): string {

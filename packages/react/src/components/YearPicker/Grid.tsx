@@ -104,11 +104,7 @@ export function YearPickerGrid({ classNames, ...props }: YearPickerGridProps) {
         </button>
       </div>
 
-      <div
-        role="grid"
-        aria-label={rangeLabel}
-        className={classNames?.grid}
-      >
+      <div role="grid" aria-label={rangeLabel} className={classNames?.grid}>
         {Array.from({ length: 4 }, (_, rowIndex) => (
           <div
             key={rowIndex}
@@ -117,13 +113,14 @@ export function YearPickerGrid({ classNames, ...props }: YearPickerGridProps) {
             style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
           >
             {years.slice(rowIndex * 3, rowIndex * 3 + 3).map((y) => {
-              const yearClass = [
-                classNames?.year,
-                y.isSelected && classNames?.yearSelected,
-                y.isCurrent && classNames?.yearCurrent,
-              ]
-                .filter(Boolean)
-                .join(' ') || undefined;
+              const yearClass =
+                [
+                  classNames?.year,
+                  y.isSelected && classNames?.yearSelected,
+                  y.isCurrent && classNames?.yearCurrent,
+                ]
+                  .filter(Boolean)
+                  .join(' ') || undefined;
 
               return (
                 <button

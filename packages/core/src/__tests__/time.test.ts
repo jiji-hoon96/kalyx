@@ -179,19 +179,13 @@ describe('generateMinutes', () => {
 describe('isSameTime', () => {
   it('returns true for identical times', () => {
     expect(
-      isSameTime(
-        { hours: 14, minutes: 30, seconds: 0 },
-        { hours: 14, minutes: 30, seconds: 0 },
-      ),
+      isSameTime({ hours: 14, minutes: 30, seconds: 0 }, { hours: 14, minutes: 30, seconds: 0 }),
     ).toBe(true);
   });
 
   it('returns false when seconds differ', () => {
     expect(
-      isSameTime(
-        { hours: 14, minutes: 30, seconds: 0 },
-        { hours: 14, minutes: 30, seconds: 1 },
-      ),
+      isSameTime({ hours: 14, minutes: 30, seconds: 0 }, { hours: 14, minutes: 30, seconds: 1 }),
     ).toBe(false);
   });
 });

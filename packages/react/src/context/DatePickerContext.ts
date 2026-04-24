@@ -1,6 +1,12 @@
 import { createContext, useContext } from 'react';
 import type { MutableRefObject } from 'react';
-import type { DateAdapter, DatePickerLabels, DisabledRule, ISODateString, WeekStartsOn } from '@kalyx/core';
+import type {
+  DateAdapter,
+  DatePickerLabels,
+  DisabledRule,
+  ISODateString,
+  WeekStartsOn,
+} from '@kalyx/core';
 
 export interface DatePickerContextValue {
   /** Floating UI reference element (set by Input/Trigger, read by Popover) */
@@ -62,10 +68,10 @@ export function useDatePickerContext(componentName: string): DatePickerContextVa
   if (!context) {
     throw new Error(
       `[${componentName}] DatePicker.Root 내부에서 사용해야 합니다.\n\n` +
-      '올바른 사용법:\n' +
-      '  <DatePicker>\n' +
-      `    <DatePicker.${componentName.replace('DatePicker.', '')} />\n` +
-      '  </DatePicker>'
+        '올바른 사용법:\n' +
+        '  <DatePicker>\n' +
+        `    <DatePicker.${componentName.replace('DatePicker.', '')} />\n` +
+        '  </DatePicker>',
     );
   }
   return context;

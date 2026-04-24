@@ -5,14 +5,16 @@ import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { MonthPicker } from './index.js';
 
-function renderMonthPicker(props: {
-  value?: string | null;
-  defaultValue?: string;
-  onChange?: (v: string | null) => void;
-  disabled?: boolean;
-  displayTimezone?: string;
-  locale?: string;
-} = {}) {
+function renderMonthPicker(
+  props: {
+    value?: string | null;
+    defaultValue?: string;
+    onChange?: (v: string | null) => void;
+    disabled?: boolean;
+    displayTimezone?: string;
+    locale?: string;
+  } = {},
+) {
   const onChange = props.onChange ?? vi.fn();
   const result = render(
     <MonthPicker
@@ -62,7 +64,10 @@ describe('MonthPicker — basic interactions', () => {
 
     await user.click(screen.getByRole('combobox'));
 
-    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
     expect(screen.getByRole('gridcell', { name: 'January' })).not.toHaveAttribute('aria-selected');
   });
 

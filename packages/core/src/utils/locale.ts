@@ -58,10 +58,7 @@ export function formatMonthYear(year: number, month: number, locale = 'en-US'): 
  * @param weekStartsOn 0 = Sunday, 1 = Monday
  * @returns Array of 7 WeekdayInfo entries
  */
-export function getWeekdayNames(
-  locale = 'en-US',
-  weekStartsOn: WeekStartsOn = 0,
-): WeekdayInfo[] {
+export function getWeekdayNames(locale = 'en-US', weekStartsOn: WeekStartsOn = 0): WeekdayInfo[] {
   // 2026-01-04 is a Sunday (reference point)
   const shortFormatter = getCachedFormatter(locale, { weekday: 'short', timeZone: 'UTC' });
   const fullFormatter = getCachedFormatter(locale, { weekday: 'long', timeZone: 'UTC' });

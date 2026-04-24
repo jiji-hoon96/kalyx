@@ -9,7 +9,10 @@ sidebar_position: 2
 Public React API. All names below are importable directly from `@kalyx/react`.
 
 ```ts
-import { DatePicker, RangePicker, TimePicker, DateTimePicker } from '@kalyx/react';
+import {
+  DatePicker, RangePicker, TimePicker, DateTimePicker,
+  MonthPicker, YearPicker, WeekPicker,
+} from '@kalyx/react';
 ```
 
 ## Components
@@ -20,6 +23,9 @@ import { DatePicker, RangePicker, TimePicker, DateTimePicker } from '@kalyx/reac
 | `RangePicker` | [Component docs](../components/rangepicker.md) |
 | `TimePicker` | [Component docs](../components/timepicker.md) |
 | `DateTimePicker` | [Component docs](../components/datetimepicker.md) |
+| `MonthPicker` | [Component docs](../components/monthpicker.md) |
+| `YearPicker` | [Component docs](../components/yearpicker.md) |
+| `WeekPicker` | [Component docs](../components/weekpicker.md) |
 
 ## Hooks
 
@@ -53,6 +59,10 @@ import type {
   DatePickerMonthGridClassNames,
   DatePickerYearGridProps,
   DatePickerYearGridClassNames,
+  DatePickerPresetsProps,
+  DatePickerPresetsClassNames,
+  DatePickerPresetProps,
+  DatePickerPresetKey,
 } from '@kalyx/react';
 ```
 
@@ -98,6 +108,44 @@ import type {
 ```
 
 Sub-component types are re-exported from DatePicker and TimePicker.
+
+### MonthPicker types
+
+```ts
+import type {
+  MonthPickerRootProps,
+  MonthPickerInputProps,
+  MonthPickerTriggerProps,
+  MonthPickerPopoverProps,
+  MonthPickerGridProps,
+  MonthPickerGridClassNames,
+} from '@kalyx/react';
+```
+
+### YearPicker types
+
+```ts
+import type {
+  YearPickerRootProps,
+  YearPickerInputProps,
+  YearPickerTriggerProps,
+  YearPickerPopoverProps,
+  YearPickerGridProps,
+  YearPickerGridClassNames,
+} from '@kalyx/react';
+```
+
+### WeekPicker types
+
+```ts
+import type {
+  WeekPickerRootProps,
+  WeekPickerInputProps,
+  WeekPickerPopoverProps,
+  WeekPickerCalendarProps,
+  WeekPickerCalendarClassNames,
+} from '@kalyx/react';
+```
 
 ### Hook types
 

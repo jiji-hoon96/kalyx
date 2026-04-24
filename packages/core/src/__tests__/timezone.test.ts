@@ -21,9 +21,9 @@ describe('formatInTimezone — basic behaviour', () => {
       formatInTimezone('2026-03-08T07:30:00.000Z', 'yyyy-MM-dd HH:mm', 'America/New_York'),
     ).toBe('2026-03-08 03:30');
 
-    expect(
-      formatInTimezone('2026-03-08T07:30:00.000Z', 'yyyy-MM-dd HH:mm', 'Asia/Seoul'),
-    ).toBe('2026-03-08 16:30');
+    expect(formatInTimezone('2026-03-08T07:30:00.000Z', 'yyyy-MM-dd HH:mm', 'Asia/Seoul')).toBe(
+      '2026-03-08 16:30',
+    );
   });
 
   it('preserves the source UTC string (pure function)', () => {
@@ -55,15 +55,11 @@ describe('startOfDayInTimezone — civil-day midnight in UTC', () => {
 
 describe('DST transition — America/New_York spring forward 2026-03-08', () => {
   it('offset is -300 (EST) before the transition', () => {
-    expect(
-      getTimezoneOffsetMinutes('2026-03-08T06:00:00.000Z', 'America/New_York'),
-    ).toBe(-300);
+    expect(getTimezoneOffsetMinutes('2026-03-08T06:00:00.000Z', 'America/New_York')).toBe(-300);
   });
 
   it('offset is -240 (EDT) immediately after the transition', () => {
-    expect(
-      getTimezoneOffsetMinutes('2026-03-08T07:00:00.000Z', 'America/New_York'),
-    ).toBe(-240);
+    expect(getTimezoneOffsetMinutes('2026-03-08T07:00:00.000Z', 'America/New_York')).toBe(-240);
   });
 
   it('startOfDay on the transition day returns midnight EST', () => {
@@ -81,15 +77,11 @@ describe('DST transition — America/New_York spring forward 2026-03-08', () => 
 
 describe('DST transition — America/New_York fall back 2026-11-01', () => {
   it('offset is -240 (EDT) before 02:00 local', () => {
-    expect(
-      getTimezoneOffsetMinutes('2026-11-01T05:00:00.000Z', 'America/New_York'),
-    ).toBe(-240);
+    expect(getTimezoneOffsetMinutes('2026-11-01T05:00:00.000Z', 'America/New_York')).toBe(-240);
   });
 
   it('offset is -300 (EST) after 02:00 local', () => {
-    expect(
-      getTimezoneOffsetMinutes('2026-11-01T07:00:00.000Z', 'America/New_York'),
-    ).toBe(-300);
+    expect(getTimezoneOffsetMinutes('2026-11-01T07:00:00.000Z', 'America/New_York')).toBe(-300);
   });
 
   it('midnight of the fall-back day is in EDT', () => {
@@ -101,15 +93,11 @@ describe('DST transition — America/New_York fall back 2026-11-01', () => {
 
 describe('DST transition — Europe/London spring forward 2026-03-29', () => {
   it('offset is 0 (GMT) before the transition', () => {
-    expect(
-      getTimezoneOffsetMinutes('2026-03-29T00:30:00.000Z', 'Europe/London'),
-    ).toBe(0);
+    expect(getTimezoneOffsetMinutes('2026-03-29T00:30:00.000Z', 'Europe/London')).toBe(0);
   });
 
   it('offset is +60 (BST) after the transition', () => {
-    expect(
-      getTimezoneOffsetMinutes('2026-03-29T02:30:00.000Z', 'Europe/London'),
-    ).toBe(60);
+    expect(getTimezoneOffsetMinutes('2026-03-29T02:30:00.000Z', 'Europe/London')).toBe(60);
   });
 
   it('midnight of the transition day is in GMT (UTC+0)', () => {
@@ -122,32 +110,20 @@ describe('DST transition — Europe/London spring forward 2026-03-29', () => {
 describe('isSameDayInTimezone — civil-day comparison', () => {
   it('two UTC instants on the same KST civil day', () => {
     expect(
-      isSameDayInTimezone(
-        '2026-01-15T03:00:00.000Z',
-        '2026-01-15T14:00:00.000Z',
-        'Asia/Seoul',
-      ),
+      isSameDayInTimezone('2026-01-15T03:00:00.000Z', '2026-01-15T14:00:00.000Z', 'Asia/Seoul'),
     ).toBe(true);
   });
 
   it('two UTC instants on different KST civil days', () => {
     expect(
-      isSameDayInTimezone(
-        '2026-01-15T03:00:00.000Z',
-        '2026-01-15T17:00:00.000Z',
-        'Asia/Seoul',
-      ),
+      isSameDayInTimezone('2026-01-15T03:00:00.000Z', '2026-01-15T17:00:00.000Z', 'Asia/Seoul'),
     ).toBe(false);
   });
 
   it('same UTC instant considered same day across timezones when civil day aligns', () => {
     // 2026-06-15 06:00 UTC → 15:00 KST, 02:00 EDT, both still on 2026-06-15
     expect(
-      isSameDayInTimezone(
-        '2026-06-15T06:00:00.000Z',
-        '2026-06-15T06:00:00.000Z',
-        'Asia/Seoul',
-      ),
+      isSameDayInTimezone('2026-06-15T06:00:00.000Z', '2026-06-15T06:00:00.000Z', 'Asia/Seoul'),
     ).toBe(true);
   });
 
@@ -164,11 +140,7 @@ describe('isSameDayInTimezone — civil-day comparison', () => {
       ),
     ).toBe(true);
     expect(
-      isSameDayInTimezone(
-        '2026-01-15T14:30:00.000Z',
-        '2026-01-15T15:30:00.000Z',
-        'Asia/Seoul',
-      ),
+      isSameDayInTimezone('2026-01-15T14:30:00.000Z', '2026-01-15T15:30:00.000Z', 'Asia/Seoul'),
     ).toBe(false);
   });
 });
@@ -186,32 +158,41 @@ describe('getTimezoneOffsetMinutes — spot checks', () => {
 
 describe('civilMidnightFromUtcDay — calendar-grid cell bridge', () => {
   it('maps UTC-midnight Jan 15 to Seoul civil midnight (Jan 14 15:00 UTC)', () => {
-    expect(civilMidnightFromUtcDay('2026-01-15T00:00:00.000Z', 'Asia/Seoul'))
-      .toBe('2026-01-14T15:00:00.000Z');
+    expect(civilMidnightFromUtcDay('2026-01-15T00:00:00.000Z', 'Asia/Seoul')).toBe(
+      '2026-01-14T15:00:00.000Z',
+    );
   });
 
   it('maps UTC-midnight Jan 15 to New York civil midnight during EST (Jan 15 05:00 UTC)', () => {
-    expect(civilMidnightFromUtcDay('2026-01-15T00:00:00.000Z', 'America/New_York'))
-      .toBe('2026-01-15T05:00:00.000Z');
+    expect(civilMidnightFromUtcDay('2026-01-15T00:00:00.000Z', 'America/New_York')).toBe(
+      '2026-01-15T05:00:00.000Z',
+    );
   });
 
   it('keeps the same day on UTC-midnight → UTC', () => {
-    expect(civilMidnightFromUtcDay('2026-06-15T00:00:00.000Z', 'UTC'))
-      .toBe('2026-06-15T00:00:00.000Z');
+    expect(civilMidnightFromUtcDay('2026-06-15T00:00:00.000Z', 'UTC')).toBe(
+      '2026-06-15T00:00:00.000Z',
+    );
   });
 });
 
 describe('getTimeInTimezone', () => {
   it('reads Seoul wall-clock time from a UTC instant', () => {
     // 2026-01-15 03:30 UTC = 2026-01-15 12:30 KST
-    expect(getTimeInTimezone('2026-01-15T03:30:00.000Z', 'Asia/Seoul'))
-      .toEqual({ hours: 12, minutes: 30, seconds: 0 });
+    expect(getTimeInTimezone('2026-01-15T03:30:00.000Z', 'Asia/Seoul')).toEqual({
+      hours: 12,
+      minutes: 30,
+      seconds: 0,
+    });
   });
 
   it('reads New York wall-clock time during EDT (UTC-4)', () => {
     // 2026-07-15 16:00 UTC = 2026-07-15 12:00 EDT
-    expect(getTimeInTimezone('2026-07-15T16:00:00.000Z', 'America/New_York'))
-      .toEqual({ hours: 12, minutes: 0, seconds: 0 });
+    expect(getTimeInTimezone('2026-07-15T16:00:00.000Z', 'America/New_York')).toEqual({
+      hours: 12,
+      minutes: 0,
+      seconds: 0,
+    });
   });
 });
 
@@ -219,20 +200,23 @@ describe('setTimeInTimezone', () => {
   it('replaces only the hour in Asia/Seoul while keeping the civil date', () => {
     // Starting from 2026-01-15T00:00:00Z (= Seoul Jan 15 09:00) → set hours to 10
     // Expected: Seoul Jan 15 10:00 = UTC Jan 15 01:00
-    expect(setTimeInTimezone('2026-01-15T00:00:00.000Z', { hours: 10 }, 'Asia/Seoul'))
-      .toBe('2026-01-15T01:00:00.000Z');
+    expect(setTimeInTimezone('2026-01-15T00:00:00.000Z', { hours: 10 }, 'Asia/Seoul')).toBe(
+      '2026-01-15T01:00:00.000Z',
+    );
   });
 
   it('updates minutes while preserving the hour and civil date', () => {
-    expect(setTimeInTimezone('2026-01-15T01:00:00.000Z', { minutes: 30 }, 'Asia/Seoul'))
-      .toBe('2026-01-15T01:30:00.000Z');
+    expect(setTimeInTimezone('2026-01-15T01:00:00.000Z', { minutes: 30 }, 'Asia/Seoul')).toBe(
+      '2026-01-15T01:30:00.000Z',
+    );
   });
 
   it('set hour across DST in America/New_York (after spring forward)', () => {
     // Starting at 2026-07-15T16:00Z (= EDT 12:00). Set hour 15.
     // Target: EDT 15:00 = UTC 19:00
-    expect(setTimeInTimezone('2026-07-15T16:00:00.000Z', { hours: 15 }, 'America/New_York'))
-      .toBe('2026-07-15T19:00:00.000Z');
+    expect(setTimeInTimezone('2026-07-15T16:00:00.000Z', { hours: 15 }, 'America/New_York')).toBe(
+      '2026-07-15T19:00:00.000Z',
+    );
   });
 
   it('round-trips getTimeInTimezone ∘ setTimeInTimezone', () => {

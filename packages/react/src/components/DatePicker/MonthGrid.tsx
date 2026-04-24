@@ -88,11 +88,7 @@ export function DatePickerMonthGrid({
           &lt;
         </button>
         {onTitleClick ? (
-          <button
-            type="button"
-            className={classNames?.title}
-            onClick={onTitleClick}
-          >
+          <button type="button" className={classNames?.title} onClick={onTitleClick}>
             {currentYear}
           </button>
         ) : (
@@ -115,13 +111,14 @@ export function DatePickerMonthGrid({
         style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
       >
         {months.map((m) => {
-          const monthClass = [
-            classNames?.month,
-            m.isSelected && classNames?.monthSelected,
-            m.isCurrent && classNames?.monthCurrent,
-          ]
-            .filter(Boolean)
-            .join(' ') || undefined;
+          const monthClass =
+            [
+              classNames?.month,
+              m.isSelected && classNames?.monthSelected,
+              m.isCurrent && classNames?.monthCurrent,
+            ]
+              .filter(Boolean)
+              .join(' ') || undefined;
 
           return (
             <button

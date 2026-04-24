@@ -21,10 +21,7 @@ import type {
 import { DatePickerContext } from '../../context/DatePickerContext.js';
 import type { DatePickerContextValue } from '../../context/DatePickerContext.js';
 import { TimePickerContext } from '../../context/TimePickerContext.js';
-import type {
-  TimePickerContextValue,
-  TimePickerFormat,
-} from '../../context/TimePickerContext.js';
+import type { TimePickerContextValue, TimePickerFormat } from '../../context/TimePickerContext.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 
 /**
@@ -296,14 +293,23 @@ export function DateTimePickerRoot({
       pickerId,
       labels: mergedTimeLabels,
     }),
-    [currentValue, setTime, format, step, displayTimezone, isDisabled, readOnly, currentTime, pickerId, mergedTimeLabels],
+    [
+      currentValue,
+      setTime,
+      format,
+      step,
+      displayTimezone,
+      isDisabled,
+      readOnly,
+      currentTime,
+      pickerId,
+      mergedTimeLabels,
+    ],
   );
 
   return (
     <DatePickerContext.Provider value={dateContext}>
-      <TimePickerContext.Provider value={timeContext}>
-        {children}
-      </TimePickerContext.Provider>
+      <TimePickerContext.Provider value={timeContext}>{children}</TimePickerContext.Provider>
     </DatePickerContext.Provider>
   );
 }

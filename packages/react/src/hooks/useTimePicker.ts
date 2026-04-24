@@ -118,8 +118,7 @@ export function useTimePicker(options: UseTimePickerOptions = {}): UseTimePicker
   );
 
   const period = format === '12h' ? to12Hour(currentTime.hours).period : null;
-  const displayHour =
-    format === '12h' ? to12Hour(currentTime.hours).hours12 : currentTime.hours;
+  const displayHour = format === '12h' ? to12Hour(currentTime.hours).hours12 : currentTime.hours;
 
   const setHour = useCallback(
     (hour: number) => {
@@ -129,15 +128,9 @@ export function useTimePicker(options: UseTimePickerOptions = {}): UseTimePicker
     [format, period, setTime],
   );
 
-  const setMinute = useCallback(
-    (minute: number) => setTime({ minutes: minute }),
-    [setTime],
-  );
+  const setMinute = useCallback((minute: number) => setTime({ minutes: minute }), [setTime]);
 
-  const setSecond = useCallback(
-    (second: number) => setTime({ seconds: second }),
-    [setTime],
-  );
+  const setSecond = useCallback((second: number) => setTime({ seconds: second }), [setTime]);
 
   const setPeriod = useCallback(
     (newPeriod: 'AM' | 'PM') => {

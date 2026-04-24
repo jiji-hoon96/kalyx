@@ -4,15 +4,22 @@ import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { DatePicker } from './index.js';
 
-function renderDatePicker(props: {
-  value?: string | null;
-  defaultValue?: string;
-  onChange?: (v: string | null) => void;
-  disabled?: boolean;
-} = {}) {
+function renderDatePicker(
+  props: {
+    value?: string | null;
+    defaultValue?: string;
+    onChange?: (v: string | null) => void;
+    disabled?: boolean;
+  } = {},
+) {
   const onChange = props.onChange ?? vi.fn();
   const result = render(
-    <DatePicker value={props.value} defaultValue={props.defaultValue} onChange={onChange} disabled={props.disabled}>
+    <DatePicker
+      value={props.value}
+      defaultValue={props.defaultValue}
+      onChange={onChange}
+      disabled={props.disabled}
+    >
       <DatePicker.Input aria-label="날짜 선택" />
       <DatePicker.Popover>
         <DatePicker.Calendar />
@@ -51,9 +58,7 @@ describe('DatePicker — basic interactions', () => {
     const day15 = screen.getByRole('button', { name: /January 15, 2026/ });
     await user.click(day15);
 
-    expect(onChange).toHaveBeenCalledWith(
-      expect.stringMatching(/^2026-01-15T/),
-    );
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-15T/));
   });
 
   it('closes the popover after a date is selected', async () => {
@@ -147,9 +152,7 @@ describe('DatePicker — keyboard navigation', () => {
     // Enter on the initially focused day (15)
     await user.keyboard('{Enter}');
 
-    expect(onChange).toHaveBeenCalledWith(
-      expect.stringMatching(/^2026-01-15T/),
-    );
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-15T/));
   });
 
   it('moves the focused day with arrow keys and selects it with Enter', async () => {
@@ -162,9 +165,7 @@ describe('DatePicker — keyboard navigation', () => {
     await user.keyboard('{ArrowRight}');
     await user.keyboard('{Enter}');
 
-    expect(onChange).toHaveBeenCalledWith(
-      expect.stringMatching(/^2026-01-16T/),
-    );
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-16T/));
   });
 });
 
@@ -262,10 +263,13 @@ describe('DatePicker — MonthGrid', () => {
       </DatePicker>,
     );
     await user.click(screen.getByRole('combobox'));
-    expect(screen.getByRole('gridcell', { name: 'March' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('gridcell', { name: 'March' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
   });
 
-   it('invokes the onSelect callback when a month is clicked', async () => {
+  it('invokes the onSelect callback when a month is clicked', async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
     render(
@@ -330,11 +334,13 @@ describe('DatePicker — YearGrid', () => {
 });
 
 describe('DatePicker — Trigger', () => {
-  function renderWithTrigger(props: {
-    value?: string | null;
-    onChange?: (v: string | null) => void;
-    disabled?: boolean;
-  } = {}) {
+  function renderWithTrigger(
+    props: {
+      value?: string | null;
+      onChange?: (v: string | null) => void;
+      disabled?: boolean;
+    } = {},
+  ) {
     const onChange = props.onChange ?? vi.fn();
     const result = render(
       <DatePicker value={props.value} onChange={onChange} disabled={props.disabled}>
@@ -487,9 +493,7 @@ describe('DatePicker — event callbacks', () => {
     await user.click(screen.getByRole('button', { name: 'Next month' }));
 
     expect(onCalendarNavigate).toHaveBeenCalledTimes(1);
-    expect(onCalendarNavigate).toHaveBeenLastCalledWith(
-      expect.stringMatching(/^2026-02-01T/),
-    );
+    expect(onCalendarNavigate).toHaveBeenLastCalledWith(expect.stringMatching(/^2026-02-01T/));
   });
 });
 
@@ -550,7 +554,10 @@ describe('DatePicker — Presets', () => {
       </DatePicker>,
     );
 
-    expect(screen.getByRole('option', { name: 'Christmas' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('option', { name: 'Christmas' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
     expect(screen.getByRole('option', { name: "New Year's" })).toHaveAttribute(
       'aria-selected',
       'false',

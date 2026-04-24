@@ -82,8 +82,12 @@ describe('DateFnsAdapter', () => {
     });
 
     it('isSameMonth matches dates in the same month', () => {
-      expect(adapter.isSameMonth('2026-01-01T00:00:00.000Z', '2026-01-31T00:00:00.000Z')).toBe(true);
-      expect(adapter.isSameMonth('2026-01-01T00:00:00.000Z', '2026-02-01T00:00:00.000Z')).toBe(false);
+      expect(adapter.isSameMonth('2026-01-01T00:00:00.000Z', '2026-01-31T00:00:00.000Z')).toBe(
+        true,
+      );
+      expect(adapter.isSameMonth('2026-01-01T00:00:00.000Z', '2026-02-01T00:00:00.000Z')).toBe(
+        false,
+      );
     });
   });
 
@@ -152,9 +156,9 @@ describe('DateFnsAdapter', () => {
   describe('timezone parameter (displayTimezone)', () => {
     it('format honours the requested timezone', () => {
       // 2026-01-15 00:00 UTC = 2026-01-15 09:00 KST
-      expect(
-        adapter.format('2026-01-15T00:00:00.000Z', 'yyyy-MM-dd HH:mm', 'Asia/Seoul'),
-      ).toBe('2026-01-15 09:00');
+      expect(adapter.format('2026-01-15T00:00:00.000Z', 'yyyy-MM-dd HH:mm', 'Asia/Seoul')).toBe(
+        '2026-01-15 09:00',
+      );
       // 2026-01-15 00:00 UTC = 2026-01-14 19:00 EST
       expect(
         adapter.format('2026-01-15T00:00:00.000Z', 'yyyy-MM-dd HH:mm', 'America/New_York'),
@@ -174,11 +178,13 @@ describe('DateFnsAdapter', () => {
 
     it('startOfDay returns civil-midnight in timezone (across DST)', () => {
       // EST before spring-forward
-      expect(adapter.startOfDay('2026-01-15T12:00:00.000Z', 'America/New_York'))
-        .toBe('2026-01-15T05:00:00.000Z');
+      expect(adapter.startOfDay('2026-01-15T12:00:00.000Z', 'America/New_York')).toBe(
+        '2026-01-15T05:00:00.000Z',
+      );
       // EDT after spring-forward
-      expect(adapter.startOfDay('2026-07-15T12:00:00.000Z', 'America/New_York'))
-        .toBe('2026-07-15T04:00:00.000Z');
+      expect(adapter.startOfDay('2026-07-15T12:00:00.000Z', 'America/New_York')).toBe(
+        '2026-07-15T04:00:00.000Z',
+      );
     });
 
     it('today without timezone matches UTC midnight shape', () => {
@@ -188,9 +194,7 @@ describe('DateFnsAdapter', () => {
     it('omitted timezone falls back to UTC semantics', () => {
       // No timezone → legacy UTC path
       expect(adapter.format('2026-01-15T00:00:00.000Z', 'yyyy-MM-dd')).toBe('2026-01-15');
-      expect(
-        adapter.isSameDay('2026-01-15T00:00:00.000Z', '2026-01-15T23:59:59.000Z'),
-      ).toBe(true);
+      expect(adapter.isSameDay('2026-01-15T00:00:00.000Z', '2026-01-15T23:59:59.000Z')).toBe(true);
       expect(adapter.startOfDay('2026-01-15T14:30:00.000Z')).toBe('2026-01-15T00:00:00.000Z');
     });
   });

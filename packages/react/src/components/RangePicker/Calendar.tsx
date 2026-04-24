@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { HTMLAttributes } from 'react';
-import { getCalendarDays, isDateDisabled, getWeekdayNames, formatMonthYear, formatFullDate } from '@kalyx/core';
+import {
+  getCalendarDays,
+  isDateDisabled,
+  getWeekdayNames,
+  formatMonthYear,
+  formatFullDate,
+} from '@kalyx/core';
 import type { CalendarDay, DateRange } from '@kalyx/core';
 import { useRangePickerContext } from '../../context/RangePickerContext.js';
 
@@ -96,9 +102,7 @@ export function RangePickerCalendar({
 
   useEffect(() => {
     if (!ctx.isOpen || !gridRef.current) return;
-    const focusedButton = gridRef.current.querySelector<HTMLButtonElement>(
-      '[data-focused="true"]',
-    );
+    const focusedButton = gridRef.current.querySelector<HTMLButtonElement>('[data-focused="true"]');
     focusedButton?.focus({ preventScroll: true });
   }, [focusedDate, ctx.isOpen]);
 
@@ -217,7 +221,18 @@ export function RangePickerCalendar({
         }
       }
     },
-    [adapter, focusedDate, viewMonth, weekStartsOn, disabled, ctx, selectionMode, selectingTarget, value.start, commitDay],
+    [
+      adapter,
+      focusedDate,
+      viewMonth,
+      weekStartsOn,
+      disabled,
+      ctx,
+      selectionMode,
+      selectingTarget,
+      value.start,
+      commitDay,
+    ],
   );
 
   return (
@@ -271,17 +286,18 @@ export function RangePickerCalendar({
           {weeks.map((week, weekIndex) => (
             <tr key={weekIndex} role="row" className={classNames?.gridRow}>
               {week.map((day) => {
-                const dayClasses = [
-                  classNames?.day,
-                  day.isRangeStart && classNames?.dayRangeStart,
-                  day.isRangeEnd && classNames?.dayRangeEnd,
-                  day.isInRange && classNames?.dayInRange,
-                  day.isToday && classNames?.dayToday,
-                  day.isDisabled && classNames?.dayDisabled,
-                  !day.isCurrentMonth && classNames?.dayOutsideMonth,
-                ]
-                  .filter(Boolean)
-                  .join(' ') || undefined;
+                const dayClasses =
+                  [
+                    classNames?.day,
+                    day.isRangeStart && classNames?.dayRangeStart,
+                    day.isRangeEnd && classNames?.dayRangeEnd,
+                    day.isInRange && classNames?.dayInRange,
+                    day.isToday && classNames?.dayToday,
+                    day.isDisabled && classNames?.dayDisabled,
+                    !day.isCurrentMonth && classNames?.dayOutsideMonth,
+                  ]
+                    .filter(Boolean)
+                    .join(' ') || undefined;
 
                 const isSelected =
                   selectionMode === 'week'

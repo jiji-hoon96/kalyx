@@ -6,40 +6,46 @@ sidebar_position: 2
 
 # @kalyx/react
 
-공개 React API. 아래 이름들은 모두 `@kalyx/react`에서 직접 import 가능합니다.
+Public React API. All names below are importable directly from `@kalyx/react`.
 
 ```ts
-import { DatePicker, RangePicker, TimePicker, DateTimePicker } from '@kalyx/react';
+import {
+  DatePicker, RangePicker, TimePicker, DateTimePicker,
+  MonthPicker, YearPicker, WeekPicker,
+} from '@kalyx/react';
 ```
 
-## 컴포넌트
+## Components
 
-| 이름 | 참조 |
+| Name | Reference |
 | --- | --- |
-| `DatePicker` | [컴포넌트 문서](../components/datepicker.md) |
-| `RangePicker` | [컴포넌트 문서](../components/rangepicker.md) |
-| `TimePicker` | [컴포넌트 문서](../components/timepicker.md) |
-| `DateTimePicker` | [컴포넌트 문서](../components/datetimepicker.md) |
+| `DatePicker` | [Component docs](../components/datepicker.md) |
+| `RangePicker` | [Component docs](../components/rangepicker.md) |
+| `TimePicker` | [Component docs](../components/timepicker.md) |
+| `DateTimePicker` | [Component docs](../components/datetimepicker.md) |
+| `MonthPicker` | [Component docs](../components/monthpicker.md) |
+| `YearPicker` | [Component docs](../components/yearpicker.md) |
+| `WeekPicker` | [Component docs](../components/weekpicker.md) |
 
-## 훅
+## Hooks
 
-| 이름 | 참조 |
+| Name | Reference |
 | --- | --- |
-| `useDatePicker` | [훅 문서](../hooks/use-date-picker.md) |
-| `useRangePicker` | [훅 문서](../hooks/use-range-picker.md) |
-| `useTimePicker` | [훅 문서](../hooks/use-time-picker.md) |
+| `useDatePicker` | [Hook docs](../hooks/use-date-picker.md) |
+| `useRangePicker` | [Hook docs](../hooks/use-range-picker.md) |
+| `useTimePicker` | [Hook docs](../hooks/use-time-picker.md) |
 
-## 어댑터
+## Adapters
 
-`DateFnsAdapter` — `@kalyx/core`에서 재export.
+`DateFnsAdapter` — re-exported from `@kalyx/core`.
 
 ```ts
 import { DateFnsAdapter } from '@kalyx/react';
 ```
 
-## 타입
+## Types
 
-### DatePicker 타입
+### DatePicker types
 
 ```ts
 import type {
@@ -53,10 +59,14 @@ import type {
   DatePickerMonthGridClassNames,
   DatePickerYearGridProps,
   DatePickerYearGridClassNames,
+  DatePickerPresetsProps,
+  DatePickerPresetsClassNames,
+  DatePickerPresetProps,
+  DatePickerPresetKey,
 } from '@kalyx/react';
 ```
 
-### RangePicker 타입
+### RangePicker types
 
 ```ts
 import type {
@@ -73,7 +83,7 @@ import type {
 } from '@kalyx/react';
 ```
 
-### TimePicker 타입
+### TimePicker types
 
 ```ts
 import type {
@@ -88,7 +98,7 @@ import type {
 } from '@kalyx/react';
 ```
 
-### DateTimePicker 타입
+### DateTimePicker types
 
 ```ts
 import type {
@@ -97,9 +107,47 @@ import type {
 } from '@kalyx/react';
 ```
 
-서브 컴포넌트 타입은 DatePicker와 TimePicker에서 재export됩니다.
+Sub-component types are re-exported from DatePicker and TimePicker.
 
-### 훅 타입
+### MonthPicker types
+
+```ts
+import type {
+  MonthPickerRootProps,
+  MonthPickerInputProps,
+  MonthPickerTriggerProps,
+  MonthPickerPopoverProps,
+  MonthPickerGridProps,
+  MonthPickerGridClassNames,
+} from '@kalyx/react';
+```
+
+### YearPicker types
+
+```ts
+import type {
+  YearPickerRootProps,
+  YearPickerInputProps,
+  YearPickerTriggerProps,
+  YearPickerPopoverProps,
+  YearPickerGridProps,
+  YearPickerGridClassNames,
+} from '@kalyx/react';
+```
+
+### WeekPicker types
+
+```ts
+import type {
+  WeekPickerRootProps,
+  WeekPickerInputProps,
+  WeekPickerPopoverProps,
+  WeekPickerCalendarProps,
+  WeekPickerCalendarClassNames,
+} from '@kalyx/react';
+```
+
+### Hook types
 
 ```ts
 import type {
@@ -112,7 +160,7 @@ import type {
 } from '@kalyx/react';
 ```
 
-### `@kalyx/core` 재export
+### Re-exports from `@kalyx/core`
 
 ```ts
 import type {
@@ -125,20 +173,20 @@ import type {
 } from '@kalyx/react';
 ```
 
-## 런타임 의존성
+## Runtime dependencies
 
-- `@kalyx/core` (워크스페이스)
+- `@kalyx/core` (workspace)
 - `@floating-ui/react ^0.26.0`
 - `date-fns ^4.0.0`
 - `date-fns-tz ^3.0.0`
 
-Peer: `react ^19.0.0`, `react-dom ^19.0.0`.
+Peer dependencies: `react ^19.0.0`, `react-dom ^19.0.0`.
 
-## 번들 크기
+## Bundle size
 
-전체 공개 표면 gzip: **약 9.2 KB**. 임포트 단위 트리셰이킹 — 예를 들어 `TimePicker`만 사용하면 DatePicker 코드 ~3KB가 제거됩니다. CI의 `scripts/check-bundle-size.js`가 검증합니다.
+Gzipped build of the full public surface: **~9.2 KB**. Tree-shakes per import — e.g., using only `TimePicker` drops ~3 KB of DatePicker code. Verified in CI by `scripts/check-bundle-size.js`.
 
-## 함께 보기
+## See also
 
 - [@kalyx/core API →](./core.md)
-- [마이그레이션 가이드 →](../migration.md)
+- [Migration guide →](../migration.md)

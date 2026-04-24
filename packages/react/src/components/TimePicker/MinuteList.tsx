@@ -10,8 +10,10 @@ export interface TimePickerMinuteListClassNames {
   optionSelected?: string;
 }
 
-export interface TimePickerMinuteListProps
-  extends Omit<HTMLAttributes<HTMLUListElement>, 'role' | 'children'> {
+export interface TimePickerMinuteListProps extends Omit<
+  HTMLAttributes<HTMLUListElement>,
+  'role' | 'children'
+> {
   classNames?: TimePickerMinuteListClassNames;
 }
 

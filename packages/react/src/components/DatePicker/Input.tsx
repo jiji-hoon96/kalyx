@@ -3,17 +3,16 @@ import type { InputHTMLAttributes } from 'react';
 import { parseInputValue } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
 
-export interface DatePickerInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'type'> {
+export interface DatePickerInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'value' | 'onChange' | 'type'
+> {
   /** Date display format (defaults to parent's displayFormat) */
   format?: string;
 }
 
 export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps>(
-  function DatePickerInput(
-    { format: formatProp, onClick, onBlur, onKeyDown, ...props },
-    ref,
-  ) {
+  function DatePickerInput({ format: formatProp, onClick, onBlur, onKeyDown, ...props }, ref) {
     const ctx = useDatePickerContext('DatePicker.Input');
     const displayFormat = formatProp ?? ctx.displayFormat;
 

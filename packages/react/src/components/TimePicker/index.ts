@@ -6,18 +6,9 @@ import { TimePickerAmPmToggle } from './AmPmToggle.js';
 
 import type { TimePickerRootProps } from './Root.js';
 import type { TimePickerInputProps } from './Input.js';
-import type {
-  TimePickerHourListProps,
-  TimePickerHourListClassNames,
-} from './HourList.js';
-import type {
-  TimePickerMinuteListProps,
-  TimePickerMinuteListClassNames,
-} from './MinuteList.js';
-import type {
-  TimePickerAmPmToggleProps,
-  TimePickerAmPmToggleClassNames,
-} from './AmPmToggle.js';
+import type { TimePickerHourListProps, TimePickerHourListClassNames } from './HourList.js';
+import type { TimePickerMinuteListProps, TimePickerMinuteListClassNames } from './MinuteList.js';
+import type { TimePickerAmPmToggleProps, TimePickerAmPmToggleClassNames } from './AmPmToggle.js';
 
 /**
  * TimePicker — Headless time-picker component

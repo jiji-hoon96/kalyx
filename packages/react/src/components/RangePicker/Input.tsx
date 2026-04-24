@@ -4,8 +4,10 @@ import { useRangePickerContext } from '../../context/RangePickerContext.js';
 
 export type RangeInputPart = 'start' | 'end';
 
-export interface RangePickerInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'type'> {
+export interface RangePickerInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'value' | 'onChange' | 'type'
+> {
   /** Which part this input represents (start | end) */
   part: RangeInputPart;
   /** Date display format (defaults to parent's displayFormat) */
@@ -17,10 +19,7 @@ export interface RangePickerInputProps
  * Use one with `part="start"` and another with `part="end"`.
  */
 export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputProps>(
-  function RangePickerInput(
-    { part, format: formatProp, onClick, onKeyDown, ...props },
-    ref,
-  ) {
+  function RangePickerInput({ part, format: formatProp, onClick, onKeyDown, ...props }, ref) {
     const ctx = useRangePickerContext('RangePicker.Input');
     const displayFormat = formatProp ?? ctx.displayFormat;
 

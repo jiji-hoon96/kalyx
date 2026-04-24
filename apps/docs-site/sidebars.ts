@@ -54,6 +54,7 @@ const sidebars: SidebarsConfig = {
         'recipes/tailwind',
         'recipes/shadcn',
         'recipes/react-hook-form',
+        'recipes/testing',
       ],
     },
     {
@@ -65,6 +66,7 @@ const sidebars: SidebarsConfig = {
       ],
     },
     'migration',
+    'troubleshooting',
   ],
 };
 

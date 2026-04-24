@@ -159,9 +159,13 @@ type ISODateString = string; // "2026-01-15T00:00:00.000Z"
 // DatePicker/index.ts
 export const DatePicker = Object.assign(DatePickerRoot, {
   Input: DatePickerInput,
-  Calendar: DatePickerCalendar,
+  Trigger: DatePickerTrigger,
   Popover: DatePickerPopover,
-  TimePicker: DatePickerTimePicker,
+  Calendar: DatePickerCalendar,
+  MonthGrid: DatePickerMonthGrid,
+  YearGrid: DatePickerYearGrid,
+  Presets: DatePickerPresets,
+  Preset: DatePickerPreset,
 });
 
 // 사용
@@ -195,7 +199,9 @@ kalyx/
 │   │   ├── documentation.md
 │   │   ├── release-workflow.md
 │   │   ├── ci-cd.md
-│   │   └── oss-references.md
+│   │   ├── oss-references.md
+│   │   ├── rc-announcement.md
+│   │   └── adapter-extraction.md
 │   └── commands/                     ← 슬래시 커맨드
 │       ├── new-component.md
 │       ├── check-bundle.md
@@ -210,31 +216,39 @@ kalyx/
 │   │       │   └── date-fns.ts      ← UTC 기반 DateFnsAdapter
 │   │       ├── utils/
 │   │       │   ├── calendar.ts      ← getCalendarDays, isDateDisabled
-│   │       │   └── date.ts          ← normalizeISO, parseInputValue
-│   │       ├── __tests__/           ← 단위 테스트
+│   │       │   ├── date.ts          ← normalizeISO, parseInputValue
+│   │       │   ├── time.ts          ← setTime, parseTimeString, 12h/24h 변환
+│   │       │   ├── locale.ts        ← Intl 기반 다국어 월/요일명
+│   │       │   ├── timezone.ts      ← DST-aware timezone 유틸
+│   │       │   └── labels.ts        ← 접근성 ARIA 라벨 기본값
+│   │       ├── __tests__/           ← 단위 테스트 (1,000+)
 │   │       └── index.ts             ← 공개 API
 │   └── react/                        ← React 컴포넌트 레이어
 │       ├── CLAUDE.md                 ← 패키지별 컨텍스트
 │       └── src/
 │           ├── components/
-│           │   ├── DatePicker/
-│           │   │   ├── Root.tsx          ← Provider, 제어/비제어
-│           │   │   ├── Input.tsx         ← role="combobox", 날짜 파싱
-│           │   │   ├── Trigger.tsx       ← 캘린더 아이콘 버튼
-│           │   │   ├── Popover.tsx       ← Floating UI 기반
-│           │   │   ├── Calendar.tsx      ← role="grid", 키보드 내비게이션
-│           │   │   ├── DatePicker.test.tsx
-│           │   │   └── index.ts          ← Object.assign Dot Notation
-│           │   └── RangePicker/          ← Phase 1 후반
+│           │   ├── DatePicker/       ← 날짜 선택 (Root, Input, Trigger, Popover, Calendar, MonthGrid, YearGrid, Presets)
+│           │   ├── RangePicker/      ← 날짜 범위 선택 (Root, Input, Popover, Calendar, Presets)
+│           │   ├── TimePicker/       ← 시간 선택 (Root, Input, HourList, MinuteList, AmPmToggle)
+│           │   ├── DateTimePicker/   ← 날짜+시간 복합 (Root, Input + DatePicker/TimePicker 재사용)
+│           │   ├── MonthPicker/      ← 월 단위 선택 (Root, Input, Trigger, Popover, Grid)
+│           │   ├── YearPicker/       ← 연도 단위 선택 (Root, Input, Trigger, Popover, Grid)
+│           │   └── WeekPicker/       ← 주 단위 선택 (Root, Input, Popover, Calendar)
 │           ├── hooks/
-│           │   └── useDatePicker.ts      ← 커스텀 UI용 Hook
+│           │   ├── useDatePicker.ts  ← 커스텀 DatePicker UI용 Hook
+│           │   ├── useRangePicker.ts ← 커스텀 RangePicker UI용 Hook
+│           │   └── useTimePicker.ts  ← 커스텀 TimePicker UI용 Hook
 │           ├── context/
-│           │   └── DatePickerContext.ts
-│           └── index.ts                  ← 패키지 공개 API
+│           │   ├── DatePickerContext.ts
+│           │   ├── RangePickerContext.ts
+│           │   └── TimePickerContext.ts
+│           └── index.ts              ← 패키지 공개 API
 ├── apps/
-│   └── docs/                         ← 문서 사이트 (Next.js, 추후 구성)
+│   ├── docs/                         ← 데모 사이트 (Next.js, 정적 빌드)
+│   └── docs-site/                    ← 문서 사이트 (Docusaurus, i18n)
 ├── scripts/
-│   └── check-bundle-size.js          ← 번들 크기 측정
+│   ├── check-bundle-size.js          ← 번들 크기 측정 (12KB 제한)
+│   └── check-tree-shaking.js         ← tree-shaking 검증
 ├── test/
 │   └── setup.ts                      ← Vitest 전역 설정
 └── package.json
@@ -242,28 +256,54 @@ kalyx/
 
 ---
 
-## 5. MVP 범위 (Phase 1)
+## 5. 구현 현황 (v1.0-rc.0 기준)
 
-### 포함 ✅
+### 컴포넌트 (7종 — 모두 구현 완료 ✅)
 
-- `<DatePicker.Root>` — Context, controlled/uncontrolled
-- `<DatePicker.Input>` — 텍스트 입력, 날짜 파싱, 포맷팅
-- `<DatePicker.Trigger>` — 캘린더 아이콘 버튼
-- `<DatePicker.Popover>` — Floating UI 기반, SSR safe
-- `<DatePicker.Calendar>` — 날짜 그리드, 키보드 내비게이션
-- `<RangePicker>` — 날짜 범위 선택
-- `useDatePicker` hook — 완전 커스텀 UI용
-- 기본 접근성 (ARIA, 키보드, axe 통과)
-- SSR 안전 (Next.js App Router 실제 테스트)
-- date-fns adapter
+| 컴포넌트 | 서브 컴포넌트 | 설명 |
+|----------|-------------|------|
+| `DatePicker` | Root, Input, Trigger, Popover, Calendar, MonthGrid, YearGrid, Presets, Preset | 날짜 선택 |
+| `RangePicker` | Root, Input, Popover, Calendar, Presets, Preset | 날짜 범위 선택 |
+| `TimePicker` | Root, Input, HourList, MinuteList, AmPmToggle | 시간 선택 (12h/24h) |
+| `DateTimePicker` | Root, Input + DatePicker/TimePicker 서브 컴포넌트 재사용 | 날짜+시간 복합 |
+| `MonthPicker` | Root, Input, Trigger, Popover, Grid | 월 단위 선택 |
+| `YearPicker` | Root, Input, Trigger, Popover, Grid | 연도 단위 선택 |
+| `WeekPicker` | Root, Input, Popover, Calendar | 주 단위 선택 |
 
-### 제외 ❌ (나중에)
+### Headless Hooks (3종 — 모두 구현 완료 ✅)
 
-- TimePicker → v0.2
-- DateTimePicker → v0.3
-- 다국어 완전 지원 → v0.3
-- Timezone 완전 지원 (DST 포함) → v0.4
+| Hook | 용도 |
+|------|------|
+| `useDatePicker(options)` | 완전 커스텀 DatePicker UI |
+| `useRangePicker(options)` | 완전 커스텀 RangePicker UI |
+| `useTimePicker(options)` | 완전 커스텀 TimePicker UI |
+
+### 코어 유틸 (6개 모듈 — 모두 구현 완료 ✅)
+
+| 모듈 | 주요 함수 |
+|------|----------|
+| `adapters/date-fns` | DateFnsAdapter (17개 DateAdapter 메서드) |
+| `utils/calendar` | getCalendarDays, isDateDisabled, minDate, maxDate |
+| `utils/date` | normalizeISO, parseInputValue |
+| `utils/time` | setTime, getTime, parseTimeString, to12Hour, to24Hour, generateHours/Minutes |
+| `utils/locale` | getMonthName, formatMonthYear, getWeekdayNames, formatFullDate (Intl 기반) |
+| `utils/timezone` | formatInTimezone, startOfDayInTimezone, isSameDayInTimezone, civilMidnightFromUtcDay, get/setTimeInTimezone |
+
+### 공통 기능 (모두 구현 완료 ✅)
+
+- 제어/비제어 모드 지원
+- WAI-ARIA 접근성 (role="grid", role="combobox", role="listbox" 등)
+- 키보드 내비게이션 (Arrow keys, PageUp/Down, Home/End, Enter, Escape)
+- SSR 안전 (Next.js App Router CI 검증)
+- Timezone 지원 (`displayTimezone` prop, DST-aware)
+- 다국어 지원 (`locale` prop, Intl.DateTimeFormat 기반)
+- classNames prop (Headless 스타일링)
+- ARIA 라벨 커스터마이징 (`labels` prop)
+
+### 남은 작업 (v1.0 정식 릴리즈 전)
+
 - React Native adapter → v1.0 이후
+- 어댑터 분리 (`@kalyx/adapter-date-fns`) → v1.1 ([§14 참조](#14-현재-이니셔티브-2026-04-기준))
 
 ---
 
@@ -313,11 +353,21 @@ interface CalendarState {}
 
 ```tsx
 // ✅ packages/react/src/index.ts — 공개 API만
+// 컴포넌트 (7종)
 export { DatePicker } from './components/DatePicker';
 export { RangePicker } from './components/RangePicker';
+export { TimePicker } from './components/TimePicker';
+export { DateTimePicker } from './components/DateTimePicker';
+export { MonthPicker } from './components/MonthPicker';
+export { YearPicker } from './components/YearPicker';
+export { WeekPicker } from './components/WeekPicker';
+// Hooks (3종)
 export { useDatePicker } from './hooks/useDatePicker';
-export type { DatePickerProps, DatePickerValue } from './types';
-export { DateFnsAdapter } from './adapters/date-fns';
+export { useRangePicker } from './hooks/useRangePicker';
+export { useTimePicker } from './hooks/useTimePicker';
+// 타입 + 어댑터 (re-export from @kalyx/core)
+export { DateFnsAdapter } from '@kalyx/core';
+export type { ISODateString, DateRange, DisabledRule, DateAdapter, CalendarDay, TimeValue } from '@kalyx/core';
 
 // ❌ 내부 구현 절대 export 금지
 export { formatDateInternal } from './utils/internal';

@@ -1,7 +1,13 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { DateFnsAdapter, DEFAULT_DATEPICKER_LABELS, civilMidnightFromUtcDay } from '@kalyx/core';
-import type { DateAdapter, DatePickerLabels, DisabledRule, ISODateString, WeekStartsOn } from '@kalyx/core';
+import type {
+  DateAdapter,
+  DatePickerLabels,
+  DisabledRule,
+  ISODateString,
+  WeekStartsOn,
+} from '@kalyx/core';
 import { DatePickerContext } from '../../context/DatePickerContext.js';
 import type { DatePickerContextValue } from '../../context/DatePickerContext.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
@@ -204,9 +210,5 @@ export function DatePickerRoot({
     ],
   );
 
-  return (
-    <DatePickerContext.Provider value={contextValue}>
-      {children}
-    </DatePickerContext.Provider>
-  );
+  return <DatePickerContext.Provider value={contextValue}>{children}</DatePickerContext.Provider>;
 }

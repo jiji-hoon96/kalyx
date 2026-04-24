@@ -30,9 +30,10 @@ function getCachedPartsFormatter(timeZone: string): Intl.DateTimeFormat {
  */
 function partsInTimezone(utc: Date, timeZone: string) {
   const dtf = getCachedPartsFormatter(timeZone);
-  const parts = Object.fromEntries(
-    dtf.formatToParts(utc).map((p) => [p.type, p.value]),
-  ) as Record<string, string>;
+  const parts = Object.fromEntries(dtf.formatToParts(utc).map((p) => [p.type, p.value])) as Record<
+    string,
+    string
+  >;
   return {
     year: Number(parts.year),
     month: Number(parts.month),
@@ -56,11 +57,7 @@ function partsInTimezone(utc: Date, timeZone: string) {
  * formatInTimezone('2026-03-08T07:30:00.000Z', 'yyyy-MM-dd HH:mm', 'America/New_York');
  * // → '2026-03-08 03:30'   (post spring-forward EDT)
  */
-export function formatInTimezone(
-  iso: ISODateString,
-  formatStr: string,
-  timeZone: string,
-): string {
+export function formatInTimezone(iso: ISODateString, formatStr: string, timeZone: string): string {
   const p = partsInTimezone(parseISO(iso), timeZone);
   const tokens: Record<string, string> = {
     yyyy: String(p.year),
@@ -86,10 +83,7 @@ export function formatInTimezone(
  * getTimezoneOffsetMinutes('2026-03-08T07:00:00.000Z', 'America/New_York'); // -240 (EDT, UTC-4)
  * getTimezoneOffsetMinutes('2026-01-15T12:00:00.000Z', 'Asia/Seoul');       //  540 (UTC+9)
  */
-export function getTimezoneOffsetMinutes(
-  iso: ISODateString,
-  timeZone: string,
-): number {
+export function getTimezoneOffsetMinutes(iso: ISODateString, timeZone: string): number {
   const utc = parseISO(iso);
   const p = partsInTimezone(utc, timeZone);
   const asUtcEpoch = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
@@ -106,10 +100,7 @@ export function getTimezoneOffsetMinutes(
  * startOfDayInTimezone('2026-03-08T12:00:00.000Z', 'America/New_York'); // '2026-03-08T05:00:00.000Z' (EST)
  * startOfDayInTimezone('2026-03-09T12:00:00.000Z', 'America/New_York'); // '2026-03-09T04:00:00.000Z' (EDT)
  */
-export function startOfDayInTimezone(
-  iso: ISODateString,
-  timeZone: string,
-): ISODateString {
+export function startOfDayInTimezone(iso: ISODateString, timeZone: string): ISODateString {
   const utc = parseISO(iso);
   const p = partsInTimezone(utc, timeZone);
   // Civil midnight as a UTC epoch (what it would be if the wall clock reading lived in UTC).
@@ -132,11 +123,7 @@ export function startOfDayInTimezone(
  * // But 17:00 UTC is 02:00 KST on 2026-01-16
  * isSameDayInTimezone('2026-01-15T03:00:00.000Z', '2026-01-15T17:00:00.000Z', 'Asia/Seoul'); // false
  */
-export function isSameDayInTimezone(
-  a: ISODateString,
-  b: ISODateString,
-  timeZone: string,
-): boolean {
+export function isSameDayInTimezone(a: ISODateString, b: ISODateString, timeZone: string): boolean {
   const pa = partsInTimezone(parseISO(a), timeZone);
   const pb = partsInTimezone(parseISO(b), timeZone);
   return pa.year === pb.year && pa.month === pb.month && pa.day === pb.day;
@@ -169,12 +156,9 @@ export function civilMidnightFromUtcDay(
   timeZone: string,
 ): ISODateString {
   const utc = parseISO(gridUtcIso);
-  const probe = new Date(Date.UTC(
-    utc.getUTCFullYear(),
-    utc.getUTCMonth(),
-    utc.getUTCDate(),
-    12, 0, 0,
-  )).toISOString();
+  const probe = new Date(
+    Date.UTC(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate(), 12, 0, 0),
+  ).toISOString();
   return startOfDayInTimezone(probe, timeZone);
 }
 
@@ -217,7 +201,14 @@ export function setTimeInTimezone(
   const targetHours = partial.hours ?? p.hour;
   const targetMinutes = partial.minutes ?? p.minute;
   const targetSeconds = partial.seconds ?? p.second;
-  const civilEpoch = Date.UTC(p.year, p.month - 1, p.day, targetHours, targetMinutes, targetSeconds);
+  const civilEpoch = Date.UTC(
+    p.year,
+    p.month - 1,
+    p.day,
+    targetHours,
+    targetMinutes,
+    targetSeconds,
+  );
 
   // First pass: use the offset at the civil-as-UTC probe, correct once to absorb DST.
   const probe1 = new Date(civilEpoch).toISOString();
