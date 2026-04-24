@@ -2,8 +2,10 @@ import { forwardRef, useCallback } from 'react';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
 
-export interface DatePickerTriggerProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
+export interface DatePickerTriggerProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'type'
+> {
   children?: ReactNode;
 }
 

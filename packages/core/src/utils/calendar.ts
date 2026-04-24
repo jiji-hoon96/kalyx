@@ -158,10 +158,7 @@ function computeRangeFlags(
 
   const isRangeEnd = adapter.isSameDay(iso, end, timezone);
   const isInRange =
-    !isRangeStart &&
-    !isRangeEnd &&
-    adapter.isAfter(iso, start) &&
-    adapter.isBefore(iso, end);
+    !isRangeStart && !isRangeEnd && adapter.isAfter(iso, start) && adapter.isBefore(iso, end);
 
   return { isRangeStart, isRangeEnd, isInRange };
 }
@@ -169,11 +166,7 @@ function computeRangeFlags(
 /**
  * Checks whether the given date matches any disable rule.
  */
-export function isDateDisabled(
-  iso: string,
-  rules: DisabledRule[],
-  adapter: DateAdapter,
-): boolean {
+export function isDateDisabled(iso: string, rules: DisabledRule[], adapter: DateAdapter): boolean {
   for (const rule of rules) {
     if ('date' in rule) {
       if (adapter.isSameDay(iso, rule.date)) return true;
@@ -191,21 +184,13 @@ export function isDateDisabled(
 /**
  * Returns the earlier of two dates.
  */
-export function minDate(
-  a: ISODateString,
-  b: ISODateString,
-  adapter: DateAdapter,
-): ISODateString {
+export function minDate(a: ISODateString, b: ISODateString, adapter: DateAdapter): ISODateString {
   return adapter.isBefore(a, b) ? a : b;
 }
 
 /**
  * Returns the later of two dates.
  */
-export function maxDate(
-  a: ISODateString,
-  b: ISODateString,
-  adapter: DateAdapter,
-): ISODateString {
+export function maxDate(a: ISODateString, b: ISODateString, adapter: DateAdapter): ISODateString {
   return adapter.isAfter(a, b) ? a : b;
 }

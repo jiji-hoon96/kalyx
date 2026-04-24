@@ -10,10 +10,7 @@ import {
 } from '@kalyx/core';
 import type { ISODateString, TimePickerLabels, TimeValue } from '@kalyx/core';
 import { TimePickerContext } from '../../context/TimePickerContext.js';
-import type {
-  TimePickerContextValue,
-  TimePickerFormat,
-} from '../../context/TimePickerContext.js';
+import type { TimePickerContextValue, TimePickerFormat } from '../../context/TimePickerContext.js';
 
 /**
  * Props for the TimePicker Root component.
@@ -122,12 +119,20 @@ export function TimePickerRoot({
       pickerId,
       labels: mergedLabels,
     }),
-    [currentValue, setTime, format, step, withSeconds, displayTimezone, disabled, readOnly, currentTime, pickerId, mergedLabels],
+    [
+      currentValue,
+      setTime,
+      format,
+      step,
+      withSeconds,
+      displayTimezone,
+      disabled,
+      readOnly,
+      currentTime,
+      pickerId,
+      mergedLabels,
+    ],
   );
 
-  return (
-    <TimePickerContext.Provider value={contextValue}>
-      {children}
-    </TimePickerContext.Provider>
-  );
+  return <TimePickerContext.Provider value={contextValue}>{children}</TimePickerContext.Provider>;
 }

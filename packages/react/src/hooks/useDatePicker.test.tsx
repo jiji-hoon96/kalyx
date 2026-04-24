@@ -12,16 +12,12 @@ describe('useDatePicker — controlled / uncontrolled', () => {
   });
 
   it('uses defaultValue in uncontrolled mode', () => {
-    const { result } = renderHook(() =>
-      useDatePicker({ defaultValue: ISO_2026_04_15 }),
-    );
+    const { result } = renderHook(() => useDatePicker({ defaultValue: ISO_2026_04_15 }));
     expect(result.current.value).toBe(ISO_2026_04_15);
   });
 
   it('uses controlled value when provided', () => {
-    const { result } = renderHook(() =>
-      useDatePicker({ value: ISO_2026_04_15 }),
-    );
+    const { result } = renderHook(() => useDatePicker({ value: ISO_2026_04_15 }));
     expect(result.current.value).toBe(ISO_2026_04_15);
   });
 
@@ -37,9 +33,7 @@ describe('useDatePicker — controlled / uncontrolled', () => {
 
   it('does not update internal state on selectDate in controlled mode', () => {
     const onChange = vi.fn();
-    const { result } = renderHook(() =>
-      useDatePicker({ value: ISO_2026_04_15, onChange }),
-    );
+    const { result } = renderHook(() => useDatePicker({ value: ISO_2026_04_15, onChange }));
 
     act(() => result.current.selectDate(ISO_2026_04_16));
 
@@ -49,9 +43,7 @@ describe('useDatePicker — controlled / uncontrolled', () => {
 
   it('accepts null via selectDate to clear the value', () => {
     const onChange = vi.fn();
-    const { result } = renderHook(() =>
-      useDatePicker({ defaultValue: ISO_2026_04_15, onChange }),
-    );
+    const { result } = renderHook(() => useDatePicker({ defaultValue: ISO_2026_04_15, onChange }));
 
     act(() => result.current.selectDate(null));
 
@@ -96,9 +88,7 @@ describe('useDatePicker — popover state', () => {
   });
 
   it('focuses current value (or today) when opening', () => {
-    const { result } = renderHook(() =>
-      useDatePicker({ defaultValue: ISO_2026_04_15 }),
-    );
+    const { result } = renderHook(() => useDatePicker({ defaultValue: ISO_2026_04_15 }));
 
     act(() => result.current.open());
 
@@ -109,9 +99,7 @@ describe('useDatePicker — popover state', () => {
 
 describe('useDatePicker — navigation', () => {
   it('previousMonth moves viewMonth back one month', () => {
-    const { result } = renderHook(() =>
-      useDatePicker({ defaultValue: ISO_2026_04_15 }),
-    );
+    const { result } = renderHook(() => useDatePicker({ defaultValue: ISO_2026_04_15 }));
 
     const initialMonth = result.current.viewMonth;
 
@@ -122,9 +110,7 @@ describe('useDatePicker — navigation', () => {
   });
 
   it('nextMonth moves viewMonth forward one month', () => {
-    const { result } = renderHook(() =>
-      useDatePicker({ defaultValue: ISO_2026_04_15 }),
-    );
+    const { result } = renderHook(() => useDatePicker({ defaultValue: ISO_2026_04_15 }));
 
     const initialMonth = result.current.viewMonth;
 
@@ -139,9 +125,7 @@ describe('useDatePicker — navigation', () => {
 
     act(() => result.current.setViewMonth(ISO_2026_04_15));
 
-    expect(result.current.adapter.isSameMonth(result.current.viewMonth, ISO_2026_04_15)).toBe(
-      true,
-    );
+    expect(result.current.adapter.isSameMonth(result.current.viewMonth, ISO_2026_04_15)).toBe(true);
   });
 
   it('setFocusedDate updates focusedDate directly', () => {
@@ -155,9 +139,7 @@ describe('useDatePicker — navigation', () => {
 
 describe('useDatePicker — calendar grid', () => {
   it('returns a grid of 7-day weeks covering the month', () => {
-    const { result } = renderHook(() =>
-      useDatePicker({ defaultValue: ISO_2026_04_15 }),
-    );
+    const { result } = renderHook(() => useDatePicker({ defaultValue: ISO_2026_04_15 }));
 
     expect(result.current.calendar.length).toBeGreaterThanOrEqual(4);
     expect(result.current.calendar.length).toBeLessThanOrEqual(6);
@@ -167,9 +149,7 @@ describe('useDatePicker — calendar grid', () => {
   });
 
   it('marks the selected value in the grid', () => {
-    const { result } = renderHook(() =>
-      useDatePicker({ defaultValue: ISO_2026_04_15 }),
-    );
+    const { result } = renderHook(() => useDatePicker({ defaultValue: ISO_2026_04_15 }));
 
     const selected = result.current.calendar.flat().filter((d) => d.isSelected);
     expect(selected).toHaveLength(1);

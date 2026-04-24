@@ -47,8 +47,7 @@ export function RangePickerPresets({ classNames, children, ...props }: RangePick
   );
 }
 
-export interface RangePickerPresetProps
-  extends Omit<HTMLAttributes<HTMLButtonElement>, 'value'> {
+export interface RangePickerPresetProps extends Omit<HTMLAttributes<HTMLButtonElement>, 'value'> {
   /** Predefined preset key; omit when passing `range` directly */
   value?: PresetKey;
   /** Pass a range directly (alternative to `value`) */
@@ -60,7 +59,20 @@ export interface RangePickerPresetProps
 /**
  * Resolve a predefined preset key into an actual DateRange.
  */
-function resolvePreset(key: PresetKey, today: ISODateString, adapter: { addDays: (iso: string, n: number) => string; addMonths: (iso: string, n: number) => string; addYears: (iso: string, n: number) => string; startOfMonth: (iso: string) => string; endOfMonth: (iso: string) => string; startOfWeek: (iso: string, weekStartsOn?: 0 | 1) => string; endOfWeek: (iso: string, weekStartsOn?: 0 | 1) => string; startOfDay: (iso: string) => string }): DateRange {
+function resolvePreset(
+  key: PresetKey,
+  today: ISODateString,
+  adapter: {
+    addDays: (iso: string, n: number) => string;
+    addMonths: (iso: string, n: number) => string;
+    addYears: (iso: string, n: number) => string;
+    startOfMonth: (iso: string) => string;
+    endOfMonth: (iso: string) => string;
+    startOfWeek: (iso: string, weekStartsOn?: 0 | 1) => string;
+    endOfWeek: (iso: string, weekStartsOn?: 0 | 1) => string;
+    startOfDay: (iso: string) => string;
+  },
+): DateRange {
   switch (key) {
     case 'today':
       return { start: today, end: today };
@@ -99,9 +111,7 @@ function resolvePreset(key: PresetKey, today: ISODateString, adapter: { addDays:
     case 'thisYear': {
       // Navigate back to January of the current year
       const currentMonth = new Date(today).getUTCMonth();
-      const yearStart = adapter.startOfMonth(
-        adapter.addMonths(today, -currentMonth),
-      );
+      const yearStart = adapter.startOfMonth(adapter.addMonths(today, -currentMonth));
       return { start: yearStart, end: today };
     }
   }

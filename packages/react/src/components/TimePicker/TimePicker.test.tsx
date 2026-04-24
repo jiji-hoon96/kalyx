@@ -5,15 +5,17 @@ import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { TimePicker } from './index.js';
 
-function renderTimePicker(props: {
-  value?: string | null;
-  defaultValue?: string;
-  onChange?: (v: string | null) => void;
-  format?: '12h' | '24h';
-  step?: number;
-  disabled?: boolean;
-  withSeconds?: boolean;
-} = {}) {
+function renderTimePicker(
+  props: {
+    value?: string | null;
+    defaultValue?: string;
+    onChange?: (v: string | null) => void;
+    format?: '12h' | '24h';
+    step?: number;
+    disabled?: boolean;
+    withSeconds?: boolean;
+  } = {},
+) {
   const onChange = props.onChange ?? vi.fn();
   const result = render(
     <TimePicker
@@ -339,10 +341,7 @@ describe('TimePicker — disabled state', () => {
   it('disables the input and sets aria-disabled on the listboxes when disabled=true', () => {
     renderTimePicker({ value: '2026-01-15T14:00:00.000Z', disabled: true });
     expect(screen.getByLabelText('Time')).toBeDisabled();
-    expect(screen.getByRole('listbox', { name: 'Hour' })).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    );
+    expect(screen.getByRole('listbox', { name: 'Hour' })).toHaveAttribute('aria-disabled', 'true');
     expect(screen.getByRole('listbox', { name: 'Minute' })).toHaveAttribute(
       'aria-disabled',
       'true',

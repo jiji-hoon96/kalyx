@@ -13,13 +13,17 @@
 
 ```
 src/
-├── types.ts              ← 모든 타입 정의 (DateAdapter, CalendarDay 등)
+├── types.ts              ← 타입 정의 (DateAdapter, CalendarDay, DisabledRule 등)
 ├── adapters/
-│   └── date-fns.ts       ← DateFnsAdapter (UTC 기반)
+│   └── date-fns.ts       ← DateFnsAdapter (UTC 기반, 17개 메서드)
 ├── utils/
-│   ├── calendar.ts       ← getCalendarDays, isDateDisabled
-│   └── date.ts           ← normalizeISO, parseInputValue, weekday 헬퍼
-├── __tests__/            ← 단위 테스트
+│   ├── calendar.ts       ← getCalendarDays, isDateDisabled, minDate, maxDate
+│   ├── date.ts           ← normalizeISO, parseInputValue
+│   ├── time.ts           ← setTime, getTime, parseTimeString, 12h/24h 변환
+│   ├── locale.ts         ← Intl 기반 다국어 월/요일명 (EN, KO, JA 등)
+│   ├── timezone.ts       ← DST-aware timezone 유틸 (8개 함수)
+│   └── labels.ts         ← 접근성 ARIA 라벨 기본값
+├── __tests__/            ← 단위 테스트 (1,000+)
 └── index.ts              ← 공개 API
 ```
 

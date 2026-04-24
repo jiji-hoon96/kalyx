@@ -5,14 +5,16 @@ import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { DateTimePicker } from './index.js';
 
-function renderDateTimePicker(props: {
-  value?: string | null;
-  defaultValue?: string;
-  onChange?: (v: string | null) => void;
-  format?: '12h' | '24h';
-  step?: number;
-  disabled?: boolean;
-} = {}) {
+function renderDateTimePicker(
+  props: {
+    value?: string | null;
+    defaultValue?: string;
+    onChange?: (v: string | null) => void;
+    format?: '12h' | '24h';
+    step?: number;
+    disabled?: boolean;
+  } = {},
+) {
   const onChange = props.onChange ?? vi.fn();
   const result = render(
     <DateTimePicker
@@ -109,10 +111,7 @@ describe('DateTimePicker — preserves date and time independently', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
-      <ControlledDateTimePicker
-        initialValue="2026-01-15T14:30:00.000Z"
-        onChange={onChange}
-      />,
+      <ControlledDateTimePicker initialValue="2026-01-15T14:30:00.000Z" onChange={onChange} />,
     );
 
     await user.click(screen.getByLabelText('Date and time'));
@@ -131,10 +130,7 @@ describe('DateTimePicker — preserves date and time independently', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
-      <ControlledDateTimePicker
-        initialValue="2026-01-15T14:30:00.000Z"
-        onChange={onChange}
-      />,
+      <ControlledDateTimePicker initialValue="2026-01-15T14:30:00.000Z" onChange={onChange} />,
     );
 
     await user.click(screen.getByLabelText('Date and time'));
@@ -350,9 +346,7 @@ describe('DateTimePicker — event callbacks', () => {
 
     await user.click(screen.getByRole('button', { name: 'Next month' }));
 
-    expect(onCalendarNavigate).toHaveBeenLastCalledWith(
-      expect.stringMatching(/^2026-02-01T/),
-    );
+    expect(onCalendarNavigate).toHaveBeenLastCalledWith(expect.stringMatching(/^2026-02-01T/));
   });
 });
 

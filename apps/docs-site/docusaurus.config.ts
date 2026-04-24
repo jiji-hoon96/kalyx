@@ -59,6 +59,7 @@ const config: Config = {
           include: [
             'intro.{md,mdx}',
             'migration.{md,mdx}',
+            'troubleshooting.{md,mdx}',
             'getting-started/**/*.{md,mdx}',
             'concepts/**/*.{md,mdx}',
             'components/**/*.{md,mdx}',

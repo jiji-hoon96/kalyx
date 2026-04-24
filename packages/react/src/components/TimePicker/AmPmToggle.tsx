@@ -9,8 +9,10 @@ export interface TimePickerAmPmToggleClassNames {
   optionSelected?: string;
 }
 
-export interface TimePickerAmPmToggleProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'children'> {
+export interface TimePickerAmPmToggleProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'children'
+> {
   classNames?: TimePickerAmPmToggleClassNames;
 }
 
@@ -37,9 +39,8 @@ export function TimePickerAmPmToggle({ classNames, ...props }: TimePickerAmPmTog
   const renderButton = (target: 'AM' | 'PM') => {
     const isSelected = period === target;
     const optionClass =
-      [classNames?.option, isSelected && classNames?.optionSelected]
-        .filter(Boolean)
-        .join(' ') || undefined;
+      [classNames?.option, isSelected && classNames?.optionSelected].filter(Boolean).join(' ') ||
+      undefined;
 
     return (
       <button
@@ -57,7 +58,12 @@ export function TimePickerAmPmToggle({ classNames, ...props }: TimePickerAmPmTog
   };
 
   return (
-    <div role="radiogroup" aria-label={ctx.labels.amPmToggle} className={classNames?.root} {...props}>
+    <div
+      role="radiogroup"
+      aria-label={ctx.labels.amPmToggle}
+      className={classNames?.root}
+      {...props}
+    >
       {renderButton('AM')}
       {renderButton('PM')}
     </div>

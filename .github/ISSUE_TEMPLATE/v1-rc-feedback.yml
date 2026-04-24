@@ -1,0 +1,90 @@
+name: v1.0 RC Feedback
+description: Report issues or share feedback on the v1.0 Release Candidate
+labels: ["v1-rc", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for testing the v1.0 RC! Your feedback helps us ship a stable release.
+  - type: dropdown
+    id: feedback-type
+    attributes:
+      label: Feedback type
+      options:
+        - Bug (regression from previous version)
+        - Bug (new in RC)
+        - API concern (naming, ergonomics, missing option)
+        - Documentation gap
+        - Bundle size concern
+        - Accessibility issue
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: RC version
+      placeholder: "1.0.0-rc.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected component
+      options:
+        - DatePicker
+        - RangePicker
+        - TimePicker
+        - DateTimePicker
+        - MonthPicker
+        - YearPicker
+        - WeekPicker
+        - "@kalyx/core"
+        - Multiple / Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe what you found or what could be improved.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: |
+        Minimal code or a CodeSandbox/StackBlitz link to reproduce the issue.
+      placeholder: |
+        import { DatePicker } from '@kalyx/react';
+
+        function App() {
+          return (
+            <DatePicker>
+              <DatePicker.Input />
+              <DatePicker.Popover>
+                <DatePicker.Calendar />
+              </DatePicker.Popover>
+            </DatePicker>
+          );
+        }
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: false
+  - type: checkboxes
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - label: SSR (Next.js App Router)
+        - label: SSR (Next.js Pages Router)
+        - label: Client-side only (Vite, CRA, etc.)
+        - label: With Tailwind CSS
+        - label: With other CSS framework

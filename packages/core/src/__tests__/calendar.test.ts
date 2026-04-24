@@ -15,20 +15,20 @@ describe('getCalendarDays — basic month grid', () => {
       expect(week).toHaveLength(7);
     }
 
-    const currentMonthDays = weeks.flat().filter(d => d.isCurrentMonth);
+    const currentMonthDays = weeks.flat().filter((d) => d.isCurrentMonth);
     expect(currentMonthDays).toHaveLength(31);
   });
 
   it('returns 29 days for February 2024 (leap year)', () => {
     const weeks = getCalendarDays('2024-02-01T00:00:00.000Z', adapter);
-    const currentMonthDays = weeks.flat().filter(d => d.isCurrentMonth);
+    const currentMonthDays = weeks.flat().filter((d) => d.isCurrentMonth);
     expect(currentMonthDays).toHaveLength(29);
     expect(currentMonthDays[28]!.dayNumber).toBe(29);
   });
 
   it('returns 28 days for February 2026 (non-leap year)', () => {
     const weeks = getCalendarDays('2026-02-01T00:00:00.000Z', adapter);
-    const currentMonthDays = weeks.flat().filter(d => d.isCurrentMonth);
+    const currentMonthDays = weeks.flat().filter((d) => d.isCurrentMonth);
     expect(currentMonthDays).toHaveLength(28);
   });
 
@@ -46,7 +46,7 @@ describe('getCalendarDays — basic month grid', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
       selected,
     });
-    const selectedDays = weeks.flat().filter(d => d.isSelected);
+    const selectedDays = weeks.flat().filter((d) => d.isSelected);
     expect(selectedDays).toHaveLength(1);
     expect(selectedDays[0]!.dayNumber).toBe(15);
   });
@@ -56,7 +56,7 @@ describe('getCalendarDays — basic month grid', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
       today,
     });
-    const todayDays = weeks.flat().filter(d => d.isToday);
+    const todayDays = weeks.flat().filter((d) => d.isToday);
     expect(todayDays).toHaveLength(1);
     expect(todayDays[0]!.dayNumber).toBe(20);
   });
@@ -65,7 +65,7 @@ describe('getCalendarDays — basic month grid', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
       disabled: [{ dayOfWeek: [0, 6] }],
     });
-    const disabledDays = weeks.flat().filter(d => d.isDisabled && d.isCurrentMonth);
+    const disabledDays = weeks.flat().filter((d) => d.isDisabled && d.isCurrentMonth);
     expect(disabledDays.length).toBeGreaterThan(0);
     for (const d of disabledDays) {
       const dayOfWeek = adapter.getDay(d.isoString);
@@ -75,7 +75,7 @@ describe('getCalendarDays — basic month grid', () => {
 
   it('includes leading and trailing days from adjacent months', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter);
-    const outsideDays = weeks.flat().filter(d => !d.isCurrentMonth);
+    const outsideDays = weeks.flat().filter((d) => !d.isCurrentMonth);
     expect(outsideDays.length).toBeGreaterThan(0);
   });
 });
@@ -130,15 +130,15 @@ describe('isDateDisabled — combined rules', () => {
 
 describe('minDate / maxDate', () => {
   it('returns the earlier date from minDate', () => {
-    expect(
-      minDate('2026-01-15T00:00:00.000Z', '2026-01-20T00:00:00.000Z', adapter),
-    ).toBe('2026-01-15T00:00:00.000Z');
+    expect(minDate('2026-01-15T00:00:00.000Z', '2026-01-20T00:00:00.000Z', adapter)).toBe(
+      '2026-01-15T00:00:00.000Z',
+    );
   });
 
   it('returns the later date from maxDate', () => {
-    expect(
-      maxDate('2026-01-15T00:00:00.000Z', '2026-01-20T00:00:00.000Z', adapter),
-    ).toBe('2026-01-20T00:00:00.000Z');
+    expect(maxDate('2026-01-15T00:00:00.000Z', '2026-01-20T00:00:00.000Z', adapter)).toBe(
+      '2026-01-20T00:00:00.000Z',
+    );
   });
 });
 
@@ -162,10 +162,10 @@ describe('getCalendarDays — range handling', () => {
     });
     const allDays = weeks.flat();
 
-    const start = allDays.find(d => d.dayNumber === 10 && d.isCurrentMonth);
-    const middle = allDays.find(d => d.dayNumber === 12 && d.isCurrentMonth);
-    const end = allDays.find(d => d.dayNumber === 15 && d.isCurrentMonth);
-    const outside = allDays.find(d => d.dayNumber === 20 && d.isCurrentMonth);
+    const start = allDays.find((d) => d.dayNumber === 10 && d.isCurrentMonth);
+    const middle = allDays.find((d) => d.dayNumber === 12 && d.isCurrentMonth);
+    const end = allDays.find((d) => d.dayNumber === 15 && d.isCurrentMonth);
+    const outside = allDays.find((d) => d.dayNumber === 20 && d.isCurrentMonth);
 
     expect(start?.isRangeStart).toBe(true);
     expect(start?.isRangeEnd).toBe(false);
@@ -192,8 +192,8 @@ describe('getCalendarDays — range handling', () => {
       },
     });
     const allDays = weeks.flat();
-    const day10 = allDays.find(d => d.dayNumber === 10 && d.isCurrentMonth);
-    const day15 = allDays.find(d => d.dayNumber === 15 && d.isCurrentMonth);
+    const day10 = allDays.find((d) => d.dayNumber === 10 && d.isCurrentMonth);
+    const day15 = allDays.find((d) => d.dayNumber === 15 && d.isCurrentMonth);
 
     expect(day10?.isRangeStart).toBe(true);
     expect(day15?.isRangeEnd).toBe(true);
@@ -205,7 +205,7 @@ describe('getCalendarDays — range handling', () => {
       rangeHover: '2026-01-15T00:00:00.000Z',
     });
     const allDays = weeks.flat();
-    const day12 = allDays.find(d => d.dayNumber === 12 && d.isCurrentMonth);
+    const day12 = allDays.find((d) => d.dayNumber === 12 && d.isCurrentMonth);
     expect(day12?.isInRange).toBe(true);
   });
 
@@ -215,7 +215,7 @@ describe('getCalendarDays — range handling', () => {
       rangeHover: '2026-01-10T00:00:00.000Z',
     });
     const allDays = weeks.flat();
-    const day12 = allDays.find(d => d.dayNumber === 12 && d.isCurrentMonth);
+    const day12 = allDays.find((d) => d.dayNumber === 12 && d.isCurrentMonth);
     expect(day12?.isInRange).toBe(true);
   });
 
@@ -227,7 +227,7 @@ describe('getCalendarDays — range handling', () => {
       },
     });
     const allDays = weeks.flat();
-    const day15 = allDays.find(d => d.dayNumber === 15 && d.isCurrentMonth);
+    const day15 = allDays.find((d) => d.dayNumber === 15 && d.isCurrentMonth);
     expect(day15?.isRangeStart).toBe(true);
     expect(day15?.isRangeEnd).toBe(true);
     expect(day15?.isInRange).toBe(false);

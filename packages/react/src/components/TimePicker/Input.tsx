@@ -3,8 +3,10 @@ import type { InputHTMLAttributes } from 'react';
 import { formatTimeString, parseTimeString } from '@kalyx/core';
 import { useTimePickerContext } from '../../context/TimePickerContext.js';
 
-export interface TimePickerInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'type'> {}
+export interface TimePickerInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'value' | 'onChange' | 'type'
+> {}
 
 /**
  * TimePicker.Input — Text input for HH:MM or HH:MM:SS format.
@@ -27,12 +29,9 @@ export const TimePickerInput = forwardRef<HTMLInputElement, TimePickerInputProps
       setInputText(null);
     }, [inputText, ctx]);
 
-    const handleChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInputText(e.target.value);
-      },
-      [],
-    );
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+      setInputText(e.target.value);
+    }, []);
 
     const handleBlur = useCallback(
       (e: React.FocusEvent<HTMLInputElement>) => {

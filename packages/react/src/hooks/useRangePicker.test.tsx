@@ -128,9 +128,7 @@ describe('useRangePicker — calendar grid', () => {
   });
 
   it('respects disabled rules', () => {
-    const { result } = renderHook(() =>
-      useRangePicker({ disabled: [{ dayOfWeek: [0, 6] }] }),
-    );
+    const { result } = renderHook(() => useRangePicker({ disabled: [{ dayOfWeek: [0, 6] }] }));
 
     const weekend = result.current.calendar
       .flat()

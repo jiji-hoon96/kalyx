@@ -18,11 +18,7 @@ describe('DatePicker — displayTimezone', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     render(
-      <DatePicker
-        value="2026-01-15T00:00:00.000Z"
-        displayTimezone="Asia/Seoul"
-        onChange={onChange}
-      >
+      <DatePicker value="2026-01-15T00:00:00.000Z" displayTimezone="Asia/Seoul" onChange={onChange}>
         <DatePicker.Input aria-label="date" />
         <DatePicker.Popover>
           <DatePicker.Calendar />
@@ -38,10 +34,7 @@ describe('DatePicker — displayTimezone', () => {
 
   it('formats the Input using the display timezone', () => {
     render(
-      <DatePicker
-        value="2026-01-14T15:00:00.000Z"
-        displayTimezone="Asia/Seoul"
-      >
+      <DatePicker value="2026-01-14T15:00:00.000Z" displayTimezone="Asia/Seoul">
         <DatePicker.Input aria-label="date" />
       </DatePicker>,
     );
@@ -84,11 +77,7 @@ describe('TimePicker — displayTimezone', () => {
     const onChange = vi.fn();
     // Start from UTC 00:00 Jan 15 (= KST 09:00 Jan 15). Pick hour 10 → KST 10:00 = UTC 01:00.
     render(
-      <TimePicker
-        value="2026-01-15T00:00:00.000Z"
-        displayTimezone="Asia/Seoul"
-        onChange={onChange}
-      >
+      <TimePicker value="2026-01-15T00:00:00.000Z" displayTimezone="Asia/Seoul" onChange={onChange}>
         <TimePicker.HourList />
         <TimePicker.MinuteList />
       </TimePicker>,

@@ -6,13 +6,15 @@ import { axe } from 'jest-axe';
 import { WeekPicker } from './index.js';
 import type { DateRange } from '@kalyx/core';
 
-function renderWeekPicker(props: {
-  value?: DateRange;
-  defaultValue?: DateRange;
-  onChange?: (r: DateRange) => void;
-  disabled?: boolean;
-  weekStartsOn?: 0 | 1;
-} = {}) {
+function renderWeekPicker(
+  props: {
+    value?: DateRange;
+    defaultValue?: DateRange;
+    onChange?: (r: DateRange) => void;
+    disabled?: boolean;
+    weekStartsOn?: 0 | 1;
+  } = {},
+) {
   const onChange = props.onChange ?? vi.fn();
   const result = render(
     <WeekPicker

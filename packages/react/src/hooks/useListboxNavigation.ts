@@ -60,9 +60,7 @@ export function useListboxNavigation<T>({
         onSelect(target);
         cancelAnimationFrame(rafIdRef.current);
         rafIdRef.current = requestAnimationFrame(() => {
-          const next = listRef.current?.querySelector<HTMLLIElement>(
-            '[data-selected="true"]',
-          );
+          const next = listRef.current?.querySelector<HTMLLIElement>('[data-selected="true"]');
           next?.focus();
         });
       }

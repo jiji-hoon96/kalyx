@@ -1,11 +1,5 @@
 import { useEffect, useRef } from 'react';
-import {
-  useFloating,
-  autoUpdate,
-  offset,
-  flip,
-  shift,
-} from '@floating-ui/react';
+import { useFloating, autoUpdate, offset, flip, shift } from '@floating-ui/react';
 import type { Placement } from '@floating-ui/react';
 
 export interface UsePopoverOptions {
@@ -22,7 +16,12 @@ export interface UsePopoverOptions {
  * Extracted to eliminate duplication between DatePicker.Popover and RangePicker.Popover.
  * Follows the pattern used by Radix UI's usePopover and Ark UI's dismissable layer.
  */
-export function usePopover({ isOpen, close, referenceRef, placement = 'bottom-start' }: UsePopoverOptions) {
+export function usePopover({
+  isOpen,
+  close,
+  referenceRef,
+  placement = 'bottom-start',
+}: UsePopoverOptions) {
   const floatingRef = useRef<HTMLDivElement | null>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 

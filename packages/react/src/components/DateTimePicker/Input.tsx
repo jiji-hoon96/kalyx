@@ -3,8 +3,10 @@ import type { InputHTMLAttributes } from 'react';
 import { formatTimeString, getTime, getTimeInTimezone } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
 
-export interface DateTimePickerInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'type'> {}
+export interface DateTimePickerInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'value' | 'onChange' | 'type'
+> {}
 
 /**
  * DateTimePicker.Input — Displays date and time combined.
@@ -65,7 +67,6 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
         role="combobox"
         readOnly
         aria-label={ctx.labels.dateTimeInput ?? 'Date and time'}
-
         aria-expanded={ctx.isOpen}
         aria-haspopup="dialog"
         aria-controls={ctx.isOpen ? calendarId : undefined}

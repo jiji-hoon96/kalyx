@@ -30,11 +30,7 @@ export interface DatePickerYearGridProps extends Omit<HTMLAttributes<HTMLDivElem
  * )}
  * ```
  */
-export function DatePickerYearGrid({
-  classNames,
-  onSelect,
-  ...props
-}: DatePickerYearGridProps) {
+export function DatePickerYearGrid({ classNames, onSelect, ...props }: DatePickerYearGridProps) {
   const ctx = useDatePickerContext('DatePicker.YearGrid');
   const { adapter, viewMonth } = ctx;
 
@@ -107,13 +103,14 @@ export function DatePickerYearGrid({
         style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
       >
         {years.map((y) => {
-          const yearClass = [
-            classNames?.year,
-            y.isSelected && classNames?.yearSelected,
-            y.isCurrent && classNames?.yearCurrent,
-          ]
-            .filter(Boolean)
-            .join(' ') || undefined;
+          const yearClass =
+            [
+              classNames?.year,
+              y.isSelected && classNames?.yearSelected,
+              y.isCurrent && classNames?.yearCurrent,
+            ]
+              .filter(Boolean)
+              .join(' ') || undefined;
 
           return (
             <button

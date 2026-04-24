@@ -18,6 +18,8 @@
 		"typecheck": "tsc -b",
 		"lint": "eslint packages/*/src --ext .ts,.tsx",
 		"lint:fix": "eslint packages/*/src --ext .ts,.tsx --fix",
+		"format": "prettier --write 'packages/*/src/**/*.{ts,tsx}'",
+		"format:check": "prettier --check 'packages/*/src/**/*.{ts,tsx}'",
 		"check-bundle": "node scripts/check-bundle-size.js",
 		"check-tree-shaking": "node scripts/check-tree-shaking.js",
 		"check-a11y": "vitest run --reporter=verbose --testPathPattern=a11y",
@@ -26,7 +28,8 @@
 		"release": "pnpm build && changeset publish",
 		"docs:dev": "pnpm --filter docs dev",
 		"docs:build": "pnpm --filter docs build",
-		"clean": "pnpm -r clean && rm -rf node_modules coverage"
+		"clean": "pnpm -r clean && rm -rf node_modules coverage",
+		"prepare": "husky"
 	},
 	"devDependencies": {
 		"@changesets/changelog-github": "^0.5.0",
@@ -43,13 +46,23 @@
 		"@vitest/coverage-v8": "^3.0.0",
 		"esbuild": "^0.28.0",
 		"eslint": "^9.0.0",
+		"eslint-config-prettier": "^10.1.8",
+		"husky": "^9.1.7",
 		"jest-axe": "^9.0.0",
 		"jsdom": "^25.0.0",
+		"lint-staged": "^16.4.0",
+		"prettier": "^3.8.3",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"tsup": "^8.2.0",
 		"typescript": "^5.5.0",
 		"vitest": "^3.0.0"
+	},
+	"lint-staged": {
+		"packages/*/src/**/*.{ts,tsx}": [
+			"eslint --fix",
+			"prettier --write"
+		]
 	},
 	"engines": {
 		"node": ">=20.0.0",
@@ -57,7 +70,8 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"serialize-javascript": ">=7.0.3"
+			"serialize-javascript": ">=7.0.3",
+			"uuid": ">=14.0.0"
 		}
 	}
 }

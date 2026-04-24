@@ -256,9 +256,5 @@ export function RangePickerRoot({
     ],
   );
 
-  return (
-    <RangePickerContext.Provider value={contextValue}>
-      {children}
-    </RangePickerContext.Provider>
-  );
+  return <RangePickerContext.Provider value={contextValue}>{children}</RangePickerContext.Provider>;
 }

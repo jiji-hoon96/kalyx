@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { HTMLAttributes } from 'react';
-import { getCalendarDays, isDateDisabled, getWeekdayNames, formatMonthYear, formatFullDate } from '@kalyx/core';
+import {
+  getCalendarDays,
+  isDateDisabled,
+  getWeekdayNames,
+  formatMonthYear,
+  formatFullDate,
+} from '@kalyx/core';
 import type { CalendarDay } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
 
@@ -48,7 +54,11 @@ const srOnly: React.CSSProperties = {
   border: 0,
 };
 
-export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DatePickerCalendarProps) {
+export function DatePickerCalendar({
+  classNames,
+  onTitleClick,
+  ...props
+}: DatePickerCalendarProps) {
   const ctx = useDatePickerContext('DatePicker.Calendar');
   const gridRef = useRef<HTMLTableElement>(null);
   const [announcement, setAnnouncement] = useState('');
@@ -75,9 +85,7 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
   // scrolled into view.
   useEffect(() => {
     if (!ctx.isOpen || !gridRef.current) return;
-    const focusedButton = gridRef.current.querySelector<HTMLButtonElement>(
-      '[data-focused="true"]',
-    );
+    const focusedButton = gridRef.current.querySelector<HTMLButtonElement>('[data-focused="true"]');
     focusedButton?.focus({ preventScroll: true });
   }, [focusedDate, ctx.isOpen]);
 
@@ -229,15 +237,16 @@ export function DatePickerCalendar({ classNames, onTitleClick, ...props }: DateP
           {weeks.map((week, weekIndex) => (
             <tr key={weekIndex} role="row" className={classNames?.gridRow}>
               {week.map((day) => {
-                const dayClasses = [
-                  classNames?.day,
-                  day.isSelected && classNames?.daySelected,
-                  day.isToday && classNames?.dayToday,
-                  day.isDisabled && classNames?.dayDisabled,
-                  !day.isCurrentMonth && classNames?.dayOutsideMonth,
-                ]
-                  .filter(Boolean)
-                  .join(' ') || undefined;
+                const dayClasses =
+                  [
+                    classNames?.day,
+                    day.isSelected && classNames?.daySelected,
+                    day.isToday && classNames?.dayToday,
+                    day.isDisabled && classNames?.dayDisabled,
+                    !day.isCurrentMonth && classNames?.dayOutsideMonth,
+                  ]
+                    .filter(Boolean)
+                    .join(' ') || undefined;
 
                 return (
                   <td

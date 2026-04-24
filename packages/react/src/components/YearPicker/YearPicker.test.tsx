@@ -5,13 +5,15 @@ import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { YearPicker } from './index.js';
 
-function renderYearPicker(props: {
-  value?: string | null;
-  defaultValue?: string;
-  onChange?: (v: string | null) => void;
-  disabled?: boolean;
-  displayTimezone?: string;
-} = {}) {
+function renderYearPicker(
+  props: {
+    value?: string | null;
+    defaultValue?: string;
+    onChange?: (v: string | null) => void;
+    disabled?: boolean;
+    displayTimezone?: string;
+  } = {},
+) {
   const onChange = props.onChange ?? vi.fn();
   const result = render(
     <YearPicker

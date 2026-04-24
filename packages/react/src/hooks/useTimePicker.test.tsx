@@ -13,25 +13,19 @@ describe('useTimePicker — controlled / uncontrolled', () => {
   });
 
   it('uses defaultValue in uncontrolled mode', () => {
-    const { result } = renderHook(() =>
-      useTimePicker({ defaultValue: ISO_09_30 }),
-    );
+    const { result } = renderHook(() => useTimePicker({ defaultValue: ISO_09_30 }));
     expect(result.current.value).toBe(ISO_09_30);
     expect(result.current.currentTime).toEqual({ hours: 9, minutes: 30, seconds: 0 });
   });
 
   it('uses controlled value when provided', () => {
-    const { result } = renderHook(() =>
-      useTimePicker({ value: ISO_13_45 }),
-    );
+    const { result } = renderHook(() => useTimePicker({ value: ISO_13_45 }));
     expect(result.current.value).toBe(ISO_13_45);
   });
 
   it('does not update internal state in controlled mode', () => {
     const onChange = vi.fn();
-    const { result } = renderHook(() =>
-      useTimePicker({ value: ISO_09_30, onChange }),
-    );
+    const { result } = renderHook(() => useTimePicker({ value: ISO_09_30, onChange }));
 
     act(() => result.current.setHour(14));
 
@@ -43,9 +37,7 @@ describe('useTimePicker — controlled / uncontrolled', () => {
 describe('useTimePicker — setTime / setHour / setMinute / setSecond', () => {
   it('setTime merges partial values', () => {
     const onChange = vi.fn();
-    const { result } = renderHook(() =>
-      useTimePicker({ defaultValue: ISO_00, onChange }),
-    );
+    const { result } = renderHook(() => useTimePicker({ defaultValue: ISO_00, onChange }));
 
     act(() => result.current.setTime({ hours: 9 }));
     expect(result.current.currentTime.hours).toBe(9);
@@ -55,18 +47,14 @@ describe('useTimePicker — setTime / setHour / setMinute / setSecond', () => {
   });
 
   it('setHour sets hour in 24h mode', () => {
-    const { result } = renderHook(() =>
-      useTimePicker({ defaultValue: ISO_00, format: '24h' }),
-    );
+    const { result } = renderHook(() => useTimePicker({ defaultValue: ISO_00, format: '24h' }));
 
     act(() => result.current.setHour(14));
     expect(result.current.currentTime.hours).toBe(14);
   });
 
   it('setMinute and setSecond update individually', () => {
-    const { result } = renderHook(() =>
-      useTimePicker({ defaultValue: ISO_00 }),
-    );
+    const { result } = renderHook(() => useTimePicker({ defaultValue: ISO_00 }));
 
     act(() => result.current.setMinute(45));
     expect(result.current.currentTime.minutes).toBe(45);
@@ -102,9 +90,7 @@ describe('useTimePicker — 12h mode', () => {
   });
 
   it('setPeriod switches AM/PM while preserving displayHour', () => {
-    const { result } = renderHook(() =>
-      useTimePicker({ defaultValue: ISO_09_30, format: '12h' }),
-    );
+    const { result } = renderHook(() => useTimePicker({ defaultValue: ISO_09_30, format: '12h' }));
 
     act(() => result.current.setPeriod('PM'));
     expect(result.current.currentTime.hours).toBe(21);
@@ -158,16 +144,12 @@ describe('useTimePicker — stable IDs', () => {
 
 describe('useTimePicker — format behavior', () => {
   it('returns period=null in 24h mode', () => {
-    const { result } = renderHook(() =>
-      useTimePicker({ defaultValue: ISO_13_45, format: '24h' }),
-    );
+    const { result } = renderHook(() => useTimePicker({ defaultValue: ISO_13_45, format: '24h' }));
     expect(result.current.period).toBeNull();
   });
 
   it('reports displayHour equal to raw hour in 24h mode', () => {
-    const { result } = renderHook(() =>
-      useTimePicker({ defaultValue: ISO_13_45, format: '24h' }),
-    );
+    const { result } = renderHook(() => useTimePicker({ defaultValue: ISO_13_45, format: '24h' }));
     expect(result.current.displayHour).toBe(13);
   });
 });

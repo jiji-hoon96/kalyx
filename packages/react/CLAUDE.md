@@ -15,19 +15,25 @@
 ```
 src/
 ├── components/
-│   └── DatePicker/
-│       ├── Root.tsx          ← Provider, 제어/비제어, 상태 관리
-│       ├── Input.tsx         ← role="combobox", 날짜 파싱
-│       ├── Trigger.tsx       ← 캘린더 아이콘 버튼
-│       ├── Popover.tsx       ← Floating UI, 바깥 클릭/Escape 닫기
-│       ├── Calendar.tsx      ← role="grid", 키보드 네비게이션, classNames
-│       ├── index.ts          ← Object.assign Dot Notation export
-│       └── DatePicker.test.tsx
+│   ├── DatePicker/           ← 날짜 선택 (Root, Input, Trigger, Popover, Calendar, MonthGrid, YearGrid, Presets, Preset)
+│   ├── RangePicker/          ← 날짜 범위 선택 (Root, Input, Popover, Calendar, Presets, Preset)
+│   ├── TimePicker/           ← 시간 선택 (Root, Input, HourList, MinuteList, AmPmToggle)
+│   ├── DateTimePicker/       ← 날짜+시간 복합 (Root, Input + DatePicker/TimePicker 재사용)
+│   ├── MonthPicker/          ← 월 단위 선택 (Root, Input, Trigger, Popover, Grid)
+│   ├── YearPicker/           ← 연도 단위 선택 (Root, Input, Trigger, Popover, Grid)
+│   └── WeekPicker/           ← 주 단위 선택 (Root, Input, Popover, Calendar)
 ├── context/
-│   └── DatePickerContext.ts  ← createContext + useDatePickerContext
+│   ├── DatePickerContext.ts  ← createContext + useDatePickerContext
+│   ├── RangePickerContext.ts ← createContext + useRangePickerContext
+│   └── TimePickerContext.ts  ← createContext + useTimePickerContext
 ├── hooks/
-│   └── useDatePicker.ts     ← 완전 커스텀 UI용 Hook
-└── index.ts                  ← 공개 API
+│   ├── useDatePicker.ts      ← 커스텀 DatePicker UI용 Hook
+│   ├── useRangePicker.ts     ← 커스텀 RangePicker UI용 Hook
+│   ├── useTimePicker.ts      ← 커스텀 TimePicker UI용 Hook
+│   ├── usePopover.ts         ← Floating UI 공통 로직 (내부)
+│   ├── useChangeEffect.ts    ← 값 변경 시에만 콜백 실행 (내부)
+│   └── useListboxNavigation.ts ← 리스트박스 키보드 내비게이션 (내부)
+└── index.ts                   ← 공개 API (7 컴포넌트 + 3 hooks + 타입)
 ```
 
 ## 컴포넌트 추가 시 체크리스트

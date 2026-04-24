@@ -21,10 +21,7 @@ export function normalizeISO(value: string): string {
  * Parses user input text into an ISO string.
  * Returns null on failure.
  */
-export function parseInputValue(
-  input: string,
-  adapter: DateAdapter,
-): string | null {
+export function parseInputValue(input: string, adapter: DateAdapter): string | null {
   if (!input.trim()) return null;
 
   // Default format: yyyy-MM-dd or yyyy/MM/dd
@@ -52,15 +49,7 @@ export function parseInputValue(
 /** Default weekday labels (English) */
 export const WEEKDAY_LABELS = {
   short: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] as const,
-  full: [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ] as const,
+  full: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const,
 };
 
 /** Returns weekdays ordered according to the given week start */

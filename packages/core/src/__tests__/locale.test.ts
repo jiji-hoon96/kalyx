@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  getMonthName,
-  formatMonthYear,
-  getWeekdayNames,
-  formatFullDate,
-} from '../utils/locale.js';
+import { getMonthName, formatMonthYear, getWeekdayNames, formatFullDate } from '../utils/locale.js';
 
 describe('getMonthName', () => {
   it('returns English month names (en-US)', () => {
