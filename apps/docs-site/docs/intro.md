@@ -7,7 +7,7 @@ slug: /intro
 
 # Kalyx
 
-**Kalyx** is a headless React DatePicker library that ships *complete*. It covers the four things every date UI needs — **single date**, **date range**, **time**, and **date + time** — behind one consistent, composable API.
+**Kalyx** is a headless React DatePicker library that ships *complete*. Seven composable pickers — **DatePicker**, **RangePicker**, **TimePicker**, **DateTimePicker**, **MonthPicker**, **YearPicker**, and **WeekPicker** — behind one consistent API.
 
 ```tsx
 import { DatePicker } from '@kalyx/react';
@@ -34,7 +34,7 @@ The React ecosystem in 2026 has two extremes — and nothing in between:
 Kalyx fills the gap:
 
 - **Headless philosophy** — no stylesheets, no classes you must override.
-- **Integrated primitives** — DatePicker, RangePicker, TimePicker, DateTimePicker share one context model.
+- **Integrated primitives** — 7 pickers (DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker) share one context model.
 - **Composition first** — Radix-style dot notation. No 100-prop monoliths.
 - **Under 12 KB gzip** — measured, enforced in CI.
 - **SSR-safe** — tested with Next.js App Router.
@@ -56,8 +56,11 @@ Kalyx fills the gap:
 <RangePicker>               getCalendarDays
 <TimePicker>                isDateDisabled
 <DateTimePicker>            setTime / getTime
-useDatePicker               parseInputValue
-useRangePicker              normalizeISO
+<MonthPicker>               formatInTimezone
+<YearPicker>                getMonthName
+<WeekPicker>                parseInputValue
+useDatePicker               normalizeISO
+useRangePicker              DEFAULT_*_LABELS
 useTimePicker               …and more
 ```
 

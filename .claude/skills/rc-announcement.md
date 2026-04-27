@@ -24,7 +24,7 @@ triggers:
   - feat/v1-rc-preparation (ca7180e)
   - MonthPicker / YearPicker / WeekPicker 추가
   - Presets, onOpenChange, onCalendarNavigate 콜백
-- Bundle 수치: landing 비교표에 `~11KB`, README 배지에 `9.73KB` — **불일치 있음(확인 필요)**
+- Bundle 수치: **11.36 KB** gzip (모든 README·docs·배지 통일 완료 — 2026-04-25)
 
 > 이 상태는 시점 스냅샷. 새 세션에서 먼저 "작업 전 검증"으로 실제 상태를 확인한다.
 
@@ -142,7 +142,7 @@ pnpm --filter docs-site start    # 로컬 브라우저에서 배너 확인
 
 ### Step 4. README 배지 + Try the RC 섹션
 
-**현재 상태**: README의 bundle 배지가 `9.73KB`로 박혀 있으나 최신 landing 비교표는 `~11KB`. Step 1에서 측정한 실제 수치로 통일.
+**현재 상태**: README·docs·배지 모두 `11.36KB`로 통일 완료 (2026-04-25).
 
 **변경 지점** (`README.md`, `README.ko.md` 둘 다):
 1. bundle 배지 gzip 수치 업데이트

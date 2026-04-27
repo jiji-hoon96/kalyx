@@ -73,6 +73,36 @@ import {
 } from '@kalyx/core';
 ```
 
+### Timezone helpers
+
+DST-aware timezone utilities used by every picker when `displayTimezone` is set.
+
+```ts
+import {
+  formatInTimezone,
+  startOfDayInTimezone,
+  isSameDayInTimezone,
+  todayInTimezone,
+  getTimezoneOffsetMinutes,
+  civilMidnightFromUtcDay,
+  getTimeInTimezone,
+  setTimeInTimezone,
+} from '@kalyx/core';
+```
+
+### Accessibility labels
+
+Default ARIA labels (English). Override via the `labels` prop on any picker Root.
+
+```ts
+import {
+  DEFAULT_DATEPICKER_LABELS,
+  DEFAULT_RANGEPICKER_LABELS,
+  DEFAULT_TIMEPICKER_LABELS,
+  DEFAULT_DATETIMEPICKER_LABELS,
+} from '@kalyx/core';
+```
+
 ## Principles
 
 - **All dates are ISO 8601 UTC strings** — never `Date` objects.

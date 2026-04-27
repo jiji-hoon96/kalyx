@@ -240,6 +240,32 @@ setTimeInTimezone('2026-01-15T00:00:00.000Z', { hours: 10 }, 'Asia/Seoul');
 
 See the [Timezone concept page](../concepts/timezone.md) for usage patterns.
 
+## Accessibility labels
+
+Default ARIA label sets. Override via the `labels` prop on any picker Root.
+
+```ts
+import {
+  DEFAULT_DATEPICKER_LABELS,
+  DEFAULT_RANGEPICKER_LABELS,
+  DEFAULT_TIMEPICKER_LABELS,
+  DEFAULT_DATETIMEPICKER_LABELS,
+} from '@kalyx/core';
+
+import type {
+  DatePickerLabels,
+  RangePickerLabels,
+  TimePickerLabels,
+  DateTimePickerLabels,
+} from '@kalyx/core';
+```
+
+Each label set provides keys like `triggerOpen`, `prevMonth`, `nextMonth`, `hourOption(h)`, etc. Pass a `Partial<*Labels>` to override only what you need:
+
+```tsx
+<DatePicker labels={{ triggerOpen: 'Open calendar', triggerClose: 'Close calendar' }}>
+```
+
 ## See also
 
 - [Concepts → ISO strings](../concepts/iso-string.md)

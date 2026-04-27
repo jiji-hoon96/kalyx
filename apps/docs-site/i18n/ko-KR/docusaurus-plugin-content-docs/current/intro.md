@@ -1,13 +1,13 @@
 ---
 id: intro
-title: 소개
+title: Introduction
 sidebar_position: 1
 slug: /intro
 ---
 
 # Kalyx
 
-**Kalyx**는 *완결된* 채로 배포되는 Headless React DatePicker 라이브러리입니다. 날짜 UI가 필요로 하는 네 가지 — **단일 날짜**, **날짜 범위**, **시간**, **날짜 + 시간** — 를 하나의 일관된 조합형 API로 제공합니다.
+**Kalyx** is a headless React DatePicker library that ships *complete*. Seven composable pickers — **DatePicker**, **RangePicker**, **TimePicker**, **DateTimePicker**, **MonthPicker**, **YearPicker**, and **WeekPicker** — behind one consistent API.
 
 ```tsx
 import { DatePicker } from '@kalyx/react';
@@ -21,32 +21,33 @@ import { DatePicker } from '@kalyx/react';
 </DatePicker>
 ```
 
-## Kalyx가 필요한 이유
+## Why Kalyx exists
 
-2026년 React 생태계의 DatePicker 선택지는 양극단입니다. 그 사이를 채우는 라이브러리가 없습니다.
+The React ecosystem in 2026 has two extremes — and nothing in between:
 
-| 선택지 | 장점 | 한계 |
+| Option | What it offers | What it doesn't |
 | --- | --- | --- |
-| **react-day-picker** | Headless, 접근성 있는 캘린더 그리드 | 입력창·시간·범위 미지원 |
-| **react-datepicker** | 통합 기능 | 60KB, CSS 필수, Date 객체 API, 타임존 함정 |
-| **Ark UI / React Aria** | 조합 패턴 지원 | TimePicker 없음(Ark), 무거운 의존성(Aria) |
+| **react-day-picker** | Headless, accessible calendar grid | No input, no time, no range out of the box |
+| **react-datepicker** | All-in-one features | 60 KB, required CSS, Date-object API, timezone pitfalls |
+| **Ark UI / React Aria** | Composition patterns | No TimePicker (Ark), heavy dependencies (Aria) |
 
-Kalyx는 그 공백을 채웁니다.
+Kalyx fills the gap:
 
-- **Headless 철학** — 스타일시트도, 재정의할 클래스도 없습니다.
-- **통합 프리미티브** — DatePicker, RangePicker, TimePicker, DateTimePicker가 하나의 컨텍스트 모델을 공유합니다.
-- **조합 우선** — Radix 스타일 dot 표기. props 100개짜리 거대 컴포넌트 없음.
-- **gzip 12KB 이하** — 측정하고, CI에서 강제.
-- **SSR 안전** — Next.js App Router 환경에서 검증.
-- **ISO 8601 UTC 문자열**을 값 계약으로 사용. Date 객체의 함정 없음.
+- **Headless philosophy** — no stylesheets, no classes you must override.
+- **Integrated primitives** — 7 pickers (DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker) share one context model.
+- **Composition first** — Radix-style dot notation. No 100-prop monoliths.
+- **Under 12 KB gzip** — measured, enforced in CI.
+- **SSR-safe** — tested with Next.js App Router.
+- **ISO 8601 UTC strings** as the value contract — no Date-object footguns.
+- **Timezone-aware** — opt-in `displayTimezone` prop handles DST and civil-day semantics without changing the UTC storage contract. See the [Timezone concept page](./concepts/timezone.md).
 
-## 누구에게 적합한가
+## Who it's for
 
-- **Tailwind**, **shadcn/ui**, **Chakra**, 자체 디자인 시스템을 이미 쓰면서 토큰에 맞는 날짜 UI가 필요한 팀.
-- **번들 크기**와 **트리셰이킹**에 민감한 앱.
-- **Next.js**, **Remix** 등 SSR/RSC 환경에서 동작하는 모든 앱.
+- Teams already using **Tailwind**, **shadcn/ui**, **Chakra**, or their own design system, who want date UI that obeys their tokens.
+- Apps that care about **bundle size** and **tree-shaking**.
+- Anything running on **Next.js**, **Remix**, or other SSR/RSC environments.
 
-## 담겨 있는 것
+## What's in the box
 
 ```
 @kalyx/react                @kalyx/core
@@ -55,14 +56,17 @@ Kalyx는 그 공백을 채웁니다.
 <RangePicker>               getCalendarDays
 <TimePicker>                isDateDisabled
 <DateTimePicker>            setTime / getTime
-useDatePicker               parseInputValue
-useRangePicker              normalizeISO
-useTimePicker               …외 다수
+<MonthPicker>               formatInTimezone
+<YearPicker>                getMonthName
+<WeekPicker>                parseInputValue
+useDatePicker               normalizeISO
+useRangePicker              DEFAULT_*_LABELS
+useTimePicker               …and more
 ```
 
-## 다음 단계
+## Next steps
 
-- [설치 →](./getting-started/installation.md)
-- [빠른 시작 (5분) →](./getting-started/quick-start.md)
+- [Install the package →](./getting-started/installation.md)
+- [Quick Start (5 min) →](./getting-started/quick-start.mdx)
 - [Composition API →](./concepts/composition.md)
-- [컴포넌트 →](./components/datepicker.md)
+- [Components →](./components/datepicker.md)
