@@ -27,8 +27,8 @@ function Hero(): ReactNode {
             </h1>
             <p className={styles.subtitle}>
               <Translate id="home.subtitle">
-                DatePicker, RangePicker, TimePicker, and DateTimePicker — composable React primitives
-                with zero built-in styles. Works everywhere React runs.
+                7 composable pickers — DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker,
+                YearPicker, and WeekPicker. Zero CSS, SSR-safe, under 12 KB.
               </Translate>
             </p>
             <div className={styles.ctas}>

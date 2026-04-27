@@ -10,7 +10,7 @@
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
 [![RC](https://img.shields.io/npm/v/@kalyx/react/next?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
-[![Bundle](https://img.shields.io/badge/gzip-11.39KB-brightgreen)](#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-11.36KB-brightgreen)](#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -50,7 +50,7 @@ Numbers come from bundlephobia (April 2026). See [notes below the table](#footno
 | | Kalyx | react-datepicker | react-day-picker | Ark UI | React Aria |
 |---|---|---|---|---|---|
 | Version measured | 1.0.0-rc.0 | 9.1.0 | 9.14.0 | 5.36.1 | 1.17.0 |
-| Bundle (min+gzip) | **11.39 KB** | 44 KB | 2.4 KB¹ | 265 KB² | 247 KB² |
+| Bundle (min+gzip) | **11.36 KB** | 44 KB | 2.4 KB¹ | 265 KB² | 247 KB² |
 | DatePicker | ✅ | ✅ | ✅ | ✅ | ✅ |
 | RangePicker | ✅ dedicated | ✅ two-picker pattern | ✅ `mode="range"` | ✅ | ✅ |
 | TimePicker | ✅ dedicated | ⚠️ `showTimeSelect` prop | ❌ | ❌ (removed) | ✅ |
@@ -174,6 +174,9 @@ import {
   RangePicker,      // date range with presets
   TimePicker,       // hour + minute (+ seconds)
   DateTimePicker,   // combined date + time
+  MonthPicker,      // month-only selection
+  YearPicker,       // year-only selection
+  WeekPicker,       // full-week range selection
 } from '@kalyx/react';
 ```
 
@@ -186,6 +189,7 @@ Each root exposes sub-components via dot notation:
 <DatePicker.Calendar />
 <DatePicker.MonthGrid />
 <DatePicker.YearGrid />
+<DatePicker.Presets />
 ```
 
 ## Hooks
@@ -206,12 +210,14 @@ Full documentation is at **[kalyx-docs.vercel.app](https://kalyx-docs.vercel.app
 - [Components](https://kalyx-docs.vercel.app/docs/components/datepicker)
 - [Hooks](https://kalyx-docs.vercel.app/docs/hooks/use-date-picker)
 - [Recipes — Tailwind / shadcn / React Hook Form](https://kalyx-docs.vercel.app/docs/recipes/tailwind)
+- [Testing](https://kalyx-docs.vercel.app/docs/recipes/testing)
+- [Troubleshooting](https://kalyx-docs.vercel.app/docs/troubleshooting)
 - [Migration guide](https://kalyx-docs.vercel.app/docs/migration)
 
 ## Bundle size
 
 ```
-packages/react/dist/index.js  →  9.73 KB gzip  (as of v0.4)
+@kalyx/react  →  11.36 KB gzip  (v1.0.0-rc.0, 7 components)
 ```
 
 Enforced in CI at `< 12 KB`. Tree-shakable per import — `@kalyx/core` is published with `sideEffects: false`, so using only `TimePicker` drops the DatePicker code.

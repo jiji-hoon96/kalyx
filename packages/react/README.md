@@ -3,7 +3,7 @@
 > The headless React DatePicker, finally complete. Zero CSS · SSR-safe · under 12 KB gzip.
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-9.2KB-brightgreen)](https://kalyx-docs.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-11.36KB-brightgreen)](https://kalyx-docs.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/jiji-hoon96/kalyx/blob/main/LICENSE)
 
@@ -51,6 +51,9 @@ import {
   RangePicker,       // date range + presets
   TimePicker,        // hour + minute (+ seconds)
   DateTimePicker,    // date + time combined
+  MonthPicker,       // month-only selection
+  YearPicker,        // year-only selection
+  WeekPicker,        // full-week range selection
   useDatePicker,     // hook for custom UIs
   useRangePicker,
   useTimePicker,
@@ -90,6 +93,8 @@ Full recipes: [Tailwind](https://kalyx-docs.vercel.app/docs/recipes/tailwind), [
 - [Quick Start](https://kalyx-docs.vercel.app/docs/getting-started/quick-start)
 - [Components](https://kalyx-docs.vercel.app/docs/components/datepicker)
 - [Hooks](https://kalyx-docs.vercel.app/docs/hooks/use-date-picker)
+- [Testing](https://kalyx-docs.vercel.app/docs/recipes/testing)
+- [Troubleshooting](https://kalyx-docs.vercel.app/docs/troubleshooting)
 - [Migration from react-datepicker / react-day-picker / React Aria](https://kalyx-docs.vercel.app/docs/migration)
 
 ## License

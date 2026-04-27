@@ -10,7 +10,7 @@
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
 [![RC](https://img.shields.io/npm/v/@kalyx/react/next?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
-[![Bundle](https://img.shields.io/badge/gzip-11.39KB-brightgreen)](#번들-크기)
+[![Bundle](https://img.shields.io/badge/gzip-11.36KB-brightgreen)](#번들-크기)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -53,7 +53,7 @@ bundlephobia 기준 (2026년 4월). 각주는 표 아래를 참조.
 | react-datepicker | 9.1 | 44 KB | ❌ (CSS 필수) | ✅ | ⚠️ prop | ⚠️ 결합형 | ✅ 분리형 | `Date` | ⚠️ |
 | Ark UI | 5.36 | 265 KB² | ✅ | ✅ | ❌ (제거됨) | ❌ | ✅ | `Date` | ⚠️ |
 | React Aria | 1.17 | 247 KB² | ✅ | ✅ | ✅ | ✅ | ✅ | `CalendarDate` | ✅ |
-| **Kalyx** | 1.0.0-rc.0 | **11.39 KB** | ✅ | ✅ | ✅ 전용 | ✅ 전용 | ✅ 전용 | ISO 8601 UTC | ✅ `displayTimezone` |
+| **Kalyx** | 1.0.0-rc.0 | **11.36 KB** | ✅ | ✅ | ✅ 전용 | ✅ 전용 | ✅ 전용 | ISO 8601 UTC | ✅ `displayTimezone` |
 
 1. react-day-picker는 캘린더 그리드만 제공 — Kalyx와 동일한 스콥을 맞추려면 Input·Popover·TimePicker를 직접 조합해야 함. 2.4 KB는 기본 엔트리 기준.
 2. `@ark-ui/react`와 `react-aria-components`는 40+ 컴포넌트를 포함한 모노리스 패키지 — 트리셰이킹 시 더 작아지지만 `@internationalized/date` 등 생태계를 통째로 끌어들임.
@@ -115,6 +115,9 @@ import {
   RangePicker,      // 프리셋 포함 범위
   TimePicker,       // 시 + 분 (+ 초)
   DateTimePicker,   // 날짜 + 시간 결합
+  MonthPicker,      // 월 선택
+  YearPicker,       // 연도 선택
+  WeekPicker,       // 주 단위 범위 선택
 } from '@kalyx/react';
 ```
 
@@ -127,6 +130,7 @@ import {
 <DatePicker.Calendar />
 <DatePicker.MonthGrid />
 <DatePicker.YearGrid />
+<DatePicker.Presets />
 ```
 
 ## 훅
@@ -147,12 +151,14 @@ import { useDatePicker, useRangePicker, useTimePicker } from '@kalyx/react';
 - [컴포넌트](https://kalyx-docs.vercel.app/ko/docs/components/datepicker)
 - [훅](https://kalyx-docs.vercel.app/ko/docs/hooks/use-date-picker)
 - [레시피 — Tailwind / shadcn / React Hook Form](https://kalyx-docs.vercel.app/ko/docs/recipes/tailwind)
+- [테스트](https://kalyx-docs.vercel.app/ko/docs/recipes/testing)
+- [문제 해결](https://kalyx-docs.vercel.app/ko/docs/troubleshooting)
 - [마이그레이션 가이드](https://kalyx-docs.vercel.app/ko/docs/migration)
 
 ## 번들 크기
 
 ```
-packages/react/dist/index.js  →  gzip 9.73 KB  (v0.4 기준)
+@kalyx/react  →  gzip 11.36 KB  (v1.0.0-rc.0, 7개 컴포넌트)
 ```
 
 CI에서 `< 12 KB`로 강제. `@kalyx/core`에 `sideEffects: false`가 설정돼 있어 임포트 단위 트리셰이킹이 작동합니다 — `TimePicker`만 쓰면 DatePicker 코드가 사라집니다.

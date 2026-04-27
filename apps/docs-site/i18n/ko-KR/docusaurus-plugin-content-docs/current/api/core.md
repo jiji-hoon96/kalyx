@@ -6,13 +6,13 @@ sidebar_position: 1
 
 # @kalyx/core
 
-플랫폼 독립 날짜 로직. 보통 `@kalyx/react`를 통해 간접 소비됩니다.
+Platform-independent date logic. Usually consumed transitively through `@kalyx/react`.
 
 ```bash
 pnpm add @kalyx/core
 ```
 
-## 타입
+## Types
 
 ```ts
 type ISODateString = string;
@@ -65,21 +65,21 @@ type TimeValue = {
 
 ## `DateAdapter`
 
-전체 인터페이스는 [어댑터 개념 →](../concepts/adapters.md)에.
+See the [Adapters concept →](../concepts/adapters.md) for the full interface.
 
 ## `DateFnsAdapter`
 
-기본 어댑터 — date-fns v4 기반, UTC 안전.
+Default adapter — UTC-safe, built on date-fns v4.
 
 ```ts
 import { DateFnsAdapter } from '@kalyx/core';
 ```
 
-## 캘린더 유틸
+## Calendar utilities
 
 ### `getCalendarDays(viewMonth, adapter, options)`
 
-한 달의 6주 그리드를 생성합니다.
+Build a 6-week grid for a month.
 
 ```ts
 import { getCalendarDays, DateFnsAdapter } from '@kalyx/core';
@@ -91,7 +91,7 @@ const grid = getCalendarDays(
 );
 ```
 
-`CalendarGrid` (6×7 `CalendarDay`)을 반환합니다. 앞뒤 패딩 날짜는 이웃 달이며 `isCurrentMonth: false`.
+Returns `CalendarGrid` (6×7 `CalendarDay`s). Leading and trailing days belong to neighboring months (`isCurrentMonth: false`).
 
 ### `isDateDisabled(iso, rules, adapter)`
 
@@ -102,7 +102,7 @@ isDateDisabled(
   '2026-04-18T00:00:00.000Z',
   [{ dayOfWeek: [0, 6] }],
   DateFnsAdapter,
-); // → true (토요일)
+); // → true (Saturday)
 ```
 
 ### `minDate(dates)` / `maxDate(dates)`
@@ -114,22 +114,22 @@ minDate(['2026-04-15T00:00:00.000Z', '2026-04-10T00:00:00.000Z']);
 // → "2026-04-10T00:00:00.000Z"
 ```
 
-## 날짜 문자열 유틸
+## Date string utilities
 
 ### `normalizeISO(value)`
 
-관용적 파서 — `2026-04-15` 같은 부분 입력을 받아 UTC 자정 ISO 문자열로 반환. 유효하지 않으면 `null`.
+Lenient parser — accepts partial inputs like `2026-04-15` and returns a full UTC midnight ISO string. Returns `null` for invalid input.
 
 ### `parseInputValue(input, format, adapter)`
 
-명시적 포맷으로 사용자 입력 파싱.
+Parse a user-typed string with an explicit format.
 
 ```ts
 parseInputValue('15/04/2026', 'dd/MM/yyyy', DateFnsAdapter);
 // → "2026-04-15T00:00:00.000Z"
 ```
 
-## 시간 유틸
+## Time utilities
 
 ### `setTime(iso, partial)` / `getTime(iso)`
 
@@ -146,7 +146,7 @@ getTime('2026-04-15T09:30:00.000Z');
 ### `parseTimeString(input)` / `formatTimeString(time, withSeconds?)`
 
 ```ts
-parseTimeString('09:30');    // → { hours: 9, minutes: 30, seconds: 0 }
+parseTimeString('09:30');   // → { hours: 9, minutes: 30, seconds: 0 }
 parseTimeString('09:30:45'); // → { hours: 9, minutes: 30, seconds: 45 }
 formatTimeString({ hours: 9, minutes: 30, seconds: 0 });       // → "09:30"
 formatTimeString({ hours: 9, minutes: 30, seconds: 0 }, true); // → "09:30:00"
@@ -154,9 +154,9 @@ formatTimeString({ hours: 9, minutes: 30, seconds: 0 }, true); // → "09:30:00"
 
 ### `formatTimeFromISO(iso, withSeconds?)`
 
-`formatTimeString(getTime(iso), withSeconds)`와 동등한 편의 래퍼.
+Convenience wrapper — equivalent to `formatTimeString(getTime(iso), withSeconds)`.
 
-### 12시간제 헬퍼
+### 12h helpers
 
 ```ts
 import { to12Hour, to24Hour } from '@kalyx/core';
@@ -165,7 +165,7 @@ to12Hour(13);                    // → { hours12: 1, period: 'PM' }
 to24Hour(1, 'PM');               // → 13
 ```
 
-### 옵션 생성기
+### Option generators
 
 ```ts
 generateHours('24h'); // → [0, 1, 2, …, 23]
@@ -180,18 +180,94 @@ isSameTime({ hours: 9, minutes: 0, seconds: 0 }, { hours: 9, minutes: 0, seconds
 // → true
 ```
 
-## 로케일 유틸
+## Locale utilities
 
 ```ts
-getMonthName(3, 'ko-KR');               // → "4월"
-formatMonthYear(2026, 3, 'ko-KR');      // → "2026년 4월"
-getWeekdayNames('ko-KR', 0);
-// → [{ short: '일', full: '일요일' }, …]
-formatFullDate('2026-04-15T00:00:00.000Z', 'ko-KR');
-// → "2026년 4월 15일"
+getMonthName(3, 'en-US');            // → "April"
+formatMonthYear(2026, 3, 'en-US');   // → "April 2026"
+getWeekdayNames('en-US', 0);
+// → [{ short: 'Sun', full: 'Sunday' }, …]
+formatFullDate('2026-04-15T00:00:00.000Z', 'en-US');
+// → "April 15, 2026"
 ```
 
-## 함께 보기
+## Timezone utilities
 
-- [개념 → ISO 문자열](../concepts/iso-string.md)
-- [개념 → 어댑터](../concepts/adapters.md)
+Introduced in v0.4. Used internally by every picker when `displayTimezone` is set; exposed publicly so you can run the same math yourself.
+
+### `formatInTimezone(iso, formatStr, timeZone)`
+
+Format a UTC instant in the requested zone. Handles DST transitions.
+
+```ts
+formatInTimezone('2026-03-08T07:30:00.000Z', 'yyyy-MM-dd HH:mm', 'America/New_York');
+// → '2026-03-08 03:30'   (post spring-forward EDT)
+```
+
+### `startOfDayInTimezone(iso, timeZone)`
+
+Civil midnight of the given UTC instant's day, expressed as a UTC ISO string.
+
+```ts
+startOfDayInTimezone('2026-01-15T12:00:00.000Z', 'Asia/Seoul');
+// → '2026-01-14T15:00:00.000Z'
+```
+
+### `isSameDayInTimezone(a, b, timeZone)`
+
+Civil-day equality in the zone. Timezone-safe alternative to comparing `iso.slice(0, 10)`.
+
+### `todayInTimezone(timeZone)`
+
+"Today" expressed as civil midnight in the zone.
+
+### `getTimezoneOffsetMinutes(iso, timeZone)`
+
+UTC offset (minutes east of UTC) at the given instant. Differs before and after DST transitions.
+
+### `civilMidnightFromUtcDay(gridUtcIso, timeZone)`
+
+The bridge Calendar uses: maps a UTC-midnight grid cell ISO to civil midnight of the same calendar day in the zone. You rarely need this directly — it is exported for custom calendar renderers.
+
+### `getTimeInTimezone(iso, timeZone)` / `setTimeInTimezone(iso, partial, timeZone)`
+
+Read and write time-of-day as observed in the zone. `setTimeInTimezone` preserves the civil date and replaces the time portion, iterating once to absorb DST offsets.
+
+```ts
+setTimeInTimezone('2026-01-15T00:00:00.000Z', { hours: 10 }, 'Asia/Seoul');
+// → '2026-01-15T01:00:00.000Z'   (Seoul 10:00 = UTC 01:00)
+```
+
+See the [Timezone concept page](../concepts/timezone.md) for usage patterns.
+
+## Accessibility labels
+
+Default ARIA label sets. Override via the `labels` prop on any picker Root.
+
+```ts
+import {
+  DEFAULT_DATEPICKER_LABELS,
+  DEFAULT_RANGEPICKER_LABELS,
+  DEFAULT_TIMEPICKER_LABELS,
+  DEFAULT_DATETIMEPICKER_LABELS,
+} from '@kalyx/core';
+
+import type {
+  DatePickerLabels,
+  RangePickerLabels,
+  TimePickerLabels,
+  DateTimePickerLabels,
+} from '@kalyx/core';
+```
+
+Each label set provides keys like `triggerOpen`, `prevMonth`, `nextMonth`, `hourOption(h)`, etc. Pass a `Partial<*Labels>` to override only what you need:
+
+```tsx
+<DatePicker labels={{ triggerOpen: 'Open calendar', triggerClose: 'Close calendar' }}>
+```
+
+## See also
+
+- [Concepts → ISO strings](../concepts/iso-string.md)
+- [Concepts → Adapters](../concepts/adapters.md)
+- [Concepts → Timezone](../concepts/timezone.md)

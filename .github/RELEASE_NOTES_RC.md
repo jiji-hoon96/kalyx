@@ -13,8 +13,8 @@ This is the first RC for Kalyx v1.0. The public API is frozen; we're collecting 
 
 ## Bundle
 
-- ESM: **11.39 KB** gzip (target: ≤ 12 KB)
-- CJS: **11.40 KB** gzip
+- ESM: **11.36 KB** gzip (target: ≤ 12 KB)
+- CJS: **11.36 KB** gzip
 
 ## Install
 
