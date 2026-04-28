@@ -16,7 +16,7 @@
     "description": "홈 타이틀 2번째 줄"
   },
   "home.subtitle": {
-    "message": "DatePicker, RangePicker, TimePicker, DateTimePicker — 스타일이 없는 React 조합형 프리미티브. React가 돌아가는 어디서든 동작합니다.",
+    "message": "7개의 조합형 피커 — DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker. CSS 없음, SSR 안전, 12KB 이하.",
     "description": "홈 부제"
   },
   "home.cta.start": {
@@ -84,7 +84,7 @@
     "description": "기능: 번들"
   },
   "home.feat.bundle.desc": {
-    "message": "gzip 9.2KB — react-datepicker의 60KB 대비 일부. 사용한 만큼만 트리셰이킹됩니다.",
+    "message": "7개 피커를 gzip 11.36KB에 담음 — react-datepicker 60KB 대비 일부. 사용한 만큼만 트리셰이킹됩니다.",
     "description": "기능: 번들 설명"
   },
   "home.compare.eyebrow": {

@@ -1,72 +1,72 @@
 ---
 id: iso-string
-title: ISO 8601 UTC 문자열
+title: ISO 8601 UTC strings
 sidebar_position: 2
 ---
 
-# ISO 8601 UTC 문자열
+# ISO 8601 UTC strings
 
-모든 Kalyx 값 — `value`, `defaultValue`, `onChange`의 인자, `DateRange`의 모든 요소 — 는 ISO 8601 UTC 문자열 또는 `null`입니다. `Date` 객체를 쓰지 않습니다.
+Every Kalyx value — `value`, `defaultValue`, `onChange`'s argument, every item in a `DateRange` — is an ISO 8601 UTC string or `null`. Never a `Date` object.
 
 ```ts
-type ISODateString = string; // 예: "2026-04-15T00:00:00.000Z"
+type ISODateString = string; // e.g. "2026-04-15T00:00:00.000Z"
 ```
 
-## `Date` 객체를 쓰지 않는 이유
+## Why not `Date`?
 
-`Date` 객체는 변경 가능하고, 타임존이 모호하며, 직렬화가 일관되지 않습니다. 전형적인 버그:
+`Date` objects are mutable, timezone-ambiguous, and serialize inconsistently. The classic bug:
 
 ```ts
-// 서울의 사용자가 4월 15일을 고름
-const picked = new Date(2026, 3, 15); // KST 기준 "2026-04-14T15:00:00.000Z" 🤦
+// User in Seoul picks April 15
+const picked = new Date(2026, 3, 15); // "2026-04-14T15:00:00.000Z" in KST 🤦
 
-// DB에 저장
+// Save to DB
 await save(picked);
 
-// UTC 서버에서 읽음
-new Date(picked.toISOString()).getDate(); // 14 — 하루 밀림
+// Read back from DB in a UTC server
+new Date(picked.toISOString()).getDate(); // 14 — off by one
 ```
 
-ISO 문자열은 경계에서 모호함을 없앱니다.
+ISO strings eliminate the ambiguity at the boundary:
 
 ```tsx
 <DatePicker
-  value="2026-04-15T00:00:00.000Z"  // 항상 UTC 자정
-  onChange={(iso) => save(iso)}      // 항상 UTC 문자열
+  value="2026-04-15T00:00:00.000Z"  // always UTC midnight
+  onChange={(iso) => save(iso)}      // always a UTC string
 />
 ```
 
-Kalyx는 다음을 보장합니다.
+Kalyx guarantees:
 
-1. 명시적 시간이 없으면 날짜는 **UTC 자정** (`T00:00:00.000Z`)으로 저장.
-2. `onChange`는 절대 `Date`를 넘기지 않음 — 문자열 또는 `null`만.
-3. 내부 산술은 UTC 안전한 [`DateAdapter`](./adapters.md)가 처리.
+1. Dates are stored as **UTC midnight** (`T00:00:00.000Z`) unless a time is explicitly set.
+2. `onChange` never fires with a `Date` — only a string or `null`.
+3. Internal arithmetic uses the [`DateAdapter`](./adapters.md) which is UTC-safe end to end.
 
-## 로컬 시간 표시
+## Displaying in local time
 
-값은 UTC. **표시**는 렌더링 문제로, 각 Root의 `displayFormat`과 `locale`이 담당합니다.
+The value is UTC. **Display** is a rendering concern — handled by `displayFormat` and `locale` on each root:
 
 ```tsx
 <DatePicker
   value={iso}
   onChange={setIso}
-  displayFormat="yyyy년 M월 d일"
-  locale="ko-KR"
+  displayFormat="MMM d, yyyy"
+  locale="en-US"
 />
 ```
 
-어댑터가 요청한 로케일로 UTC 시각을 포맷합니다.
+Under the hood, the adapter formats the UTC instant using the requested locale.
 
-## `Date`와의 변환
+## Converting to and from `Date`
 
-레거시 폼 라이브러리 등 반드시 `Date`로 연결해야 할 때는 경계에서 처리하세요.
+When you must bridge to a `Date` — for example, in a legacy form library — do it at the edge:
 
 ```ts
 // Date → ISO
 const iso = new Date(2026, 3, 15).toISOString();
-// → "2026-04-14T15:00:00.000Z"  (여전히 KST 영향!)
+// → "2026-04-14T15:00:00.000Z"  (still KST-affected!)
 
-// 안전: UTC 자정을 직접 만들기
+// Safer: construct a UTC midnight directly
 const iso = new Date(Date.UTC(2026, 3, 15)).toISOString();
 // → "2026-04-15T00:00:00.000Z"
 
@@ -74,22 +74,23 @@ const iso = new Date(Date.UTC(2026, 3, 15)).toISOString();
 const date = new Date(iso);
 ```
 
-세밀한 변환이 필요하면 `@kalyx/core`의 헬퍼를 쓰세요.
+For fine-grained conversion Kalyx exports helpers from `@kalyx/core`:
 
 ```ts
 import { normalizeISO, parseInputValue, DateFnsAdapter } from '@kalyx/react';
 
 normalizeISO('2026-04-15');           // "2026-04-15T00:00:00.000Z"
-parseInputValue('15/04/2026', 'dd/MM/yyyy', DateFnsAdapter); // → ISO 또는 null
+parseInputValue('15/04/2026', 'dd/MM/yyyy', DateFnsAdapter); // → ISO or null
 ```
 
-## 시간과 타임존
+## Times and time zones
 
-`TimePicker`와 `DateTimePicker`도 ISO 문자열을 반환합니다. 순수 `TimePicker` 값의 날짜 부분은 안정적 placeholder이므로 시간 필드만 소비하세요 (`@kalyx/core`의 `getTime(iso)`가 도와줍니다).
+`TimePicker` and `DateTimePicker` also return ISO strings. The date part of a pure `TimePicker` value is a stable placeholder — consume only the time fields (`getTime(iso)` in `@kalyx/core` helps).
 
-완전한 IANA 타임존 표시 (예: `"2026-04-15T00:00:00Z"`를 `"2026-04-15 09:00 KST"`로 렌더)는 v0.4에서 도입됩니다. 그 전에는 애플리케이션 쪽에서 표시 포맷팅을 담당하세요.
+For IANA time-zone-aware display and input — rendering `"2026-04-15T00:00:00Z"` as `"2026-04-15 09:00 KST"`, or making a calendar click emit the civil midnight of that day in the user's zone — use the `displayTimezone` prop. See the dedicated [Timezone concept page](./timezone.md).
 
-## 다음
+## Next
 
-- [어댑터 →](./adapters.md)
-- [SSR 안전 →](./ssr.md)
+- [Timezone (displayTimezone) →](./timezone.md)
+- [Adapters →](./adapters.md)
+- [SSR safety →](./ssr.md)

@@ -47,13 +47,14 @@ external_reference: engineering/api-design-reviewer (alirezarezvani/claude-skill
 />
 
 // ✅ Composition — 강제
-<DatePicker value={date} onChange={setDate}>
-  <DatePicker.Input />
-  <DatePicker.Popover>
-    <DatePicker.Calendar />
-    <DatePicker.TimePicker step={15} />
-  </DatePicker.Popover>
-</DatePicker>
+<DateTimePicker value={date} onChange={setDate}>
+  <DateTimePicker.Input />
+  <DateTimePicker.Popover>
+    <DateTimePicker.Calendar />
+    <DateTimePicker.HourList />
+    <DateTimePicker.MinuteList step={15} />
+  </DateTimePicker.Popover>
+</DateTimePicker>
 ```
 
 **Composition이 옳은 이유:**

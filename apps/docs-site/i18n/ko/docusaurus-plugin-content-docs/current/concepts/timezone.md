@@ -6,7 +6,7 @@ sidebar_position: 3
 
 # Timezone support
 
-All four pickers (`DatePicker`, `RangePicker`, `TimePicker`, `DateTimePicker`) accept a `displayTimezone` prop. When set, Kalyx interprets the user's input and the displayed value as *civil time in that IANA zone* while continuing to emit the plain UTC-ISO strings you already store.
+All seven pickers (`DatePicker`, `RangePicker`, `TimePicker`, `DateTimePicker`, `MonthPicker`, `YearPicker`, `WeekPicker`) accept a `displayTimezone` prop. When set, Kalyx interprets the user's input and the displayed value as *civil time in that IANA zone* while continuing to emit the plain UTC-ISO strings you already store.
 
 This is Kalyx's structural answer to [react-datepicker #1018](https://github.com/Hacker0x01/react-datepicker/issues/1018) — the "day off by one" bug that has haunted timezone-sensitive apps for a decade.
 

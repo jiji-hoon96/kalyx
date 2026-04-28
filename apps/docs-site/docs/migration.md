@@ -93,7 +93,7 @@ Already composition-based — the mapping is mostly renames.
 | `disabled` matcher | `DisabledRule[]` — same shape for `before`/`after`/`dayOfWeek` |
 | `classNames` | `classNames` (different keys, see [DatePicker](./components/datepicker.md)) |
 
-`react-day-picker` doesn't ship Input/TimePicker — that's the gap Kalyx fills. If you were pairing `react-day-picker` with a separate text input and a time component, you can collapse both into `<DatePicker.Input>` + `<DatePicker.TimePicker>` or move to `<DateTimePicker>`.
+`react-day-picker` doesn't ship Input/TimePicker — that's the gap Kalyx fills. If you were pairing `react-day-picker` with a separate text input and a time component, you can collapse both into `<DatePicker.Input>` for dates or move to `<DateTimePicker>` for combined date + time.
 
 ## From React Aria's `DatePicker`
 

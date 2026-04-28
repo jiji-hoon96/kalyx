@@ -111,13 +111,14 @@ Ark UI가 포기한 TimePicker 통합
 />
 
 // ✅ 이렇게 만든다 — Composition
-<DatePicker value={date} onChange={setDate}>
-  <DatePicker.Input placeholder="날짜 선택" />
-  <DatePicker.Popover>
-    <DatePicker.Calendar disabled={[{ dayOfWeek: [0] }]} />
-    <DatePicker.TimePicker step={15} />
-  </DatePicker.Popover>
-</DatePicker>
+<DateTimePicker value={date} onChange={setDate}>
+  <DateTimePicker.Input placeholder="날짜+��간 선택" />
+  <DateTimePicker.Popover>
+    <DateTimePicker.Calendar disabled={[{ dayOfWeek: [0] }]} />
+    <DateTimePicker.HourList />
+    <DateTimePicker.MinuteList step={15} />
+  </DateTimePicker.Popover>
+</DateTimePicker>
 ```
 
 ### 원칙 2: SSR 안전 (Next.js App Router 기준)
