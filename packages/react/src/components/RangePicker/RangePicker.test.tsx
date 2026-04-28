@@ -562,3 +562,25 @@ describe('RangePicker — SSR safety', () => {
     }).not.toThrow();
   });
 });
+
+describe('RangePicker.Popover — style merging', () => {
+  it('preserves Floating UI positioning when user passes a style prop', async () => {
+    const user = userEvent.setup();
+    render(
+      <RangePicker value={EMPTY} onChange={vi.fn()}>
+        <RangePicker.Input part="start" />
+        <RangePicker.Input part="end" />
+        <RangePicker.Popover style={{ padding: 77, background: 'blue' }}>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+
+    await user.click(screen.getAllByRole('combobox')[0]);
+    const dialog = screen.getByRole('dialog');
+
+    expect(dialog.style.padding).toBe('77px');
+    expect(dialog.style.background).toBe('blue');
+    expect(dialog.style.position).toBe('absolute');
+  });
+});

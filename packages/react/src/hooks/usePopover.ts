@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useFloating, autoUpdate, offset, flip, shift } from '@floating-ui/react';
 import type { Placement } from '@floating-ui/react';
 
@@ -25,14 +25,16 @@ export function usePopover({
   const floatingRef = useRef<HTMLDivElement | null>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
-  const { refs, floatingStyles } = useFloating({
+  const { refs, floatingStyles, isPositioned } = useFloating({
     open: isOpen,
     placement,
     middleware: [offset(4), flip(), shift({ padding: 8 })],
     whileElementsMounted: autoUpdate,
   });
 
-  // Wire the context's referenceRef into Floating UI
+  // Wire the context's referenceRef into Floating UI as a fallback for cases
+  // where the popover mounts before reference is updated. The ref callback in
+  // setFloatingRef below handles the common synchronous case.
   useEffect(() => {
     if (referenceRef.current) {
       refs.setReference(referenceRef.current);
@@ -92,10 +94,20 @@ export function usePopover({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, close]);
 
-  const setFloatingRef = (node: HTMLDivElement | null) => {
-    floatingRef.current = node;
-    refs.setFloating(node);
-  };
+  // Set floating + reference together when the popover mounts. The reference
+  // is already attached via Input/Trigger's ref callback by the time the
+  // popover renders, so calling setReference here means Floating UI has both
+  // elements before paint — eliminating the unpositioned first-frame flash.
+  const setFloatingRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      floatingRef.current = node;
+      refs.setFloating(node);
+      if (node && referenceRef.current) {
+        refs.setReference(referenceRef.current);
+      }
+    },
+    [refs, referenceRef],
+  );
 
-  return { floatingStyles, setFloatingRef };
+  return { floatingStyles, setFloatingRef, isPositioned };
 }

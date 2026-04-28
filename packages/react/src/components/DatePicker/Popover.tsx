@@ -10,13 +10,15 @@ export function DatePickerPopover({ children, ...props }: DatePickerPopoverProps
   const ctx = useDatePickerContext('DatePicker.Popover');
   const calendarId = `${ctx.pickerId}-calendar`;
 
-  const { floatingStyles, setFloatingRef } = usePopover({
+  const { floatingStyles, setFloatingRef, isPositioned } = usePopover({
     isOpen: ctx.isOpen,
     close: ctx.close,
     referenceRef: ctx.referenceRef,
   });
 
   if (!ctx.isOpen) return null;
+
+  const { style: userStyle, ...rest } = props;
 
   return (
     <div
@@ -25,8 +27,12 @@ export function DatePickerPopover({ children, ...props }: DatePickerPopoverProps
       role="dialog"
       aria-label={ctx.labels.popoverLabel}
       aria-modal="false"
-      style={floatingStyles}
-      {...props}
+      {...rest}
+      style={{
+        ...userStyle,
+        ...floatingStyles,
+        visibility: isPositioned ? undefined : 'hidden',
+      }}
     >
       {children}
     </div>
