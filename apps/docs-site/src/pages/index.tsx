@@ -149,7 +149,7 @@ const features: Feature[] = [
     titleDefault: 'Under 12KB',
     descId: 'home.feat.bundle.desc',
     descDefault:
-      '9.2KB gzip total — a fraction of react-datepicker’s 60KB. Tree-shakable down to what you use.',
+      "11.36KB gzip for 7 pickers — a fraction of react-datepicker’s 60KB. Tree-shakable down to what you use.",
   },
 ];
 

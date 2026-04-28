@@ -12,8 +12,7 @@ export interface DateTimePickerInputProps extends Omit<
  * DateTimePicker.Input — Displays date and time combined.
  * Example: "2026-01-15 14:30"
  *
- * In v0.3 the input is read-only (use Calendar/TimePicker to select).
- * Direct-typing parsing is planned for v0.4.
+ * The input is read-only — use Calendar/TimePicker sub-components to select values.
  */
 export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerInputProps>(
   function DateTimePickerInput({ onClick, onKeyDown, ...props }, ref) {

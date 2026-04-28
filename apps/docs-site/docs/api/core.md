@@ -193,7 +193,7 @@ formatFullDate('2026-04-15T00:00:00.000Z', 'en-US');
 
 ## Timezone utilities
 
-Introduced in v0.4. Used internally by every picker when `displayTimezone` is set; exposed publicly so you can run the same math yourself.
+Used internally by every picker when `displayTimezone` is set. Exposed publicly so you can run the same math yourself.
 
 ### `formatInTimezone(iso, formatStr, timeZone)`
 
