@@ -1,5 +1,14 @@
 # @kalyx/react
 
+## 1.0.0-rc.1
+
+### Patch Changes
+
+- 3afb15b: Fix popover styling regression that broke documentation live previews.
+  - `DatePicker.Popover` and `RangePicker.Popover` now merge user-provided `style` props _under_ Floating UI's positioning instead of being overwritten by it. Previously, passing `style={{...}}` to a Popover stripped away `position: absolute`, `top`, `left`, and `transform`, causing the popover to render as a static block at full container width.
+  - The popover is now hidden until Floating UI computes its position, eliminating an unpositioned first-frame flash on every open.
+  - The shared `usePopover` hook also wires the floating element's reference synchronously in the ref callback, so positioning is resolved before paint in most cases.
+
 ## 1.0.0-rc.0
 
 ### Major Changes
@@ -9,14 +18,12 @@
   Kalyx v1.0 declares the public API stable. This is a milestone release bundling the v0.5 surface additions (MonthPicker, YearPicker, WeekPicker, DatePicker.Presets, `onOpenChange`/`onCalendarNavigate` event callbacks) with an explicit commitment to semantic versioning going forward.
 
   ### What v1.0 commits to
-
   - **Public API surface** — exports from `@kalyx/react` and `@kalyx/core` listed in their `index.ts` files. Any breaking change requires a major bump.
   - **Compositional structure** — Root + subcomponent names (`DatePicker.Input`, `DatePicker.Calendar`, …) are stable. Removal or renaming requires a major bump.
   - **Value semantics** — ISO 8601 UTC strings for single dates, `DateRange` `{start, end}` for ranges. `displayTimezone` behavior (civil-midnight-in-tz for date selection) is stable.
   - **Accessibility contracts** — role/aria-\* attributes emitted by each component are stable.
 
   ### What v1.0 does NOT freeze
-
   - Internal implementation details (non-exported functions, component file layout).
   - CSS class name strings on elements — no classes are applied by default; only when a consumer passes them via `classNames` props.
   - Error message text.
@@ -39,9 +46,7 @@
       <DatePicker.Presets>
         <DatePicker.Preset value="today">Today</DatePicker.Preset>
         <DatePicker.Preset value="tomorrow">Tomorrow</DatePicker.Preset>
-        <DatePicker.Preset date="2026-12-25T00:00:00.000Z">
-          Christmas
-        </DatePicker.Preset>
+        <DatePicker.Preset date="2026-12-25T00:00:00.000Z">Christmas</DatePicker.Preset>
       </DatePicker.Presets>
       <DatePicker.Calendar />
     </DatePicker.Popover>
@@ -53,7 +58,6 @@
   - `displayTimezone` is honored when resolving "today"-relative presets.
 
 - 56e1ce9: feat: add `onOpenChange` and `onCalendarNavigate` callbacks on `DatePicker`, `RangePicker`, and `DateTimePicker` Root components.
-
   - `onOpenChange(isOpen: boolean)` fires whenever the popover opens or closes (regardless of trigger — click, keyboard, outside click, selection).
   - `onCalendarNavigate(viewMonth: ISODateString)` fires when the calendar view moves to a different month. The emitted value is the first day of the newly-visible month in UTC.
 
@@ -139,7 +143,6 @@
   When set, the value stored via `onChange` is the **civil midnight of the selected day in the target timezone** (in UTC-ISO form), eliminating the classic "day off by one" bug that affects picker libraries bound to `new Date()`. Input formatting, calendar highlighting, and the time-of-day controls all follow the display timezone — including DST-aware offsets for zones like `America/New_York` and `Europe/London`.
 
   `DateFnsAdapter` now honors the `timezone` argument on `format`, `isSameDay`, `startOfDay`, and `today` (previously declared-but-ignored). Core also exposes new helpers:
-
   - `civilMidnightFromUtcDay(iso, tz)`
   - `getTimeInTimezone(iso, tz)`
   - `setTimeInTimezone(iso, partial, tz)`
@@ -157,7 +160,6 @@
 ### Minor Changes
 
 - 669391b: Improve code quality, performance, and stability
-
   - Enforce UTC timezone suffix in ISO regex
   - Extract shared usePopover and useListboxNavigation hooks
   - Add Intl.DateTimeFormat caching for locale/timezone utilities
@@ -196,7 +198,6 @@
 - e9bb9e8: Initial release of Kalyx — headless, SSR-safe React DatePicker library.
 
   Features:
-
   - DatePicker: single date selection with Calendar, Input, Trigger, Popover
   - RangePicker: date range selection with auto-swap and hover preview
   - TimePicker: 12h/24h mode, minute step, HourList/MinuteList/AmPmToggle

@@ -1,5 +1,12 @@
 # @kalyx/docs
 
+## 0.0.6-rc.1
+
+### Patch Changes
+
+- Updated dependencies [3afb15b]
+  - @kalyx/react@1.0.0-rc.1
+
 ## 0.0.6-rc.0
 
 ### Patch Changes

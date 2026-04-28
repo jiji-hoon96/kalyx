@@ -12,6 +12,7 @@
     "event-callbacks",
     "fix-rangepicker-mutation",
     "month-picker",
+    "popover-style-merge",
     "v1-milestone",
     "week-picker",
     "year-picker"
