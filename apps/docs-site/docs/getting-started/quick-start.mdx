@@ -17,30 +17,28 @@ function LiveExample() {
   const [date, setDate] = React.useState(null);
   return (
     <DatePicker value={date} onChange={setDate}>
-      <DatePicker.Input
-        placeholder="YYYY-MM-DD"
-        style={{ padding: '0.5rem', border: '1px solid #ddd', borderRadius: 6 }}
-      />
-      <DatePicker.Trigger style={{ marginLeft: 4 }} />
-      <DatePicker.Popover
-        style={{
-          marginTop: 4,
-          padding: 12,
-          border: '1px solid #ddd',
-          borderRadius: 8,
-          background: 'white',
-          boxShadow: '0 4px 14px rgba(0,0,0,0.08)',
-        }}
-      >
+      <div className="kx-live-row">
+        <DatePicker.Input className="kx-live-input" placeholder="YYYY-MM-DD" />
+        <DatePicker.Trigger className="kx-live-trigger" aria-label="Open calendar" />
+      </div>
+      <DatePicker.Popover className="kx-live-popover">
         <DatePicker.Calendar
           classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
+            weekdayHeader: 'kx-live-weekday',
             day: 'live-day',
             daySelected: 'live-day-selected',
             dayToday: 'live-day-today',
+            dayDisabled: 'kx-live-disabled',
+            dayOutsideMonth: 'kx-live-outside',
           }}
         />
       </DatePicker.Popover>
-      <div style={{ marginTop: 12, fontSize: 13, color: '#555' }}>
+      <div className="kx-live-value">
         Selected: <code>{date ?? 'null'}</code>
       </div>
     </DatePicker>

@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Kalyx',
   tagline: 'The headless DatePicker, finally complete',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/kalyx-mascot.png',
 
   future: {
     v4: true,
