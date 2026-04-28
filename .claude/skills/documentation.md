@@ -243,7 +243,7 @@ function App() {
 ## [0.2.0] - 2026-05-01
 
 ### Added
-- `<DatePicker.TimePicker>` 컴포넌트 (#42)
+- `<TimePicker>` 컴포넌트 (#42)
 - `displayTimezone` prop 지원 (#38)
 - react-datepicker 마이그레이션 가이드
 
