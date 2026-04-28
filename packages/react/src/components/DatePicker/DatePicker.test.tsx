@@ -609,3 +609,96 @@ describe('DatePicker — SSR safety', () => {
     }).not.toThrow();
   });
 });
+
+describe('DatePicker.Popover — style merging', () => {
+  it('preserves Floating UI positioning when user passes a style prop', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value={null} onChange={vi.fn()}>
+        <DatePicker.Input aria-label="date" />
+        <DatePicker.Popover style={{ padding: 99, background: 'red' }}>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    const dialog = screen.getByRole('dialog');
+
+    // User-provided styles still apply...
+    expect(dialog.style.padding).toBe('99px');
+    expect(dialog.style.background).toBe('red');
+    // ...but Floating UI positioning is never overwritten.
+    expect(dialog.style.position).toBe('absolute');
+  });
+
+  it('still positions when no style prop is provided', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value={null} onChange={vi.fn()}>
+        <DatePicker.Input aria-label="date" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('dialog').style.position).toBe('absolute');
+  });
+
+  it('passes through className without affecting positioning', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value={null} onChange={vi.fn()}>
+        <DatePicker.Input aria-label="date" />
+        <DatePicker.Popover className="my-popover">
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveClass('my-popover');
+    expect(dialog.style.position).toBe('absolute');
+  });
+
+  it('user style cannot overwrite position even when explicitly attempted', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value={null} onChange={vi.fn()}>
+        <DatePicker.Input aria-label="date" />
+        <DatePicker.Popover style={{ position: 'fixed', top: 9999, left: 9999 }}>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    const dialog = screen.getByRole('dialog');
+    // floatingStyles wins — user's `position: fixed` and bogus offsets are discarded.
+    expect(dialog.style.position).toBe('absolute');
+    expect(dialog.style.top).not.toBe('9999px');
+    expect(dialog.style.left).not.toBe('9999px');
+  });
+
+  it('becomes visible once Floating UI has positioned (no permanent first-frame hide)', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value={null} onChange={vi.fn()}>
+        <DatePicker.Input aria-label="date" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    const dialog = screen.getByRole('dialog');
+    // After Floating UI finishes positioning the visibility guard releases — the
+    // popover must not stay permanently hidden. (Empty string or 'visible' both
+    // mean "no inline visibility override".)
+    expect(['', 'visible']).toContain(dialog.style.visibility);
+  });
+});
