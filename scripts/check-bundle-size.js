@@ -4,7 +4,11 @@
 import { gzipSync } from "zlib";
 import { readFileSync, statSync } from "fs";
 
-const TARGET_KB = 12;
+// Bundle target. Originally ≤12KB; raised to 13KB after the v1.0-rc audit
+// added user-facing features (IME composition handling, popover focus-out,
+// `name`/hidden-input form integration, WAI-ARIA grid coordinates, and
+// keyboard skip-disabled). Still ~3× smaller than react-datepicker (~40KB).
+const TARGET_KB = 13;
 
 const BUNDLES = [
 	{ label: "ESM", path: "packages/react/dist/index.js" },

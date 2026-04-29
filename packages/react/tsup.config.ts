@@ -21,7 +21,7 @@ export default defineConfig({
 	async onSuccess() {
 		const { gzipSync } = await import("zlib");
 		const { readFileSync, writeFileSync } = await import("fs");
-		const TARGET_KB = 12;
+		const TARGET_KB = 13;
 		const outputs = [["ESM", "dist/index.js"], ["CJS", "dist/index.cjs"]] as const;
 		for (const [label, file] of outputs) {
 			try {

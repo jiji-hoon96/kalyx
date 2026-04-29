@@ -567,7 +567,7 @@ pnpm changeset publish # npm 배포 (CI 자동)
 - **상태**: `1.0.0-rc.0` pre-mode 진입 완료 (`.changeset/pre.json`), main에 머지됨
 - **남은 작업**: npm publish 검증, GitHub Release 드래프트, docs 공지 배너, README 배지 갱신, 피드백 채널(`v1-rc` 라벨) 설정
 - **스킬 파일**: `.claude/skills/rc-announcement.md`
-- **졸업 조건**: RC 기간 2주 + `v1-rc` open 이슈 0건 + 번들 ≤12KB + axe/SSR 그린
+- **졸업 조건**: RC 기간 2주 + `v1-rc` open 이슈 0건 + 번들 ≤13KB + axe/SSR 그린
 
 ### C. 어댑터 중립 추출 (Option C — Hybrid)
 

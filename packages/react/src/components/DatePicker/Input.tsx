@@ -24,7 +24,10 @@ export interface DatePickerInputProps extends Omit<
  * on click / `ArrowDown`, and commits typed values on `Enter` / blur.
  */
 export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps>(
-  function DatePickerInput({ format: formatProp, name, onClick, onBlur, onKeyDown, ...props }, ref) {
+  function DatePickerInput(
+    { format: formatProp, name, onClick, onBlur, onKeyDown, ...props },
+    ref,
+  ) {
     const ctx = useDatePickerContext('DatePicker.Input');
     const displayFormat = formatProp ?? ctx.displayFormat;
 
@@ -56,43 +59,48 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
       [ctx, onClick],
     );
 
+    // Single commit path used by blur / change / compositionend / Enter.
+    // Returns true when a value was committed (parsed or null).
+    const commitText = useCallback(
+      (text: string): boolean => {
+        if (!text) {
+          ctx.selectDate(null);
+          setInputText(null);
+          return true;
+        }
+        const parsed = parseInputValue(text, ctx.adapter);
+        if (parsed) {
+          ctx.selectDate(parsed);
+          setInputText(null);
+          return true;
+        }
+        return false;
+      },
+      [ctx],
+    );
+
     const handleBlur = useCallback(
       (e: React.FocusEvent<HTMLInputElement>) => {
         if (inputText !== null) {
-          const parsed = parseInputValue(inputText, ctx.adapter);
-          if (parsed) {
-            ctx.selectDate(parsed);
-          }
+          commitText(inputText);
           setInputText(null);
         }
         onBlur?.(e);
       },
-      [inputText, displayFormat, ctx, onBlur],
+      [inputText, commitText, onBlur],
     );
 
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         const text = e.target.value;
         setInputText(text);
-
         // Don't try to parse partial IME composition output (e.g. "ㅇ" before
         // the full Korean syllable is committed). The compositionend handler
         // will parse the final committed value.
         if (isComposingRef.current) return;
-
-        if (!text) {
-          ctx.selectDate(null);
-          setInputText(null);
-          return;
-        }
-
-        const parsed = parseInputValue(text, ctx.adapter);
-        if (parsed) {
-          ctx.selectDate(parsed);
-          setInputText(null);
-        }
+        commitText(text);
       },
-      [displayFormat, ctx],
+      [commitText],
     );
 
     const handleCompositionStart = useCallback(() => {
@@ -102,16 +110,9 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
     const handleCompositionEnd = useCallback(
       (e: React.CompositionEvent<HTMLInputElement>) => {
         isComposingRef.current = false;
-        // Re-parse with the final committed text once composition ends.
-        const text = (e.target as HTMLInputElement).value;
-        if (!text) return;
-        const parsed = parseInputValue(text, ctx.adapter);
-        if (parsed) {
-          ctx.selectDate(parsed);
-          setInputText(null);
-        }
+        commitText((e.target as HTMLInputElement).value);
       },
-      [ctx],
+      [commitText],
     );
 
     const handleKeyDown = useCallback(
@@ -122,15 +123,14 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
           // Block form submission while the calendar is open. Otherwise an Enter
           // intended to commit a typed date (or simply navigate inside the popover)
           // bubbles up and submits the surrounding <form>, which surprised users.
-          if (ctx.isOpen) {
-            e.preventDefault();
-          }
+          if (ctx.isOpen) e.preventDefault();
           if (inputText !== null) {
-            const parsed = parseInputValue(inputText, ctx.adapter);
-            if (parsed) {
-              ctx.selectDate(parsed);
-              setInputText(null);
-            }
+            commitText(inputText);
+          } else if (ctx.isOpen) {
+            // No typed text but the popover is open — commit the calendar's
+            // currently focused day so Enter "just works" even when focus
+            // never made it from the input to the day button (notably WebKit).
+            ctx.selectDate(ctx.focusedDate);
           }
         } else if (e.key === 'ArrowDown' && !ctx.isOpen) {
           e.preventDefault();
@@ -138,7 +138,7 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
         }
         onKeyDown?.(e);
       },
-      [ctx, inputText, displayFormat, onKeyDown],
+      [ctx, inputText, commitText, onKeyDown],
     );
 
     const calendarId = `${ctx.pickerId}-calendar`;
