@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 
 const NAV_ITEMS = [
 	{ href: '/', label: 'Home' },
+	{ href: '/playground', label: 'Playground' },
 	{ href: '/datepicker', label: 'DatePicker' },
 	{ href: '/rangepicker', label: 'RangePicker' },
 	{ href: '/timepicker', label: 'TimePicker' },
