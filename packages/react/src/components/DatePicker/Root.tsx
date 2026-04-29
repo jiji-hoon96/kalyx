@@ -99,12 +99,15 @@ export function DatePickerRoot({
 
   const [isOpen, setIsOpen] = useState(false);
 
+  // Lazy initializers: today() is only computed once per mount instead of on every
+  // render. Avoids redundant Date allocations and makes the SSR/hydration contract
+  // explicit — neither server nor client re-evaluates the fallback after first render.
   const [viewMonth, setViewMonth] = useState<ISODateString>(
-    currentValue ?? adapter.today(displayTimezone),
+    () => currentValue ?? adapter.today(displayTimezone),
   );
 
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
-    currentValue ?? adapter.today(displayTimezone),
+    () => currentValue ?? adapter.today(displayTimezone),
   );
 
   useChangeEffect(isOpen, onOpenChange);

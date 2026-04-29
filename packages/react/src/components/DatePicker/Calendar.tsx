@@ -165,6 +165,28 @@ export function DatePickerCalendar({
 
       if (newFocused) {
         e.preventDefault();
+
+        // WAI-ARIA grid pattern: disabled cells should be skipped during keyboard
+        // navigation. Keep stepping in the original direction until we land on an
+        // enabled day, capped at 42 attempts (one full grid) to avoid infinite loops
+        // when every day in range is disabled.
+        const skipStep =
+          e.key === 'ArrowLeft' ||
+          e.key === 'ArrowUp' ||
+          e.key === 'PageUp' ||
+          e.key === 'Home'
+            ? -1
+            : 1;
+        let attempts = 0;
+        while (isDateDisabled(newFocused, disabled, adapter) && attempts < 42) {
+          newFocused = adapter.addDays(newFocused, skipStep);
+          attempts++;
+        }
+        if (attempts >= 42) {
+          // No reachable enabled date in this direction — leave focus where it was.
+          return;
+        }
+
         ctx.setFocusedDate(newFocused);
 
         // Update the view when focus moves outside the current view month

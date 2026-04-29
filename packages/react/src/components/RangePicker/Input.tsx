@@ -45,6 +45,9 @@ export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputPro
       (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Escape') {
           ctx.close();
+        } else if (e.key === 'Enter' && ctx.isOpen) {
+          // Don't submit the surrounding form when the calendar is open.
+          e.preventDefault();
         } else if (e.key === 'ArrowDown' && !ctx.isOpen) {
           e.preventDefault();
           ctx.open();

@@ -104,12 +104,13 @@ export function RangePickerRoot({
 
   const [hoverDate, setHoverDate] = useState<ISODateString | null>(null);
 
+  // Lazy initializers — see DatePicker/Root.tsx for the SSR/hydration rationale.
   const [viewMonth, setViewMonth] = useState<ISODateString>(
-    currentValue.start ?? adapter.today(displayTimezone),
+    () => currentValue.start ?? adapter.today(displayTimezone),
   );
 
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
-    currentValue.start ?? adapter.today(displayTimezone),
+    () => currentValue.start ?? adapter.today(displayTimezone),
   );
 
   useChangeEffect(isOpen, onOpenChange);

@@ -1,4 +1,7 @@
 // @kalyx/react — public API entry point
+// The published bundle is prefixed with `"use client";` (injected by tsup at build
+// time, see tsup.config.ts) so React Server Component hosts (Next.js App Router etc.)
+// treat it as a client boundary without consumers wrapping each import.
 
 export { DatePicker } from './components/DatePicker/index.js';
 export { RangePicker } from './components/RangePicker/index.js';

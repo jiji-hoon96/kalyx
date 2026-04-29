@@ -79,6 +79,12 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
         if (e.key === 'Escape') {
           ctx.close();
         } else if (e.key === 'Enter') {
+          // Block form submission while the calendar is open. Otherwise an Enter
+          // intended to commit a typed date (or simply navigate inside the popover)
+          // bubbles up and submits the surrounding <form>, which surprised users.
+          if (ctx.isOpen) {
+            e.preventDefault();
+          }
           if (inputText !== null) {
             const parsed = parseInputValue(inputText, ctx.adapter);
             if (parsed) {
