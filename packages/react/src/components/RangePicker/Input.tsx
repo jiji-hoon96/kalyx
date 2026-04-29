@@ -16,7 +16,10 @@ export interface RangePickerInputProps extends Omit<
 
 /**
  * RangePicker.Input — Separate input for start/end dates.
- * Use one with `part="start"` and another with `part="end"`.
+ *
+ * Use one with `part="start"` and another with `part="end"`. Currently `readOnly`
+ * because keyboard parsing of two inputs into a single range is ambiguous; users
+ * select via the calendar.
  */
 export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputProps>(
   function RangePickerInput({ part, format: formatProp, onClick, onKeyDown, ...props }, ref) {
@@ -86,3 +89,5 @@ export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputPro
     );
   },
 );
+
+RangePickerInput.displayName = 'RangePicker.Input';

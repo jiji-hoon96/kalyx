@@ -23,7 +23,7 @@ src/
 │   ├── locale.ts         ← Intl 기반 다국어 월/요일명 (EN, KO, JA 등)
 │   ├── timezone.ts       ← DST-aware timezone 유틸 (8개 함수)
 │   └── labels.ts         ← 접근성 ARIA 라벨 기본값
-├── __tests__/            ← 단위 테스트 (1,000+)
+├── __tests__/            ← 단위 테스트 (코어 ~140 케이스, 워크스페이스 전체 374)
 └── index.ts              ← 공개 API
 ```
 

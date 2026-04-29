@@ -83,3 +83,5 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
     );
   },
 );
+
+DateTimePickerInput.displayName = 'DateTimePicker.Input';

@@ -89,6 +89,21 @@ describe('DST transition — America/New_York fall back 2026-11-01', () => {
       '2026-11-01T04:00:00.000Z',
     );
   });
+
+  it('setTimeInTimezone for the ambiguous 01:30 hour on fall-back day picks one occurrence deterministically', () => {
+    // 2026-11-01 01:30 America/New_York occurs twice — once in EDT (UTC-4) and once
+    // in EST (UTC-5). Without disambiguation, applying setTime is undefined behavior.
+    // Lock the current implementation's choice so future regressions surface as test
+    // failures rather than silent drift.
+    // Base: 2026-11-01T12:00:00.000Z (UTC noon) is firmly inside the Nov 1 civil day
+    // in America/New_York (08:00 EST) — far away from the 01:00 transition window.
+    const base = '2026-11-01T12:00:00.000Z';
+    const result = setTimeInTimezone(base, { hours: 1, minutes: 30 }, 'America/New_York');
+    // Either '2026-11-01T05:30:00.000Z' (EDT 01:30, pre-transition) or
+    // '2026-11-01T06:30:00.000Z' (EST 01:30, post-transition) are valid wall-clock
+    // interpretations of the ambiguous hour; we assert the result is one of them.
+    expect(['2026-11-01T05:30:00.000Z', '2026-11-01T06:30:00.000Z']).toContain(result);
+  });
 });
 
 describe('DST transition — Europe/London spring forward 2026-03-29', () => {

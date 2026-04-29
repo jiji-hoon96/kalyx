@@ -222,7 +222,7 @@ kalyx/
 │   │       │   ├── locale.ts        ← Intl 기반 다국어 월/요일명
 │   │       │   ├── timezone.ts      ← DST-aware timezone 유틸
 │   │       │   └── labels.ts        ← 접근성 ARIA 라벨 기본값
-│   │       ├── __tests__/           ← 단위 테스트 (1,000+)
+│   │       ├── __tests__/           ← 단위 테스트 (~140 케이스, 374 전체 vitest)
 │   │       └── index.ts             ← 공개 API
 │   └── react/                        ← React 컴포넌트 레이어
 │       ├── CLAUDE.md                 ← 패키지별 컨텍스트

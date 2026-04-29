@@ -151,6 +151,24 @@ describe('DateFnsAdapter', () => {
     it('gives February 2026 28 days', () => {
       expect(adapter.getDate(adapter.endOfMonth('2026-02-01T00:00:00.000Z'))).toBe(28);
     });
+
+    it('addYears(2024-02-29, +1) clamps to 2025-02-28', () => {
+      // Common pitfall: 2025 is not a leap year, so February only has 28 days.
+      // Two consumers expect different behavior — date-fns rolls back to the 28th
+      // (does NOT spill into March 1). Lock that behavior with a regression test.
+      const result = adapter.addYears('2024-02-29T00:00:00.000Z', 1);
+      expect(adapter.format(result, 'yyyy-MM-dd')).toBe('2025-02-28');
+    });
+
+    it('addYears(2024-02-29, -1) clamps to 2023-02-28', () => {
+      const result = adapter.addYears('2024-02-29T00:00:00.000Z', -1);
+      expect(adapter.format(result, 'yyyy-MM-dd')).toBe('2023-02-28');
+    });
+
+    it('addYears(2024-02-29, +4) lands back on 2028-02-29', () => {
+      const result = adapter.addYears('2024-02-29T00:00:00.000Z', 4);
+      expect(adapter.format(result, 'yyyy-MM-dd')).toBe('2028-02-29');
+    });
   });
 
   describe('timezone parameter (displayTimezone)', () => {

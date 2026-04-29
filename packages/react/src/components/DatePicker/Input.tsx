@@ -17,6 +17,12 @@ export interface DatePickerInputProps extends Omit<
   name?: string;
 }
 
+/**
+ * DatePicker.Input — Combobox-style text input wired to the DatePicker context.
+ *
+ * Accepts free-form date typing (parsed via the active adapter), opens the popover
+ * on click / `ArrowDown`, and commits typed values on `Enter` / blur.
+ */
 export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps>(
   function DatePickerInput({ format: formatProp, name, onClick, onBlur, onKeyDown, ...props }, ref) {
     const ctx = useDatePickerContext('DatePicker.Input');
@@ -172,3 +178,5 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
     );
   },
 );
+
+DatePickerInput.displayName = 'DatePicker.Input';
