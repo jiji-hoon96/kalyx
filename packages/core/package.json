@@ -54,5 +54,12 @@
 	"dependencies": {
 		"date-fns": "^4.0.0",
 		"date-fns-tz": "^3.0.0"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
 	}
 }

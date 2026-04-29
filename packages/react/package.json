@@ -1,7 +1,7 @@
 {
 	"name": "@kalyx/react",
 	"version": "1.0.0-rc.1",
-	"description": "Headless, SSR-safe React DatePicker / RangePicker / TimePicker / DateTimePicker — ISO 8601 UTC strings, IANA timezone support, under 10 KB gzipped",
+	"description": "Headless, SSR-safe React DatePicker / RangePicker / TimePicker / DateTimePicker — ISO 8601 UTC strings, IANA timezone support, ≤12 KB gzipped",
 	"license": "MIT",
 	"author": "jiji-hoon96",
 	"homepage": "https://github.com/jiji-hoon96/kalyx#readme",
@@ -68,8 +68,19 @@
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"
 	},
+	"peerDependenciesMeta": {
+		"react": { "optional": false },
+		"react-dom": { "optional": false }
+	},
 	"devDependencies": {
 		"@types/react": "^19.0.0",
 		"@types/react-dom": "^19.0.0"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
 	}
 }

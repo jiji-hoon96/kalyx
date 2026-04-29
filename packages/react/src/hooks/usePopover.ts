@@ -94,6 +94,35 @@ export function usePopover({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, close]);
 
+  // Focus-out: when the user tabs out of the popover (and out of the reference
+  // element), close the popover. This isn't a focus *trap* — keyboard users can
+  // still leave with Tab — but it follows the Radix/Ark pattern of closing the
+  // overlay when focus leaves so it doesn't dangle while the user is elsewhere.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function handleFocusOut(e: FocusEvent) {
+      // `relatedTarget` is the element receiving focus. If it's null (focus left
+      // the document), or if it's outside both the floating layer and reference,
+      // close.
+      const next = e.relatedTarget as Node | null;
+      const floating = floatingRef.current;
+      const reference = referenceRef.current;
+      if (!next) return; // focus moved to body — leave popover alone
+      const insideFloating = floating?.contains(next) ?? false;
+      const insideReference = reference?.contains(next) ?? false;
+      if (!insideFloating && !insideReference) {
+        close();
+      }
+    }
+
+    // `focusout` bubbles, so attach to the floating root once it's mounted.
+    const node = floatingRef.current;
+    if (!node) return;
+    node.addEventListener('focusout', handleFocusOut);
+    return () => node.removeEventListener('focusout', handleFocusOut);
+  }, [isOpen, close, referenceRef]);
+
   // Set floating + reference together when the popover mounts. The reference
   // is already attached via Input/Trigger's ref callback by the time the
   // popover renders, so calling setReference here means Floating UI has both
