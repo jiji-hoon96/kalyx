@@ -53,7 +53,7 @@ bundlephobia 기준 (2026년 4월). 각주는 표 아래를 참조.
 | react-datepicker | 9.1 | 44 KB | ❌ (CSS 필수) | ✅ | ⚠️ prop | ⚠️ 결합형 | ✅ 분리형 | `Date` | ⚠️ |
 | Ark UI | 5.36 | 265 KB² | ✅ | ✅ | ❌ (제거됨) | ❌ | ✅ | `Date` | ⚠️ |
 | React Aria | 1.17 | 247 KB² | ✅ | ✅ | ✅ | ✅ | ✅ | `CalendarDate` | ✅ |
-| **Kalyx** | 1.0.0-rc.0 | **11.36 KB** | ✅ | ✅ | ✅ 전용 | ✅ 전용 | ✅ 전용 | ISO 8601 UTC | ✅ `displayTimezone` |
+| **Kalyx** | 1.0.0-rc.1 | **11.57 KB** | ✅ | ✅ | ✅ 전용 | ✅ 전용 | ✅ 전용 | ISO 8601 UTC | ✅ `displayTimezone` |
 
 1. react-day-picker는 캘린더 그리드만 제공 — Kalyx와 동일한 스콥을 맞추려면 Input·Popover·TimePicker를 직접 조합해야 함. 2.4 KB는 기본 엔트리 기준.
 2. `@ark-ui/react`와 `react-aria-components`는 40+ 컴포넌트를 포함한 모노리스 패키지 — 트리셰이킹 시 더 작아지지만 `@internationalized/date` 등 생태계를 통째로 끌어들임.
@@ -107,6 +107,53 @@ export function BookingField() {
 
 [빠른 시작 가이드 →](https://kalyx-docs.vercel.app/ko/docs/getting-started/quick-start)
 
+## Tailwind CSS로 스타일링
+
+Kalyx는 headless입니다 — `classNames`와 `data-*` 속성으로 직접 스타일을 입힙니다.
+
+### classNames 사용
+
+```tsx
+<DatePicker value={date} onChange={setDate}>
+  <DatePicker.Input
+    className="w-64 rounded-lg border border-gray-300 px-3 py-2 text-sm
+               focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+    placeholder="날짜 선택"
+  />
+  <DatePicker.Popover className="mt-1 rounded-xl border bg-white p-4 shadow-lg">
+    <DatePicker.Calendar
+      classNames={{
+        header: "flex items-center justify-between mb-2",
+        title: "text-sm font-semibold",
+        navButton: "p-1 rounded hover:bg-gray-100",
+        grid: "w-full border-collapse",
+        weekdayHeader: "text-xs font-medium text-gray-500 pb-2",
+        day: "h-9 w-9 rounded-lg text-sm hover:bg-gray-100",
+        daySelected: "bg-blue-600 text-white hover:bg-blue-700",
+        dayToday: "font-bold text-blue-600",
+        dayDisabled: "text-gray-300 cursor-not-allowed",
+        dayOutsideMonth: "text-gray-300",
+      }}
+    />
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+### data 속성 활용
+
+모든 상호작용 상태는 `data-*` 속성으로 노출되어 CSS나 Tailwind arbitrary selector로 다룰 수 있습니다:
+
+```css
+[data-selected] { @apply bg-blue-600 text-white; }
+[data-today] { @apply font-bold ring-1 ring-blue-400; }
+[data-disabled] { @apply opacity-30 cursor-not-allowed; }
+[data-in-range] { @apply bg-blue-100; }
+[data-range-start] { @apply rounded-l-lg bg-blue-600 text-white; }
+[data-range-end] { @apply rounded-r-lg bg-blue-600 text-white; }
+```
+
+더 많은 레시피: [Tailwind](https://kalyx-docs.vercel.app/ko/docs/recipes/tailwind) · [shadcn/ui](https://kalyx-docs.vercel.app/ko/docs/recipes/shadcn) · [React Hook Form](https://kalyx-docs.vercel.app/ko/docs/recipes/react-hook-form)
+
 ## 컴포넌트
 
 ```tsx
@@ -158,7 +205,7 @@ import { useDatePicker, useRangePicker, useTimePicker } from '@kalyx/react';
 ## 번들 크기
 
 ```
-@kalyx/react  →  gzip 11.36 KB  (v1.0.0-rc.0, 7개 컴포넌트)
+@kalyx/react  →  gzip 11.57 KB  (v1.0.0-rc.1, 7개 컴포넌트, "use client" 자동 주입)
 ```
 
 CI에서 `< 12 KB`로 강제. `@kalyx/core`에 `sideEffects: false`가 설정돼 있어 임포트 단위 트리셰이킹이 작동합니다 — `TimePicker`만 쓰면 DatePicker 코드가 사라집니다.

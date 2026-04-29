@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useState } from 'react';
+import { forwardRef, useCallback, useRef, useState } from 'react';
 import type { InputHTMLAttributes } from 'react';
 import { parseInputValue } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
@@ -9,15 +9,25 @@ export interface DatePickerInputProps extends Omit<
 > {
   /** Date display format (defaults to parent's displayFormat) */
   format?: string;
+  /**
+   * Form field name. When set, a hidden `<input type="hidden" name={name} value={ISO}>`
+   * is rendered alongside the visible input so the value participates in native form
+   * submission (and integrates with `react-hook-form` Controller-less flows).
+   */
+  name?: string;
 }
 
 export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps>(
-  function DatePickerInput({ format: formatProp, onClick, onBlur, onKeyDown, ...props }, ref) {
+  function DatePickerInput({ format: formatProp, name, onClick, onBlur, onKeyDown, ...props }, ref) {
     const ctx = useDatePickerContext('DatePicker.Input');
     const displayFormat = formatProp ?? ctx.displayFormat;
 
     // Text currently being edited (edit mode)
     const [inputText, setInputText] = useState<string | null>(null);
+    // IME (composition) state — non-Latin scripts like Korean/Japanese/Chinese fire
+    // change events for in-progress composition characters. Parsing those mid-stream
+    // throws away the user's input. Defer parsing until composition completes.
+    const isComposingRef = useRef(false);
 
     let formattedValue = '';
     if (ctx.value) {
@@ -59,6 +69,11 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
         const text = e.target.value;
         setInputText(text);
 
+        // Don't try to parse partial IME composition output (e.g. "ㅇ" before
+        // the full Korean syllable is committed). The compositionend handler
+        // will parse the final committed value.
+        if (isComposingRef.current) return;
+
         if (!text) {
           ctx.selectDate(null);
           setInputText(null);
@@ -72,6 +87,25 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
         }
       },
       [displayFormat, ctx],
+    );
+
+    const handleCompositionStart = useCallback(() => {
+      isComposingRef.current = true;
+    }, []);
+
+    const handleCompositionEnd = useCallback(
+      (e: React.CompositionEvent<HTMLInputElement>) => {
+        isComposingRef.current = false;
+        // Re-parse with the final committed text once composition ends.
+        const text = (e.target as HTMLInputElement).value;
+        if (!text) return;
+        const parsed = parseInputValue(text, ctx.adapter);
+        if (parsed) {
+          ctx.selectDate(parsed);
+          setInputText(null);
+        }
+      },
+      [ctx],
     );
 
     const handleKeyDown = useCallback(
@@ -104,30 +138,37 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
     const calendarId = `${ctx.pickerId}-calendar`;
 
     return (
-      <input
-        ref={(node) => {
-          // Register as Floating UI reference
-          ctx.referenceRef.current = node;
-          // Forward the ref
-          if (typeof ref === 'function') ref(node);
-          else if (ref) ref.current = node;
-        }}
-        type="text"
-        role="combobox"
-        aria-expanded={ctx.isOpen}
-        aria-haspopup="dialog"
-        aria-controls={ctx.isOpen ? calendarId : undefined}
-        aria-autocomplete="none"
-        autoComplete="off"
-        value={displayValue}
-        disabled={ctx.isDisabled || props.disabled}
-        readOnly={ctx.isReadOnly}
-        onChange={handleChange}
-        onClick={handleClick}
-        onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
-        {...props}
-      />
+      <>
+        <input
+          ref={(node) => {
+            // Register as Floating UI reference
+            ctx.referenceRef.current = node;
+            // Forward the ref
+            if (typeof ref === 'function') ref(node);
+            else if (ref) ref.current = node;
+          }}
+          type="text"
+          role="combobox"
+          aria-expanded={ctx.isOpen}
+          aria-haspopup="dialog"
+          aria-controls={ctx.isOpen ? calendarId : undefined}
+          aria-autocomplete="none"
+          autoComplete="off"
+          value={displayValue}
+          disabled={ctx.isDisabled || props.disabled}
+          readOnly={ctx.isReadOnly}
+          onChange={handleChange}
+          onClick={handleClick}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          onCompositionStart={handleCompositionStart}
+          onCompositionEnd={handleCompositionEnd}
+          {...props}
+        />
+        {/* Hidden field for native form submission. Skipped when no `name` is set
+            so we don't leak an empty field into the form data unintentionally. */}
+        {name ? <input type="hidden" name={name} value={ctx.value ?? ''} /> : null}
+      </>
     );
   },
 );

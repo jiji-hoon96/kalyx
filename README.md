@@ -49,7 +49,7 @@ Numbers come from bundlephobia (April 2026). See [notes below the table](#footno
 
 | | Kalyx | react-datepicker | react-day-picker | Ark UI | React Aria |
 |---|---|---|---|---|---|
-| Version measured | 1.0.0-rc.0 | 9.1.0 | 9.14.0 | 5.36.1 | 1.17.0 |
+| Version measured | 1.0.0-rc.1 | 9.1.0 | 9.14.0 | 5.36.1 | 1.17.0 |
 | Bundle (min+gzip) | **11.36 KB** | 44 KB | 2.4 KB¹ | 265 KB² | 247 KB² |
 | DatePicker | ✅ | ✅ | ✅ | ✅ | ✅ |
 | RangePicker | ✅ dedicated | ✅ two-picker pattern | ✅ `mode="range"` | ✅ | ✅ |
@@ -217,7 +217,7 @@ Full documentation is at **[kalyx-docs.vercel.app](https://kalyx-docs.vercel.app
 ## Bundle size
 
 ```
-@kalyx/react  →  11.36 KB gzip  (v1.0.0-rc.0, 7 components)
+@kalyx/react  →  11.57 KB gzip  (v1.0.0-rc.1, 7 components, "use client" injected)
 ```
 
 Enforced in CI at `< 12 KB`. Tree-shakable per import — `@kalyx/core` is published with `sideEffects: false`, so using only `TimePicker` drops the DatePicker code.
