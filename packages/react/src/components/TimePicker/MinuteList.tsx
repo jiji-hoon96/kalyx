@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { HTMLAttributes } from 'react';
 import { generateMinutes } from '@kalyx/core';
 import { useTimePickerContext } from '../../context/TimePickerContext.js';
@@ -25,7 +25,9 @@ export function TimePickerMinuteList({ classNames, ...props }: TimePickerMinuteL
   const ctx = useTimePickerContext('TimePicker.MinuteList');
   const { step, currentTime, isDisabled, isReadOnly } = ctx;
 
-  const minutes = generateMinutes(step);
+  // Stable across renders unless `step` changes — useListboxNavigation
+  // identity-compares its `items` array internally.
+  const minutes = useMemo(() => generateMinutes(step), [step]);
 
   const handleSelect = useCallback(
     (minute: number) => {

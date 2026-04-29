@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { HTMLAttributes } from 'react';
 import { generateHours, to12Hour, to24Hour } from '@kalyx/core';
 import { useTimePickerContext } from '../../context/TimePickerContext.js';
@@ -28,7 +28,9 @@ export function TimePickerHourList({ classNames, ...props }: TimePickerHourListP
   const ctx = useTimePickerContext('TimePicker.HourList');
   const { format, currentTime, isDisabled, isReadOnly } = ctx;
 
-  const hours = generateHours(format);
+  // Stable across renders unless `format` changes — useListboxNavigation
+  // identity-compares its `items` array internally.
+  const hours = useMemo(() => generateHours(format), [format]);
 
   const selectedHourDisplay =
     format === '12h' ? to12Hour(currentTime.hours).hours12 : currentTime.hours;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { HTMLAttributes } from 'react';
 import {
   getCalendarDays,
@@ -64,17 +64,23 @@ export function DatePickerCalendar({
   const [announcement, setAnnouncement] = useState('');
 
   const { adapter, viewMonth, focusedDate, weekStartsOn, disabled, locale, displayTimezone } = ctx;
-  const weekdays = getWeekdayNames(locale, weekStartsOn);
+  // Memoized — weekday header tuples only change when locale or week start changes.
+  const weekdays = useMemo(() => getWeekdayNames(locale, weekStartsOn), [locale, weekStartsOn]);
 
   // Recompute cell flags with a timezone-aware today/selected matcher when displayTimezone is set.
   // The grid iteration stays in UTC — only the `isSelected` / `isToday` highlighting shifts.
-  const weeks = getCalendarDays(viewMonth, adapter, {
-    weekStartsOn,
-    selected: ctx.value,
-    focusedDate,
-    disabled,
-    timezone: displayTimezone,
-  });
+  // Memoized so the 42-cell grid isn't rebuilt on unrelated re-renders (parent state, etc.).
+  const weeks = useMemo(
+    () =>
+      getCalendarDays(viewMonth, adapter, {
+        weekStartsOn,
+        selected: ctx.value,
+        focusedDate,
+        disabled,
+        timezone: displayTimezone,
+      }),
+    [viewMonth, adapter, weekStartsOn, ctx.value, focusedDate, disabled, displayTimezone],
+  );
 
   const year = adapter.getYear(viewMonth);
   const month = adapter.getMonth(viewMonth);
