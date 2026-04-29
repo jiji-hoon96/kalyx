@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { HTMLAttributes } from 'react';
 import {
   getCalendarDays,
@@ -85,16 +85,21 @@ export function RangePickerCalendar({
   } = ctx;
 
   const { locale } = ctx;
-  const weekdays = getWeekdayNames(locale, weekStartsOn);
+  // Memoized — see DatePicker/Calendar.tsx for the rationale.
+  const weekdays = useMemo(() => getWeekdayNames(locale, weekStartsOn), [locale, weekStartsOn]);
 
-  const weeks = getCalendarDays(viewMonth, adapter, {
-    weekStartsOn,
-    focusedDate,
-    disabled,
-    range: value,
-    rangeHover: hoverDate,
-    timezone: displayTimezone,
-  });
+  const weeks = useMemo(
+    () =>
+      getCalendarDays(viewMonth, adapter, {
+        weekStartsOn,
+        focusedDate,
+        disabled,
+        range: value,
+        rangeHover: hoverDate,
+        timezone: displayTimezone,
+      }),
+    [viewMonth, adapter, weekStartsOn, focusedDate, disabled, value, hoverDate, displayTimezone],
+  );
 
   const year = adapter.getYear(viewMonth);
   const month = adapter.getMonth(viewMonth);

@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useFloating, autoUpdate, offset, flip, shift } from '@floating-ui/react';
-import type { Placement } from '@floating-ui/react';
+import type { Middleware, Placement } from '@floating-ui/react';
+
+// Hoisted to module scope so it isn't reallocated on every render. Floating UI
+// shallow-compares the middleware array, so a fresh array each render forced
+// useless reposition cycles.
+const POPOVER_MIDDLEWARE: Middleware[] = [offset(4), flip(), shift({ padding: 8 })];
 
 export interface UsePopoverOptions {
   isOpen: boolean;
@@ -28,7 +33,7 @@ export function usePopover({
   const { refs, floatingStyles, isPositioned } = useFloating({
     open: isOpen,
     placement,
-    middleware: [offset(4), flip(), shift({ padding: 8 })],
+    middleware: POPOVER_MIDDLEWARE,
     whileElementsMounted: autoUpdate,
   });
 
