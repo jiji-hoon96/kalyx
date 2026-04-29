@@ -243,17 +243,20 @@ export function DatePickerCalendar({
         ref={gridRef}
         role="grid"
         aria-label={title}
+        aria-rowcount={weeks.length + 1}
+        aria-colcount={7}
         className={classNames?.grid}
         onKeyDown={handleKeyDown}
       >
         <thead>
-          <tr role="row">
-            {weekdays.map((day) => (
+          <tr role="row" aria-rowindex={1}>
+            {weekdays.map((day, colIndex) => (
               <th
                 key={day.short}
                 role="columnheader"
                 abbr={day.full}
                 scope="col"
+                aria-colindex={colIndex + 1}
                 className={classNames?.weekdayHeader}
               >
                 {day.short}
@@ -263,8 +266,13 @@ export function DatePickerCalendar({
         </thead>
         <tbody>
           {weeks.map((week, weekIndex) => (
-            <tr key={weekIndex} role="row" className={classNames?.gridRow}>
-              {week.map((day) => {
+            <tr
+              key={weekIndex}
+              role="row"
+              aria-rowindex={weekIndex + 2}
+              className={classNames?.gridRow}
+            >
+              {week.map((day, colIndex) => {
                 const dayClasses =
                   [
                     classNames?.day,
@@ -280,6 +288,7 @@ export function DatePickerCalendar({
                   <td
                     key={day.isoString}
                     role="gridcell"
+                    aria-colindex={colIndex + 1}
                     aria-selected={day.isSelected || undefined}
                     aria-disabled={day.isDisabled || undefined}
                     aria-current={day.isToday ? 'date' : undefined}

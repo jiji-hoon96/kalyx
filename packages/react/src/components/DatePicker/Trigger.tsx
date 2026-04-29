@@ -9,6 +9,13 @@ export interface DatePickerTriggerProps extends Omit<
   children?: ReactNode;
 }
 
+/**
+ * DatePicker.Trigger — Calendar icon button. Toggles the popover on click and
+ * announces its state via `aria-expanded` / `aria-haspopup="dialog"`.
+ *
+ * If you render a `DatePicker.Input`, the input acts as the popover reference;
+ * Trigger is purely auxiliary. Without an Input, Trigger becomes the reference.
+ */
 export const DatePickerTrigger = forwardRef<HTMLButtonElement, DatePickerTriggerProps>(
   function DatePickerTrigger({ onClick, children, ...props }, ref) {
     const ctx = useDatePickerContext('DatePicker.Trigger');
@@ -64,3 +71,5 @@ export const DatePickerTrigger = forwardRef<HTMLButtonElement, DatePickerTrigger
     );
   },
 );
+
+DatePickerTrigger.displayName = 'DatePicker.Trigger';

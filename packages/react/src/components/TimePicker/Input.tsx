@@ -70,3 +70,5 @@ export const TimePickerInput = forwardRef<HTMLInputElement, TimePickerInputProps
     );
   },
 );
+
+TimePickerInput.displayName = 'TimePicker.Input';
