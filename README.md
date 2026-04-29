@@ -10,7 +10,7 @@
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
 [![RC](https://img.shields.io/npm/v/@kalyx/react/next?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
-[![Bundle](https://img.shields.io/badge/gzip-11.36KB-brightgreen)](#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-12.07KB-brightgreen)](#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -21,7 +21,7 @@
 
 > 한국어 README: [README.ko.md](./README.ko.md)
 
-Kalyx is a headless React DatePicker library that ships **complete**. One composable API covers single dates, date ranges, time, and date-time — under 12 KB gzipped, zero CSS, SSR-safe.
+Kalyx is a headless React DatePicker library that ships **complete**. One composable API covers single dates, date ranges, time, and date-time — under 13 KB gzipped, zero CSS, SSR-safe.
 
 ```bash
 pnpm add @kalyx/react
@@ -50,7 +50,7 @@ Numbers come from bundlephobia (April 2026). See [notes below the table](#footno
 | | Kalyx | react-datepicker | react-day-picker | Ark UI | React Aria |
 |---|---|---|---|---|---|
 | Version measured | 1.0.0-rc.1 | 9.1.0 | 9.14.0 | 5.36.1 | 1.17.0 |
-| Bundle (min+gzip) | **11.36 KB** | 44 KB | 2.4 KB¹ | 265 KB² | 247 KB² |
+| Bundle (min+gzip) | **12.07 KB** | 44 KB | 2.4 KB¹ | 265 KB² | 247 KB² |
 | DatePicker | ✅ | ✅ | ✅ | ✅ | ✅ |
 | RangePicker | ✅ dedicated | ✅ two-picker pattern | ✅ `mode="range"` | ✅ | ✅ |
 | TimePicker | ✅ dedicated | ⚠️ `showTimeSelect` prop | ❌ | ❌ (removed) | ✅ |
@@ -217,10 +217,10 @@ Full documentation is at **[kalyx-docs.vercel.app](https://kalyx-docs.vercel.app
 ## Bundle size
 
 ```
-@kalyx/react  →  11.57 KB gzip  (v1.0.0-rc.1, 7 components, "use client" injected)
+@kalyx/react  →  12.07 KB gzip  (v1.0.0-rc.1, 7 components, "use client" injected)
 ```
 
-Enforced in CI at `< 12 KB`. Tree-shakable per import — `@kalyx/core` is published with `sideEffects: false`, so using only `TimePicker` drops the DatePicker code.
+Enforced in CI at `≤ 13 KB`. Tree-shakable per import — `@kalyx/core` is published with `sideEffects: false`, so using only `TimePicker` drops the DatePicker code.
 
 ## Browser support
 
@@ -238,7 +238,7 @@ pnpm test:e2e       # Playwright
 pnpm typecheck
 pnpm lint
 pnpm build
-pnpm check-bundle   # enforce ≤ 12 KB
+pnpm check-bundle   # enforce ≤ 13 KB
 pnpm --filter docs-site start  # docs site at localhost:3000
 ```
 

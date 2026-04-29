@@ -10,7 +10,7 @@
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
 [![RC](https://img.shields.io/npm/v/@kalyx/react/next?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
-[![Bundle](https://img.shields.io/badge/gzip-11.36KB-brightgreen)](#번들-크기)
+[![Bundle](https://img.shields.io/badge/gzip-12.07KB-brightgreen)](#번들-크기)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -21,7 +21,7 @@
 
 > English README: [README.md](./README.md)
 
-Kalyx는 **완결된 채로** 배포되는 Headless React DatePicker 라이브러리입니다. 단일 날짜, 날짜 범위, 시간, 날짜+시간을 하나의 조합형 API로 다룹니다 — gzip 12KB 이하, CSS 없음, SSR 안전.
+Kalyx는 **완결된 채로** 배포되는 Headless React DatePicker 라이브러리입니다. 단일 날짜, 날짜 범위, 시간, 날짜+시간을 하나의 조합형 API로 다룹니다 — gzip 13KB 이하, CSS 없음, SSR 안전.
 
 ```bash
 pnpm add @kalyx/react
@@ -53,7 +53,7 @@ bundlephobia 기준 (2026년 4월). 각주는 표 아래를 참조.
 | react-datepicker | 9.1 | 44 KB | ❌ (CSS 필수) | ✅ | ⚠️ prop | ⚠️ 결합형 | ✅ 분리형 | `Date` | ⚠️ |
 | Ark UI | 5.36 | 265 KB² | ✅ | ✅ | ❌ (제거됨) | ❌ | ✅ | `Date` | ⚠️ |
 | React Aria | 1.17 | 247 KB² | ✅ | ✅ | ✅ | ✅ | ✅ | `CalendarDate` | ✅ |
-| **Kalyx** | 1.0.0-rc.1 | **11.57 KB** | ✅ | ✅ | ✅ 전용 | ✅ 전용 | ✅ 전용 | ISO 8601 UTC | ✅ `displayTimezone` |
+| **Kalyx** | 1.0.0-rc.1 | **12.07 KB** | ✅ | ✅ | ✅ 전용 | ✅ 전용 | ✅ 전용 | ISO 8601 UTC | ✅ `displayTimezone` |
 
 1. react-day-picker는 캘린더 그리드만 제공 — Kalyx와 동일한 스콥을 맞추려면 Input·Popover·TimePicker를 직접 조합해야 함. 2.4 KB는 기본 엔트리 기준.
 2. `@ark-ui/react`와 `react-aria-components`는 40+ 컴포넌트를 포함한 모노리스 패키지 — 트리셰이킹 시 더 작아지지만 `@internationalized/date` 등 생태계를 통째로 끌어들임.
@@ -205,10 +205,10 @@ import { useDatePicker, useRangePicker, useTimePicker } from '@kalyx/react';
 ## 번들 크기
 
 ```
-@kalyx/react  →  gzip 11.57 KB  (v1.0.0-rc.1, 7개 컴포넌트, "use client" 자동 주입)
+@kalyx/react  →  gzip 12.07 KB  (v1.0.0-rc.1, 7개 컴포넌트, "use client" 자동 주입)
 ```
 
-CI에서 `< 12 KB`로 강제. `@kalyx/core`에 `sideEffects: false`가 설정돼 있어 임포트 단위 트리셰이킹이 작동합니다 — `TimePicker`만 쓰면 DatePicker 코드가 사라집니다.
+CI에서 `≤ 13 KB`로 강제. `@kalyx/core`에 `sideEffects: false`가 설정돼 있어 임포트 단위 트리셰이킹이 작동합니다 — `TimePicker`만 쓰면 DatePicker 코드가 사라집니다.
 
 ## 지원 환경
 
@@ -226,7 +226,7 @@ pnpm test:e2e       # Playwright
 pnpm typecheck
 pnpm lint
 pnpm build
-pnpm check-bundle   # ≤ 12 KB 강제
+pnpm check-bundle   # ≤ 13 KB 강제
 pnpm --filter docs-site start  # 문서 사이트 localhost:3000
 ```
 
