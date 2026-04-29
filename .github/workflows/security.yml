@@ -4,7 +4,16 @@ on:
   schedule:
     # Monday 09:00 KST (UTC 00:00)
     - cron: '0 0 * * 1'
+  # Restrict push trigger to main so feature-branch force-pushes don't race with
+  # branch deletion (the SARIF upload step references the original ref, and the
+  # auto-merge + delete-branch flow can remove it before the upload completes,
+  # causing a false-positive failure that auto-creates a noise issue).
   push:
+    branches: [main]
+    paths:
+      - '**/package.json'
+      - 'pnpm-lock.yaml'
+  pull_request:
     paths:
       - '**/package.json'
       - 'pnpm-lock.yaml'
@@ -50,7 +59,11 @@ jobs:
   notify-on-failure:
     name: Create issue on failure
     needs: [osv-scan, license-check]
-    if: failure()
+    # Only file an issue for failures on main / scheduled runs / manual dispatch.
+    # PR-context failures already surface in the PR's check list, so creating a
+    # parallel tracking issue would be duplicate noise (and the issue body's
+    # workflow link would point to a soon-to-be-deleted feature branch).
+    if: failure() && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v7
