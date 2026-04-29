@@ -35,6 +35,7 @@ export const DatePickerTrigger = forwardRef<HTMLButtonElement, DatePickerTrigger
         tabIndex={0}
         aria-label={ctx.isOpen ? ctx.labels.triggerClose : ctx.labels.triggerOpen}
         aria-expanded={ctx.isOpen}
+        aria-haspopup="dialog"
         aria-controls={ctx.isOpen ? calendarId : undefined}
         disabled={ctx.isDisabled || props.disabled}
         onClick={handleClick}

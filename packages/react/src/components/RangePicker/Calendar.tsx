@@ -209,6 +209,23 @@ export function RangePickerCalendar({
 
       if (newFocused) {
         e.preventDefault();
+
+        // WAI-ARIA grid pattern: skip disabled cells while keyboard-navigating.
+        // Step in the original direction up to one full grid (42 cells) before giving up.
+        const skipStep =
+          e.key === 'ArrowLeft' ||
+          e.key === 'ArrowUp' ||
+          e.key === 'PageUp' ||
+          e.key === 'Home'
+            ? -1
+            : 1;
+        let attempts = 0;
+        while (isDateDisabled(newFocused, disabled, adapter) && attempts < 42) {
+          newFocused = adapter.addDays(newFocused, skipStep);
+          attempts++;
+        }
+        if (attempts >= 42) return;
+
         ctx.setFocusedDate(newFocused);
 
         if (!adapter.isSameMonth(newFocused, viewMonth)) {

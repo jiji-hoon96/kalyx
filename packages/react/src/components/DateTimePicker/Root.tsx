@@ -136,11 +136,12 @@ export function DateTimePickerRoot({
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
 
   const [isOpen, setIsOpen] = useState(false);
+  // Lazy initializers — see DatePicker/Root.tsx for the SSR/hydration rationale.
   const [viewMonth, setViewMonth] = useState<ISODateString>(
-    currentValue ?? adapter.today(displayTimezone),
+    () => currentValue ?? adapter.today(displayTimezone),
   );
   const [focusedDate, setFocusedDate] = useState<ISODateString>(
-    currentValue ?? adapter.today(displayTimezone),
+    () => currentValue ?? adapter.today(displayTimezone),
   );
 
   useChangeEffect(isOpen, onOpenChange);
