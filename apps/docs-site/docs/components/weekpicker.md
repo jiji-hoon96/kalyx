@@ -33,9 +33,89 @@ function Example() {
 }
 ```
 
+### Try it live
+
+```jsx live
+function BasicWeekPicker() {
+  const [week, setWeek] = React.useState({ start: null, end: null });
+  const label = week.start && week.end
+    ? `${week.start.slice(0, 10)} → ${week.end.slice(0, 10)}`
+    : 'null';
+  return (
+    <WeekPicker value={week} onChange={setWeek}>
+      <div className="kx-live-row">
+        <WeekPicker.Input part="start" className="kx-live-input" placeholder="Start" />
+        <span aria-hidden>→</span>
+        <WeekPicker.Input part="end" className="kx-live-input" placeholder="End" />
+      </div>
+      <WeekPicker.Popover className="kx-live-popover">
+        <WeekPicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'kx-live-day-range',
+            dayInWeek: 'kx-live-inrange',
+            dayRangeStart: 'kx-live-range-start',
+            dayRangeEnd: 'kx-live-range-end',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </WeekPicker.Popover>
+      <div className="kx-live-value">
+        Week: <code>{label}</code>
+      </div>
+    </WeekPicker>
+  );
+}
+```
+
 ## weekStartsOn
 
 The `weekStartsOn` prop (inherited from `RangePicker.Root`) controls which day the week begins on — `0` for Sunday (default), `1` for Monday.
+
+```jsx live
+function MondayStartWeekPicker() {
+  const [week, setWeek] = React.useState({ start: null, end: null });
+  const label = week.start && week.end
+    ? `${week.start.slice(0, 10)} → ${week.end.slice(0, 10)}`
+    : 'null';
+  return (
+    <WeekPicker value={week} onChange={setWeek} weekStartsOn={1}>
+      <div className="kx-live-row">
+        <WeekPicker.Input part="start" className="kx-live-input" placeholder="Mon start" />
+        <span aria-hidden>→</span>
+        <WeekPicker.Input part="end" className="kx-live-input" placeholder="Sun end" />
+      </div>
+      <WeekPicker.Popover className="kx-live-popover">
+        <WeekPicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'kx-live-day-range',
+            dayInWeek: 'kx-live-inrange',
+            dayRangeStart: 'kx-live-range-start',
+            dayRangeEnd: 'kx-live-range-end',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </WeekPicker.Popover>
+      <div className="kx-live-value">
+        Week: <code>{label}</code>
+      </div>
+    </WeekPicker>
+  );
+}
+```
 
 ```tsx
 <WeekPicker weekStartsOn={1} value={week} onChange={setWeek}>

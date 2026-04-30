@@ -33,6 +33,41 @@ function Example() {
 
 The default `displayFormat` is `"yyyy"`.
 
+### Try it live
+
+```jsx live
+function BasicYearPicker() {
+  const [year, setYear] = React.useState(null);
+  const headerCls = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+  };
+  return (
+    <YearPicker value={year} onChange={setYear}>
+      <div className="kx-live-row">
+        <YearPicker.Input className="kx-live-input" placeholder="YYYY" />
+        <YearPicker.Trigger className="kx-live-trigger" aria-label="Open year picker" />
+      </div>
+      <YearPicker.Popover className="kx-live-popover">
+        <YearPicker.Grid
+          classNames={{
+            ...headerCls,
+            grid: 'kx-live-year-grid',
+            year: 'kx-live-my-cell',
+            yearSelected: 'kx-live-my-selected',
+            yearCurrent: 'kx-live-my-current',
+          }}
+        />
+      </YearPicker.Popover>
+      <div className="kx-live-value">
+        Selected: <code>{year ?? 'null'}</code>
+      </div>
+    </YearPicker>
+  );
+}
+```
+
 ## Parts
 
 | Part | Source | Purpose |
@@ -61,6 +96,47 @@ When `displayTimezone` is set, year highlighting is timezone-aware. This matters
 ## Disabled rules
 
 Restrict selectable years. Rules are evaluated against January 1 of each year.
+
+```jsx live
+function DisabledYearPicker() {
+  const [year, setYear] = React.useState(null);
+  const headerCls = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+  };
+  return (
+    <YearPicker
+      value={year}
+      onChange={setYear}
+      disabled={[
+        { before: '2020-01-01T00:00:00.000Z' },
+        { after: '2030-01-01T00:00:00.000Z' },
+      ]}
+    >
+      <div className="kx-live-row">
+        <YearPicker.Input className="kx-live-input" placeholder="2020–2030" />
+        <YearPicker.Trigger className="kx-live-trigger" aria-label="Open year picker" />
+      </div>
+      <YearPicker.Popover className="kx-live-popover">
+        <YearPicker.Grid
+          classNames={{
+            ...headerCls,
+            grid: 'kx-live-year-grid',
+            year: 'kx-live-my-cell',
+            yearSelected: 'kx-live-my-selected',
+            yearCurrent: 'kx-live-my-current',
+            yearDisabled: 'kx-live-disabled',
+          }}
+        />
+      </YearPicker.Popover>
+      <div className="kx-live-value">
+        Selected: <code>{year ?? 'null'}</code>
+      </div>
+    </YearPicker>
+  );
+}
+```
 
 ```tsx
 <YearPicker

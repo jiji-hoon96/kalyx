@@ -103,8 +103,16 @@
   box-shadow: none;
 }
 
-/* Tables — clean, minimal */
-.markdown table {
+/* Tables — clean, minimal.
+ *
+ * The `:not(...)` guards keep these prose-table styles from leaking into
+ * calendar grids that are rendered as `<table>` inside live previews.
+ * The markdown selector has higher specificity than the calendar's own
+ * `.kx-live-weekday` / `.kx-live-cell`, so without the negation it injects
+ * `padding: 0.65rem 0.9rem` and a `border-bottom` into every day cell —
+ * which collapses each cell's content area to ~7px and forces digits to
+ * wrap one-per-line. See issue #35. */
+.markdown table:not([class*='kx-live']):not([class*='kx-tw']) {
   display: table;
   width: 100%;
   border-collapse: collapse;
@@ -113,21 +121,47 @@
   overflow: hidden;
 }
 
-.markdown table thead tr {
+.markdown table:not([class*='kx-live']):not([class*='kx-tw']) thead tr {
   background: var(--kalyx-surface);
   border-bottom: 1px solid var(--kalyx-border);
 }
 
-.markdown table th,
-.markdown table td {
+.markdown table:not([class*='kx-live']):not([class*='kx-tw']) th,
+.markdown table:not([class*='kx-live']):not([class*='kx-tw']) td {
   border: none;
   border-bottom: 1px solid var(--kalyx-border);
   padding: 0.65rem 0.9rem;
   font-size: 0.92em;
 }
 
-.markdown table tr:last-child td {
+.markdown table:not([class*='kx-live']):not([class*='kx-tw']) tr:last-child td {
   border-bottom: none;
+}
+
+/* Docusaurus's Infima theme also injects styles into `table th, table td`
+ * directly (no `.markdown` prefix) — `border: 1px solid` and
+ * `padding: var(--ifm-table-cell-padding)` (~12px). These leak into
+ * calendar grids regardless of the `:not()` guard above, because the
+ * upstream selector doesn't include `.markdown`.
+ *
+ * On pages that omit the `gridCell` className (e.g. the React Hook Form
+ * recipe), the `<td>` has no class to override Infima with, so each cell
+ * grows to 60-62px (36px button + 12px×2 padding + 2px border) and the
+ * calendar overflows the popover. Pin the calendar's `<th>` / `<td>`
+ * box model directly.
+ *
+ * Specificity: 1 class + 1 type beats Infima's pure-type selector.
+ * See issue #35. */
+.kx-live-grid th,
+.kx-live-grid td,
+.kx-tw-grid th,
+.kx-tw-grid td {
+  border: 0;
+}
+
+.kx-live-grid td,
+.kx-tw-grid td {
+  padding: 0;
 }
 
 /* Admonitions */
@@ -146,6 +180,37 @@
 .footer--light {
   background-color: var(--kalyx-surface);
   border-top: 1px solid var(--kalyx-border);
+}
+
+/* =========================================================
+ * Docusaurus Playground (live code block) overrides
+ *
+ * Two issues from upstream `@docusaurus/theme-live-codeblock`:
+ *
+ * 1. `.playgroundContainer` sets `overflow: hidden` so its rounded corners
+ *    clip child content. That clips DatePicker popovers when they overflow
+ *    the bottom of the preview area. Switch to a clipped corner via
+ *    `border-radius` on the container itself but allow popovers to escape.
+ *
+ * 2. `.playgroundPreview` is `position: static`, so any absolute-positioned
+ *    descendant (the DatePicker popover, positioned by Floating UI) finds
+ *    its containing block all the way up at the viewport. Without a
+ *    constrained containing block, `width: max-content` on the popover
+ *    resolves against the viewport and the calendar table stretches edge
+ *    to edge across the page — see issue #35.
+ *
+ *    `position: relative` here makes the preview area the popover's
+ *    containing block, so its width is bounded.
+ * =======================================================*/
+
+/* The playground class names are CSS-modules-hashed. Use a substring match
+ * to remain stable across docusaurus version bumps. */
+[class*='playgroundContainer'] {
+  overflow: visible !important;
+}
+
+[class*='playgroundPreview'] {
+  position: relative;
 }
 
 /* =========================================================
@@ -282,13 +347,23 @@
   box-shadow: var(--kx-ex-shadow);
   margin-top: 6px;
   z-index: 50;
-  min-width: 280px;
+  /* Explicit width — see issue #35. The popover is `position: absolute`
+   * (set by Floating UI). Without an explicit width, descendants like the
+   * calendar header (`display: flex` with `flex: 1` on the title) cause
+   * `width: max-content` to resolve against the viewport, stretching the
+   * popover edge-to-edge inside Docusaurus's live preview area.
+   *
+   * 7 cells × var(--kx-ex-cell, 36px) + 2 × 14px padding = 280px.
+   */
+  width: 280px;
 }
 
 .kx-live-popover--split {
   display: flex;
   gap: 12px;
   align-items: stretch;
+  /* presets sidebar (140px) + gap (12px) + calendar (252px) + 2×14px padding */
+  width: 432px;
 }
 
 /* -----------------------------------------------------------
@@ -546,6 +621,16 @@ span.kx-live-title,
   padding: 4px 0;
 }
 
+/* MonthGrid / YearGrid wrap each row in `<div role="row">` for ARIA. The
+ * row wrapper would otherwise become a single grid item — collapsing
+ * three months into one cell each. `display: contents` lets the buttons
+ * participate in the parent grid directly while keeping the a11y tree
+ * intact. */
+.kx-live-month-grid > [role='row'],
+.kx-live-year-grid > [role='row'] {
+  display: contents !important;
+}
+
 .kx-live-my-cell {
   padding: 10px 8px;
   border: 0;
@@ -575,7 +660,70 @@ span.kx-live-title,
  * Tailwind recipe — uses Tailwind Play CDN at runtime, so the
  * live example renders real Tailwind classes. These fallback
  * classes only apply outside Tailwind contexts.
+ *
+ * Minimal preflight reset, scoped to `.tw-enable`.
+ *
+ * `tailwind-config.js` sets `corePlugins.preflight: false` so the
+ * Play CDN doesn't reset Docusaurus's chrome. The cost is that
+ * default user-agent `<button>` styling (outset border, system
+ * background, fixed appearance) leaks through everywhere Tailwind
+ * is applied — that's why the recipe's day cells looked like 90s
+ * 3D buttons even though the Tailwind classes were correct.
+ *
+ * Re-add only the rules the calendar examples need, locked behind
+ * `.tw-enable` so they don't escape the recipe pages. See issue #35.
  * ---------------------------------------------------------*/
+
+.tw-enable button {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.tw-enable button:disabled {
+  cursor: default;
+}
+
+.tw-enable input {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+}
+
+.tw-enable ul,
+.tw-enable ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Same Infima `table th, table td` border/padding leak (see comment above
+ * for `.kx-live-grid th/td`) hits the Tailwind recipe's calendar too. The
+ * recipe styles cells with Tailwind utilities, not a `kx-*-grid` class, so
+ * cover it via the `.tw-enable` wrapper.
+ *
+ * `!important` because the prose-table rule above uses `:not(...)` chains
+ * that count toward specificity, making it stronger than this two-class
+ * selector. The Tailwind reset is intentionally aggressive — anything
+ * inside `.tw-enable` is opting into Tailwind utilities, so we don't
+ * need the prose chrome here. */
+.tw-enable table th,
+.tw-enable table td {
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+.tw-enable table {
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
 
 /* -----------------------------------------------------------
  * shadcn recipe surface — approximates the shadcn "new-york"
@@ -639,6 +787,10 @@ span.kx-live-title,
   color: var(--kx-shadcn-fg);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   margin-top: 6px;
+  z-index: 50;
+  /* See issue #35: explicit width prevents the popover from stretching
+   * across the live-preview area. 7 × 36px cells + 2 × 12px padding. */
+  width: 276px;
 }
 
 .kx-shadcn-title {
@@ -702,6 +854,10 @@ span.kx-live-title,
 }
 
 .kx-shadcn-weekday {
+  /* `table-layout: fixed` on .kx-live-grid sizes columns from the first
+   * row, so the weekday header must declare the column width or cells
+   * collapse to their text width (~20-25px). See issue #35. */
+  width: var(--kx-ex-cell);
   font-size: 11px;
   color: var(--kx-shadcn-muted);
   font-weight: 400;
