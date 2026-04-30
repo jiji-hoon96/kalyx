@@ -1,5 +1,17 @@
 # docs-site
 
+## 0.0.3-rc.2
+
+### Patch Changes
+
+- Updated dependencies [aadb512]
+- Updated dependencies [21f3c1f]
+- Updated dependencies [733c0a1]
+- Updated dependencies [3228533]
+- Updated dependencies [e8519d0]
+- Updated dependencies [b6129ed]
+  - @kalyx/react@1.0.0-rc.2
+
 ## 0.0.3-rc.1
 
 ### Patch Changes

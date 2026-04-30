@@ -1,5 +1,54 @@
 # @kalyx/react
 
+## 1.0.0-rc.2
+
+### Patch Changes
+
+- aadb512: Security: pin transitive `postcss` to `>=8.5.10` via `pnpm.overrides`.
+
+  Two `postcss` versions in `pnpm-lock.yaml` (`8.4.31` from a `postcss-load-config` chain and `8.5.9` from the `tsup` chain) were affected by [GHSA-qx2v-qp2m-jg93](https://osv.dev/GHSA-qx2v-qp2m-jg93) (CVSS 6.1 — improper newline handling that lets crafted input bypass quote escapes). Both are now resolved to `8.5.10`+. The OSV scanner workflow (which auto-creates issues #23 / #24 / #27) now reports zero advisories.
+
+- 21f3c1f: Resolve v1.0-rc release-blocking defects (P0):
+  - **`"use client"` directive** — bundle is now marked as a React Server Component client boundary via tsup banner. Next.js App Router consumers no longer have to wrap each import.
+  - **Stable `today()`/`now()` initialization** — `viewMonth`/`focusedDate` `useState` calls in `DatePicker`/`RangePicker`/`DateTimePicker` Roots now use lazy initializers, so the adapter isn't called on every render.
+  - **`@kalyx/core` version sync** — bumped from `1.0.0-rc.0` to `1.0.0-rc.1` to match `@kalyx/react`.
+  - **`@kalyx/core` package contents** — `LICENSE` and `CHANGELOG.md` are now included in the npm tarball (`files` field).
+  - **Form auto-submit blocked when calendar open** — pressing Enter inside `DatePicker.Input`/`RangePicker.Input`/`DateTimePicker.Input` while the popover is open no longer submits the surrounding `<form>`.
+  - **`aria-haspopup="dialog"` on Trigger** — completes the WAI-ARIA combobox/dialog pattern.
+  - **Disabled cells skipped during keyboard navigation** — Calendar arrow keys / PageUp/Down / Home / End now step over disabled days and stop only when no enabled day is reachable.
+
+- 733c0a1: Follow-up to the v1.0-rc audit series:
+  - **Fix WebKit Enter regression** — `DatePicker.Input` now commits the calendar's currently focused day on Enter when the popover is open and no text was typed. WebKit doesn't always shift focus from the input to the day button on `input.click()`, so the previous behavior (preventDefault but no commit) left the popover dangling. Other browsers also benefit when the user presses Enter immediately after opening.
+  - **Consolidate parsing path** — extract the parse-and-commit logic into a single `commitText` helper used by `onChange`, `onBlur`, `onCompositionEnd`, and Enter. Removes ~60 bytes of duplicated logic.
+  - **Bundle target raised to 13 KB** — the v1.0-rc accessibility / API additions (IME composition, popover focus-out, hidden form input, `aria-rowindex`/`colindex`, `displayName`, keyboard skip-disabled) accumulated to 12.07 KB gzip; the 12 KB ceiling was 0.07 KB tight. README, docs, `tsup.config.ts`, and `scripts/check-bundle-size.js` updated to ≤13 KB. Still ~3× smaller than `react-datepicker`.
+
+- 3228533: P1 v1.0-rc API/a11y/docs improvements:
+  - **Popover focus-out close** — `usePopover` now closes the popover when focus leaves the floating layer and the reference element (Tab through). Matches the Radix/Ark dismissable layer pattern.
+  - **`name` prop + hidden form input** — `DatePicker.Input` accepts a `name` prop. When set, a hidden `<input type="hidden">` is rendered alongside the visible input so the value participates in native form submission and integrates with `react-hook-form` Controller-less flows.
+  - **IME composition handling** — `DatePicker.Input` now defers parsing during IME composition (`compositionstart` / `compositionend`). Previously, partial Korean / Japanese / Chinese input was repeatedly re-parsed and the user's text disappeared.
+  - **README parity** — Korean README now has the "Styling with Tailwind CSS" and "Using data attributes" sections that were missing. Version table and bundle-size claim corrected to `v1.0.0-rc.1` / `11.57 KB`.
+  - **Package metadata** — `peerDependenciesMeta`, `engines.node`, and `publishConfig.provenance` added to both `@kalyx/react` and `@kalyx/core`.
+  - **`@kalyx/react` description** — corrected from "under 10 KB gzipped" (false claim) to "≤12 KB gzipped".
+
+- e8519d0: Performance: memoize hot paths to avoid wasted recomputation:
+  - `DatePicker.Calendar` and `RangePicker.Calendar` now `useMemo` their `getCalendarDays` and `getWeekdayNames` results. Previously the 42-cell grid and 7 weekday tuples were rebuilt every parent re-render even when none of the inputs changed.
+  - `TimePicker.HourList` and `TimePicker.MinuteList` `useMemo` their `generateHours(format)` / `generateMinutes(step)` arrays so the listbox identity is stable across renders.
+  - `usePopover` middleware (`offset` / `flip` / `shift`) is now hoisted to a module-level constant, eliminating Floating UI's repeated middleware-array reconciliation.
+
+- b6129ed: P2 polish for v1.0-rc:
+  - **Calendar grid `aria-rowindex` / `aria-colindex` / `aria-rowcount` / `aria-colcount`** — `DatePicker.Calendar` and `RangePicker.Calendar` now expose grid coordinates so screenreaders announce position ("row 3 of 6, column 4 of 7") during keyboard navigation.
+  - **`displayName` on all `forwardRef` components** — `DatePicker.Input`, `DatePicker.Trigger`, `RangePicker.Input`, `TimePicker.Input`, `DateTimePicker.Input` now render with their public dot-notation name in React DevTools.
+  - **JSDoc on `DatePicker.Input` and `DatePicker.Trigger`** — public API surface for the most-used components has explanatory docstrings.
+  - **`addYears` leap-day regression tests** — locked the date-fns clamp behavior (2024-02-29 + 1y → 2025-02-28, not March 1).
+  - **DST fall-back ambiguous-hour regression test** — captures the current behavior of `setTimeInTimezone` for 2026-11-01 01:30 America/New_York so silent drift surfaces as a test failure.
+  - **Test count claim corrected** — root and core `CLAUDE.md` previously claimed "1,000+ unit tests"; actual count is ~140 in core, 374 across the workspace.
+
+- Updated dependencies [aadb512]
+- Updated dependencies [21f3c1f]
+- Updated dependencies [3228533]
+- Updated dependencies [b6129ed]
+  - @kalyx/core@1.0.0-rc.2
+
 ## 1.0.0-rc.1
 
 ### Patch Changes

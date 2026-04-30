@@ -12,8 +12,15 @@
     "event-callbacks",
     "fix-rangepicker-mutation",
     "month-picker",
+    "playground-page",
     "popover-style-merge",
+    "security-postcss",
     "v1-milestone",
+    "v1-rc1-blockers",
+    "v1-rc1-followup",
+    "v1-rc1-major",
+    "v1-rc1-perf",
+    "v1-rc1-polish",
     "week-picker",
     "year-picker"
   ]

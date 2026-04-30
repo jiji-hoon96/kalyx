@@ -1,6 +1,6 @@
 {
 	"name": "@kalyx/react",
-	"version": "1.0.0-rc.1",
+	"version": "1.0.0-rc.2",
 	"description": "Headless, SSR-safe React DatePicker / RangePicker / TimePicker / DateTimePicker — ISO 8601 UTC strings, IANA timezone support, ≤13 KB gzipped",
 	"license": "MIT",
 	"author": "jiji-hoon96",
@@ -69,8 +69,12 @@
 		"react-dom": "^19.0.0"
 	},
 	"peerDependenciesMeta": {
-		"react": { "optional": false },
-		"react-dom": { "optional": false }
+		"react": {
+			"optional": false
+		},
+		"react-dom": {
+			"optional": false
+		}
 	},
 	"devDependencies": {
 		"@types/react": "^19.0.0",

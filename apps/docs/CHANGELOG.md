@@ -1,5 +1,18 @@
 # @kalyx/docs
 
+## 0.0.6-rc.2
+
+### Patch Changes
+
+- 3e9c097: Add a `/playground` page to the demo site so library maintainers and users can exercise every component in one place. The page applies shared `locale` / `displayTimezone` / `weekStartsOn` / time-format / minute-step / `disabled` / `readOnly` controls across all 7 pickers (DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker), shows the live `ISODateString` / `DateRange` output for each, logs the last 20 events (`change`, `openChange`), and includes a keyboard shortcut reference.
+- Updated dependencies [aadb512]
+- Updated dependencies [21f3c1f]
+- Updated dependencies [733c0a1]
+- Updated dependencies [3228533]
+- Updated dependencies [e8519d0]
+- Updated dependencies [b6129ed]
+  - @kalyx/react@1.0.0-rc.2
+
 ## 0.0.6-rc.1
 
 ### Patch Changes
