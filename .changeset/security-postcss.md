@@ -1,5 +1,6 @@
 ---
-"kalyx": patch
+"@kalyx/react": patch
+"@kalyx/core": patch
 ---
 
 Security: pin transitive `postcss` to `>=8.5.10` via `pnpm.overrides`.
