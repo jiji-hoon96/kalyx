@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { MutableRefObject } from 'react';
+import type { RefObject } from 'react';
 import type {
   DateAdapter,
   DateRange,
@@ -14,7 +14,7 @@ export type RangeSelectingTarget = 'start' | 'end';
 
 export interface RangePickerContextValue {
   /** Floating UI reference element */
-  referenceRef: MutableRefObject<HTMLElement | null>;
+  referenceRef: RefObject<HTMLElement | null>;
   /** Currently selected range */
   value: DateRange;
   /** Update the entire range object */

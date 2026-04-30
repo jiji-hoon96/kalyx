@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { MutableRefObject } from 'react';
+import type { RefObject } from 'react';
 import type {
   DateAdapter,
   DatePickerLabels,
@@ -10,7 +10,7 @@ import type {
 
 export interface DatePickerContextValue {
   /** Floating UI reference element (set by Input/Trigger, read by Popover) */
-  referenceRef: MutableRefObject<HTMLElement | null>;
+  referenceRef: RefObject<HTMLElement | null>;
   /** Currently selected date (ISO 8601 UTC) */
   value: ISODateString | null;
   /** Date selection handler */
