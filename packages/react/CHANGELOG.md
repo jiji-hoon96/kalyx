@@ -1,5 +1,18 @@
 # @kalyx/react
 
+## 1.0.0-rc.3
+
+### Patch Changes
+
+- 3587b13: Replace deprecated `MutableRefObject<T>` with `RefObject<T>` in context types.
+
+  `@types/react@19` marks `MutableRefObject` as deprecated (`Use 'RefObject' instead`). In React 19 `RefObject<T>` is itself mutable, so the swap is type-equivalent for the existing `referenceRef` usage in `DatePickerContext` and `RangePickerContext`.
+
+  No runtime change. No public API surface change.
+
+- Updated dependencies [3587b13]
+  - @kalyx/core@1.0.0-rc.3
+
 ## 1.0.0-rc.2
 
 ### Patch Changes

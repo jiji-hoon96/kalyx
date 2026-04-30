@@ -1,6 +1,6 @@
 {
 	"name": "@kalyx/core",
-	"version": "1.0.0-rc.2",
+	"version": "1.0.0-rc.3",
 	"description": "Kalyx core — platform-agnostic date logic, IANA timezone helpers, and the DateAdapter contract used by @kalyx/react",
 	"license": "MIT",
 	"author": "jiji-hoon96",
