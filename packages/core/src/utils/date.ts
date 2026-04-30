@@ -45,20 +45,3 @@ export function parseInputValue(input: string, adapter: DateAdapter): string | n
 
   return null;
 }
-
-/** Default weekday labels (English) */
-export const WEEKDAY_LABELS = {
-  short: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] as const,
-  full: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const,
-};
-
-/** Returns weekdays ordered according to the given week start */
-export function getOrderedWeekdays(weekStartsOn: 0 | 1 = 0) {
-  const days = WEEKDAY_LABELS.short.map((short, i) => ({
-    short,
-    full: WEEKDAY_LABELS.full[i]!,
-  }));
-
-  if (weekStartsOn === 0) return days;
-  return [...days.slice(weekStartsOn), ...days.slice(0, weekStartsOn)];
-}
