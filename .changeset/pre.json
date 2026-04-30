@@ -14,6 +14,8 @@
     "month-picker",
     "playground-page",
     "popover-style-merge",
+    "remove-deprecated-weekday-utils",
+    "replace-mutable-ref-object",
     "security-postcss",
     "v1-milestone",
     "v1-rc1-blockers",
