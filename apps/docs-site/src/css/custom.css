@@ -103,8 +103,16 @@
   box-shadow: none;
 }
 
-/* Tables — clean, minimal */
-.markdown table {
+/* Tables — clean, minimal.
+ *
+ * The `:not(...)` guards keep these prose-table styles from leaking into
+ * calendar grids that are rendered as `<table>` inside live previews.
+ * The markdown selector has higher specificity than the calendar's own
+ * `.kx-live-weekday` / `.kx-live-cell`, so without the negation it injects
+ * `padding: 0.65rem 0.9rem` and a `border-bottom` into every day cell —
+ * which collapses each cell's content area to ~7px and forces digits to
+ * wrap one-per-line. See issue #35. */
+.markdown table:not([class*='kx-live']):not([class*='kx-tw']) {
   display: table;
   width: 100%;
   border-collapse: collapse;
@@ -113,20 +121,20 @@
   overflow: hidden;
 }
 
-.markdown table thead tr {
+.markdown table:not([class*='kx-live']):not([class*='kx-tw']) thead tr {
   background: var(--kalyx-surface);
   border-bottom: 1px solid var(--kalyx-border);
 }
 
-.markdown table th,
-.markdown table td {
+.markdown table:not([class*='kx-live']):not([class*='kx-tw']) th,
+.markdown table:not([class*='kx-live']):not([class*='kx-tw']) td {
   border: none;
   border-bottom: 1px solid var(--kalyx-border);
   padding: 0.65rem 0.9rem;
   font-size: 0.92em;
 }
 
-.markdown table tr:last-child td {
+.markdown table:not([class*='kx-live']):not([class*='kx-tw']) tr:last-child td {
   border-bottom: none;
 }
 
@@ -747,6 +755,10 @@ span.kx-live-title,
 }
 
 .kx-shadcn-weekday {
+  /* `table-layout: fixed` on .kx-live-grid sizes columns from the first
+   * row, so the weekday header must declare the column width or cells
+   * collapse to their text width (~20-25px). See issue #35. */
+  width: var(--kx-ex-cell);
   font-size: 11px;
   color: var(--kx-shadcn-muted);
   font-weight: 400;
