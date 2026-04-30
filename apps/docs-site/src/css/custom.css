@@ -624,7 +624,49 @@ span.kx-live-title,
  * Tailwind recipe — uses Tailwind Play CDN at runtime, so the
  * live example renders real Tailwind classes. These fallback
  * classes only apply outside Tailwind contexts.
+ *
+ * Minimal preflight reset, scoped to `.tw-enable`.
+ *
+ * `tailwind-config.js` sets `corePlugins.preflight: false` so the
+ * Play CDN doesn't reset Docusaurus's chrome. The cost is that
+ * default user-agent `<button>` styling (outset border, system
+ * background, fixed appearance) leaks through everywhere Tailwind
+ * is applied — that's why the recipe's day cells looked like 90s
+ * 3D buttons even though the Tailwind classes were correct.
+ *
+ * Re-add only the rules the calendar examples need, locked behind
+ * `.tw-enable` so they don't escape the recipe pages. See issue #35.
  * ---------------------------------------------------------*/
+
+.tw-enable button {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.tw-enable button:disabled {
+  cursor: default;
+}
+
+.tw-enable input {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+}
+
+.tw-enable ul,
+.tw-enable ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 
 /* -----------------------------------------------------------
  * shadcn recipe surface — approximates the shadcn "new-york"
