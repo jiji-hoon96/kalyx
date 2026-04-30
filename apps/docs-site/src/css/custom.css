@@ -149,6 +149,37 @@
 }
 
 /* =========================================================
+ * Docusaurus Playground (live code block) overrides
+ *
+ * Two issues from upstream `@docusaurus/theme-live-codeblock`:
+ *
+ * 1. `.playgroundContainer` sets `overflow: hidden` so its rounded corners
+ *    clip child content. That clips DatePicker popovers when they overflow
+ *    the bottom of the preview area. Switch to a clipped corner via
+ *    `border-radius` on the container itself but allow popovers to escape.
+ *
+ * 2. `.playgroundPreview` is `position: static`, so any absolute-positioned
+ *    descendant (the DatePicker popover, positioned by Floating UI) finds
+ *    its containing block all the way up at the viewport. Without a
+ *    constrained containing block, `width: max-content` on the popover
+ *    resolves against the viewport and the calendar table stretches edge
+ *    to edge across the page — see issue #35.
+ *
+ *    `position: relative` here makes the preview area the popover's
+ *    containing block, so its width is bounded.
+ * =======================================================*/
+
+/* The playground class names are CSS-modules-hashed. Use a substring match
+ * to remain stable across docusaurus version bumps. */
+[class*='playgroundContainer'] {
+  overflow: visible !important;
+}
+
+[class*='playgroundPreview'] {
+  position: relative;
+}
+
+/* =========================================================
  * Live example theme (DatePicker / RangePicker / TimePicker)
  * =======================================================*/
 
@@ -282,13 +313,23 @@
   box-shadow: var(--kx-ex-shadow);
   margin-top: 6px;
   z-index: 50;
-  min-width: 280px;
+  /* Explicit width — see issue #35. The popover is `position: absolute`
+   * (set by Floating UI). Without an explicit width, descendants like the
+   * calendar header (`display: flex` with `flex: 1` on the title) cause
+   * `width: max-content` to resolve against the viewport, stretching the
+   * popover edge-to-edge inside Docusaurus's live preview area.
+   *
+   * 7 cells × var(--kx-ex-cell, 36px) + 2 × 14px padding = 280px.
+   */
+  width: 280px;
 }
 
 .kx-live-popover--split {
   display: flex;
   gap: 12px;
   align-items: stretch;
+  /* presets sidebar (140px) + gap (12px) + calendar (252px) + 2×14px padding */
+  width: 432px;
 }
 
 /* -----------------------------------------------------------
@@ -639,6 +680,10 @@ span.kx-live-title,
   color: var(--kx-shadcn-fg);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   margin-top: 6px;
+  z-index: 50;
+  /* See issue #35: explicit width prevents the popover from stretching
+   * across the live-preview area. 7 × 36px cells + 2 × 12px padding. */
+  width: 276px;
 }
 
 .kx-shadcn-title {
