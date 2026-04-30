@@ -138,6 +138,32 @@
   border-bottom: none;
 }
 
+/* Docusaurus's Infima theme also injects styles into `table th, table td`
+ * directly (no `.markdown` prefix) — `border: 1px solid` and
+ * `padding: var(--ifm-table-cell-padding)` (~12px). These leak into
+ * calendar grids regardless of the `:not()` guard above, because the
+ * upstream selector doesn't include `.markdown`.
+ *
+ * On pages that omit the `gridCell` className (e.g. the React Hook Form
+ * recipe), the `<td>` has no class to override Infima with, so each cell
+ * grows to 60-62px (36px button + 12px×2 padding + 2px border) and the
+ * calendar overflows the popover. Pin the calendar's `<th>` / `<td>`
+ * box model directly.
+ *
+ * Specificity: 1 class + 1 type beats Infima's pure-type selector.
+ * See issue #35. */
+.kx-live-grid th,
+.kx-live-grid td,
+.kx-tw-grid th,
+.kx-tw-grid td {
+  border: 0;
+}
+
+.kx-live-grid td,
+.kx-tw-grid td {
+  padding: 0;
+}
+
 /* Admonitions */
 .alert {
   border-radius: 10px;
@@ -665,6 +691,27 @@ span.kx-live-title,
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+/* Same Infima `table th, table td` border/padding leak (see comment above
+ * for `.kx-live-grid th/td`) hits the Tailwind recipe's calendar too. The
+ * recipe styles cells with Tailwind utilities, not a `kx-*-grid` class, so
+ * cover it via the `.tw-enable` wrapper.
+ *
+ * `!important` because the prose-table rule above uses `:not(...)` chains
+ * that count toward specificity, making it stronger than this two-class
+ * selector. The Tailwind reset is intentionally aggressive — anything
+ * inside `.tw-enable` is opting into Tailwind utilities, so we don't
+ * need the prose chrome here. */
+.tw-enable table th,
+.tw-enable table td {
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+.tw-enable table {
+  border: 0 !important;
+  border-radius: 0 !important;
 }
 
 
