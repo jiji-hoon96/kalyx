@@ -226,6 +226,117 @@ function PlaygroundDateTime() {
 }
 ```
 
+## MonthPicker
+
+```jsx live
+function PlaygroundMonth() {
+  const [month, setMonth] = React.useState(null);
+  const headerCls = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+  };
+  return (
+    <MonthPicker value={month} onChange={setMonth}>
+      <div className="kx-live-row">
+        <MonthPicker.Input className="kx-live-input" placeholder="YYYY-MM" />
+        <MonthPicker.Trigger className="kx-live-trigger" aria-label="Open month picker" />
+      </div>
+      <MonthPicker.Popover className="kx-live-popover">
+        <MonthPicker.Grid
+          classNames={{
+            ...headerCls,
+            grid: 'kx-live-month-grid',
+            month: 'kx-live-my-cell',
+            monthSelected: 'kx-live-my-selected',
+            monthCurrent: 'kx-live-my-current',
+          }}
+        />
+      </MonthPicker.Popover>
+      <div className="kx-live-value">
+        Selected: <code>{month ?? 'null'}</code>
+      </div>
+    </MonthPicker>
+  );
+}
+```
+
+## YearPicker
+
+```jsx live
+function PlaygroundYear() {
+  const [year, setYear] = React.useState(null);
+  const headerCls = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+  };
+  return (
+    <YearPicker value={year} onChange={setYear}>
+      <div className="kx-live-row">
+        <YearPicker.Input className="kx-live-input" placeholder="YYYY" />
+        <YearPicker.Trigger className="kx-live-trigger" aria-label="Open year picker" />
+      </div>
+      <YearPicker.Popover className="kx-live-popover">
+        <YearPicker.Grid
+          classNames={{
+            ...headerCls,
+            grid: 'kx-live-year-grid',
+            year: 'kx-live-my-cell',
+            yearSelected: 'kx-live-my-selected',
+            yearCurrent: 'kx-live-my-current',
+          }}
+        />
+      </YearPicker.Popover>
+      <div className="kx-live-value">
+        Selected: <code>{year ?? 'null'}</code>
+      </div>
+    </YearPicker>
+  );
+}
+```
+
+## WeekPicker
+
+```jsx live
+function PlaygroundWeek() {
+  const [week, setWeek] = React.useState({ start: null, end: null });
+  const label = week.start && week.end
+    ? `${week.start.slice(0, 10)} → ${week.end.slice(0, 10)}`
+    : 'null';
+  return (
+    <WeekPicker value={week} onChange={setWeek}>
+      <div className="kx-live-row">
+        <WeekPicker.Input part="start" className="kx-live-input" placeholder="Start" />
+        <span aria-hidden>→</span>
+        <WeekPicker.Input part="end" className="kx-live-input" placeholder="End" />
+      </div>
+      <WeekPicker.Popover className="kx-live-popover">
+        <WeekPicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'kx-live-day-range',
+            dayInWeek: 'kx-live-inrange',
+            dayRangeStart: 'kx-live-range-start',
+            dayRangeEnd: 'kx-live-range-end',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </WeekPicker.Popover>
+      <div className="kx-live-value">
+        Week: <code>{label}</code>
+      </div>
+    </WeekPicker>
+  );
+}
+```
+
 ## displayTimezone — pick the same civil day across zones
 
 Switch the timezone radio and watch the emitted ISO change while the *civil day you clicked* stays the same. This is Kalyx's structural answer to the "day off by one" bug (react-datepicker #1018).
@@ -282,4 +393,4 @@ function PlaygroundTimezone() {
 
 ## Mix and match
 
-The scope includes `React`, `DatePicker`, `RangePicker`, `TimePicker`, `DateTimePicker`, `useDatePicker`, `useRangePicker`, `useTimePicker`, and `DateFnsAdapter`. Start typing — the editor is yours.
+The scope includes `React`, all seven components (`DatePicker`, `RangePicker`, `TimePicker`, `DateTimePicker`, `MonthPicker`, `YearPicker`, `WeekPicker`), all three headless hooks (`useDatePicker`, `useRangePicker`, `useTimePicker`), and `DateFnsAdapter`. Start typing — the editor is yours.

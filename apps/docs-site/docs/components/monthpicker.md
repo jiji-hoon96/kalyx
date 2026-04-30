@@ -33,6 +33,41 @@ function Example() {
 
 The default `displayFormat` is `"yyyy-MM"`. Override it if you prefer a different representation (e.g., `"MMMM yyyy"` for `"April 2026"`).
 
+### Try it live
+
+```jsx live
+function BasicMonthPicker() {
+  const [month, setMonth] = React.useState(null);
+  const headerCls = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+  };
+  return (
+    <MonthPicker value={month} onChange={setMonth}>
+      <div className="kx-live-row">
+        <MonthPicker.Input className="kx-live-input" placeholder="YYYY-MM" />
+        <MonthPicker.Trigger className="kx-live-trigger" aria-label="Open month picker" />
+      </div>
+      <MonthPicker.Popover className="kx-live-popover">
+        <MonthPicker.Grid
+          classNames={{
+            ...headerCls,
+            grid: 'kx-live-month-grid',
+            month: 'kx-live-my-cell',
+            monthSelected: 'kx-live-my-selected',
+            monthCurrent: 'kx-live-my-current',
+          }}
+        />
+      </MonthPicker.Popover>
+      <div className="kx-live-value">
+        Selected: <code>{month ?? 'null'}</code>
+      </div>
+    </MonthPicker>
+  );
+}
+```
+
 ## Parts
 
 `MonthPicker` reuses `DatePicker`'s building blocks for everything except the grid:
@@ -74,6 +109,47 @@ Month names follow the `locale` prop (BCP 47). The built-in `getMonthName` helpe
 ## Disabled rules
 
 Restrict selectable months using the same `DisabledRule` syntax as `DatePicker`. Rules are evaluated against the first day of each month.
+
+```jsx live
+function DisabledMonthPicker() {
+  const [month, setMonth] = React.useState(null);
+  const headerCls = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+  };
+  return (
+    <MonthPicker
+      value={month}
+      onChange={setMonth}
+      disabled={[
+        { before: '2026-01-01T00:00:00.000Z' },
+        { after: '2026-12-31T00:00:00.000Z' },
+      ]}
+    >
+      <div className="kx-live-row">
+        <MonthPicker.Input className="kx-live-input" placeholder="2026 only" />
+        <MonthPicker.Trigger className="kx-live-trigger" aria-label="Open month picker" />
+      </div>
+      <MonthPicker.Popover className="kx-live-popover">
+        <MonthPicker.Grid
+          classNames={{
+            ...headerCls,
+            grid: 'kx-live-month-grid',
+            month: 'kx-live-my-cell',
+            monthSelected: 'kx-live-my-selected',
+            monthCurrent: 'kx-live-my-current',
+            monthDisabled: 'kx-live-disabled',
+          }}
+        />
+      </MonthPicker.Popover>
+      <div className="kx-live-value">
+        Selected: <code>{month ?? 'null'}</code>
+      </div>
+    </MonthPicker>
+  );
+}
+```
 
 ```tsx
 <MonthPicker

@@ -621,6 +621,16 @@ span.kx-live-title,
   padding: 4px 0;
 }
 
+/* MonthGrid / YearGrid wrap each row in `<div role="row">` for ARIA. The
+ * row wrapper would otherwise become a single grid item — collapsing
+ * three months into one cell each. `display: contents` lets the buttons
+ * participate in the parent grid directly while keeping the a11y tree
+ * intact. */
+.kx-live-month-grid > [role='row'],
+.kx-live-year-grid > [role='row'] {
+  display: contents !important;
+}
+
 .kx-live-my-cell {
   padding: 10px 8px;
   border: 0;
