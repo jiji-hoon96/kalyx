@@ -15,7 +15,7 @@ function Hero(): ReactNode {
           <div>
             <span className={styles.eyebrow}>
               <span className={styles.eyebrowDot} aria-hidden="true" />
-              <Translate id="home.eyebrow">Headless · SSR-safe · under 12KB</Translate>
+              <Translate id="home.eyebrow">Headless · SSR-safe · ~12 KB</Translate>
             </span>
             <h1 className={styles.title}>
               <Translate id="home.title.line1">The headless</Translate>{' '}
@@ -28,7 +28,7 @@ function Hero(): ReactNode {
             <p className={styles.subtitle}>
               <Translate id="home.subtitle">
                 7 composable pickers — DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker,
-                YearPicker, and WeekPicker. Zero CSS, SSR-safe, under 12 KB.
+                YearPicker, and WeekPicker. Zero CSS, SSR-safe, ~12 KB (≤ 13 KB ceiling).
               </Translate>
             </p>
             <div className={styles.ctas}>
@@ -146,10 +146,10 @@ const features: Feature[] = [
       </svg>
     ),
     titleId: 'home.feat.bundle.title',
-    titleDefault: 'Under 12KB',
+    titleDefault: '~12 KB',
     descId: 'home.feat.bundle.desc',
     descDefault:
-      "11.36KB gzip for 7 pickers — a fraction of react-datepicker’s 60KB. Tree-shakable down to what you use.",
+      "12.27 KB gzip for 7 pickers — a fraction of react-datepicker’s 60 KB. Tree-shakable down to what you use.",
   },
 ];
 
@@ -362,7 +362,7 @@ export default function Home(): ReactNode {
       description={translate({
         id: 'home.meta.description',
         message:
-          'Headless, SSR-safe React DatePicker with Input, Calendar, TimePicker, and RangePicker in under 12KB.',
+          'Headless, SSR-safe React DatePicker with Input, Calendar, TimePicker, and RangePicker in ~12 KB (≤ 13 KB ceiling).',
       })}>
       <Hero />
       <main>

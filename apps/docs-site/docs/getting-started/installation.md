@@ -69,5 +69,5 @@ If TypeScript compiles and the page renders an input, you're done.
 
 ## Next
 
-- [Quick Start →](./quick-start.mdx)
-- [Composition API →](../concepts/composition.md)
+- [Quick Start →](./quick-start)
+- [Composition API →](../concepts/composition)

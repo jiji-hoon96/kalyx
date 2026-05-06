@@ -1,5 +1,6 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { HTMLAttributes } from 'react';
+import type { ISODateString } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
 
 export interface DatePickerYearGridClassNames {
@@ -32,10 +33,15 @@ export interface DatePickerYearGridProps extends Omit<HTMLAttributes<HTMLDivElem
  */
 export function DatePickerYearGrid({ classNames, onSelect, ...props }: DatePickerYearGridProps) {
   const ctx = useDatePickerContext('DatePicker.YearGrid');
-  const { adapter, viewMonth } = ctx;
+  const { adapter, viewMonth, displayTimezone } = ctx;
 
   const currentYear = adapter.getYear(viewMonth);
-  const todayYear = adapter.getYear(adapter.today());
+  // SSR-safe: today is null on server and during hydration, set after mount.
+  const [today, setToday] = useState<ISODateString | null>(null);
+  useEffect(() => {
+    setToday(adapter.today(displayTimezone));
+  }, [adapter, displayTimezone]);
+  const todayYear = today !== null ? adapter.getYear(today) : -1;
 
   // 12-year range (decade block containing the current year)
   const decadeStart = currentYear - (currentYear % 12);

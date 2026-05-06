@@ -1,9 +1,9 @@
 # @kalyx/react
 
-> The headless React DatePicker, finally complete. Zero CSS · SSR-safe · under 12 KB gzip.
+> The headless React DatePicker, finally complete. Zero CSS · SSR-safe · ~12 KB gzip (≤ 13 KB ceiling).
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-11.36KB-brightgreen)](https://kalyx-docs.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-12.27KB-brightgreen)](https://kalyx-docs.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/jiji-hoon96/kalyx/blob/main/LICENSE)
 

@@ -1,6 +1,6 @@
-# v1.0.0-rc.0 — First Release Candidate
+# v1.0.0-rc.3 — Release Candidate
 
-This is the first RC for Kalyx v1.0. The public API is frozen; we're collecting feedback before cutting the stable release.
+This is the latest RC for Kalyx v1.0 (rc.0 → rc.3). The public API is frozen; we're collecting feedback before cutting the stable release.
 
 ## What's in
 
@@ -9,17 +9,18 @@ This is the first RC for Kalyx v1.0. The public API is frozen; we're collecting 
 - **Event callbacks** — `onOpenChange`, `onCalendarNavigate` on all picker roots
 - **WeekPicker mutation fix** — WeekPicker no longer mutates the shared calendar config
 - **IANA timezone** — DST-safe `displayTimezone` on Date/DateTime/Range pickers
-- **API freeze** — public API surface is now stable; any breaking change requires a major bump
+- **rc.1 → rc.3 fixes** — P0 release blockers (#25), P1 a11y/API/docs (#26), perf memoization (#28), P2 polish (#29), Enter-on-focused-day (#36), bundle ceiling raised 12 → 13 KB (#37)
+- **API freeze** — public API surface is stable; any breaking change requires a major bump
 
 ## Bundle
 
-- ESM: **11.36 KB** gzip (target: ≤ 12 KB)
-- CJS: **11.36 KB** gzip
+- ESM: **12.27 KB** gzip (target: ≤ 13 KB)
+- CJS: **12.48 KB** gzip
 
 ## Install
 
 ```bash
-pnpm add @kalyx/react@next   # 1.0.0-rc.0
+pnpm add @kalyx/react@rc   # currently 1.0.0-rc.3 (dist-tag matches .changeset/pre.json)
 ```
 
 ## Feedback

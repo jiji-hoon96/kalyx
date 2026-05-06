@@ -128,7 +128,14 @@ describe('useRangePicker — calendar grid', () => {
   });
 
   it('respects disabled rules', () => {
-    const { result } = renderHook(() => useRangePicker({ disabled: [{ dayOfWeek: [0, 6] }] }));
+    // Pin viewMonth to April 2026 via defaultValue so the calendar grid contains 2026-04-04
+    // regardless of the system clock (this test was previously time-dependent).
+    const { result } = renderHook(() =>
+      useRangePicker({
+        defaultValue: { start: ISO_APR_10, end: null },
+        disabled: [{ dayOfWeek: [0, 6] }],
+      }),
+    );
 
     const weekend = result.current.calendar
       .flat()

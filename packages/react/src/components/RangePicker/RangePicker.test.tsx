@@ -296,13 +296,13 @@ describe('RangePicker — accessibility', () => {
     expect(start).toHaveAttribute('aria-haspopup', 'dialog');
   });
 
-  it('sets aria-multiselectable="true" on the grid', async () => {
+  it('does not advertise aria-multiselectable on the grid (a range is one selection)', async () => {
     const user = userEvent.setup();
     renderRangePicker();
 
     await user.click(screen.getByLabelText('Start date'));
     const grid = screen.getByRole('grid');
-    expect(grid).toHaveAttribute('aria-multiselectable', 'true');
+    expect(grid).not.toHaveAttribute('aria-multiselectable');
   });
 
   it('passes axe accessibility checks (closed state)', async () => {
@@ -369,7 +369,7 @@ describe('RangePicker — Presets', () => {
     const { onChange } = renderWithPresets();
     await user.click(screen.getByLabelText('Start date'));
 
-    await user.click(screen.getByRole('option', { name: 'Today' }));
+    await user.click(screen.getByRole('button', { name: 'Today' }));
 
     expect(onChange).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -388,7 +388,7 @@ describe('RangePicker — Presets', () => {
     const { onChange } = renderWithPresets();
     await user.click(screen.getByLabelText('Start date'));
 
-    await user.click(screen.getByRole('option', { name: 'Last 7 days' }));
+    await user.click(screen.getByRole('button', { name: 'Last 7 days' }));
 
     const call = (onChange as ReturnType<typeof vi.fn>).mock.calls[0]![0] as DateRange;
     expect(call.start).toBeTruthy();
@@ -406,7 +406,7 @@ describe('RangePicker — Presets', () => {
     await user.click(screen.getByLabelText('Start date'));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('option', { name: 'Today' }));
+    await user.click(screen.getByRole('button', { name: 'Today' }));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
@@ -416,14 +416,14 @@ describe('RangePicker — Presets', () => {
     await user.click(screen.getByLabelText('Start date'));
 
     // Click "Today"
-    await user.click(screen.getByRole('option', { name: 'Today' }));
+    await user.click(screen.getByRole('button', { name: 'Today' }));
 
     // Reopen the popover
     await user.click(screen.getByLabelText('Start date'));
 
     // The "Today" option should be active
-    const todayOption = screen.getByRole('option', { name: 'Today' });
-    expect(todayOption).toHaveAttribute('aria-selected', 'true');
+    const todayOption = screen.getByRole('button', { name: 'Today' });
+    expect(todayOption).toHaveAttribute('aria-pressed', 'true');
   });
 
   it('sets the correct range for "Last 30 days"', async () => {
@@ -431,7 +431,7 @@ describe('RangePicker — Presets', () => {
     const { onChange } = renderWithPresets();
     await user.click(screen.getByLabelText('Start date'));
 
-    await user.click(screen.getByRole('option', { name: 'Last 30 days' }));
+    await user.click(screen.getByRole('button', { name: 'Last 30 days' }));
 
     const call = (onChange as ReturnType<typeof vi.fn>).mock.calls[0]![0] as DateRange;
     expect(call.start).toBeTruthy();
@@ -447,7 +447,7 @@ describe('RangePicker — Presets', () => {
     const { onChange } = renderWithPresets();
     await user.click(screen.getByLabelText('Start date'));
 
-    await user.click(screen.getByRole('option', { name: 'This month' }));
+    await user.click(screen.getByRole('button', { name: 'This month' }));
 
     const call = (onChange as ReturnType<typeof vi.fn>).mock.calls[0]![0] as DateRange;
     expect(call.start).toBeTruthy();
@@ -474,7 +474,7 @@ describe('RangePicker — Presets', () => {
       </RangePicker>,
     );
     await user.click(screen.getByLabelText('Start date'));
-    await user.click(screen.getByRole('option', { name: 'Q1 2026' }));
+    await user.click(screen.getByRole('button', { name: 'Q1 2026' }));
 
     expect(onChange).toHaveBeenCalledWith({
       start: '2026-01-01T00:00:00.000Z',

@@ -1,6 +1,6 @@
 ---
 name: check-bundle
-description: 현재 번들 크기를 분석하고 12KB 목표 달성 여부를 확인한다.
+description: 현재 번들 크기를 분석하고 13KB 목표 달성 여부를 확인한다.
 ---
 
 # /check-bundle
@@ -8,7 +8,7 @@ description: 현재 번들 크기를 분석하고 12KB 목표 달성 여부를 �
 ## 설명
 
 빌드 후 번들 크기를 분석한다.
-목표: `@kalyx/react` gzip 12KB 미만
+목표: `@kalyx/react` gzip 13KB 이하 (rc 단계에서 12KB → 13KB 상향, commit e93d082)
 
 ## Claude가 수행할 작업
 
@@ -38,9 +38,9 @@ import('./packages/react/dist/index.js').then(m => {
 
 | 상태 | gzip 크기 | 조치 |
 |---|---|---|
-| ✅ OK | < 10KB | 문제없음 |
-| ⚠️ 주의 | 10-12KB | 최적화 검토 |
-| ❌ 초과 | > 12KB | 반드시 축소 필요 |
+| ✅ OK | ≤ 12KB | 문제없음 |
+| ⚠️ 주의 | 12–13KB | 최적화 검토 |
+| ❌ 초과 | > 13KB | 반드시 축소 필요 |
 
 ## 크기 초과 시 점검 항목
 

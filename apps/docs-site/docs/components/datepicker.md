@@ -284,7 +284,7 @@ type DatePickerYearGridClassNames = {
 
 ## `<DatePicker.Presets>` / `<DatePicker.Preset>` (optional)
 
-Quick-select buttons for common dates. `<DatePicker.Presets>` is a `role="group"` container; each `<DatePicker.Preset>` is a `role="option"` button that commits and closes the popover on click.
+Quick-select buttons for common dates. `<DatePicker.Presets>` is a `role="group"` container; each `<DatePicker.Preset>` is a regular toggle button (using `aria-pressed`) that commits and closes the popover on click.
 
 ```tsx
 <DatePicker value={date} onChange={setDate}>
@@ -301,7 +301,7 @@ Quick-select buttons for common dates. `<DatePicker.Presets>` is a `role="group"
 </DatePicker>
 ```
 
-Preset keys: `today`, `tomorrow`, `yesterday`, `startOfMonth`, `endOfMonth`, `startOfYear`. Or pass a concrete `date` (ISO 8601 UTC) for anything else. Active presets get `aria-selected="true"` when the resolved date matches the current `value` (timezone-aware via `displayTimezone`).
+Preset keys: `today`, `tomorrow`, `yesterday`, `startOfMonth`, `endOfMonth`, `startOfYear`. Or pass a concrete `date` (ISO 8601 UTC) for anything else. Active presets get `aria-pressed="true"` and `data-active` when the resolved date matches the current `value` (timezone-aware via `displayTimezone`).
 
 ## Event callbacks
 
