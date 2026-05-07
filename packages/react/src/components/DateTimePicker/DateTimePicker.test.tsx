@@ -350,6 +350,96 @@ describe('DateTimePicker — event callbacks', () => {
   });
 });
 
+describe('DateTimePicker — date rules and edge cases (CLAUDE.md §7)', () => {
+  it('emits an ISO string when a leap-year day (Feb 29 2024) is clicked', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DateTimePicker value="2024-02-15T10:30:00.000Z" onChange={onChange}>
+        <DateTimePicker.Input />
+        <DateTimePicker.Popover>
+          <DateTimePicker.Calendar />
+        </DateTimePicker.Popover>
+      </DateTimePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    await user.click(screen.getByRole('button', { name: /February 29, 2024/ }));
+
+    // Date moved to Feb 29 2024, time preserved (10:30)
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2024-02-29T10:30:/));
+  });
+
+  it('blocks clicks outside [before, after] (minDate/maxDate equivalent)', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DateTimePicker
+        value="2026-01-15T10:00:00.000Z"
+        onChange={onChange}
+        disabled={[{ before: '2026-01-10T00:00:00.000Z' }, { after: '2026-01-20T00:00:00.000Z' }]}
+      >
+        <DateTimePicker.Input />
+        <DateTimePicker.Popover>
+          <DateTimePicker.Calendar />
+        </DateTimePicker.Popover>
+      </DateTimePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+
+    const day5 = screen.getByRole('button', { name: /January 5, 2026/ });
+    expect(day5).toBeDisabled();
+    await user.click(day5);
+    expect(onChange).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole('button', { name: /January 12, 2026/ }));
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-12T10:00:/));
+  });
+
+  it('blocks per-day disabled rules (dayOfWeek)', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DateTimePicker
+        value="2026-01-15T10:00:00.000Z"
+        onChange={onChange}
+        disabled={[{ dayOfWeek: [0, 6] }]}
+      >
+        <DateTimePicker.Input />
+        <DateTimePicker.Popover>
+          <DateTimePicker.Calendar />
+        </DateTimePicker.Popover>
+      </DateTimePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    const sat = screen.getByRole('button', { name: /January 10, 2026/ });
+    expect(sat).toBeDisabled();
+    expect(sat.closest('[role="gridcell"]')).toHaveAttribute('aria-disabled', 'true');
+
+    await user.click(sat);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('keyboard ArrowLeft skips disabled days', async () => {
+    const user = userEvent.setup();
+    render(
+      <DateTimePicker
+        value="2026-01-12T10:00:00.000Z"
+        onChange={vi.fn()}
+        disabled={[{ dayOfWeek: [0, 6] }]}
+      >
+        <DateTimePicker.Input />
+        <DateTimePicker.Popover>
+          <DateTimePicker.Calendar />
+        </DateTimePicker.Popover>
+      </DateTimePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('button', { name: /January 9, 2026/ })).toHaveFocus();
+  });
+});
+
 describe('DateTimePicker — SSR safety', () => {
   it('renderToString runs without errors on the server', async () => {
     const { renderToString } = await import('react-dom/server');

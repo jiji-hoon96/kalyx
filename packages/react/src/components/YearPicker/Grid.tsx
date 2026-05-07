@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { HTMLAttributes } from 'react';
 import type { ISODateString } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
+import { useGridState } from '../_shared/grid-keyboard.js';
 
 export interface YearPickerGridClassNames {
   root?: string;
@@ -13,7 +14,6 @@ export interface YearPickerGridClassNames {
   year?: string;
   yearSelected?: string;
   yearCurrent?: string;
-  yearDisabled?: string;
 }
 
 export interface YearPickerGridProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
@@ -41,7 +41,6 @@ export function YearPickerGrid({ classNames, ...props }: YearPickerGridProps) {
   const { adapter, viewMonth, value, displayTimezone, labels } = ctx;
 
   const currentYear = adapter.getYear(viewMonth);
-
   // Decade block containing the currently viewed year (12-year range)
   const decadeStart = currentYear - (currentYear % 12);
 
@@ -70,20 +69,27 @@ export function YearPickerGrid({ classNames, ...props }: YearPickerGridProps) {
   );
 
   const handleYearSelect = useCallback(
-    (year: number) => {
+    (indexInDecade: number) => {
+      const year = decadeStart + indexInDecade;
       const target = new Date(Date.UTC(year, 0, 1)).toISOString();
       ctx.selectDate(target);
     },
-    [ctx],
+    [ctx, decadeStart],
   );
 
-  const years = Array.from({ length: 12 }, (_, i) => {
-    const year = decadeStart + i;
-    return {
-      value: year,
-      isSelected: year === valueYear,
-      isCurrent: year === todayYear,
-    };
+  // Roving tabIndex: focus the selected cell if the value falls in this decade,
+  // otherwise focus the cell representing the current viewMonth's year.
+  const initialIndex =
+    valueYear !== null && valueYear >= decadeStart && valueYear <= decadeStart + 11
+      ? valueYear - decadeStart
+      : currentYear - decadeStart;
+
+  const { gridRef, focusedIndex, handleKeyDown } = useGridState({
+    initialIndex,
+    onSelect: handleYearSelect,
+    onPageUp: () => navigateDecade(-1),
+    onPageDown: () => navigateDecade(1),
+    onEscape: ctx.close,
   });
 
   const rangeLabel = `${decadeStart}–${decadeStart + 11}`;
@@ -110,7 +116,13 @@ export function YearPickerGrid({ classNames, ...props }: YearPickerGridProps) {
         </button>
       </div>
 
-      <div role="grid" aria-label={rangeLabel} className={classNames?.grid}>
+      <div
+        ref={gridRef}
+        role="grid"
+        aria-label={rangeLabel}
+        className={classNames?.grid}
+        onKeyDown={handleKeyDown}
+      >
         {Array.from({ length: 4 }, (_, rowIndex) => (
           <div
             key={rowIndex}
@@ -118,29 +130,37 @@ export function YearPickerGrid({ classNames, ...props }: YearPickerGridProps) {
             className={classNames?.gridRow}
             style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
           >
-            {years.slice(rowIndex * 3, rowIndex * 3 + 3).map((y) => {
-              const yearClass =
+            {Array.from({ length: 3 }, (_, col) => {
+              const i = rowIndex * 3 + col;
+              const year = decadeStart + i;
+              const isSelected = year === valueYear;
+              const isCurrent = year === todayYear;
+              const isFocused = i === focusedIndex;
+              const cls =
                 [
                   classNames?.year,
-                  y.isSelected && classNames?.yearSelected,
-                  y.isCurrent && classNames?.yearCurrent,
+                  isSelected && classNames?.yearSelected,
+                  isCurrent && classNames?.yearCurrent,
                 ]
                   .filter(Boolean)
                   .join(' ') || undefined;
-
               return (
                 <button
-                  key={y.value}
+                  // Stable index key keeps the DOM node mounted across decade
+                  // navigation so focus on the same-position cell persists.
+                  key={i}
                   type="button"
                   role="gridcell"
-                  aria-selected={y.isSelected || undefined}
-                  aria-current={y.isCurrent ? 'date' : undefined}
-                  data-selected={y.isSelected || undefined}
-                  data-current={y.isCurrent || undefined}
-                  className={yearClass}
-                  onClick={() => handleYearSelect(y.value)}
+                  tabIndex={isFocused ? 0 : -1}
+                  aria-selected={isSelected || undefined}
+                  aria-current={isCurrent ? 'date' : undefined}
+                  data-selected={isSelected || undefined}
+                  data-current={isCurrent || undefined}
+                  data-focused={isFocused || undefined}
+                  className={cls}
+                  onClick={() => handleYearSelect(i)}
                 >
-                  {y.value}
+                  {year}
                 </button>
               );
             })}
