@@ -1,5 +1,12 @@
 # docs-site
 
+## 0.0.3-rc.4
+
+### Patch Changes
+
+- Updated dependencies [df97687]
+  - @kalyx/react@1.0.0-rc.4
+
 ## 0.0.3-rc.3
 
 ### Patch Changes
