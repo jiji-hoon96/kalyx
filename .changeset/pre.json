@@ -18,6 +18,7 @@
     "replace-mutable-ref-object",
     "security-postcss",
     "v1-milestone",
+    "v1-rc1-a11y-ssr-fixes",
     "v1-rc1-blockers",
     "v1-rc1-followup",
     "v1-rc1-major",
