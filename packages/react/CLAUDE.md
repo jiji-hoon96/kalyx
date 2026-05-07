@@ -49,6 +49,6 @@ src/
 ## 빌드
 
 ```bash
-pnpm --filter @kalyx/react build     # tsup: ESM + CJS + DTS (번들 목표 ≤14KB)
+pnpm --filter @kalyx/react build     # tsup: ESM + CJS + DTS (번들 목표 ≤15KB)
 pnpm --filter @kalyx/react typecheck
 ```

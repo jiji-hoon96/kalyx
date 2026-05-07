@@ -10,9 +10,11 @@ import { readFileSync, statSync } from "fs";
 // 13KB → 14KB once full WAI-ARIA grid keyboard navigation (Arrow / Home /
 // End / PageUp / PageDown / Enter / Space + roving tabIndex + auto-refocus)
 // landed across the four 3×4 picker grids (DatePicker.MonthGrid / YearGrid,
-// MonthPicker.Grid, YearPicker.Grid). Still ~3× smaller than
-// react-datepicker (~40KB).
-const TARGET_KB = 14;
+// MonthPicker.Grid, YearPicker.Grid). 14KB → 15KB once `before`/`after`
+// rule based fully-disabled-month/year detection (+ click-block + keyboard
+// skip-disabled) was added to MonthPicker.Grid and YearPicker.Grid in
+// v1.0-rc.4. Still ~3× smaller than react-datepicker (~40KB).
+const TARGET_KB = 15;
 
 const BUNDLES = [
 	{ label: "ESM", path: "packages/react/dist/index.js" },

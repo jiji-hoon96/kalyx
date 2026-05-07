@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
+import type { DisabledRule } from '@kalyx/core';
 import { YearPicker } from './index.js';
 
 function renderYearPicker(
@@ -10,7 +11,7 @@ function renderYearPicker(
     value?: string | null;
     defaultValue?: string;
     onChange?: (v: string | null) => void;
-    disabled?: boolean;
+    disabled?: boolean | DisabledRule[];
     displayTimezone?: string;
   } = {},
 ) {
@@ -238,6 +239,119 @@ describe('YearPicker — keyboard navigation (grid pattern)', () => {
     await user.keyboard('{ArrowLeft} ');
 
     expect(onChange).toHaveBeenCalledWith('2025-01-01T00:00:00.000Z');
+  });
+});
+
+describe('YearPicker — disabled years (before/after rules)', () => {
+  it('marks years that fall entirely before a min as disabled', async () => {
+    const user = userEvent.setup();
+    renderYearPicker({
+      value: '2026-01-01T00:00:00.000Z',
+      disabled: [{ before: '2024-01-01T00:00:00.000Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('gridcell', { name: '2016' })).toBeDisabled();
+    expect(screen.getByRole('gridcell', { name: '2023' })).toBeDisabled();
+    expect(screen.getByRole('gridcell', { name: '2024' })).not.toBeDisabled();
+    expect(screen.getByRole('gridcell', { name: '2026' })).not.toBeDisabled();
+  });
+
+  it('marks years that fall entirely after a max as disabled', async () => {
+    const user = userEvent.setup();
+    renderYearPicker({
+      value: '2026-01-01T00:00:00.000Z',
+      disabled: [{ after: '2026-12-31T23:59:59.999Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('gridcell', { name: '2027' })).toBeDisabled();
+    expect(screen.getByRole('gridcell', { name: '2026' })).not.toBeDisabled();
+  });
+
+  it('exposes aria-disabled on disabled cells', async () => {
+    const user = userEvent.setup();
+    renderYearPicker({
+      value: '2026-01-01T00:00:00.000Z',
+      disabled: [{ before: '2024-01-01T00:00:00.000Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('gridcell', { name: '2020' })).toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('does not commit when a disabled year is clicked', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderYearPicker({
+      value: '2026-01-01T00:00:00.000Z',
+      disabled: [{ before: '2024-01-01T00:00:00.000Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+    await user.click(screen.getByRole('gridcell', { name: '2020' }));
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  it('falls back to the first enabled cell when value points to a disabled year', async () => {
+    const user = userEvent.setup();
+    // Value lands on 2020 (disabled). First enabled in this decade is 2024.
+    renderYearPicker({
+      value: '2020-01-01T00:00:00.000Z',
+      disabled: [{ before: '2024-01-01T00:00:00.000Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+
+    expect(screen.getByRole('gridcell', { name: '2024' })).toHaveAttribute('tabIndex', '0');
+    expect(screen.getByRole('gridcell', { name: '2020' })).toHaveAttribute('tabIndex', '-1');
+    // Keyboard navigation works from the fallback cell.
+    await user.keyboard('{ArrowRight}');
+    expect(screen.getByRole('gridcell', { name: '2025' })).toHaveFocus();
+  });
+
+  it('re-anchors focus when PageDown lands the focused cell on a now-disabled year', async () => {
+    const user = userEvent.setup();
+    // 2026 enabled, but the next decade (2028–2039) is all after the cutoff
+    // except 2028 itself. PageDown into 2028–2039 should re-anchor focus
+    // from index 10 (which would be 2038 — disabled) to 2028 (first enabled).
+    renderYearPicker({
+      value: '2026-01-01T00:00:00.000Z',
+      disabled: [{ after: '2028-12-31T23:59:59.999Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('gridcell', { name: '2026' })).toHaveFocus();
+
+    await user.keyboard('{PageDown}');
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', '2028–2039');
+    // Index 10 in this decade is 2038 — disabled. Focus re-anchors to 2028
+    // (first enabled).
+    expect(screen.getByRole('gridcell', { name: '2028' })).toHaveFocus();
+  });
+
+  it('keyboard ArrowLeft skips disabled years', async () => {
+    const user = userEvent.setup();
+    renderYearPicker({
+      value: '2026-01-01T00:00:00.000Z',
+      disabled: [{ before: '2024-01-01T00:00:00.000Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: '2026' }).focus();
+
+    // ArrowLeft 2026 → 2025
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('gridcell', { name: '2025' })).toHaveFocus();
+
+    // ArrowLeft 2025 → 2024 (last enabled in this decade)
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('gridcell', { name: '2024' })).toHaveFocus();
+
+    // ArrowLeft from 2024: 2023..2016 all disabled → focus stays.
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('gridcell', { name: '2024' })).toHaveFocus();
   });
 });
 
