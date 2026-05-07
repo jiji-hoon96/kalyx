@@ -218,10 +218,7 @@ export function RangePickerCalendar({
         // WAI-ARIA grid pattern: skip disabled cells while keyboard-navigating.
         // Step in the original direction up to one full grid (42 cells) before giving up.
         const skipStep =
-          e.key === 'ArrowLeft' ||
-          e.key === 'ArrowUp' ||
-          e.key === 'PageUp' ||
-          e.key === 'Home'
+          e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'Home'
             ? -1
             : 1;
         let attempts = 0;
@@ -281,11 +278,12 @@ export function RangePickerCalendar({
         </button>
       </div>
 
+      {/* aria-multiselectable intentionally omitted: a date range is one selection
+          (two endpoints), not multi-select. */}
       <table
         ref={gridRef}
         role="grid"
         aria-label={title}
-        aria-multiselectable="true"
         aria-rowcount={weeks.length + 1}
         aria-colcount={7}
         className={classNames?.grid}

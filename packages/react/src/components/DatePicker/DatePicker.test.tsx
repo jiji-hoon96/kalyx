@@ -507,8 +507,8 @@ describe('DatePicker — Presets', () => {
         </DatePicker.Presets>
       </DatePicker>,
     );
-    expect(screen.getByRole('option', { name: 'Today' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'Tomorrow' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Today' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Tomorrow' })).toBeInTheDocument();
   });
 
   it('commits today when the today preset is clicked', async () => {
@@ -522,7 +522,7 @@ describe('DatePicker — Presets', () => {
       </DatePicker>,
     );
 
-    await user.click(screen.getByRole('option', { name: 'Today' }));
+    await user.click(screen.getByRole('button', { name: 'Today' }));
 
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/));
@@ -539,12 +539,12 @@ describe('DatePicker — Presets', () => {
       </DatePicker>,
     );
 
-    await user.click(screen.getByRole('option', { name: 'Christmas' }));
+    await user.click(screen.getByRole('button', { name: 'Christmas' }));
 
     expect(onChange).toHaveBeenCalledWith('2026-12-25T00:00:00.000Z');
   });
 
-  it('marks the matching preset as aria-selected', () => {
+  it('marks the matching preset as aria-pressed', () => {
     render(
       <DatePicker value="2026-12-25T00:00:00.000Z" onChange={vi.fn()}>
         <DatePicker.Presets>
@@ -554,12 +554,12 @@ describe('DatePicker — Presets', () => {
       </DatePicker>,
     );
 
-    expect(screen.getByRole('option', { name: 'Christmas' })).toHaveAttribute(
-      'aria-selected',
+    expect(screen.getByRole('button', { name: 'Christmas' })).toHaveAttribute(
+      'aria-pressed',
       'true',
     );
-    expect(screen.getByRole('option', { name: "New Year's" })).toHaveAttribute(
-      'aria-selected',
+    expect(screen.getByRole('button', { name: "New Year's" })).toHaveAttribute(
+      'aria-pressed',
       'false',
     );
   });
@@ -575,7 +575,7 @@ describe('DatePicker — Presets', () => {
       </DatePicker>,
     );
 
-    await user.click(screen.getByRole('option', { name: 'Start of month' }));
+    await user.click(screen.getByRole('button', { name: 'Start of month' }));
 
     // The first day of the current month (any month) — ends with "01T..."
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/-01T00:00:00\.000Z$/));
@@ -592,7 +592,7 @@ describe('DatePicker — Presets', () => {
       </DatePicker>,
     );
 
-    await user.click(screen.getByRole('option', { name: 'Today' }));
+    await user.click(screen.getByRole('button', { name: 'Today' }));
     expect(onChange).not.toHaveBeenCalled();
   });
 });

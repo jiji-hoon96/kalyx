@@ -141,11 +141,13 @@ export function DatePickerPreset({
     return ctx.adapter.isSameDay(ctx.value, target, ctx.displayTimezone);
   })();
 
+  // role="option" is invalid outside role="listbox"/role="combobox"; the parent
+  // <DatePicker.Presets> is role="group". Use a regular button with aria-pressed
+  // so the active state is announced as a toggle.
   return (
     <button
       type="button"
-      role="option"
-      aria-selected={isActive}
+      aria-pressed={isActive}
       data-active={isActive || undefined}
       disabled={ctx.isDisabled}
       onClick={handleClick}

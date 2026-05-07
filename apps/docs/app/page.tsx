@@ -18,7 +18,7 @@ export default function HomePage() {
 				<strong>Headless지만 Calendar Grid만 제공하는 react-day-picker</strong>
 				와, <strong>통합됐지만 CSS 필수 import에 timezone 버그가 만성인 react-datepicker</strong>.
 				Kalyx는 이 빈자리를 채운다 — Headless, Composition API, 통합된 7개
-				picker (Date/Range/Time/DateTime/Month/Year/Week), SSR 안전, &lt; 12KB.
+				picker (Date/Range/Time/DateTime/Month/Year/Week), SSR 안전, ~12 KB (≤ 13 KB).
 			</p>
 
 			<h2>핵심 특징</h2>
@@ -57,7 +57,7 @@ export default function HomePage() {
 					<code>RangePicker.Presets</code>로 원클릭 빠른 선택.
 				</li>
 				<li>
-					<strong>{'< 12KB gzip'}</strong> — 현재 11.37KB (7개 picker 전체).
+					<strong>{'≤ 13KB gzip'}</strong> — 현재 12.27KB (7개 picker 전체).
 					react-datepicker (40-60KB) 대비 1/4 이상 가벼움.
 				</li>
 			</ul>

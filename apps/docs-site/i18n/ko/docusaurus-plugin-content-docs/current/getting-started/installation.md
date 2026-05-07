@@ -69,5 +69,5 @@ TypeScript 컴파일과 페이지 렌더링에 input이 보이면 완료입니�
 
 ## 다음
 
-- [빠른 시작 →](./quick-start.mdx)
-- [Composition API →](../concepts/composition.md)
+- [빠른 시작 →](./quick-start)
+- [Composition API →](../concepts/composition)

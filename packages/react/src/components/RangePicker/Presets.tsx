@@ -178,11 +178,12 @@ export function RangePickerPreset({
     );
   })();
 
+  // role="option" is invalid outside role="listbox"/role="combobox"; parent is
+  // role="group". Use a regular toggle button with aria-pressed.
   return (
     <button
       type="button"
-      role="option"
-      aria-selected={isActive}
+      aria-pressed={isActive}
       data-active={isActive || undefined}
       disabled={ctx.isDisabled}
       onClick={handleClick}

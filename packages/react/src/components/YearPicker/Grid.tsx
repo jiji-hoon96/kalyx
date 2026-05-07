@@ -1,5 +1,6 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { HTMLAttributes } from 'react';
+import type { ISODateString } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
 
 export interface YearPickerGridClassNames {
@@ -54,7 +55,12 @@ export function YearPickerGrid({ classNames, ...props }: YearPickerGridProps) {
     }
   }, [value, adapter, displayTimezone]);
 
-  const todayYear = adapter.getYear(adapter.today(displayTimezone));
+  // SSR-safe: today is null on server and during hydration, set after mount.
+  const [today, setToday] = useState<ISODateString | null>(null);
+  useEffect(() => {
+    setToday(adapter.today(displayTimezone));
+  }, [adapter, displayTimezone]);
+  const todayYear = today !== null ? adapter.getYear(today) : -1;
 
   const navigateDecade = useCallback(
     (direction: number) => {

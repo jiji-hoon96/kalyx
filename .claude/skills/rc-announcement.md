@@ -17,14 +17,15 @@ triggers:
 
 ---
 
-## 전제 상태 (2026-04-21 기준 handoff 시점)
+## 전제 상태 (2026-05-06 기준 handoff 시점)
 
-- `.changeset/pre.json`: `mode: pre`, `tag: rc`, `@kalyx/core` / `@kalyx/react` 버전 `1.0.0-rc.0` (예상)
-- main에 병합된 주요 준비 작업:
-  - feat/v1-rc-preparation (ca7180e)
-  - MonthPicker / YearPicker / WeekPicker 추가
-  - Presets, onOpenChange, onCalendarNavigate 콜백
-- Bundle 수치: **11.36 KB** gzip (모든 README·docs·배지 통일 완료 — 2026-04-25)
+- `.changeset/pre.json`: `mode: pre`, `tag: rc`, `@kalyx/core` / `@kalyx/react` 버전 `1.0.0-rc.3`
+- 번들 한계 12 → **13 KB**로 상향 (commit e93d082, PR #37)
+- rc.0 → rc.3 동안의 주요 변경:
+  - P0 release blockers (#25), P1 a11y·API·docs (#26), perf memoization (#28), P2 polish (#29)
+  - 포커스된 날짜에 Enter 키 커밋 + 13KB ceiling (#36, #37)
+- Bundle 측정값: **12.27 KB / 12.48 KB** gzip (ESM / CJS, target ≤ 13KB)
+- **dist-tag 주의**: `pre.json.tag: rc` 이므로 publish 시 `--tag rc`. 사용자 안내가 `@next` 라면 통일 필요.
 
 > 이 상태는 시점 스냅샷. 새 세션에서 먼저 "작업 전 검증"으로 실제 상태를 확인한다.
 
@@ -142,18 +143,18 @@ pnpm --filter docs-site start    # 로컬 브라우저에서 배너 확인
 
 ### Step 4. README 배지 + Try the RC 섹션
 
-**현재 상태**: README·docs·배지 모두 `11.36KB`로 통일 완료 (2026-04-25).
+**현재 상태 (2026-05-06)**: rc.3 시점, ESM 12.27 KB / CJS 12.48 KB. 한계 13KB. README·docs·배지 12KB → 13KB + 11.36 → 12.07 통일 작업 완료.
 
 **변경 지점** (`README.md`, `README.ko.md` 둘 다):
-1. bundle 배지 gzip 수치 업데이트
-2. npm 배지 아래 RC 배지 추가:
+1. bundle 배지 gzip 수치 업데이트 (12.27KB)
+2. npm 배지 아래 RC 배지 추가 — **dist-tag는 `rc`** (`pre.json.tag` 와 일치):
    ```md
-   [![RC](https://img.shields.io/npm/v/@kalyx/react/next?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
+   [![RC](https://img.shields.io/npm/v/@kalyx/react/rc?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
    ```
 3. 설치 스니펫 옆에 "Try the RC" 블록 추가:
    ```md
    > **Trying the v1.0 release candidate?**
-   > `pnpm add @kalyx/react@next` — please report issues with the `v1-rc` tag.
+   > `pnpm add @kalyx/react@rc` — please report issues with the `v1-rc` tag.
    ```
 
 ---
@@ -163,16 +164,16 @@ pnpm --filter docs-site start    # 로컬 브라우저에서 배너 확인
 **업로드하지 말 것**. 초안만 `.github/RC_SOCIAL_DRAFT.md`에 저장하고 사용자가 확인 후 직접 게시.
 
 X/Twitter (280자):
-> Kalyx v1.0-rc is out — the headless React DatePicker that ships complete. Single / range / time / month / year / week pickers, ISO 8601 UTC, IANA timezone, ~11KB gzip.
+> Kalyx v1.0-rc is out — the headless React DatePicker that ships complete. Single / range / time / month / year / week pickers, ISO 8601 UTC, IANA timezone, ~12KB gzip.
 >
-> `pnpm add @kalyx/react@next`
+> `pnpm add @kalyx/react@rc`
 >
 > Feedback welcome.
 
 LinkedIn:
-> After months of composition-first API work, Kalyx v1.0 is in release candidate. One library covers Date, Range, Time, DateTime, Month, Year, Week pickers — zero CSS, SSR-safe, IANA timezone. Bundle stays under 12KB gzipped.
+> After months of composition-first API work, Kalyx v1.0 is in release candidate. One library covers Date, Range, Time, DateTime, Month, Year, Week pickers — zero CSS, SSR-safe, IANA timezone. Bundle stays at ~12KB gzipped (≤13KB ceiling).
 >
-> Trying the RC: `pnpm add @kalyx/react@next`. Issues: https://github.com/jiji-hoon96/kalyx/issues (tag `v1-rc`).
+> Trying the RC: `pnpm add @kalyx/react@rc`. Issues: https://github.com/jiji-hoon96/kalyx/issues (tag `v1-rc`).
 
 ---
 
@@ -190,7 +191,7 @@ LinkedIn:
 
 - [ ] `v1-rc` 라벨 open 이슈 0건 (또는 모두 "v1.1 이후"로 이관)
 - [ ] RC 기간 2주 이상 경과
-- [ ] 번들 크기 12KB gzip 이하 유지 (`pnpm check-bundle` 통과)
+- [ ] 번들 크기 13KB gzip 이하 유지 (`pnpm check-bundle` 통과)
 - [ ] 모든 picker에 대해 axe 접근성 통과
 - [ ] SSR 스모크 테스트 통과 (`e2e-and-docs.yml` 그린)
 

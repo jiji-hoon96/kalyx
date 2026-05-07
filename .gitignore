@@ -10,4 +10,4 @@ test-results
 *.tsbuildinfo
 .next
 out
- 
+scheduled_tasks.lock

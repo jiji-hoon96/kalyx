@@ -1,6 +1,6 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { HTMLAttributes } from 'react';
-import { getMonthName } from '@kalyx/core';
+import { getMonthName, type ISODateString } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
 
 export interface MonthPickerGridClassNames {
@@ -54,9 +54,13 @@ export function MonthPickerGrid({ classNames, ...props }: MonthPickerGridProps) 
     }
   }, [value, adapter, displayTimezone]);
 
-  const today = adapter.today(displayTimezone);
-  const todayYear = adapter.getYear(today);
-  const todayMonth = adapter.getMonth(today);
+  // SSR-safe: today is null on server and during hydration, set after mount.
+  const [today, setToday] = useState<ISODateString | null>(null);
+  useEffect(() => {
+    setToday(adapter.today(displayTimezone));
+  }, [adapter, displayTimezone]);
+  const todayYear = today !== null ? adapter.getYear(today) : -1;
+  const todayMonth = today !== null ? adapter.getMonth(today) : -1;
 
   const navigateYear = useCallback(
     (direction: number) => {
