@@ -42,7 +42,7 @@
 - **React Aria**: 기능 완전하지만 복잡하고, `@internationalized/date` 의존 강제 (date-fns 비호환).
 - **Headless UI**: DatePicker 구현 거부 ("유지보수가 너무 큼").
 
-**우리가 채우는 공백:** Headless + Input·Calendar·TimePicker·RangePicker 통합 + date-fns 호환 + SSR 안전 + ≤ 14KB
+**우리가 채우는 공백:** Headless + Input·Calendar·TimePicker·RangePicker 통합 + date-fns 호환 + SSR 안전 + ≤ 15KB
 
 ### 포지셔닝
 
@@ -69,7 +69,7 @@ Ark UI가 포기한 TimePicker 통합
 | 스타일링 | Zero CSS (Headless) | CSS 충돌 원천 차단 |
 | 날짜 코어 | Adapter 패턴 + date-fns 기본 (v1.1에서 `@kalyx/adapter-date-fns`로 분리 예정 — [§14](#14-현재-이니셔티브-2026-04-기준)) | Temporal API 전환 대비, 사용자가 dayjs/luxon 선택 가능 |
 | 포지셔닝 | Floating UI | 3KB, SSR 안전, Popper.js 후계자 |
-| 번들 목표 | **≤ 14KB gzip** | react-datepicker 62KB 대비. RC 단계 12 → 13KB 상향(commit e93d082), v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향 |
+| 번들 목표 | **≤ 15KB gzip** | react-datepicker 62KB 대비. RC 단계 12 → 13KB 상향(commit e93d082), v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향, v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향 |
 | 테스트 | Vitest + Testing Library + jest-axe | |
 | 빌드 | tsup (ESM + CJS 이중 출력) | |
 | 모노레포 | pnpm workspaces | |
@@ -248,7 +248,7 @@ kalyx/
 │   ├── docs/                         ← 데모 사이트 (Next.js, 정적 빌드)
 │   └── docs-site/                    ← 문서 사이트 (Docusaurus, i18n)
 ├── scripts/
-│   ├── check-bundle-size.js          ← 번들 크기 측정 (14KB 제한)
+│   ├── check-bundle-size.js          ← 번들 크기 측정 (15KB 제한)
 │   └── check-tree-shaking.js         ← tree-shaking 검증
 ├── test/
 │   └── setup.ts                      ← Vitest 전역 설정
@@ -500,7 +500,7 @@ PR 열기 전 확인:
 | 커맨드 | 설명 |
 |---|---|
 | `/new-component` | 새 서브 컴포넌트 스캐폴딩 (컴포넌트·타입·테스트 파일 생성) |
-| `/check-bundle` | 빌드 후 번들 크기 측정, 14KB 초과 시 실패 |
+| `/check-bundle` | 빌드 후 번들 크기 측정, 15KB 초과 시 실패 |
 | `/check-a11y` | axe 자동 검사 + ARIA 수동 체크리스트 |
 | `/release` | Changesets 기반 버전 범프·CHANGELOG·npm 배포 가이드 |
 
@@ -591,7 +591,7 @@ pnpm changeset publish # npm 배포 (CI 자동)
 - **상태**: `1.0.0-rc.3` 까지 publish 됨 (`.changeset/pre.json` `mode: pre`, `tag: rc`). 17개 changeset이 누적된 상태로 pre-mode 유지 중.
 - **남은 작업**: npm `next` 사용자 안내 vs 실제 dist-tag(`rc`) 통일, GitHub Release 노트 갱신, RC 기간 만료 후 `pnpm changeset pre exit` → 1.0.0 stable
 - **스킬 파일**: `.claude/skills/rc-announcement.md`
-- **졸업 조건**: RC 기간 2주 + `v1-rc` open 이슈 0건 + 번들 ≤14KB + axe/SSR 그린
+- **졸업 조건**: RC 기간 2주 + `v1-rc` open 이슈 0건 + 번들 ≤15KB + axe/SSR 그린
 
 ### C. 어댑터 중립 추출 (Option C — Hybrid)
 
@@ -631,7 +631,7 @@ pnpm changeset publish # npm 배포 (CI 자동)
 □ 접근성 기준을 만족하는가? (axe 통과)
 □ 테스트가 작성됐는가? (커버리지 기준 충족)
 □ JSDoc 주석이 있는가? (공개 API)
-□ 번들에 불필요한 의존성을 추가하지 않았는가? (14KB 목표)
+□ 번들에 불필요한 의존성을 추가하지 않았는가? (15KB 목표)
 □ 내부 구현이 index.ts에 실수로 export되지 않았는가?
 □ changeset 파일을 추가했는가? (공개 API 변경 시 필수)
 ```

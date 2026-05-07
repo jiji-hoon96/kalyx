@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
+import type { DisabledRule } from '@kalyx/core';
 import { MonthPicker } from './index.js';
 
 function renderMonthPicker(
@@ -10,7 +11,7 @@ function renderMonthPicker(
     value?: string | null;
     defaultValue?: string;
     onChange?: (v: string | null) => void;
-    disabled?: boolean;
+    disabled?: boolean | DisabledRule[];
     displayTimezone?: string;
     locale?: string;
   } = {},
@@ -295,6 +296,129 @@ describe('MonthPicker — keyboard navigation (grid pattern)', () => {
     await user.keyboard('{ArrowRight} ');
 
     expect(onChange).toHaveBeenCalledWith('2026-02-01T00:00:00.000Z');
+  });
+});
+
+describe('MonthPicker — disabled months (before/after rules)', () => {
+  it('marks months that fall entirely before a min as disabled', async () => {
+    const user = userEvent.setup();
+    renderMonthPicker({
+      value: '2026-06-15T00:00:00.000Z',
+      disabled: [{ before: '2026-04-01T00:00:00.000Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('gridcell', { name: 'January' })).toBeDisabled();
+    expect(screen.getByRole('gridcell', { name: 'March' })).toBeDisabled();
+    // The month containing the cutoff is partially-disabled (some days before
+    // the cutoff, some after) so the whole month stays selectable.
+    expect(screen.getByRole('gridcell', { name: 'April' })).not.toBeDisabled();
+    expect(screen.getByRole('gridcell', { name: 'June' })).not.toBeDisabled();
+  });
+
+  it('marks months that fall entirely after a max as disabled', async () => {
+    const user = userEvent.setup();
+    renderMonthPicker({
+      value: '2026-06-15T00:00:00.000Z',
+      disabled: [{ after: '2026-09-30T23:59:59.999Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('gridcell', { name: 'October' })).toBeDisabled();
+    expect(screen.getByRole('gridcell', { name: 'December' })).toBeDisabled();
+    expect(screen.getByRole('gridcell', { name: 'September' })).not.toBeDisabled();
+  });
+
+  it('exposes aria-disabled on disabled cells', async () => {
+    const user = userEvent.setup();
+    renderMonthPicker({
+      value: '2026-06-15T00:00:00.000Z',
+      disabled: [{ before: '2026-04-01T00:00:00.000Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('gridcell', { name: 'February' })).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
+  });
+
+  it('does not commit when a disabled month is clicked', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderMonthPicker({
+      value: '2026-06-15T00:00:00.000Z',
+      disabled: [{ before: '2026-04-01T00:00:00.000Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+    await user.click(screen.getByRole('gridcell', { name: 'February' }));
+
+    expect(onChange).not.toHaveBeenCalled();
+    // The popover stays open because no commit happened
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  it('falls back to the first enabled cell when value points to a disabled month', async () => {
+    const user = userEvent.setup();
+    // Value lands on February (disabled). Initial focus should fall back to
+    // April (first enabled). Disabled buttons can't receive DOM focus, so
+    // without the fallback the user would have nowhere to navigate from.
+    renderMonthPicker({
+      value: '2026-02-15T00:00:00.000Z',
+      disabled: [{ before: '2026-04-01T00:00:00.000Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveAttribute('tabIndex', '0');
+    expect(screen.getByRole('gridcell', { name: 'February' })).toHaveAttribute('tabIndex', '-1');
+    // Keyboard navigation works from the fallback cell.
+    await user.keyboard('{ArrowRight}');
+    expect(screen.getByRole('gridcell', { name: 'May' })).toHaveFocus();
+  });
+
+  it('re-anchors focus when PageDown lands the focused cell on a now-disabled month', async () => {
+    const user = userEvent.setup();
+    // April 2026 enabled, but in 2027 only Jan-Mar are enabled (rest disabled
+    // by `after`). PageDown into 2027 should re-anchor focus from April (now
+    // disabled) to the first enabled cell (January).
+    renderMonthPicker({
+      value: '2026-04-15T00:00:00.000Z',
+      disabled: [{ after: '2027-03-31T23:59:59.999Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveFocus();
+
+    await user.keyboard('{PageDown}');
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', '2027 months');
+    // April 2027 is now after the cutoff → disabled. Focus re-anchors to
+    // January (first enabled in this year).
+    expect(screen.getByRole('gridcell', { name: 'January' })).toHaveFocus();
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveAttribute('tabIndex', '-1');
+  });
+
+  it('keyboard ArrowLeft skips disabled months', async () => {
+    const user = userEvent.setup();
+    renderMonthPicker({
+      value: '2026-06-15T00:00:00.000Z',
+      disabled: [{ before: '2026-04-01T00:00:00.000Z' }],
+    });
+
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: 'June' }).focus();
+
+    // ArrowLeft from June → May (enabled).
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('gridcell', { name: 'May' })).toHaveFocus();
+
+    // ArrowLeft from May → April (last enabled).
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveFocus();
+
+    // ArrowLeft from April: Mar/Feb/Jan all disabled → focus stays.
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveFocus();
   });
 });
 
