@@ -1,5 +1,72 @@
 # @kalyx/react
 
+## 1.0.0-rc.5
+
+### Patch Changes
+
+- 9f3cf9b: WAI-ARIA grid keyboard navigation for the four 3×4 picker grids
+  (`DatePicker.MonthGrid`, `DatePicker.YearGrid`, `MonthPicker.Grid`,
+  `YearPicker.Grid`).
+
+  Before, these grids declared `role="grid"` but had no key handler — keyboard
+  users could not select a month or year, in violation of CLAUDE.md §7.
+
+  Now each grid implements:
+  - **Arrow keys** — ±1 column / ±3 rows, clamped to grid bounds.
+  - **Home / End** — first / last cell of the current row.
+  - **PageUp / PageDown** — previous / next year (or decade for year grids).
+  - **Enter / Space** — commit the focused cell (drilldown grids switch view via
+    `onSelect`; commit grids close the popover via `ctx.selectDate`).
+  - **Roving tabIndex** — only the focused cell has `tabIndex=0`; the
+    `data-focused` attribute follows.
+  - **Auto-refocus** — DOM focus moves with `focusedIndex` so PageUp/Down lands
+    the user back on the same column position. Cells use stable index keys so
+    the buttons persist across page nav.
+
+  Component-level integration tests added per CLAUDE.md §7 across `DatePicker`,
+  `RangePicker`, `DateTimePicker`, and `WeekPicker`: leap-year (Feb 29 2024)
+  click commit, `before`/`after` rule click block, `dayOfWeek` rule click block
+  plus visual `aria-disabled`, and keyboard ArrowLeft skip-disabled.
+
+  **Bundle target raised to 14 KB** — full grid keyboard nav (state + handlers
+  - auto-refocus) added ~1.4 KB gzip across the four grids. Measured 12.85 KB
+    ESM / 13.64 KB CJS at this point. README, docs, `scripts/check-bundle-size.js`,
+    PR template, and CI gate updated to ≤14 KB.
+
+  **Internal:** new shared `useGridState` hook in
+  `packages/react/src/components/_shared/grid-keyboard.ts` (not exported from
+  the package public API) consolidates keyboard handling and roving-focus
+  state across all four grids.
+
+- 9b19df4: `MonthPicker.Grid` and `YearPicker.Grid` now respect `before` / `after`
+  disabled rules — months/years that fall entirely outside the allowed range
+  are rendered with the `disabled` HTML attribute, `aria-disabled="true"`, the
+  new `monthDisabled` / `yearDisabled` className slots, and are skipped during
+  keyboard navigation.
+
+  This was deliberately deferred from PR #46 to keep that bundle under 14 KB;
+  it lands now with a 14 → 15 KB ceiling bump.
+
+  Behavioral details:
+  - A month is "fully disabled" only when every day in it is excluded by a
+    `before` or `after` rule. `date` and `dayOfWeek` rules can never disable a
+    whole month, so they remain a per-day concern.
+  - A year follows the same rule against `[Jan 1 00:00:00, Dec 31 23:59:59.999]`.
+  - Click and keyboard `Enter` / `Space` on a disabled cell are no-ops.
+  - Initial focus and post-PageUp/PageDown focus both re-anchor to the first
+    enabled cell when the natural target is itself disabled. (A `disabled`
+    HTML button can't receive DOM focus, so without the re-anchor the user
+    would silently lose keyboard navigation.)
+
+  **Internal:** `useGridState` regains its optional `disabledFlags` parameter
+  plus a focus re-anchor effect; `isRangeFullyDisabled` is reintroduced as an
+  internal helper. Neither is exposed in the package public API.
+
+  **Bundle target:** raised 14 → 15 KB (measured 13.96 KB ESM / 14.21 KB CJS).
+  Same precedent as the 12 → 13 KB and 13 → 14 KB bumps when prior feature
+  work landed. Updated `scripts/check-bundle-size.js`, `pr-check.yml`, READMEs,
+  CLAUDE.md, PR template, and `check-bundle.md`.
+
 ## 1.0.0-rc.4
 
 ### Patch Changes
