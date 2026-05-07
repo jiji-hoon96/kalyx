@@ -366,13 +366,37 @@ export { WeekPicker } from './components/WeekPicker';
 export { useDatePicker } from './hooks/useDatePicker';
 export { useRangePicker } from './hooks/useRangePicker';
 export { useTimePicker } from './hooks/useTimePicker';
-// 타입 + 어댑터 (re-export from @kalyx/core)
+// 컴포넌트별 props/classNames 타입 — 각 컴포넌트의 index.ts 가 re-export.
+// (예: DatePickerRootProps, DatePickerCalendarClassNames, RangePickerPresetProps,
+//      TimePickerHourListProps, MonthPickerGridProps 등)
+// Hook 옵션/반환 타입
+export type { UseDatePickerOptions, UseDatePickerReturn } from './hooks/useDatePicker';
+export type { UseRangePickerOptions, UseRangePickerReturn } from './hooks/useRangePicker';
+export type { UseTimePickerOptions, UseTimePickerReturn } from './hooks/useTimePicker';
+// 어댑터 + 코어 타입/유틸 (re-export from @kalyx/core)
 export { DateFnsAdapter } from '@kalyx/core';
-export type { ISODateString, DateRange, DisabledRule, DateAdapter, CalendarDay, TimeValue } from '@kalyx/core';
+export type {
+  ISODateString, DateRange, DisabledRule, DateAdapter,
+  CalendarDay, CalendarWeek, CalendarGrid, CalendarOptions, WeekStartsOn,
+  TimeValue, WeekdayInfo,
+  DatePickerLabels, RangePickerLabels, TimePickerLabels, DateTimePickerLabels,
+} from '@kalyx/core';
+export {
+  DEFAULT_DATEPICKER_LABELS, DEFAULT_RANGEPICKER_LABELS,
+  DEFAULT_TIMEPICKER_LABELS, DEFAULT_DATETIMEPICKER_LABELS,
+} from '@kalyx/core';
 
 // ❌ 내부 구현 절대 export 금지
 export { formatDateInternal } from './utils/internal';
 ```
+
+`@kalyx/core`는 위 re-export 외에도 직접 사용자에게 다음을 노출한다:
+`getCalendarDays`, `isDateDisabled`, `minDate`, `maxDate`, `normalizeISO`, `parseInputValue`,
+`setTime`, `getTime`, `parseTimeString`, `formatTimeString`, `formatTimeFromISO`,
+`to12Hour`, `to24Hour`, `generateHours`, `generateMinutes`, `isSameTime`,
+`getMonthName`, `formatMonthYear`, `getWeekdayNames`, `formatFullDate`,
+`formatInTimezone`, `startOfDayInTimezone`, `isSameDayInTimezone`, `todayInTimezone`,
+`getTimezoneOffsetMinutes`, `civilMidnightFromUtcDay`, `getTimeInTimezone`, `setTimeInTimezone`.
 
 ---
 
@@ -548,7 +572,7 @@ pnpm changeset publish # npm 배포 (CI 자동)
 |---|---|---|
 | `pr-check.yml` | PR, main push | typecheck·lint·test·build·번들크기·SSR 검사 |
 | `release.yml` | main push | Changesets 버전 PR 생성 또는 npm publish |
-| `e2e-and-docs.yml` | main push | 크로스브라우저 E2E + GitHub Pages 배포 |
+| `e2e-and-docs.yml` | main push | 크로스브라우저 E2E (Playwright × chromium/firefox/webkit). docs-site 배포는 Vercel GitHub App이 별도로 처리 |
 | `security.yml` | 매주 월·의존성 변경 | 취약점·라이선스 감사 |
 
 **Branch Protection (main):**
