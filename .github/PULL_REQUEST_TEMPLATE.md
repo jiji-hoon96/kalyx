@@ -28,7 +28,7 @@
 - [ ] `pnpm lint` passes
 - [ ] `pnpm test:run` passes
 - [ ] `pnpm build` succeeds
-- [ ] Bundle size checked (`pnpm check-bundle` ≤ 13KB)
+- [ ] Bundle size checked (`pnpm check-bundle` ≤ 14KB)
 - [ ] Changeset added (if public API changed)
 - [ ] New public APIs have JSDoc comments
 - [ ] Accessibility: axe passes, keyboard navigation works

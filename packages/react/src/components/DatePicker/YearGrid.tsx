@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { HTMLAttributes } from 'react';
 import type { ISODateString } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
+import { useGridState } from '../_shared/grid-keyboard.js';
 
 export interface DatePickerYearGridClassNames {
   root?: string;
@@ -48,35 +49,30 @@ export function DatePickerYearGrid({ classNames, onSelect, ...props }: DatePicke
 
   const navigateDecade = useCallback(
     (direction: number) => {
-      const newDate = adapter.addYears(viewMonth, direction * 12);
-      ctx.setViewMonth(newDate);
+      ctx.setViewMonth(adapter.addYears(viewMonth, direction * 12));
     },
     [adapter, viewMonth, ctx],
   );
 
   const handleYearSelect = useCallback(
-    (year: number) => {
+    (indexInDecade: number) => {
+      const year = decadeStart + indexInDecade;
       const currentMonth = adapter.getMonth(viewMonth);
       const target = new Date(Date.UTC(year, currentMonth, 1)).toISOString();
       ctx.setViewMonth(target);
       ctx.setFocusedDate(target);
       onSelect?.();
     },
-    [adapter, viewMonth, ctx, onSelect],
+    [adapter, viewMonth, ctx, onSelect, decadeStart],
   );
 
-  const years = useMemo(
-    () =>
-      Array.from({ length: 12 }, (_, i) => {
-        const year = decadeStart + i;
-        return {
-          value: year,
-          isSelected: year === currentYear,
-          isCurrent: year === todayYear,
-        };
-      }),
-    [decadeStart, currentYear, todayYear],
-  );
+  const { gridRef, focusedIndex, handleKeyDown } = useGridState({
+    initialIndex: currentYear - decadeStart,
+    onSelect: handleYearSelect,
+    onPageUp: () => navigateDecade(-1),
+    onPageDown: () => navigateDecade(1),
+    onEscape: ctx.close,
+  });
 
   const rangeLabel = `${decadeStart}–${decadeStart + 11}`;
 
@@ -103,34 +99,43 @@ export function DatePickerYearGrid({ classNames, onSelect, ...props }: DatePicke
       </div>
 
       <div
+        ref={gridRef}
         role="grid"
         aria-label={rangeLabel}
         className={classNames?.grid}
         style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
+        onKeyDown={handleKeyDown}
       >
-        {years.map((y) => {
-          const yearClass =
+        {Array.from({ length: 12 }, (_, i) => {
+          const year = decadeStart + i;
+          const isSelected = year === currentYear;
+          const isCurrent = year === todayYear;
+          const isFocused = i === focusedIndex;
+          const cls =
             [
               classNames?.year,
-              y.isSelected && classNames?.yearSelected,
-              y.isCurrent && classNames?.yearCurrent,
+              isSelected && classNames?.yearSelected,
+              isCurrent && classNames?.yearCurrent,
             ]
               .filter(Boolean)
               .join(' ') || undefined;
-
           return (
             <button
-              key={y.value}
+              // Stable index key keeps the DOM node mounted across decade
+              // navigation so focus on the same-position cell persists.
+              key={i}
               type="button"
               role="gridcell"
-              aria-selected={y.isSelected || undefined}
-              aria-current={y.isCurrent ? 'date' : undefined}
-              data-selected={y.isSelected || undefined}
-              data-current={y.isCurrent || undefined}
-              className={yearClass}
-              onClick={() => handleYearSelect(y.value)}
+              tabIndex={isFocused ? 0 : -1}
+              aria-selected={isSelected || undefined}
+              aria-current={isCurrent ? 'date' : undefined}
+              data-selected={isSelected || undefined}
+              data-current={isCurrent || undefined}
+              data-focused={isFocused || undefined}
+              className={cls}
+              onClick={() => handleYearSelect(i)}
             >
-              {y.value}
+              {year}
             </button>
           );
         })}

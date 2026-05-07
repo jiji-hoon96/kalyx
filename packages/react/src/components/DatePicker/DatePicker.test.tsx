@@ -333,6 +333,207 @@ describe('DatePicker — YearGrid', () => {
   });
 });
 
+describe('DatePicker.MonthGrid — keyboard navigation (drilldown)', () => {
+  function renderMonthGrid(onSelect = vi.fn()) {
+    return render(
+      <DatePicker value="2026-04-15T00:00:00.000Z" onChange={vi.fn()}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.MonthGrid onSelect={onSelect} />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+  }
+
+  it('marks the current month as the only focusable cell (roving tabIndex)', async () => {
+    const user = userEvent.setup();
+    renderMonthGrid();
+    await user.click(screen.getByRole('combobox'));
+
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveAttribute('tabIndex', '0');
+    expect(screen.getByRole('gridcell', { name: 'January' })).toHaveAttribute('tabIndex', '-1');
+  });
+
+  it('moves focus by ±1 with ArrowLeft/Right', async () => {
+    const user = userEvent.setup();
+    renderMonthGrid();
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: 'April' }).focus();
+
+    await user.keyboard('{ArrowRight}');
+    expect(screen.getByRole('gridcell', { name: 'May' })).toHaveFocus();
+
+    await user.keyboard('{ArrowLeft}{ArrowLeft}');
+    expect(screen.getByRole('gridcell', { name: 'March' })).toHaveFocus();
+  });
+
+  it('moves focus by ±3 with ArrowUp/Down', async () => {
+    const user = userEvent.setup();
+    renderMonthGrid();
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: 'April' }).focus();
+
+    await user.keyboard('{ArrowDown}');
+    expect(screen.getByRole('gridcell', { name: 'July' })).toHaveFocus();
+
+    await user.keyboard('{ArrowUp}');
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveFocus();
+  });
+
+  it('Home/End jump to the row first/last', async () => {
+    const user = userEvent.setup();
+    renderMonthGrid();
+    await user.click(screen.getByRole('combobox'));
+    // April = index 3 (row 1: April/May/June). ArrowRight → May (index 4).
+    await user.keyboard('{ArrowRight}');
+    expect(screen.getByRole('gridcell', { name: 'May' })).toHaveFocus();
+
+    await user.keyboard('{Home}');
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveFocus();
+
+    await user.keyboard('{End}');
+    expect(screen.getByRole('gridcell', { name: 'June' })).toHaveFocus();
+  });
+
+  it('PageUp/Down navigate ±1 year and preserve same-position focus', async () => {
+    const user = userEvent.setup();
+    renderMonthGrid();
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: 'April' }).focus();
+
+    await user.keyboard('{PageDown}');
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', '2027 months');
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveFocus();
+
+    await user.keyboard('{PageUp}{PageUp}');
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', '2025 months');
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveFocus();
+  });
+
+  it('Enter on a focused month invokes onSelect', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    renderMonthGrid(onSelect);
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: 'April' }).focus();
+
+    await user.keyboard('{ArrowRight}{Enter}');
+    expect(onSelect).toHaveBeenCalled();
+  });
+
+  it('Space on a focused month invokes onSelect', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    renderMonthGrid(onSelect);
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: 'April' }).focus();
+
+    await user.keyboard(' ');
+    expect(onSelect).toHaveBeenCalled();
+  });
+});
+
+describe('DatePicker.YearGrid — keyboard navigation (drilldown)', () => {
+  function renderYearGrid(onSelect = vi.fn()) {
+    return render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.YearGrid onSelect={onSelect} />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+  }
+
+  it('marks the current year as the only focusable cell (roving tabIndex)', async () => {
+    const user = userEvent.setup();
+    renderYearGrid();
+    await user.click(screen.getByRole('combobox'));
+
+    expect(screen.getByRole('gridcell', { name: '2026' })).toHaveAttribute('tabIndex', '0');
+    expect(screen.getByRole('gridcell', { name: '2016' })).toHaveAttribute('tabIndex', '-1');
+  });
+
+  it('moves focus by ±1 with ArrowLeft/Right', async () => {
+    const user = userEvent.setup();
+    renderYearGrid();
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: '2026' }).focus();
+
+    await user.keyboard('{ArrowRight}');
+    expect(screen.getByRole('gridcell', { name: '2027' })).toHaveFocus();
+
+    await user.keyboard('{ArrowLeft}{ArrowLeft}');
+    expect(screen.getByRole('gridcell', { name: '2025' })).toHaveFocus();
+  });
+
+  it('moves focus by ±3 with ArrowUp/Down', async () => {
+    const user = userEvent.setup();
+    renderYearGrid();
+    await user.click(screen.getByRole('combobox'));
+    // 2026 = index 10
+    screen.getByRole('gridcell', { name: '2026' }).focus();
+
+    await user.keyboard('{ArrowUp}');
+    expect(screen.getByRole('gridcell', { name: '2023' })).toHaveFocus();
+
+    await user.keyboard('{ArrowDown}');
+    expect(screen.getByRole('gridcell', { name: '2026' })).toHaveFocus();
+  });
+
+  it('Home/End jump to row first/last', async () => {
+    const user = userEvent.setup();
+    renderYearGrid();
+    await user.click(screen.getByRole('combobox'));
+    // 2026 = index 10, row 3: 2025 / 2026 / 2027
+    screen.getByRole('gridcell', { name: '2026' }).focus();
+
+    await user.keyboard('{Home}');
+    expect(screen.getByRole('gridcell', { name: '2025' })).toHaveFocus();
+
+    await user.keyboard('{End}');
+    expect(screen.getByRole('gridcell', { name: '2027' })).toHaveFocus();
+  });
+
+  it('PageUp/Down navigate ±1 decade and preserve same-position focus', async () => {
+    const user = userEvent.setup();
+    renderYearGrid();
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: '2026' }).focus();
+
+    await user.keyboard('{PageDown}');
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', '2028–2039');
+    // 2026 was index 10 in 2016–2027; same position in next decade is 2038.
+    expect(screen.getByRole('gridcell', { name: '2038' })).toHaveFocus();
+
+    await user.keyboard('{PageUp}{PageUp}');
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', '2004–2015');
+    expect(screen.getByRole('gridcell', { name: '2014' })).toHaveFocus();
+  });
+
+  it('Enter on a focused year invokes onSelect', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    renderYearGrid(onSelect);
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: '2026' }).focus();
+
+    await user.keyboard('{ArrowLeft}{Enter}');
+    expect(onSelect).toHaveBeenCalled();
+  });
+
+  it('Space on a focused year invokes onSelect', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    renderYearGrid(onSelect);
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: '2026' }).focus();
+
+    await user.keyboard(' ');
+    expect(onSelect).toHaveBeenCalled();
+  });
+});
+
 describe('DatePicker — Trigger', () => {
   function renderWithTrigger(
     props: {
@@ -594,6 +795,115 @@ describe('DatePicker — Presets', () => {
 
     await user.click(screen.getByRole('button', { name: 'Today' }));
     expect(onChange).not.toHaveBeenCalled();
+  });
+});
+
+describe('DatePicker — date rules and edge cases (CLAUDE.md §7)', () => {
+  it('emits an ISO string when a leap-year day (Feb 29 2024) is clicked', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DatePicker value="2024-02-15T00:00:00.000Z" onChange={onChange}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    await user.click(screen.getByRole('button', { name: /February 29, 2024/ }));
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2024-02-29T/));
+  });
+
+  it('blocks clicks outside [before, after] (minDate/maxDate equivalent)', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DatePicker
+        value="2026-01-15T00:00:00.000Z"
+        onChange={onChange}
+        disabled={[{ before: '2026-01-10T00:00:00.000Z' }, { after: '2026-01-20T00:00:00.000Z' }]}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+
+    // Out of range — disabled and not selectable
+    const day5 = screen.getByRole('button', { name: /January 5, 2026/ });
+    expect(day5).toBeDisabled();
+    await user.click(day5);
+    expect(onChange).not.toHaveBeenCalled();
+
+    const day25 = screen.getByRole('button', { name: /January 25, 2026/ });
+    expect(day25).toBeDisabled();
+    await user.click(day25);
+    expect(onChange).not.toHaveBeenCalled();
+
+    // In range — selectable
+    await user.click(screen.getByRole('button', { name: /January 12, 2026/ }));
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-12T/));
+  });
+
+  it('blocks per-day disabled rules (dayOfWeek) and shows them as visually disabled', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DatePicker
+        value="2026-01-15T00:00:00.000Z"
+        onChange={onChange}
+        disabled={[{ dayOfWeek: [0, 6] }]}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+
+    // 2026-01-10 is a Saturday → disabled. 2026-01-11 is Sunday → disabled. 2026-01-12 is Monday → enabled.
+    const sat = screen.getByRole('button', { name: /January 10, 2026/ });
+    const sun = screen.getByRole('button', { name: /January 11, 2026/ });
+    const mon = screen.getByRole('button', { name: /January 12, 2026/ });
+    expect(sat).toBeDisabled();
+    expect(sun).toBeDisabled();
+    expect(mon).not.toBeDisabled();
+    expect(sat.closest('[role="gridcell"]')).toHaveAttribute('aria-disabled', 'true');
+
+    await user.click(sat);
+    expect(onChange).not.toHaveBeenCalled();
+
+    await user.click(mon);
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-12T/));
+  });
+
+  it('keyboard ArrowLeft skips disabled days (dayOfWeek)', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DatePicker
+        value="2026-01-12T00:00:00.000Z"
+        onChange={onChange}
+        disabled={[{ dayOfWeek: [0, 6] }]}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    // Initial focus on Jan 12 (Monday). ArrowLeft would normally land on Sun Jan 11
+    // (disabled) — handler should keep stepping until it lands on Fri Jan 9.
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('button', { name: /January 9, 2026/ })).toHaveFocus();
   });
 });
 

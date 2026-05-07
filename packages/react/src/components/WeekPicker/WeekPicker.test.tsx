@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { WeekPicker } from './index.js';
-import type { DateRange } from '@kalyx/core';
+import type { DateRange, DisabledRule } from '@kalyx/core';
 
 function renderWeekPicker(
   props: {
@@ -142,6 +142,110 @@ describe('WeekPicker — visual range highlighting', () => {
     const jan10 = screen.getByRole('button', { name: /January 10, 2026/ });
     const cell10 = jan10.closest('[role="gridcell"]');
     expect(cell10).not.toHaveAttribute('aria-selected', 'true');
+  });
+});
+
+describe('WeekPicker — date rules and edge cases (CLAUDE.md §7)', () => {
+  function renderWithDisabled(
+    initialValue: DateRange,
+    disabled: DisabledRule[],
+    onChange = vi.fn(),
+  ) {
+    return render(
+      <WeekPicker value={initialValue} onChange={onChange} disabled={disabled}>
+        <WeekPicker.Input part="start" />
+        <WeekPicker.Input part="end" />
+        <WeekPicker.Popover>
+          <WeekPicker.Calendar />
+        </WeekPicker.Popover>
+      </WeekPicker>,
+    );
+  }
+
+  it('selects the leap-year week containing Feb 29 2024', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <WeekPicker
+        value={{ start: '2024-02-15T00:00:00.000Z', end: '2024-02-15T00:00:00.000Z' }}
+        onChange={onChange}
+        weekStartsOn={0}
+      >
+        <WeekPicker.Input part="start" />
+        <WeekPicker.Input part="end" />
+        <WeekPicker.Popover>
+          <WeekPicker.Calendar />
+        </WeekPicker.Popover>
+      </WeekPicker>,
+    );
+    await user.click(screen.getByLabelText('Start date'));
+    await user.click(screen.getByRole('button', { name: /February 29, 2024/ }));
+
+    // Feb 29 2024 is a Thursday. Sunday-anchored week = Feb 25 – Mar 2.
+    expect(onChange).toHaveBeenCalledWith({
+      start: expect.stringMatching(/^2024-02-25T/),
+      end: expect.stringMatching(/^2024-03-02T/),
+    });
+  });
+
+  it('blocks clicks outside [before, after] (minDate/maxDate equivalent)', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithDisabled(
+      { start: '2026-01-15T00:00:00.000Z', end: '2026-01-15T00:00:00.000Z' },
+      [{ before: '2026-01-10T00:00:00.000Z' }, { after: '2026-01-20T00:00:00.000Z' }],
+      onChange,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    const day5 = screen.getByRole('button', { name: /January 5, 2026/ });
+    expect(day5).toBeDisabled();
+    await user.click(day5);
+    expect(onChange).not.toHaveBeenCalled();
+
+    // Jan 14, 2026 is a Wednesday; weekStartsOn defaults to 0 (Sun) so the
+    // committed week is Sun Jan 11 – Sat Jan 17, both inside [Jan 10, Jan 20].
+    await user.click(screen.getByRole('button', { name: /January 14, 2026/ }));
+    expect(onChange).toHaveBeenCalledWith({
+      start: expect.stringMatching(/^2026-01-11T/),
+      end: expect.stringMatching(/^2026-01-17T/),
+    });
+  });
+
+  it('blocks per-day disabled rules (dayOfWeek) and accepts an enabled day', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithDisabled(
+      { start: '2026-01-15T00:00:00.000Z', end: '2026-01-15T00:00:00.000Z' },
+      [{ dayOfWeek: [0, 6] }],
+      onChange,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    const sat = screen.getByRole('button', { name: /January 10, 2026/ });
+    expect(sat).toBeDisabled();
+    expect(sat.closest('[role="gridcell"]')).toHaveAttribute('aria-disabled', 'true');
+
+    await user.click(sat);
+    expect(onChange).not.toHaveBeenCalled();
+
+    // Sanity check: an enabled weekday IS selectable. Wed Jan 14 → week Sun
+    // Jan 11 – Sat Jan 17, but Sun and Sat are themselves disabled days.
+    // The week-mode commits regardless of weekday filtering on endpoints, so
+    // verify the call still fires for the chosen day.
+    await user.click(screen.getByRole('button', { name: /January 14, 2026/ }));
+    expect(onChange).toHaveBeenCalledTimes(1);
+  });
+
+  it('keyboard ArrowLeft skips disabled days', async () => {
+    const user = userEvent.setup();
+    renderWithDisabled({ start: '2026-01-12T00:00:00.000Z', end: '2026-01-12T00:00:00.000Z' }, [
+      { dayOfWeek: [0, 6] },
+    ]);
+
+    await user.click(screen.getByLabelText('Start date'));
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('button', { name: /January 9, 2026/ })).toHaveFocus();
   });
 });
 

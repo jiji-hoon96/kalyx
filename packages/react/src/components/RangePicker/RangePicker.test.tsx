@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { RangePicker } from './index.js';
-import type { DateRange } from '@kalyx/core';
+import type { DateRange, DisabledRule } from '@kalyx/core';
 
 const EMPTY: DateRange = { start: null, end: null };
 
@@ -333,6 +333,108 @@ describe('RangePicker — accessibility', () => {
       },
     });
     expect(results).toHaveNoViolations();
+  });
+});
+
+describe('RangePicker — date rules and edge cases (CLAUDE.md §7)', () => {
+  // Anchor the calendar on January 2026 by providing a same-month start value.
+  function renderWithDisabled(disabled: DisabledRule[], onChange = vi.fn()) {
+    return render(
+      <RangePicker
+        value={{ start: '2026-01-15T00:00:00.000Z', end: '2026-01-15T00:00:00.000Z' }}
+        onChange={onChange}
+        disabled={disabled}
+      >
+        <RangePicker.Input part="start" />
+        <RangePicker.Input part="end" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+  }
+
+  it('selects the leap-year day (Feb 29 2024) as start', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <RangePicker value={{ start: '2024-02-15T00:00:00.000Z', end: null }} onChange={onChange}>
+        <RangePicker.Input part="start" />
+        <RangePicker.Input part="end" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+    await user.click(screen.getByLabelText('Start date'));
+    await user.click(screen.getByRole('button', { name: /February 29, 2024/ }));
+
+    expect(onChange).toHaveBeenCalledWith({
+      start: expect.stringMatching(/^2024-02-29T/),
+      end: null,
+    });
+  });
+
+  it('blocks clicks outside [before, after] (minDate/maxDate equivalent)', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithDisabled(
+      [{ before: '2026-01-10T00:00:00.000Z' }, { after: '2026-01-20T00:00:00.000Z' }],
+      onChange,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    const day5 = screen.getByRole('button', { name: /January 5, 2026/ });
+    expect(day5).toBeDisabled();
+    await user.click(day5);
+    expect(onChange).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole('button', { name: /January 12, 2026/ }));
+    expect(onChange).toHaveBeenLastCalledWith({
+      start: expect.stringMatching(/^2026-01-12T/),
+      end: null,
+    });
+  });
+
+  it('blocks per-day disabled rules (dayOfWeek) and shows them as visually disabled', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithDisabled([{ dayOfWeek: [0, 6] }], onChange);
+
+    await user.click(screen.getByLabelText('Start date'));
+    const sat = screen.getByRole('button', { name: /January 10, 2026/ });
+    expect(sat).toBeDisabled();
+    expect(sat.closest('[role="gridcell"]')).toHaveAttribute('aria-disabled', 'true');
+
+    await user.click(sat);
+    expect(onChange).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole('button', { name: /January 12, 2026/ }));
+    expect(onChange).toHaveBeenLastCalledWith({
+      start: expect.stringMatching(/^2026-01-12T/),
+      end: null,
+    });
+  });
+
+  it('keyboard ArrowLeft skips disabled days', async () => {
+    const user = userEvent.setup();
+    render(
+      <RangePicker
+        value={{ start: '2026-01-12T00:00:00.000Z', end: '2026-01-12T00:00:00.000Z' }}
+        onChange={vi.fn()}
+        disabled={[{ dayOfWeek: [0, 6] }]}
+      >
+        <RangePicker.Input part="start" />
+        <RangePicker.Input part="end" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+    await user.click(screen.getByLabelText('Start date'));
+    // Focus on Jan 12 (Mon). ArrowLeft → skip Sun → Fri Jan 9.
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('button', { name: /January 9, 2026/ })).toHaveFocus();
   });
 });
 

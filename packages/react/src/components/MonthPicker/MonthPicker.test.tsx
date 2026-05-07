@@ -194,6 +194,110 @@ describe('MonthPicker — SSR safety', () => {
   });
 });
 
+describe('MonthPicker — keyboard navigation (grid pattern)', () => {
+  it('marks the selected month as the only focusable cell (roving tabIndex)', async () => {
+    const user = userEvent.setup();
+    renderMonthPicker({ value: '2026-04-15T00:00:00.000Z' });
+
+    await user.click(screen.getByRole('combobox'));
+
+    const april = screen.getByRole('gridcell', { name: 'April' });
+    const january = screen.getByRole('gridcell', { name: 'January' });
+    expect(april).toHaveAttribute('tabIndex', '0');
+    expect(january).toHaveAttribute('tabIndex', '-1');
+  });
+
+  it('moves focus by ±1 with ArrowLeft/Right', async () => {
+    const user = userEvent.setup();
+    renderMonthPicker({ value: '2026-04-15T00:00:00.000Z' });
+
+    await user.click(screen.getByRole('combobox'));
+    const april = screen.getByRole('gridcell', { name: 'April' });
+    april.focus();
+
+    await user.keyboard('{ArrowRight}');
+    expect(screen.getByRole('gridcell', { name: 'May' })).toHaveFocus();
+
+    await user.keyboard('{ArrowLeft}{ArrowLeft}');
+    expect(screen.getByRole('gridcell', { name: 'March' })).toHaveFocus();
+  });
+
+  it('moves focus by ±3 with ArrowUp/Down', async () => {
+    const user = userEvent.setup();
+    renderMonthPicker({ value: '2026-04-15T00:00:00.000Z' });
+
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: 'April' }).focus();
+
+    // April (index 3) + 3 = July (index 6)
+    await user.keyboard('{ArrowDown}');
+    expect(screen.getByRole('gridcell', { name: 'July' })).toHaveFocus();
+
+    // July (index 6) - 3 = April (index 3)
+    await user.keyboard('{ArrowUp}');
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveFocus();
+  });
+
+  it('Home/End jump to the first/last cell of the row', async () => {
+    const user = userEvent.setup();
+    renderMonthPicker({ value: '2026-05-15T00:00:00.000Z' });
+
+    await user.click(screen.getByRole('combobox'));
+    // May = index 4 (row 1: Apr/May/Jun)
+    screen.getByRole('gridcell', { name: 'May' }).focus();
+
+    await user.keyboard('{Home}');
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveFocus();
+
+    await user.keyboard('{End}');
+    expect(screen.getByRole('gridcell', { name: 'June' })).toHaveFocus();
+  });
+
+  it('PageUp/Down navigates ±1 year and preserves the same-position focus', async () => {
+    const user = userEvent.setup();
+    renderMonthPicker({ value: '2026-04-15T00:00:00.000Z' });
+
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: 'April' }).focus();
+
+    await user.keyboard('{PageDown}');
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', '2027 months');
+    // Same column position (April / index 3) keeps tabIndex=0 and DOM focus
+    // across year nav (stable index keys + auto-refocus).
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveFocus();
+
+    await user.keyboard('{PageUp}{PageUp}');
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', '2025 months');
+    expect(screen.getByRole('gridcell', { name: 'April' })).toHaveFocus();
+  });
+
+  it('commits the focused month with Enter and closes the popover', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderMonthPicker({ value: '2026-01-15T00:00:00.000Z' });
+
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: 'January' }).focus();
+
+    // Move focus to March, then commit with Enter.
+    await user.keyboard('{ArrowRight}{ArrowRight}{Enter}');
+
+    expect(onChange).toHaveBeenCalledWith('2026-03-01T00:00:00.000Z');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('commits the focused month with Space', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderMonthPicker({ value: '2026-01-15T00:00:00.000Z' });
+
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: 'January' }).focus();
+
+    await user.keyboard('{ArrowRight} ');
+
+    expect(onChange).toHaveBeenCalledWith('2026-02-01T00:00:00.000Z');
+  });
+});
+
 describe('MonthPicker — localization', () => {
   it('displays month names in the requested locale', async () => {
     const user = userEvent.setup();

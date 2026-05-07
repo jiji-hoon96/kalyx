@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { HTMLAttributes } from 'react';
 import { getMonthName, type ISODateString } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
+import { useGridState } from '../_shared/grid-keyboard.js';
 
 export interface MonthPickerGridClassNames {
   root?: string;
@@ -13,7 +14,6 @@ export interface MonthPickerGridClassNames {
   month?: string;
   monthSelected?: string;
   monthCurrent?: string;
-  monthDisabled?: string;
 }
 
 export interface MonthPickerGridProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
@@ -77,12 +77,19 @@ export function MonthPickerGrid({ classNames, ...props }: MonthPickerGridProps) 
     [currentYear, ctx],
   );
 
-  const months = Array.from({ length: 12 }, (_, i) => ({
-    index: i,
-    name: getMonthName(i, locale),
-    isSelected: valueYear === currentYear && valueMonthZeroBased === i,
-    isCurrent: todayYear === currentYear && todayMonth === i,
-  }));
+  // Roving tabIndex: focus the selected cell on the value's year, else the current month.
+  const initialIndex =
+    valueYear === currentYear && valueMonthZeroBased !== null
+      ? valueMonthZeroBased
+      : adapter.getMonth(viewMonth);
+
+  const { gridRef, focusedIndex, handleKeyDown } = useGridState({
+    initialIndex,
+    onSelect: handleMonthSelect,
+    onPageUp: () => navigateYear(-1),
+    onPageDown: () => navigateYear(1),
+    onEscape: ctx.close,
+  });
 
   return (
     <div className={classNames?.root} {...props}>
@@ -106,7 +113,13 @@ export function MonthPickerGrid({ classNames, ...props }: MonthPickerGridProps) 
         </button>
       </div>
 
-      <div role="grid" aria-label={`${currentYear} months`} className={classNames?.grid}>
+      <div
+        ref={gridRef}
+        role="grid"
+        aria-label={`${currentYear} months`}
+        className={classNames?.grid}
+        onKeyDown={handleKeyDown}
+      >
         {Array.from({ length: 4 }, (_, rowIndex) => (
           <div
             key={rowIndex}
@@ -114,29 +127,34 @@ export function MonthPickerGrid({ classNames, ...props }: MonthPickerGridProps) 
             className={classNames?.gridRow}
             style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
           >
-            {months.slice(rowIndex * 3, rowIndex * 3 + 3).map((m) => {
-              const monthClass =
+            {Array.from({ length: 3 }, (_, col) => {
+              const i = rowIndex * 3 + col;
+              const isSelected = valueYear === currentYear && valueMonthZeroBased === i;
+              const isCurrent = todayYear === currentYear && todayMonth === i;
+              const isFocused = i === focusedIndex;
+              const cls =
                 [
                   classNames?.month,
-                  m.isSelected && classNames?.monthSelected,
-                  m.isCurrent && classNames?.monthCurrent,
+                  isSelected && classNames?.monthSelected,
+                  isCurrent && classNames?.monthCurrent,
                 ]
                   .filter(Boolean)
                   .join(' ') || undefined;
-
               return (
                 <button
-                  key={m.index}
+                  key={i}
                   type="button"
                   role="gridcell"
-                  aria-selected={m.isSelected || undefined}
-                  aria-current={m.isCurrent ? 'date' : undefined}
-                  data-selected={m.isSelected || undefined}
-                  data-current={m.isCurrent || undefined}
-                  className={monthClass}
-                  onClick={() => handleMonthSelect(m.index)}
+                  tabIndex={isFocused ? 0 : -1}
+                  aria-selected={isSelected || undefined}
+                  aria-current={isCurrent ? 'date' : undefined}
+                  data-selected={isSelected || undefined}
+                  data-current={isCurrent || undefined}
+                  data-focused={isFocused || undefined}
+                  className={cls}
+                  onClick={() => handleMonthSelect(i)}
                 >
-                  {m.name}
+                  {getMonthName(i, locale)}
                 </button>
               );
             })}

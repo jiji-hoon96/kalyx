@@ -4,11 +4,15 @@
 import { gzipSync } from "zlib";
 import { readFileSync, statSync } from "fs";
 
-// Bundle target. Originally ≤12KB; raised to 13KB after the v1.0-rc audit
-// added user-facing features (IME composition handling, popover focus-out,
-// `name`/hidden-input form integration, WAI-ARIA grid coordinates, and
-// keyboard skip-disabled). Still ~3× smaller than react-datepicker (~40KB).
-const TARGET_KB = 13;
+// Bundle target. 12KB → 13KB after the v1.0-rc audit added user-facing
+// features (IME composition handling, popover focus-out, `name`/hidden-input
+// form integration, WAI-ARIA grid coordinates, and keyboard skip-disabled).
+// 13KB → 14KB once full WAI-ARIA grid keyboard navigation (Arrow / Home /
+// End / PageUp / PageDown / Enter / Space + roving tabIndex + auto-refocus)
+// landed across the four 3×4 picker grids (DatePicker.MonthGrid / YearGrid,
+// MonthPicker.Grid, YearPicker.Grid). Still ~3× smaller than
+// react-datepicker (~40KB).
+const TARGET_KB = 14;
 
 const BUNDLES = [
 	{ label: "ESM", path: "packages/react/dist/index.js" },
