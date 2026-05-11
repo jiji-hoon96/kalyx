@@ -16,6 +16,7 @@
     "popover-style-merge",
     "remove-deprecated-weekday-utils",
     "replace-mutable-ref-object",
+    "security-fast-uri-babel-systemjs",
     "security-postcss",
     "v1-milestone",
     "v1-rc1-a11y-ssr-fixes",
