@@ -10,7 +10,7 @@
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
 [![RC](https://img.shields.io/npm/v/@kalyx/react/rc?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
-[![Bundle](https://img.shields.io/badge/gzip-13.60KB-brightgreen)](https://kalyx-docs.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-14.42KB-brightgreen)](https://kalyx-docs.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -87,7 +87,7 @@ API reference, recipes (Tailwind / shadcn / React Hook Form), and migration guid
 
 ## Bundle
 
-`@kalyx/react` v1.0.0-rc.4 → **13.60 KB** gzip (ESM) / **14.07 KB** (CJS). CI gate: ≤ 15 KB.
+`@kalyx/react` v1.0.0-rc.7 → **14.42 KB** gzip (ESM) / **14.84 KB** (CJS). CI gate: ≤ 15 KB.
 
 ## Browser support
 
