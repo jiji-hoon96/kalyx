@@ -176,6 +176,8 @@ export function isDateDisabled(iso: string, rules: DisabledRule[], adapter: Date
       if (adapter.isAfter(iso, rule.after)) return true;
     } else if ('dayOfWeek' in rule) {
       if (rule.dayOfWeek.includes(adapter.getDay(iso))) return true;
+    } else if ('filter' in rule) {
+      if (rule.filter(iso)) return true;
     }
   }
   return false;

@@ -126,6 +126,39 @@ describe('isDateDisabled — combined rules', () => {
   it('treats an empty rules array as all dates enabled', () => {
     expect(isDateDisabled('2026-01-15T00:00:00.000Z', [], adapter)).toBe(false);
   });
+
+  it('honors a programmatic filter rule', () => {
+    const holidays = new Set(['2026-01-01T00:00:00.000Z', '2026-12-25T00:00:00.000Z']);
+    const rules = [{ filter: (iso: string) => holidays.has(iso) }];
+    expect(isDateDisabled('2026-01-01T00:00:00.000Z', rules, adapter)).toBe(true);
+    expect(isDateDisabled('2026-12-25T00:00:00.000Z', rules, adapter)).toBe(true);
+    expect(isDateDisabled('2026-01-02T00:00:00.000Z', rules, adapter)).toBe(false);
+  });
+
+  it('combines filter with other rules (any match disables)', () => {
+    const rules = [{ dayOfWeek: [0, 6] }, { filter: (iso: string) => iso.startsWith('2026-07') }];
+    // 2026-07-15 = Wednesday — passes dayOfWeek, caught by filter
+    expect(isDateDisabled('2026-07-15T00:00:00.000Z', rules, adapter)).toBe(true);
+    // 2026-01-11 = Sunday — caught by dayOfWeek
+    expect(isDateDisabled('2026-01-11T00:00:00.000Z', rules, adapter)).toBe(true);
+    // 2026-01-12 = Monday, not July — neither rule matches
+    expect(isDateDisabled('2026-01-12T00:00:00.000Z', rules, adapter)).toBe(false);
+  });
+
+  it('flags filter-disabled cells in the calendar grid', () => {
+    // Disable every odd day of the month
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      disabled: [{ filter: (iso) => adapter.getDate(iso) % 2 === 1 }],
+    });
+    const currentMonthDays = weeks.flat().filter((d) => d.isCurrentMonth);
+    for (const day of currentMonthDays) {
+      if (day.dayNumber % 2 === 1) {
+        expect(day.isDisabled).toBe(true);
+      } else {
+        expect(day.isDisabled).toBe(false);
+      }
+    }
+  });
 });
 
 describe('minDate / maxDate', () => {
