@@ -42,6 +42,7 @@ export function getCalendarDays(
     range,
     rangeHover,
     timezone,
+    fixedWeeks = false,
   } = options;
 
   const todayISO = today ?? adapter.today(timezone);
@@ -85,13 +86,34 @@ export function getCalendarDays(
 
     weeks.push(days);
 
-    // Stop if the next week has already moved into the next month
-    if (!adapter.isSameMonth(current, monthISO) && week >= 3) {
+    // Stop if the next week has already moved into the next month.
+    // `fixedWeeks` overrides this so the grid always renders 6 rows (42 cells).
+    if (!fixedWeeks && !adapter.isSameMonth(current, monthISO) && week >= 3) {
       break;
     }
   }
 
   return weeks;
+}
+
+/**
+ * Returns the ISO 8601 week number (1-53) of the given date. ISO weeks start on Monday;
+ * week 1 is the week containing the year's first Thursday. The computation works in UTC
+ * to match the calendar grid's iteration semantics.
+ *
+ * @example
+ * getISOWeekNumber('2026-01-01T00:00:00.000Z'); // 1 (Jan 1 2026 is a Thursday → ISO week 1)
+ * getISOWeekNumber('2026-12-31T00:00:00.000Z'); // 53
+ */
+export function getISOWeekNumber(iso: ISODateString): number {
+  const d = new Date(iso);
+  // Anchor to the Thursday of the same ISO week, which always falls in the "owning" year.
+  // ISO day numbering: Mon=1..Sun=7 (treat UTC Sunday's 0 as 7).
+  const utc = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  const isoDay = utc.getUTCDay() || 7;
+  utc.setUTCDate(utc.getUTCDate() + 4 - isoDay);
+  const yearStart = new Date(Date.UTC(utc.getUTCFullYear(), 0, 1));
+  return Math.ceil(((utc.getTime() - yearStart.getTime()) / 86_400_000 + 1) / 7);
 }
 
 /**

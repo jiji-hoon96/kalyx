@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { HTMLAttributes } from 'react';
 import {
   getCalendarDays,
+  getISOWeekNumber,
   isDateDisabled,
   getWeekdayNames,
   formatMonthYear,
@@ -27,6 +28,10 @@ export interface RangePickerCalendarClassNames {
   dayRangeEnd?: string;
   dayInRange?: string;
   weekdayHeader?: string;
+  /** Header cell at the top of the week-number column. Rendered only when `showWeekNumber` is set. */
+  weekNumberHeader?: string;
+  /** Each row's week-number cell. Rendered only when `showWeekNumber` is set. */
+  weekNumber?: string;
 }
 
 /**
@@ -40,6 +45,16 @@ export interface RangePickerCalendarProps extends Omit<HTMLAttributes<HTMLDivEle
   classNames?: RangePickerCalendarClassNames;
   /** @default 'range' */
   selectionMode?: RangePickerCalendarSelectionMode;
+  /**
+   * Render an ISO 8601 week-number column on the left of the grid (1–53).
+   * The column is a `<th scope="row">`; it doesn't participate in the WAI-ARIA grid
+   * data region, so keyboard navigation across the date cells is unaffected.
+   */
+  showWeekNumber?: boolean;
+  /**
+   * Always render 6 weeks (42 cells), even when the month fits in 4 or 5 rows.
+   */
+  fixedWeeks?: boolean;
 }
 
 /** Safe wrapper for formatFullDate — falls back to ISO string on error */
@@ -66,6 +81,8 @@ const srOnly: React.CSSProperties = {
 export function RangePickerCalendar({
   classNames,
   selectionMode = 'range',
+  showWeekNumber = false,
+  fixedWeeks = false,
   ...props
 }: RangePickerCalendarProps) {
   const ctx = useRangePickerContext('RangePicker.Calendar');
@@ -97,9 +114,23 @@ export function RangePickerCalendar({
         range: value,
         rangeHover: hoverDate,
         timezone: displayTimezone,
+        fixedWeeks,
       }),
-    [viewMonth, adapter, weekStartsOn, focusedDate, disabled, value, hoverDate, displayTimezone],
+    [
+      viewMonth,
+      adapter,
+      weekStartsOn,
+      focusedDate,
+      disabled,
+      value,
+      hoverDate,
+      displayTimezone,
+      fixedWeeks,
+    ],
   );
+
+  // ISO week number anchored to the row's Thursday — see DatePicker/Calendar.tsx for rationale.
+  const thursdayIndex = weekStartsOn === 0 ? 4 : 3;
 
   const year = adapter.getYear(viewMonth);
   const month = adapter.getMonth(viewMonth);
@@ -291,6 +322,11 @@ export function RangePickerCalendar({
       >
         <thead>
           <tr role="row" aria-rowindex={1}>
+            {showWeekNumber ? (
+              <th scope="col" aria-hidden="true" className={classNames?.weekNumberHeader}>
+                #
+              </th>
+            ) : null}
             {weekdays.map((day, colIndex) => (
               <th
                 key={day.short}
@@ -313,6 +349,16 @@ export function RangePickerCalendar({
               aria-rowindex={weekIndex + 2}
               className={classNames?.gridRow}
             >
+              {showWeekNumber ? (
+                <th
+                  scope="row"
+                  aria-hidden="true"
+                  className={classNames?.weekNumber}
+                  data-week-number
+                >
+                  {getISOWeekNumber(week[thursdayIndex]!.isoString)}
+                </th>
+              ) : null}
               {week.map((day, colIndex) => {
                 const dayClasses =
                   [

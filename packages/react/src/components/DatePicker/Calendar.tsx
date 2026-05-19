@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { HTMLAttributes } from 'react';
 import {
   getCalendarDays,
+  getISOWeekNumber,
   isDateDisabled,
   getWeekdayNames,
   formatMonthYear,
@@ -24,12 +25,27 @@ export interface DatePickerCalendarClassNames {
   dayDisabled?: string;
   dayOutsideMonth?: string;
   weekdayHeader?: string;
+  /** Header cell at the top of the week-number column. Rendered only when `showWeekNumber` is set. */
+  weekNumberHeader?: string;
+  /** Each row's week-number cell. Rendered only when `showWeekNumber` is set. */
+  weekNumber?: string;
 }
 
 export interface DatePickerCalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
   classNames?: DatePickerCalendarClassNames;
   /** Called when the title ("January 2026") is clicked. Useful for switching to Month/Year views. */
   onTitleClick?: () => void;
+  /**
+   * Render an ISO 8601 week-number column on the left of the grid (1–53).
+   * The column is a `<th scope="row">`; it doesn't participate in the WAI-ARIA grid
+   * data region, so keyboard navigation across the date cells is unaffected.
+   */
+  showWeekNumber?: boolean;
+  /**
+   * Always render 6 weeks (42 cells), even when the month fits in 4 or 5 rows. Useful for
+   * popover layouts that need a fixed height across month navigation.
+   */
+  fixedWeeks?: boolean;
 }
 
 /** Safe wrapper for formatFullDate — falls back to ISO string on error */
@@ -57,6 +73,8 @@ const srOnly: React.CSSProperties = {
 export function DatePickerCalendar({
   classNames,
   onTitleClick,
+  showWeekNumber = false,
+  fixedWeeks = false,
   ...props
 }: DatePickerCalendarProps) {
   const ctx = useDatePickerContext('DatePicker.Calendar');
@@ -78,9 +96,24 @@ export function DatePickerCalendar({
         focusedDate,
         disabled,
         timezone: displayTimezone,
+        fixedWeeks,
       }),
-    [viewMonth, adapter, weekStartsOn, ctx.value, focusedDate, disabled, displayTimezone],
+    [
+      viewMonth,
+      adapter,
+      weekStartsOn,
+      ctx.value,
+      focusedDate,
+      disabled,
+      displayTimezone,
+      fixedWeeks,
+    ],
   );
+
+  // For each row, derive the ISO week number from the Thursday cell — Thursday is always
+  // in the row's "owning" ISO week regardless of weekStartsOn, so this is stable across
+  // week-start configurations.
+  const thursdayIndex = weekStartsOn === 0 ? 4 : 3;
 
   const year = adapter.getYear(viewMonth);
   const month = adapter.getMonth(viewMonth);
@@ -177,10 +210,7 @@ export function DatePickerCalendar({
         // enabled day, capped at 42 attempts (one full grid) to avoid infinite loops
         // when every day in range is disabled.
         const skipStep =
-          e.key === 'ArrowLeft' ||
-          e.key === 'ArrowUp' ||
-          e.key === 'PageUp' ||
-          e.key === 'Home'
+          e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'Home'
             ? -1
             : 1;
         let attempts = 0;
@@ -250,6 +280,11 @@ export function DatePickerCalendar({
       >
         <thead>
           <tr role="row" aria-rowindex={1}>
+            {showWeekNumber ? (
+              <th scope="col" aria-hidden="true" className={classNames?.weekNumberHeader}>
+                #
+              </th>
+            ) : null}
             {weekdays.map((day, colIndex) => (
               <th
                 key={day.short}
@@ -272,6 +307,16 @@ export function DatePickerCalendar({
               aria-rowindex={weekIndex + 2}
               className={classNames?.gridRow}
             >
+              {showWeekNumber ? (
+                <th
+                  scope="row"
+                  aria-hidden="true"
+                  className={classNames?.weekNumber}
+                  data-week-number
+                >
+                  {getISOWeekNumber(week[thursdayIndex]!.isoString)}
+                </th>
+              ) : null}
               {week.map((day, colIndex) => {
                 const dayClasses =
                   [

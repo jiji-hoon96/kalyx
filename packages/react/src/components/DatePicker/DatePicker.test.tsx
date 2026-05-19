@@ -698,6 +698,82 @@ describe('DatePicker — event callbacks', () => {
   });
 });
 
+describe('DatePicker.Calendar — showWeekNumber', () => {
+  it('renders a week-number column when showWeekNumber is true', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar showWeekNumber />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+
+    // Each row should now expose a th[data-week-number] cell
+    const weekCells = document.querySelectorAll('th[data-week-number]');
+    expect(weekCells.length).toBeGreaterThanOrEqual(4);
+    expect(weekCells.length).toBeLessThanOrEqual(6);
+
+    // The week containing Jan 15 2026 is ISO week 3 (Jan 12–18 is week 3)
+    const labels = Array.from(weekCells).map((c) => c.textContent);
+    expect(labels).toContain('3');
+  });
+
+  it('omits the week-number column by default', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={vi.fn()}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+
+    expect(document.querySelectorAll('th[data-week-number]').length).toBe(0);
+  });
+});
+
+describe('DatePicker.Calendar — fixedWeeks', () => {
+  it('always renders 6 rows when fixedWeeks is true', async () => {
+    const user = userEvent.setup();
+    // February 2026 normally fits in 4-5 weeks
+    render(
+      <DatePicker value="2026-02-15T00:00:00.000Z" onChange={vi.fn()}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar fixedWeeks />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+
+    // role="row" includes the thead row, so 6 weeks + 1 header = 7 rows
+    expect(screen.getAllByRole('row')).toHaveLength(7);
+  });
+
+  it('still emits 4–6 rows when fixedWeeks is false (default)', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value="2026-02-15T00:00:00.000Z" onChange={vi.fn()}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+
+    const rows = screen.getAllByRole('row');
+    // thead row + 4–5 weeks
+    expect(rows.length).toBeGreaterThanOrEqual(5);
+    expect(rows.length).toBeLessThanOrEqual(6);
+  });
+});
+
 describe('DatePicker — Presets', () => {
   it('renders preset buttons inside a group', () => {
     render(
