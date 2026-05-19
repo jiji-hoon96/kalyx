@@ -26,7 +26,7 @@ export interface TimePickerHourListProps extends Omit<
  */
 export function TimePickerHourList({ classNames, ...props }: TimePickerHourListProps) {
   const ctx = useTimePickerContext('TimePicker.HourList');
-  const { format, currentTime, isDisabled, isReadOnly } = ctx;
+  const { format, step, currentTime, isDisabled, isReadOnly, filterTime } = ctx;
 
   // Stable across renders unless `format` changes — useListboxNavigation
   // identity-compares its `items` array internally.
@@ -37,14 +37,43 @@ export function TimePickerHourList({ classNames, ...props }: TimePickerHourListP
 
   const currentPeriod = format === '12h' ? to12Hour(currentTime.hours).period : null;
 
+  // An hour is fully disabled only when every step minute within it is rejected by `filterTime`.
+  // Pre-compute the 24-bit mask once per filterTime/step change; per-render hour lookups are O(1).
+  const fullyDisabledHours24 = useMemo(() => {
+    if (!filterTime) return null;
+    const disabled = new Set<number>();
+    for (let h = 0; h < 24; h++) {
+      let allRejected = true;
+      for (let m = 0; m < 60; m += step) {
+        if (!filterTime(h, m)) {
+          allRejected = false;
+          break;
+        }
+      }
+      if (allRejected) disabled.add(h);
+    }
+    return disabled;
+  }, [filterTime, step]);
+
+  const isHourDisabled = useCallback(
+    (hourDisplay: number) => {
+      if (!fullyDisabledHours24) return false;
+      const hours24 =
+        format === '12h' && currentPeriod ? to24Hour(hourDisplay, currentPeriod) : hourDisplay;
+      return fullyDisabledHours24.has(hours24);
+    },
+    [fullyDisabledHours24, format, currentPeriod],
+  );
+
   const handleSelect = useCallback(
     (hourDisplay: number) => {
       if (isDisabled || isReadOnly) return;
+      if (isHourDisabled(hourDisplay)) return;
       const hours24 =
         format === '12h' && currentPeriod ? to24Hour(hourDisplay, currentPeriod) : hourDisplay;
       ctx.setTime({ hours: hours24 });
     },
-    [format, currentPeriod, ctx, isDisabled, isReadOnly],
+    [format, currentPeriod, ctx, isDisabled, isReadOnly, isHourDisabled],
   );
 
   const { listRef, handleKeyDown } = useListboxNavigation({
@@ -64,6 +93,7 @@ export function TimePickerHourList({ classNames, ...props }: TimePickerHourListP
     >
       {hours.map((hour) => {
         const isSelected = hour === selectedHourDisplay;
+        const isHourFullyDisabled = isHourDisabled(hour);
         const optionClass =
           [classNames?.option, isSelected && classNames?.optionSelected]
             .filter(Boolean)
@@ -74,7 +104,7 @@ export function TimePickerHourList({ classNames, ...props }: TimePickerHourListP
             key={hour}
             role="option"
             aria-selected={isSelected}
-            aria-disabled={isDisabled || undefined}
+            aria-disabled={isDisabled || isHourFullyDisabled || undefined}
             aria-label={ctx.labels.hourOption(hour)}
             data-selected={isSelected || undefined}
             tabIndex={isSelected ? 0 : -1}

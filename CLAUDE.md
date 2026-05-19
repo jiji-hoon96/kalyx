@@ -69,7 +69,7 @@ Ark UI가 포기한 TimePicker 통합
 | 스타일링 | Zero CSS (Headless) | CSS 충돌 원천 차단 |
 | 날짜 코어 | Adapter 패턴 + date-fns 기본 (v1.1에서 `@kalyx/adapter-date-fns`로 분리 예정 — [§14](#14-현재-이니셔티브-2026-04-기준)) | Temporal API 전환 대비, 사용자가 dayjs/luxon 선택 가능 |
 | 포지셔닝 | Floating UI | 3KB, SSR 안전, Popper.js 후계자 |
-| 번들 목표 | **≤ 15KB gzip** | react-datepicker 62KB 대비. RC 단계 12 → 13KB 상향(commit e93d082), v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향, v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향 |
+| 번들 목표 | **≤ 16KB gzip** | react-datepicker 62KB 대비. RC 단계 12 → 13KB 상향(commit e93d082), v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향, v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향, v1.0-rc.8 TimePicker `filterTime` 프로그래밍 콜백 추가하면서 15 → 16KB 상향 |
 | 테스트 | Vitest + Testing Library + jest-axe | |
 | 빌드 | tsup (ESM + CJS 이중 출력) | |
 | 모노레포 | pnpm workspaces | |

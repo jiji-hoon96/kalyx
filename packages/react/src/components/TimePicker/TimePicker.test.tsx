@@ -363,6 +363,104 @@ describe('TimePicker — disabled state', () => {
   });
 });
 
+describe('TimePicker — filterTime', () => {
+  it('marks aria-disabled on minutes rejected by filterTime', () => {
+    // Disable minute 30 only — visible per-minute disable
+    render(
+      <TimePicker
+        value="2026-01-15T10:00:00.000Z"
+        onChange={vi.fn()}
+        filterTime={(_h, m) => m === 30}
+      >
+        <TimePicker.HourList />
+        <TimePicker.MinuteList />
+      </TimePicker>,
+    );
+
+    const minute30 = screen.getByRole('option', { name: '30 minutes' });
+    expect(minute30).toHaveAttribute('aria-disabled', 'true');
+    const minute0 = screen.getByRole('option', { name: '0 minutes' });
+    expect(minute0).not.toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('blocks selection when a filtered minute is clicked', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <TimePicker
+        value="2026-01-15T10:00:00.000Z"
+        onChange={onChange}
+        filterTime={(_h, m) => m === 30}
+      >
+        <TimePicker.MinuteList />
+      </TimePicker>,
+    );
+
+    await user.click(screen.getByRole('option', { name: '30 minutes' }));
+    expect(onChange).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole('option', { name: '45 minutes' }));
+    expect(onChange).toHaveBeenCalledTimes(1);
+  });
+
+  it('marks an hour as fully disabled when every step minute is rejected', () => {
+    // Block every minute of hour 12 (step=15 → minutes 0/15/30/45)
+    render(
+      <TimePicker
+        value="2026-01-15T10:00:00.000Z"
+        onChange={vi.fn()}
+        step={15}
+        filterTime={(h) => h === 12}
+      >
+        <TimePicker.HourList />
+      </TimePicker>,
+    );
+
+    const hour12 = screen.getByRole('option', { name: '12 hours' });
+    expect(hour12).toHaveAttribute('aria-disabled', 'true');
+    const hour11 = screen.getByRole('option', { name: '11 hours' });
+    expect(hour11).not.toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('leaves an hour enabled when only some of its step minutes are blocked', () => {
+    // Block only minute 30 — hour 14 still has 0, 15, 45 available
+    render(
+      <TimePicker
+        value="2026-01-15T10:00:00.000Z"
+        onChange={vi.fn()}
+        step={15}
+        filterTime={(_h, m) => m === 30}
+      >
+        <TimePicker.HourList />
+      </TimePicker>,
+    );
+
+    const hour14 = screen.getByRole('option', { name: '14 hours' });
+    expect(hour14).not.toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('blocks clicks on hours that are fully disabled', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <TimePicker
+        value="2026-01-15T10:00:00.000Z"
+        onChange={onChange}
+        step={15}
+        filterTime={(h) => h === 12}
+      >
+        <TimePicker.HourList />
+      </TimePicker>,
+    );
+
+    await user.click(screen.getByRole('option', { name: '12 hours' }));
+    expect(onChange).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole('option', { name: '11 hours' }));
+    expect(onChange).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe('TimePicker — context errors', () => {
   it('throws when Input is used without Root', () => {
     expect(() => {

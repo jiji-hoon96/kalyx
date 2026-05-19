@@ -23,18 +23,27 @@ export interface TimePickerMinuteListProps extends Omit<
  */
 export function TimePickerMinuteList({ classNames, ...props }: TimePickerMinuteListProps) {
   const ctx = useTimePickerContext('TimePicker.MinuteList');
-  const { step, currentTime, isDisabled, isReadOnly } = ctx;
+  const { step, currentTime, isDisabled, isReadOnly, filterTime } = ctx;
 
   // Stable across renders unless `step` changes — useListboxNavigation
   // identity-compares its `items` array internally.
   const minutes = useMemo(() => generateMinutes(step), [step]);
 
+  const isMinuteDisabled = useCallback(
+    (minute: number) => {
+      if (!filterTime) return false;
+      return filterTime(currentTime.hours, minute);
+    },
+    [filterTime, currentTime.hours],
+  );
+
   const handleSelect = useCallback(
     (minute: number) => {
       if (isDisabled || isReadOnly) return;
+      if (isMinuteDisabled(minute)) return;
       ctx.setTime({ minutes: minute });
     },
-    [ctx, isDisabled, isReadOnly],
+    [ctx, isDisabled, isReadOnly, isMinuteDisabled],
   );
 
   const { listRef, handleKeyDown } = useListboxNavigation({
@@ -54,6 +63,7 @@ export function TimePickerMinuteList({ classNames, ...props }: TimePickerMinuteL
     >
       {minutes.map((minute) => {
         const isSelected = minute === currentTime.minutes;
+        const isMinuteFullyDisabled = isMinuteDisabled(minute);
         const optionClass =
           [classNames?.option, isSelected && classNames?.optionSelected]
             .filter(Boolean)
@@ -64,7 +74,7 @@ export function TimePickerMinuteList({ classNames, ...props }: TimePickerMinuteL
             key={minute}
             role="option"
             aria-selected={isSelected}
-            aria-disabled={isDisabled || undefined}
+            aria-disabled={isDisabled || isMinuteFullyDisabled || undefined}
             aria-label={ctx.labels.minuteOption(minute)}
             data-selected={isSelected || undefined}
             tabIndex={isSelected ? 0 : -1}
