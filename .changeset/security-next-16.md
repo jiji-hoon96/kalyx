@@ -22,9 +22,9 @@ OSV-detected advisories resolved on `next@15.5.15` (overridden to `>=15.5.18`, r
 
 Three additional dev-tree advisories surfaced after the Next 16 bump and are also pinned:
 
-- `brace-expansion@5.0.5` → `>=5.0.6` — [GHSA-jxxr-4gwj-5jf2](https://osv.dev/GHSA-jxxr-4gwj-5jf2) (6.5, DoS via untrimmed `max` option)
+- `brace-expansion@5.0.5` → `>=5.0.6` — [GHSA-jxxr-4gwj-5jf2](https://osv.dev/GHSA-jxxr-4gwj-5jf2) (6.5, DoS via untrimmed `max` option). Targeted to major 5 only (`"brace-expansion@5": ">=5.0.6"`) — the v1 / v2 lines coexist in the dep graph for older tooling and have a different, incompatible API.
 - `webpack-dev-server@5.2.3` → `>=5.2.4` — [GHSA-79cf-xcqc-c78w](https://osv.dev/GHSA-79cf-xcqc-c78w) (5.3, cross-origin source code exposure)
-- `ws@8.20.0` → `>=8.20.1` — [GHSA-58qx-3vcg-4xpx](https://osv.dev/GHSA-58qx-3vcg-4xpx) (4.4, `close()` implementation)
+- `ws@8.20.0` → `>=8.20.1` — [GHSA-58qx-3vcg-4xpx](https://osv.dev/GHSA-58qx-3vcg-4xpx) (4.4, `close()` implementation). Targeted to major 8 only (`"ws@8": ">=8.20.1"`) — the v7 line is unaffected and stays in place.
 
 All four packages are dev-time dependencies of the docs app (Next's webpack dev server and its transitives). `@kalyx/react` / `@kalyx/core` are unaffected. Next 16 also requires `apps/docs/tsconfig.json` `jsx` → `react-jsx` and the `.next/dev/types/**/*.ts` include; `next-env.d.ts` is auto-regenerated.
 
