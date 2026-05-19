@@ -12,7 +12,13 @@ export type {
 
 export { DateFnsAdapter } from './adapters/date-fns.js';
 
-export { getCalendarDays, isDateDisabled, minDate, maxDate } from './utils/calendar.js';
+export {
+  getCalendarDays,
+  getISOWeekNumber,
+  isDateDisabled,
+  minDate,
+  maxDate,
+} from './utils/calendar.js';
 export { normalizeISO, parseInputValue } from './utils/date.js';
 export {
   setTime,

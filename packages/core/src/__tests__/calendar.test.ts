@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { getCalendarDays, isDateDisabled, minDate, maxDate } from '../utils/calendar.js';
+import {
+  getCalendarDays,
+  getISOWeekNumber,
+  isDateDisabled,
+  minDate,
+  maxDate,
+} from '../utils/calendar.js';
 import { DateFnsAdapter } from '../adapters/date-fns.js';
 
 const adapter = DateFnsAdapter;
@@ -77,6 +83,55 @@ describe('getCalendarDays — basic month grid', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter);
     const outsideDays = weeks.flat().filter((d) => !d.isCurrentMonth);
     expect(outsideDays.length).toBeGreaterThan(0);
+  });
+
+  it('returns 4–6 weeks depending on the month', () => {
+    // February 2026 (28 days, Sun start) fits in 5 weeks
+    const feb2026 = getCalendarDays('2026-02-01T00:00:00.000Z', adapter);
+    expect(feb2026.length).toBeGreaterThanOrEqual(4);
+    expect(feb2026.length).toBeLessThanOrEqual(5);
+  });
+
+  it('always emits 6 weeks when fixedWeeks is true', () => {
+    const fixed = getCalendarDays('2026-02-01T00:00:00.000Z', adapter, { fixedWeeks: true });
+    expect(fixed).toHaveLength(6);
+    for (const week of fixed) {
+      expect(week).toHaveLength(7);
+    }
+  });
+
+  it('fixedWeeks=true keeps total cell count at 42 even for short months', () => {
+    const fixed = getCalendarDays('2026-02-01T00:00:00.000Z', adapter, { fixedWeeks: true });
+    const totalCells = fixed.flat().length;
+    expect(totalCells).toBe(42);
+  });
+});
+
+describe('getISOWeekNumber', () => {
+  // ISO 8601 week semantics: weeks start Monday; week 1 is the week containing
+  // the year's first Thursday (equivalently, the week containing Jan 4).
+  it('returns 1 for Jan 1 2026 (Thursday, in ISO week 1 of 2026)', () => {
+    expect(getISOWeekNumber('2026-01-01T00:00:00.000Z')).toBe(1);
+  });
+
+  it('returns 53 for Dec 28 2026 (last full ISO week of 2026)', () => {
+    expect(getISOWeekNumber('2026-12-28T00:00:00.000Z')).toBe(53);
+  });
+
+  it('returns 52 of the prior year for Jan 1 2023 (Sunday, anchored to 2022-W52)', () => {
+    // Jan 1 2023 is a Sunday; the Thursday of its week is Dec 29 2022 → ISO week 52 of 2022
+    expect(getISOWeekNumber('2023-01-01T00:00:00.000Z')).toBe(52);
+  });
+
+  it('returns 1 for Jan 4 of any year (Jan 4 is always in ISO week 1)', () => {
+    expect(getISOWeekNumber('2024-01-04T00:00:00.000Z')).toBe(1);
+    expect(getISOWeekNumber('2025-01-04T00:00:00.000Z')).toBe(1);
+    expect(getISOWeekNumber('2026-01-04T00:00:00.000Z')).toBe(1);
+  });
+
+  it('handles the Feb 29 leap-day edge', () => {
+    // Feb 29 2024 is a Thursday → ISO week 9 of 2024
+    expect(getISOWeekNumber('2024-02-29T00:00:00.000Z')).toBe(9);
   });
 });
 
