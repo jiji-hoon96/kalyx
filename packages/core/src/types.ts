@@ -17,7 +17,8 @@ export type ISODateString = string;
  *   { before: '2026-01-01T00:00:00.000Z' }, // disable before Jan 1
  *   { after: '2026-12-31T00:00:00.000Z' },  // disable after Dec 31
  *   { date: '2026-06-15T00:00:00.000Z' },   // disable a specific date
- *   { dayOfWeek: [0, 6] },                   // disable weekends
+ *   { dayOfWeek: [0, 6] },                  // disable weekends
+ *   { filter: (iso) => holidays.has(iso) }, // programmatic filter
  * ];
  * ```
  */
@@ -25,7 +26,8 @@ export type DisabledRule =
   | { date: ISODateString }
   | { before: ISODateString }
   | { after: ISODateString }
-  | { dayOfWeek: number[] };
+  | { dayOfWeek: number[] }
+  | { filter: (iso: ISODateString) => boolean };
 
 /** Date range (RangePicker) */
 export interface DateRange {
