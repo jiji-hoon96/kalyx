@@ -1,5 +1,14 @@
 # docs-site
 
+## 0.0.3-rc.7
+
+### Patch Changes
+
+- Updated dependencies [0eca2e8]
+- Updated dependencies [d62c84e]
+- Updated dependencies [b40080d]
+  - @kalyx/react@1.0.0-rc.7
+
 ## 0.0.3-rc.6
 
 ### Patch Changes

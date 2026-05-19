@@ -1,5 +1,45 @@
 # @kalyx/core
 
+## 1.0.0-rc.7
+
+### Minor Changes
+
+- 0eca2e8: Two new `DatePicker.Calendar` / `RangePicker.Calendar` props plus an ISO-week utility:
+  - **`showWeekNumber`** — render an ISO 8601 week-number column (1–53) on the left of the grid. The column uses `<th scope="row" aria-hidden="true">` so it doesn't participate in the WAI-ARIA grid data region; keyboard navigation across date cells is unchanged. New className slots: `weekNumberHeader`, `weekNumber`.
+  - **`fixedWeeks`** — when true, always render 6 rows (42 cells) regardless of the month. Useful for popover layouts that need a stable height across month navigation.
+
+  Both also accepted on `CalendarOptions` (the `getCalendarDays` core util gains `fixedWeeks`).
+
+  New core export: **`getISOWeekNumber(iso)`** — pure UTC computation, no date-fns dep. Anchored to the Thursday of the week (so the same week always returns the same number regardless of `weekStartsOn`).
+
+  ```tsx
+  <DatePicker value={date} onChange={setDate}>
+    <DatePicker.Input />
+    <DatePicker.Popover>
+      <DatePicker.Calendar showWeekNumber fixedWeeks />
+    </DatePicker.Popover>
+  </DatePicker>
+  ```
+
+  Bundle impact: +0.46 KB ESM gzip (13.96 → 14.42 KB). Still well under the 15 KB ceiling.
+
+- d62c84e: `DisabledRule` gains a programmatic `filter` variant — pass any predicate `(iso: ISODateString) => boolean` to disable arbitrary days that don't fit the declarative `before` / `after` / `dayOfWeek` / `date` rules.
+
+  ```tsx
+  const holidays = new Set(['2026-01-01T00:00:00.000Z', '2026-12-25T00:00:00.000Z']);
+
+  <DatePicker
+    disabled={[
+      { dayOfWeek: [0, 6] }, // weekends
+      { filter: (iso) => holidays.has(iso) }, // holidays
+    ]}
+  >
+    …
+  </DatePicker>;
+  ```
+
+  The new variant slots into the existing `isDateDisabled` evaluation (short-circuits on first match) and works with keyboard-navigation disabled-skip in `DatePicker.Calendar` / `RangePicker.Calendar` with no further changes. Equivalent to `react-datepicker`'s `filterDate` prop and MUI X DatePicker's `shouldDisableDate`. Bundle impact: 0 KB (still 13.96 KB ESM gzip).
+
 ## 1.0.0-rc.6
 
 ### Patch Changes
