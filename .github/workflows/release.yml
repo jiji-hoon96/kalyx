@@ -17,17 +17,17 @@ jobs:
       pull-requests: write  # Version PR 생성·업데이트
       id-token: write       # npm provenance (공급망 보안)
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           # Changesets가 전체 git 히스토리 필요
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
       # Node 24 ships with npm 11.x which is required for Trusted Publishing
       # (OIDC-based publish without NPM_TOKEN). Node 22 ships with npm 10.x
       # which only supports provenance signing, not actual OIDC publish.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
