@@ -1,5 +1,12 @@
 # docs-site
 
+## 0.0.3-rc.8
+
+### Patch Changes
+
+- Updated dependencies [0d3b845]
+  - @kalyx/react@1.0.0-rc.8
+
 ## 0.0.3-rc.7
 
 ### Patch Changes
