@@ -21,9 +21,9 @@ jobs:
         browser: [chromium, firefox, webkit]
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: pnpm
@@ -42,7 +42,7 @@ jobs:
 
       - name: 실패 리포트 업로드
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report-${{ matrix.browser }}
           path: playwright-report/
