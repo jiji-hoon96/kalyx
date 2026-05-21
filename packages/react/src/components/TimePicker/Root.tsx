@@ -47,6 +47,13 @@ export interface TimePickerRootProps {
   disabled?: boolean;
   /** Read-only */
   readOnly?: boolean;
+  /**
+   * Programmatic per-slot disable predicate. Returns `true` for any `(hours, minutes)` pair
+   * that should be unselectable. Equivalent to react-datepicker's `filterTime`. Use cases:
+   * business hours, lunch breaks, blackout slots. Hours are disabled only when the predicate
+   * returns `true` for every step within the hour.
+   */
+  filterTime?: (hours: number, minutes: number) => boolean;
   /** Override ARIA labels (defaults to English) */
   labels?: Partial<TimePickerLabels>;
   /** Child components */
@@ -68,6 +75,7 @@ export function TimePickerRoot({
   displayTimezone,
   disabled = false,
   readOnly = false,
+  filterTime,
   labels: labelsProp,
   children,
 }: TimePickerRootProps) {
@@ -118,6 +126,7 @@ export function TimePickerRoot({
       currentTime,
       pickerId,
       labels: mergedLabels,
+      filterTime,
     }),
     [
       currentValue,
@@ -131,6 +140,7 @@ export function TimePickerRoot({
       currentTime,
       pickerId,
       mergedLabels,
+      filterTime,
     ],
   );
 

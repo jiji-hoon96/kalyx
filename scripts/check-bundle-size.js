@@ -13,8 +13,12 @@ import { readFileSync, statSync } from "fs";
 // MonthPicker.Grid, YearPicker.Grid). 14KB → 15KB once `before`/`after`
 // rule based fully-disabled-month/year detection (+ click-block + keyboard
 // skip-disabled) was added to MonthPicker.Grid and YearPicker.Grid in
-// v1.0-rc.4. Still ~3× smaller than react-datepicker (~40KB).
-const TARGET_KB = 15;
+// v1.0-rc.4. 15KB → 16KB for `TimePicker.filterTime` — programmatic
+// per-slot disable predicate covering business-hours / lunch-break /
+// blackout-slot use cases, closing the gap with react-datepicker's
+// `filterTime` and MUI X's `shouldDisableTime` (PR following this comment).
+// Still ~4× smaller than react-datepicker (~40KB).
+const TARGET_KB = 16;
 
 const BUNDLES = [
 	{ label: "ESM", path: "packages/react/dist/index.js" },

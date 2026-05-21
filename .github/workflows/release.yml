@@ -49,7 +49,7 @@ jobs:
         run: |
           BYTES=$(gzip -c packages/react/dist/index.js | wc -c)
           KB=$(echo "scale=2; $BYTES / 1024" | bc)
-          MAX=15
+          MAX=16
           echo "📦 릴리즈 번들 크기: ${KB}KB (목표: ≤${MAX}KB)"
           if (( $(echo "$KB > $MAX" | bc -l) )); then
             echo "❌ 번들 크기 ${MAX}KB 초과 — 릴리즈 중단"

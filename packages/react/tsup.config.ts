@@ -22,9 +22,9 @@ export default defineConfig({
 		const { gzipSync } = await import("zlib");
 		const { readFileSync, writeFileSync } = await import("fs");
 		// Mirror scripts/check-bundle-size.js + .github/workflows/pr-check.yml + release.yml.
-		// Raised from 12 → 13 → 14 → 15 KB across RC milestones as features landed
+		// Raised from 12 → 13 → 14 → 15 → 16 KB across RC milestones as features landed
 		// (CLAUDE.md §2 records each bump's rationale). Keep all four sources in sync.
-		const TARGET_KB = 15;
+		const TARGET_KB = 16;
 		const outputs = [["ESM", "dist/index.js"], ["CJS", "dist/index.cjs"]] as const;
 		for (const [label, file] of outputs) {
 			try {

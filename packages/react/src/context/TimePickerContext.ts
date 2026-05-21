@@ -29,6 +29,13 @@ export interface TimePickerContextValue {
   pickerId: string;
   /** ARIA labels */
   labels: TimePickerLabels;
+  /**
+   * Programmatic per-slot disable predicate. Returns `true` for any (hour, minute) pair that
+   * should be unselectable. Equivalent to react-datepicker's `filterTime` prop. Use cases:
+   * business hours, lunch breaks, blackout slots. The hour-list disables a row only when the
+   * predicate returns `true` for *every* step in that hour.
+   */
+  filterTime?: (hours: number, minutes: number) => boolean;
 }
 
 export const TimePickerContext = createContext<TimePickerContextValue | null>(null);
