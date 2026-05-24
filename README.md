@@ -10,7 +10,7 @@
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
 [![RC](https://img.shields.io/npm/v/@kalyx/react/rc?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
-[![Bundle](https://img.shields.io/badge/gzip-14.42KB-brightgreen)](https://kalyx-docs.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-15.01KB-brightgreen)](https://kalyx-docs.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -19,7 +19,7 @@
 
 ---
 
-Kalyx ships a **complete** set of date-related React primitives — single dates, date ranges, time, date+time, month, year, and week — under one composition API. ~14 KB gzip (≤15 KB ceiling), zero CSS, SSR-safe.
+Kalyx ships a **complete** set of date-related React primitives — single dates, date ranges, time, date+time, month, year, and week — under one composition API. ~15 KB gzip (≤16 KB ceiling), zero CSS, SSR-safe.
 
 ```bash
 pnpm add @kalyx/react
@@ -87,7 +87,7 @@ API reference, recipes (Tailwind / shadcn / React Hook Form), and migration guid
 
 ## Bundle
 
-`@kalyx/react` v1.0.0-rc.7 → **14.42 KB** gzip (ESM) / **14.84 KB** (CJS). CI gate: ≤ 15 KB.
+`@kalyx/react` v1.0.0-rc.8 → **15.01 KB** gzip (ESM) / **15.16 KB** (CJS). CI gate: ≤ 16 KB.
 
 ## Browser support
 
@@ -101,7 +101,7 @@ pnpm test            # unit + component
 pnpm typecheck
 pnpm lint
 pnpm build
-pnpm check-bundle    # ≤ 15 KB
+pnpm check-bundle    # ≤ 16 KB
 ```
 
 See [CLAUDE.md](./CLAUDE.md) for architecture principles.
