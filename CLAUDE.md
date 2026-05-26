@@ -42,7 +42,7 @@
 - **React Aria**: 기능 완전하지만 복잡하고, `@internationalized/date` 의존 강제 (date-fns 비호환).
 - **Headless UI**: DatePicker 구현 거부 ("유지보수가 너무 큼").
 
-**우리가 채우는 공백:** Headless + Input·Calendar·TimePicker·RangePicker 통합 + date-fns 호환 + SSR 안전 + ≤ 15KB
+**우리가 채우는 공백:** Headless + Input·Calendar·TimePicker·RangePicker 통합 + date-fns 호환 + SSR 안전 + ≤ 16KB
 
 ### 포지셔닝
 
@@ -222,7 +222,7 @@ kalyx/
 │   │       │   ├── locale.ts        ← Intl 기반 다국어 월/요일명
 │   │       │   ├── timezone.ts      ← DST-aware timezone 유틸
 │   │       │   └── labels.ts        ← 접근성 ARIA 라벨 기본값
-│   │       ├── __tests__/           ← 단위 테스트 (~140 케이스, 374 전체 vitest)
+│   │       ├── __tests__/           ← 단위 테스트 (~149 케이스, 462 전체 vitest)
 │   │       └── index.ts             ← 공개 API
 │   └── react/                        ← React 컴포넌트 레이어
 │       ├── CLAUDE.md                 ← 패키지별 컨텍스트
@@ -248,7 +248,7 @@ kalyx/
 │   ├── docs/                         ← 데모 사이트 (Next.js, 정적 빌드)
 │   └── docs-site/                    ← 문서 사이트 (Docusaurus, i18n)
 ├── scripts/
-│   ├── check-bundle-size.js          ← 번들 크기 측정 (15KB 제한)
+│   ├── check-bundle-size.js          ← 번들 크기 측정 (16KB 제한)
 │   └── check-tree-shaking.js         ← tree-shaking 검증
 ├── test/
 │   └── setup.ts                      ← Vitest 전역 설정
@@ -257,7 +257,7 @@ kalyx/
 
 ---
 
-## 5. 구현 현황 (v1.0-rc.3 기준)
+## 5. 구현 현황 (v1.0-rc.8 기준)
 
 ### 컴포넌트 (7종 — 모두 구현 완료 ✅)
 
@@ -500,7 +500,7 @@ PR 열기 전 확인:
 | 커맨드 | 설명 |
 |---|---|
 | `/new-component` | 새 서브 컴포넌트 스캐폴딩 (컴포넌트·타입·테스트 파일 생성) |
-| `/check-bundle` | 빌드 후 번들 크기 측정, 15KB 초과 시 실패 |
+| `/check-bundle` | 빌드 후 번들 크기 측정, 16KB 초과 시 실패 |
 | `/check-a11y` | axe 자동 검사 + ARIA 수동 체크리스트 |
 | `/release` | Changesets 기반 버전 범프·CHANGELOG·npm 배포 가이드 |
 
@@ -588,10 +588,10 @@ pnpm changeset publish # npm 배포 (CI 자동)
 
 ### A. v1.0 Release Candidate 공지
 
-- **상태**: `1.0.0-rc.3` 까지 publish 됨 (`.changeset/pre.json` `mode: pre`, `tag: rc`). 17개 changeset이 누적된 상태로 pre-mode 유지 중.
+- **상태**: `@kalyx/core 1.0.0-rc.7` / `@kalyx/react 1.0.0-rc.8` 까지 publish 됨 (`.changeset/pre.json` `mode: pre`, `tag: rc`). 26개 changeset이 누적된 상태로 pre-mode 유지 중.
 - **남은 작업**: npm `next` 사용자 안내 vs 실제 dist-tag(`rc`) 통일, GitHub Release 노트 갱신, RC 기간 만료 후 `pnpm changeset pre exit` → 1.0.0 stable
 - **스킬 파일**: `.claude/skills/rc-announcement.md`
-- **졸업 조건**: RC 기간 2주 + `v1-rc` open 이슈 0건 + 번들 ≤15KB + axe/SSR 그린
+- **졸업 조건**: RC 기간 2주 + `v1-rc` open 이슈 0건 + 번들 ≤16KB + axe/SSR 그린
 
 ### C. 어댑터 중립 추출 (Option C — Hybrid)
 
@@ -631,7 +631,7 @@ pnpm changeset publish # npm 배포 (CI 자동)
 □ 접근성 기준을 만족하는가? (axe 통과)
 □ 테스트가 작성됐는가? (커버리지 기준 충족)
 □ JSDoc 주석이 있는가? (공개 API)
-□ 번들에 불필요한 의존성을 추가하지 않았는가? (15KB 목표)
+□ 번들에 불필요한 의존성을 추가하지 않았는가? (16KB 목표)
 □ 내부 구현이 index.ts에 실수로 export되지 않았는가?
 □ changeset 파일을 추가했는가? (공개 API 변경 시 필수)
 ```

@@ -77,6 +77,7 @@ function Basic24h() {
 | `displayTimezone` | `string` | — | IANA zone. When set, the hour/minute controls read and write time as observed in this zone (DST-aware). See [Timezone](../concepts/timezone.md). |
 | `disabled` | `boolean` | `false` | Disable the whole picker. |
 | `readOnly` | `boolean` | `false` | Prevent changes. |
+| `filterTime` | `(hours: number, minutes: number) => boolean` | — | Per-slot disable predicate. Return `true` to make a slot **unselectable** (same polarity as MUI X's `shouldDisableTime` — note this is the **inverse** of react-datepicker's `filterTime`, which returns `true` to *keep* a slot). An hour is disabled only when every `step` minute within it returns `true`. Always receives 24-hour values, regardless of `format`. |
 | `labels` | `Partial<TimePickerLabels>` | — | Override ARIA labels. Keys: `timeInput`, `hourList`, `minuteList`, `amPmToggle`, `hourOption(h)`, `minuteOption(m)`. |
 | `children` | `ReactNode` | — | Sub-components. |
 

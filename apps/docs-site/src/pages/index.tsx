@@ -15,7 +15,7 @@ function Hero(): ReactNode {
           <div>
             <span className={styles.eyebrow}>
               <span className={styles.eyebrowDot} aria-hidden="true" />
-              <Translate id="home.eyebrow">Headless · SSR-safe · ~12 KB</Translate>
+              <Translate id="home.eyebrow">Headless · SSR-safe · ~15 KB</Translate>
             </span>
             <h1 className={styles.title}>
               <Translate id="home.title.line1">The headless</Translate>{' '}
@@ -28,7 +28,7 @@ function Hero(): ReactNode {
             <p className={styles.subtitle}>
               <Translate id="home.subtitle">
                 7 composable pickers — DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker,
-                YearPicker, and WeekPicker. Zero CSS, SSR-safe, ~12 KB (≤ 13 KB ceiling).
+                YearPicker, and WeekPicker. Zero CSS, SSR-safe, ~15 KB (≤ 16 KB ceiling).
               </Translate>
             </p>
             <div className={styles.ctas}>
@@ -146,10 +146,10 @@ const features: Feature[] = [
       </svg>
     ),
     titleId: 'home.feat.bundle.title',
-    titleDefault: '~12 KB',
+    titleDefault: '~15 KB',
     descId: 'home.feat.bundle.desc',
     descDefault:
-      "12.27 KB gzip for 7 pickers — a fraction of react-datepicker’s 60 KB. Tree-shakable down to what you use.",
+      "15.01 KB gzip for 7 pickers — a fraction of react-datepicker’s 60 KB. Tree-shakable down to what you use.",
   },
 ];
 
@@ -216,7 +216,7 @@ function Compare(): ReactNode {
                 <td>
                   <Translate id="home.compare.row.bundle">Bundle (gzip)</Translate>
                 </td>
-                <td className={styles.kalyxCell}>~11KB</td>
+                <td className={styles.kalyxCell}>~15KB</td>
                 <td>~60KB</td>
                 <td>~22KB</td>
                 <td>~18KB</td>
@@ -362,7 +362,7 @@ export default function Home(): ReactNode {
       description={translate({
         id: 'home.meta.description',
         message:
-          'Headless, SSR-safe React DatePicker with Input, Calendar, TimePicker, and RangePicker in ~12 KB (≤ 13 KB ceiling).',
+          'Headless, SSR-safe React DatePicker with Input, Calendar, TimePicker, and RangePicker in ~15 KB (≤ 16 KB ceiling).',
       })}>
       <Hero />
       <main>

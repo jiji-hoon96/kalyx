@@ -21,7 +21,8 @@ type DisabledRule =
   | { date: ISODateString }
   | { before: ISODateString }
   | { after: ISODateString }
-  | { dayOfWeek: number[] };
+  | { dayOfWeek: number[] }
+  | { filter: (iso: ISODateString) => boolean };
 
 type DateRange = {
   start: ISODateString | null;

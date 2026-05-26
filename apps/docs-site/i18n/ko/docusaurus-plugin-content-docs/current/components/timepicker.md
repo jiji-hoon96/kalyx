@@ -42,8 +42,11 @@ function Example() {
 | `format` | `'12h' \| '24h'` | `'24h'` | 시간 포맷. |
 | `step` | `number` | `1` | 분 간격 (예: `5`, `15`, `30`). |
 | `withSeconds` | `boolean` | `false` | 초 표시 (입력 + 리스트). |
+| `displayTimezone` | `string` | — | IANA 타임존. 설정 시 시/분 컨트롤이 이 타임존 기준으로 시간을 읽고 쓴다 (DST 인식). [Timezone](../concepts/timezone.md) 참고. |
 | `disabled` | `boolean` | `false` | 전체 비활성. |
 | `readOnly` | `boolean` | `false` | 변경 방지. |
+| `filterTime` | `(hours: number, minutes: number) => boolean` | — | 슬롯별 비활성 predicate. `true`를 반환하면 해당 슬롯을 **선택 불가**로 만든다 (MUI X의 `shouldDisableTime`과 같은 극성 — react-datepicker의 `filterTime`(슬롯을 *유지*하려면 `true`)과는 **반대**). 시(hour)는 해당 시의 모든 `step` 분이 `true`일 때만 비활성. `format`과 무관하게 항상 24시간 값을 받는다. |
+| `labels` | `Partial<TimePickerLabels>` | — | ARIA 라벨 재정의. 키: `timeInput`, `hourList`, `minuteList`, `amPmToggle`, `hourOption(h)`, `minuteOption(m)`. |
 | `children` | `ReactNode` | — | 서브 컴포넌트. |
 
 ## `<TimePicker.Input>`
