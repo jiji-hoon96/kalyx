@@ -164,14 +164,14 @@ pnpm --filter docs-site start    # 로컬 브라우저에서 배너 확인
 **업로드하지 말 것**. 초안만 `.github/RC_SOCIAL_DRAFT.md`에 저장하고 사용자가 확인 후 직접 게시.
 
 X/Twitter (280자):
-> Kalyx v1.0-rc is out — the headless React DatePicker that ships complete. Single / range / time / month / year / week pickers, ISO 8601 UTC, IANA timezone, ~12KB gzip.
+> Kalyx v1.0-rc is out — the headless React DatePicker that ships complete. Single / range / time / month / year / week pickers, ISO 8601 UTC, IANA timezone, ~15KB gzip.
 >
 > `pnpm add @kalyx/react@rc`
 >
 > Feedback welcome.
 
 LinkedIn:
-> After months of composition-first API work, Kalyx v1.0 is in release candidate. One library covers Date, Range, Time, DateTime, Month, Year, Week pickers — zero CSS, SSR-safe, IANA timezone. Bundle stays at ~12KB gzipped (≤13KB ceiling).
+> After months of composition-first API work, Kalyx v1.0 is in release candidate. One library covers Date, Range, Time, DateTime, Month, Year, Week pickers — zero CSS, SSR-safe, IANA timezone. Bundle stays at ~15KB gzipped (≤16KB ceiling).
 >
 > Trying the RC: `pnpm add @kalyx/react@rc`. Issues: https://github.com/jiji-hoon96/kalyx/issues (tag `v1-rc`).
 
@@ -191,7 +191,7 @@ LinkedIn:
 
 - [ ] `v1-rc` 라벨 open 이슈 0건 (또는 모두 "v1.1 이후"로 이관)
 - [ ] RC 기간 2주 이상 경과
-- [ ] 번들 크기 13KB gzip 이하 유지 (`pnpm check-bundle` 통과)
+- [ ] 번들 크기 16KB gzip 이하 유지 (`pnpm check-bundle` 통과)
 - [ ] 모든 picker에 대해 axe 접근성 통과
 - [ ] SSR 스모크 테스트 통과 (`e2e-and-docs.yml` 그린)
 

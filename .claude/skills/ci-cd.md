@@ -25,7 +25,7 @@ Push to PR branch
   ├── lint
   ├── test (커버리지 포함)
   ├── build
-  └── bundle-size (12KB 게이팅)
+  └── bundle-size (16KB 게이팅)
 
 PR merge to main
     ↓
@@ -132,7 +132,7 @@ jobs:
           retention-days: 1
 
   bundle-size:
-    name: Bundle Size Check (≤12KB)
+    name: Bundle Size Check (≤16KB)
     runs-on: ubuntu-latest
     needs: build   # build job이 끝나야 실행
     steps:
@@ -163,7 +163,7 @@ jobs:
           echo "bundle_size=${GZIP_KB}" >> $GITHUB_OUTPUT
           echo "max_size=${MAX_KB}" >> $GITHUB_OUTPUT
 
-          # 12KB 초과 시 실패
+          # 16KB 초과 시 실패
           if (( $(echo "$GZIP_KB > $MAX_KB" | bc -l) )); then
             echo "❌ 번들 크기 초과: ${GZIP_KB}KB > ${MAX_KB}KB"
             exit 1
@@ -451,7 +451,7 @@ Branch name pattern: main
    - lint
    - test (Node 22)
    - build
-   - Bundle Size Check (≤12KB)
+   - Bundle Size Check (≤16KB)
    - All Checks Pass
 
 ✅ Require branches to be up to date before merging

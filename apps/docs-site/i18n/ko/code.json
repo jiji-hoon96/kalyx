@@ -1,6 +1,6 @@
 {
   "home.eyebrow": {
-    "message": "Headless · SSR 안전 · 13KB 이하",
+    "message": "Headless · SSR 안전 · ~15KB",
     "description": "홈 상단 뱃지 텍스트"
   },
   "home.title.line1": {
@@ -16,7 +16,7 @@
     "description": "홈 타이틀 2번째 줄"
   },
   "home.subtitle": {
-    "message": "7개의 조합형 피커 — DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker. CSS 없음, SSR 안전, 13KB 이하.",
+    "message": "7개의 조합형 피커 — DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker. CSS 없음, SSR 안전, ~15KB (≤ 16KB).",
     "description": "홈 부제"
   },
   "home.cta.start": {
@@ -80,11 +80,11 @@
     "description": "기능: 접근성 설명"
   },
   "home.feat.bundle.title": {
-    "message": "13KB 이하",
+    "message": "~15KB",
     "description": "기능: 번들"
   },
   "home.feat.bundle.desc": {
-    "message": "7개 피커를 gzip 12.27KB에 담음 — react-datepicker 60KB 대비 일부. 사용한 만큼만 트리셰이킹됩니다.",
+    "message": "7개 피커를 gzip 15.01KB에 담음 — react-datepicker 60KB 대비 일부. 사용한 만큼만 트리셰이킹됩니다.",
     "description": "기능: 번들 설명"
   },
   "home.compare.eyebrow": {
@@ -148,7 +148,7 @@
     "description": "홈 메타 타이틀"
   },
   "home.meta.description": {
-    "message": "Input, Calendar, TimePicker, RangePicker를 13KB 이하로 담은 Headless·SSR 안전 React DatePicker (실측 12.27KB).",
+    "message": "Input, Calendar, TimePicker, RangePicker를 ~15KB (≤ 16KB)로 담은 Headless·SSR 안전 React DatePicker (실측 15.01KB).",
     "description": "홈 메타 디스크립션"
   },
   "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {

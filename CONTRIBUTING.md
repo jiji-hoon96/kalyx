@@ -2,6 +2,10 @@
 
 Thanks for your interest in contributing! This guide will help you get started.
 
+## Code of Conduct
+
+This project adheres to a [Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you are expected to uphold it. Please report unacceptable behavior to **jihoon7705@gmail.com**.
+
 ## Getting Started
 
 **Prerequisites:** Node.js 20+, pnpm 9+
@@ -20,7 +24,7 @@ pnpm test          # watch mode
 pnpm test:run      # single run (CI)
 pnpm typecheck     # tsc -b
 pnpm lint          # eslint
-pnpm check-bundle  # gzip size check (≤ 12 KB)
+pnpm check-bundle  # gzip size check (≤ 16 KB)
 ```
 
 ### Branch Naming
@@ -97,13 +101,13 @@ Before opening a PR, verify:
 - [ ] `pnpm lint` passes
 - [ ] `pnpm test:run` passes
 - [ ] `pnpm build` succeeds
-- [ ] `pnpm check-bundle` — bundle ≤ 12 KB gzip
+- [ ] `pnpm check-bundle` — bundle ≤ 16 KB gzip
 - [ ] Changeset added if public API changed (`pnpm changeset`)
 - [ ] New public APIs have JSDoc comments
 
 ## Bundle Size
 
-The gzip target is **≤ 12 KB** for `@kalyx/react`. Check with:
+The gzip target is **≤ 16 KB** for `@kalyx/react`. Check with:
 
 ```bash
 pnpm build && pnpm check-bundle

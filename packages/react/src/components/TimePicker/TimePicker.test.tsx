@@ -147,6 +147,96 @@ describe('TimePicker — 12-hour mode', () => {
   });
 });
 
+describe('TimePicker — AmPmToggle keyboard navigation', () => {
+  it('toggles AM→PM with ArrowDown and moves focus to the PM radio', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    // 02:00 UTC = 2 AM
+    render(
+      <ControlledTimePicker
+        initialValue="2026-01-15T02:00:00.000Z"
+        format="12h"
+        onChange={onChange}
+      />,
+    );
+    screen.getByRole('radio', { name: 'AM' }).focus();
+    await user.keyboard('{ArrowDown}');
+    const pm = screen.getByRole('radio', { name: 'PM' });
+    expect(pm).toBeChecked();
+    expect(pm).toHaveFocus();
+    // 2 AM → 2 PM = 14:00
+    expect(onChange).toHaveBeenLastCalledWith('2026-01-15T14:00:00.000Z');
+  });
+
+  it('toggles PM→AM with ArrowLeft', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    // 14:00 UTC = 2 PM
+    render(
+      <ControlledTimePicker
+        initialValue="2026-01-15T14:00:00.000Z"
+        format="12h"
+        onChange={onChange}
+      />,
+    );
+    screen.getByRole('radio', { name: 'PM' }).focus();
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('radio', { name: 'AM' })).toBeChecked();
+    expect(onChange).toHaveBeenLastCalledWith('2026-01-15T02:00:00.000Z');
+  });
+
+  it('selects AM with Home and PM with End', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <ControlledTimePicker
+        initialValue="2026-01-15T14:00:00.000Z"
+        format="12h"
+        onChange={onChange}
+      />,
+    );
+    screen.getByRole('radio', { name: 'PM' }).focus();
+    await user.keyboard('{Home}');
+    expect(screen.getByRole('radio', { name: 'AM' })).toBeChecked();
+    expect(onChange).toHaveBeenLastCalledWith('2026-01-15T02:00:00.000Z');
+
+    screen.getByRole('radio', { name: 'AM' }).focus();
+    await user.keyboard('{End}');
+    expect(screen.getByRole('radio', { name: 'PM' })).toBeChecked();
+    expect(onChange).toHaveBeenLastCalledWith('2026-01-15T14:00:00.000Z');
+  });
+
+  it('selects the focused period with Enter', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    // 02:00 = 2 AM; focus the (unchecked) PM radio and confirm with Enter
+    render(
+      <ControlledTimePicker
+        initialValue="2026-01-15T02:00:00.000Z"
+        format="12h"
+        onChange={onChange}
+      />,
+    );
+    screen.getByRole('radio', { name: 'PM' }).focus();
+    await user.keyboard('{Enter}');
+    expect(onChange).toHaveBeenLastCalledWith('2026-01-15T14:00:00.000Z');
+  });
+
+  it('selects a period on click', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <ControlledTimePicker
+        initialValue="2026-01-15T14:00:00.000Z"
+        format="12h"
+        onChange={onChange}
+      />,
+    );
+    await user.click(screen.getByRole('radio', { name: 'AM' }));
+    expect(onChange).toHaveBeenLastCalledWith('2026-01-15T02:00:00.000Z');
+  });
+});
+
 describe('TimePicker — minute step', () => {
   it('renders 4 options (0, 15, 30, 45) when step=15', () => {
     renderTimePicker({ value: '2026-01-15T14:00:00.000Z', step: 15 });
