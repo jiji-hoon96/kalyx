@@ -1,5 +1,11 @@
 # @kalyx/react
 
+## 1.0.0-rc.9
+
+### Patch Changes
+
+- 1a77283: docs: clarify `TimePicker.filterTime` polarity. The predicate returns `true` to mark a slot **unselectable** — same polarity as MUI X's `shouldDisableTime`, and the **inverse** of react-datepicker's `filterTime` (which returns `true` to _keep_ a slot). Earlier JSDoc/changelog called it "equivalent to react-datepicker's `filterTime`", which is misleading because the polarity is reversed; react-datepicker migrators must invert their predicate. No runtime behavior change — JSDoc, the published package description (≤16 KB), and docs only.
+
 ## 1.0.0-rc.8
 
 ### Minor Changes
