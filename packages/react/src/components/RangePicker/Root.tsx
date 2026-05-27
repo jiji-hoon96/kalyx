@@ -1,5 +1,5 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { DateFnsAdapter, DEFAULT_RANGEPICKER_LABELS, civilMidnightFromUtcDay } from '@kalyx/core';
 import type {
   DateAdapter,
@@ -17,6 +17,18 @@ import type {
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
+
+const SR_ONLY: CSSProperties = {
+  position: 'absolute',
+  width: 1,
+  height: 1,
+  padding: 0,
+  margin: -1,
+  overflow: 'hidden',
+  clip: 'rect(0, 0, 0, 0)',
+  whiteSpace: 'nowrap',
+  border: 0,
+};
 
 /**
  * Props for the RangePicker Root component.
@@ -103,6 +115,10 @@ export function RangePickerRoot({
   const [selectingTarget, setSelectingTarget] = useState<RangeSelectingTarget>('start');
 
   const [hoverDate, setHoverDate] = useState<ISODateString | null>(null);
+
+  // Live-region announcement (mounted on Root so it survives Calendar unmount).
+  const [announcement, setAnnouncement] = useState('');
+  const announce = useCallback((message: string) => setAnnouncement(message), []);
 
   // Lazy initializers — see DatePicker/Root.tsx for the SSR/hydration rationale.
   const [viewMonth, setViewMonth] = useState<ISODateString>(
@@ -231,6 +247,7 @@ export function RangePickerRoot({
       isReadOnly: readOnly,
       pickerId,
       labels: mergedLabels,
+      announce,
     }),
     [
       currentValue,
@@ -254,8 +271,16 @@ export function RangePickerRoot({
       readOnly,
       pickerId,
       mergedLabels,
+      announce,
     ],
   );
 
-  return <RangePickerContext.Provider value={contextValue}>{children}</RangePickerContext.Provider>;
+  return (
+    <RangePickerContext.Provider value={contextValue}>
+      {children}
+      <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>
+        {announcement}
+      </div>
+    </RangePickerContext.Provider>
+  );
 }
