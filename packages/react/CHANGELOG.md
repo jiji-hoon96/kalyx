@@ -1,5 +1,40 @@
 # @kalyx/react
 
+## 1.0.0-rc.11
+
+### Patch Changes
+
+- 19ac1c0: fix(core): allow `generateMinutes` step values up to 60
+
+  `generateMinutes(step)` rejected any step above 30, which prevented legitimate cases like `step=45` (quarter-and-three-quarters past the hour) and `step=60` (on-the-hour only). The slot-generation loop already works for any 1–60 integer, so the upper bound is now 60 with the same error message format. Steps `0`, `61+`, and negative values still throw. No callers in `@kalyx/react` relied on the previous narrower bound.
+
+- eafc3c1: fix(input): drop stale typed text when the parent re-sets value externally
+
+  `<DatePicker.Input>` and `<TimePicker.Input>` keep half-typed text in a local `inputText` state while the user is editing — without it, parse-failed input would vanish on every keystroke. The state was reset only when the user committed via blur/Enter, which left a real gap:
+
+  If the value changed from anywhere else (parent re-rendered with a new `value`, a calendar click, a `Preset`, a custom-Hook `setRange`, an HourList option), the Input kept rendering the user's stale text. Source-of-truth and visible value diverged silently.
+
+  A `useEffect` keyed on `ctx.value` now resets `inputText` whenever the source-of-truth changes. The Input goes back to formatting the new value normally. For DatePicker the reset is skipped while an IME composition is in flight (Korean/Japanese/Chinese), so an in-flight character is never wiped mid-stroke.
+
+  Impact: `DatePicker`, `MonthPicker`, `YearPicker` (the last two reuse `DatePickerInput`), and `TimePicker` all get the fix. `RangePicker`/`WeekPicker`/`DateTimePicker` Inputs are read-only or non-editable and already track context directly, so they were never affected.
+
+- 23bc187: docs(i18n): translate Korean intro and stop bumping demo apps on every patch
+  - `apps/docs-site/i18n/ko/.../intro.md` is now fully translated to Korean. Previously the file lived in the `i18n/ko/` tree but the body was the verbatim English copy, so Korean docs visitors saw English content on the landing page.
+  - `.changeset/config.json` `ignore` now includes the two demo workspaces (`@kalyx/docs`, `docs-site`). Changesets used to bump them on every release because they depend on `@kalyx/react`, polluting their CHANGELOG with `Updated dependencies` entries and adding noise to release PRs. Demo apps aren't published — they don't need versioning.
+
+- c8a6609: fix(rangepicker): announce next selection target and final range to screen readers
+
+  `<RangePicker.Calendar>` now announces context-aware messages through its existing `role="status"` live region:
+  - After the first click (start), it announces `<formatted-date>. Now select end date.` so screen-reader users know the next click commits the other endpoint.
+  - After the second click (end), it announces `Range selected: <start> – <end>` instead of just the bare date — matching the swap-if-before behaviour so the announcement always reflects what was committed.
+  - Week-mode commits now share the same `Range selected: ...` prefix for consistency.
+
+  The two new strings are wired through `RangePickerLabels.selectingEnd` and `RangePickerLabels.rangeSelected` with English defaults, and they are fully overridable via the existing `labels` prop for i18n. `@kalyx/core` gets a `minor` bump because `RangePickerLabels` gained required fields (with defaults supplied by `DEFAULT_RANGEPICKER_LABELS`); any consumer constructing a literal `RangePickerLabels` from scratch will need to add the two keys.
+
+- Updated dependencies [19ac1c0]
+- Updated dependencies [c8a6609]
+  - @kalyx/core@1.0.0-rc.11
+
 ## 1.0.0-rc.10
 
 ### Minor Changes
