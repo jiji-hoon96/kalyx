@@ -609,4 +609,33 @@ describe('TimePicker — SSR safety', () => {
       );
     }).not.toThrow();
   });
+
+  it('falls back to 00:00 when value is null (deterministic, no today() during render)', () => {
+    renderTimePicker({ value: null });
+    // Input displays the deterministic 00:00 fallback rather than today's time.
+    expect(screen.getByLabelText('Time')).toHaveValue('00:00');
+    // The "0" hour and "00" minute options are aria-selected="true".
+    const hourSelected = screen
+      .getByRole('listbox', { name: 'Hour' })
+      .querySelector('[aria-selected="true"]');
+    expect(hourSelected).toHaveTextContent('0');
+    const minuteSelected = screen
+      .getByRole('listbox', { name: 'Minute' })
+      .querySelector('[aria-selected="true"]');
+    expect(minuteSelected).toHaveTextContent('00');
+  });
+
+  it('renders identical markup for two independent null-value renders (hydration determinism)', async () => {
+    const { renderToString } = await import('react-dom/server');
+    const tree = (
+      <TimePicker value={null} onChange={vi.fn()}>
+        <TimePicker.Input />
+        <TimePicker.HourList />
+        <TimePicker.MinuteList />
+      </TimePicker>
+    );
+    const a = renderToString(tree);
+    const b = renderToString(tree);
+    expect(a).toBe(b);
+  });
 });

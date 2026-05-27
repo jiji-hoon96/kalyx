@@ -61,11 +61,6 @@ export interface TimePickerRootProps {
   children: ReactNode;
 }
 
-/** Fallback ISO used when value is null (today at 00:00:00 UTC) */
-function getDefaultIso(): ISODateString {
-  return DateFnsAdapter.today();
-}
-
 export function TimePickerRoot({
   value: controlledValue,
   defaultValue,
@@ -93,25 +88,28 @@ export function TimePickerRoot({
 
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
 
-  // Allow time selection even when value is null -> fallback
-  const baseIso = currentValue ?? getDefaultIso();
-  const currentTime = useMemo(
-    () => (displayTimezone ? getTimeInTimezone(baseIso, displayTimezone) : getTime(baseIso)),
-    [baseIso, displayTimezone],
-  );
+  // SSR-safe: when value is null, fall back to a deterministic {0,0,0} so server
+  // and client render the same markup. `today()` is only resolved at event time.
+  const currentTime = useMemo(() => {
+    if (!currentValue) return { hours: 0, minutes: 0, seconds: 0 };
+    return displayTimezone
+      ? getTimeInTimezone(currentValue, displayTimezone)
+      : getTime(currentValue);
+  }, [currentValue, displayTimezone]);
 
   const setTime = useCallback(
     (partial: Partial<TimeValue>) => {
       if (disabled || readOnly) return;
+      const base = currentValue ?? DateFnsAdapter.today(displayTimezone);
       const newIso = displayTimezone
-        ? setTimeInTimezone(baseIso, partial, displayTimezone)
-        : setTimeOnIso(baseIso, partial);
+        ? setTimeInTimezone(base, partial, displayTimezone)
+        : setTimeOnIso(base, partial);
       if (!isControlled) {
         setUncontrolledValue(newIso);
       }
       onChange?.(newIso);
     },
-    [disabled, readOnly, baseIso, isControlled, onChange, displayTimezone],
+    [disabled, readOnly, currentValue, displayTimezone, isControlled, onChange],
   );
 
   const contextValue: TimePickerContextValue = useMemo(
