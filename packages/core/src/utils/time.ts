@@ -66,9 +66,18 @@ export function formatTimeString(time: TimeValue, withSeconds = false): string {
 
 /**
  * Converts a 24-hour value to 12-hour form.
- * 0 → 12 AM, 12 → 12 PM
+ *
+ * - `0` → `{ hours12: 12, period: 'AM' }` (midnight)
+ * - `12` → `{ hours12: 12, period: 'PM' }` (noon)
+ *
+ * Throws if `hours24` isn't an integer in `[0, 23]`. The previous silent
+ * modulo behaviour mapped invalid inputs (e.g. `24`, `25`, `-1`) onto
+ * arbitrary valid-looking outputs, which masked caller bugs.
  */
 export function to12Hour(hours24: number): { hours12: number; period: 'AM' | 'PM' } {
+  if (!Number.isInteger(hours24) || hours24 < 0 || hours24 > 23) {
+    throw new RangeError(`[to12Hour] hours24 must be an integer in [0, 23], got ${hours24}`);
+  }
   const period: 'AM' | 'PM' = hours24 >= 12 ? 'PM' : 'AM';
   let hours12 = hours24 % 12;
   if (hours12 === 0) hours12 = 12;
@@ -77,8 +86,15 @@ export function to12Hour(hours24: number): { hours12: number; period: 'AM' | 'PM
 
 /**
  * Converts a 12-hour value to 24-hour form.
+ *
+ * Throws if `hours12` isn't an integer in `[1, 12]`. The previous silent
+ * arithmetic produced out-of-range outputs (e.g. `to24Hour(13, 'PM')` → `25`).
+ * `period` is constrained at the type level to `'AM' | 'PM'`.
  */
 export function to24Hour(hours12: number, period: 'AM' | 'PM'): number {
+  if (!Number.isInteger(hours12) || hours12 < 1 || hours12 > 12) {
+    throw new RangeError(`[to24Hour] hours12 must be an integer in [1, 12], got ${hours12}`);
+  }
   if (period === 'AM') {
     return hours12 === 12 ? 0 : hours12;
   }

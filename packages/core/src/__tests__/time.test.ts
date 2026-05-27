@@ -132,6 +132,23 @@ describe('to12Hour / to24Hour', () => {
       expect(to24Hour(hours12, period)).toBe(h);
     }
   });
+
+  it('to12Hour rejects out-of-range and non-integer inputs', () => {
+    expect(() => to12Hour(24)).toThrow(RangeError);
+    expect(() => to12Hour(25)).toThrow(RangeError);
+    expect(() => to12Hour(-1)).toThrow(RangeError);
+    expect(() => to12Hour(1.5)).toThrow(RangeError);
+    expect(() => to12Hour(NaN)).toThrow(RangeError);
+  });
+
+  it('to24Hour rejects out-of-range and non-integer inputs', () => {
+    // hours12 = 0 is *not* a valid 12-hour value (midnight is 12 AM, not 0 AM).
+    expect(() => to24Hour(0, 'AM')).toThrow(RangeError);
+    expect(() => to24Hour(13, 'PM')).toThrow(RangeError);
+    expect(() => to24Hour(-1, 'AM')).toThrow(RangeError);
+    expect(() => to24Hour(1.5, 'AM')).toThrow(RangeError);
+    expect(() => to24Hour(NaN, 'PM')).toThrow(RangeError);
+  });
 });
 
 describe('generateHours', () => {
