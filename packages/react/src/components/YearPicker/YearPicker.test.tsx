@@ -388,4 +388,24 @@ describe('YearPicker — SSR safety', () => {
       );
     }).not.toThrow();
   });
+
+  // A year value rendered with displayTimezone must be deterministic regardless
+  // of the host process clock. The "decade grid" derived from the year exposes
+  // any accidental clock-read in the render path.
+  it('renders deterministic markup with a controlled value and displayTimezone', async () => {
+    const { renderToString } = await import('react-dom/server');
+    const tree = (
+      <YearPicker
+        value="2026-01-01T00:00:00.000Z"
+        displayTimezone="America/New_York"
+        onChange={vi.fn()}
+      >
+        <YearPicker.Input aria-label="Select year" />
+        <YearPicker.Popover>
+          <YearPicker.Grid />
+        </YearPicker.Popover>
+      </YearPicker>
+    );
+    expect(renderToString(tree)).toBe(renderToString(tree));
+  });
 });

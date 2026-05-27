@@ -193,6 +193,26 @@ describe('MonthPicker — SSR safety', () => {
       );
     }).not.toThrow();
   });
+
+  // March 2026 is the month containing the US Eastern spring-forward. Selecting
+  // it and rendering twice must produce identical output regardless of any
+  // implicit clock-reads during the render.
+  it('renders deterministic markup at a DST-boundary month with displayTimezone', async () => {
+    const { renderToString } = await import('react-dom/server');
+    const tree = (
+      <MonthPicker
+        value="2026-03-01T05:00:00.000Z"
+        displayTimezone="America/New_York"
+        onChange={vi.fn()}
+      >
+        <MonthPicker.Input aria-label="Select month" />
+        <MonthPicker.Popover>
+          <MonthPicker.Grid />
+        </MonthPicker.Popover>
+      </MonthPicker>
+    );
+    expect(renderToString(tree)).toBe(renderToString(tree));
+  });
 });
 
 describe('MonthPicker — keyboard navigation (grid pattern)', () => {

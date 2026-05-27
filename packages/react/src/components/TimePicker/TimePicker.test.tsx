@@ -669,4 +669,23 @@ describe('TimePicker — SSR safety', () => {
     const b = renderToString(tree);
     expect(a).toBe(b);
   });
+
+  // A controlled value at the 2026 US Eastern spring-forward instant
+  // (06:00 UTC == 01:59 EST → next minute 03:00 EDT). When rendered with the
+  // matching displayTimezone, two independent renderToString calls must agree.
+  it('renders deterministic markup for a controlled DST-boundary value with displayTimezone', async () => {
+    const { renderToString } = await import('react-dom/server');
+    const tree = (
+      <TimePicker
+        value="2026-03-08T06:00:00.000Z"
+        displayTimezone="America/New_York"
+        onChange={vi.fn()}
+      >
+        <TimePicker.Input />
+        <TimePicker.HourList />
+        <TimePicker.MinuteList />
+      </TimePicker>
+    );
+    expect(renderToString(tree)).toBe(renderToString(tree));
+  });
 });

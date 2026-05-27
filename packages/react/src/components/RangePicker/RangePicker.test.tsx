@@ -741,6 +741,27 @@ describe('RangePicker — SSR safety', () => {
       );
     }).not.toThrow();
   });
+
+  // Range straddles the 2026 US Eastern spring-forward seam (2026-03-08). Both
+  // endpoints, the in-range fill, and the timezone-aware highlighting must
+  // produce byte-identical output across two independent renders.
+  it('renders deterministic markup across a DST boundary with displayTimezone', async () => {
+    const { renderToString } = await import('react-dom/server');
+    const tree = (
+      <RangePicker
+        value={{ start: '2026-03-07T05:00:00.000Z', end: '2026-03-09T04:00:00.000Z' }}
+        displayTimezone="America/New_York"
+        onChange={vi.fn()}
+      >
+        <RangePicker.Input part="start" />
+        <RangePicker.Input part="end" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>
+    );
+    expect(renderToString(tree)).toBe(renderToString(tree));
+  });
 });
 
 describe('RangePicker.Popover — style merging', () => {

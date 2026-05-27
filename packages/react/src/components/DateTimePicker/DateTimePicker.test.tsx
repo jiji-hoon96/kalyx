@@ -452,6 +452,28 @@ describe('DateTimePicker — SSR safety', () => {
       );
     }).not.toThrow();
   });
+
+  // Both halves (date + time) must agree across renders at the 2026 US Eastern
+  // spring-forward seam. This is the highest-risk component for hydration drift
+  // since it combines DatePicker and TimePicker context graphs.
+  it('renders deterministic markup at a DST boundary with displayTimezone', async () => {
+    const { renderToString } = await import('react-dom/server');
+    const tree = (
+      <DateTimePicker
+        value="2026-03-08T07:30:00.000Z"
+        displayTimezone="America/New_York"
+        onChange={vi.fn()}
+      >
+        <DateTimePicker.Input />
+        <DateTimePicker.Popover>
+          <DateTimePicker.Calendar />
+          <DateTimePicker.HourList />
+          <DateTimePicker.MinuteList />
+        </DateTimePicker.Popover>
+      </DateTimePicker>
+    );
+    expect(renderToString(tree)).toBe(renderToString(tree));
+  });
 });
 
 /**
