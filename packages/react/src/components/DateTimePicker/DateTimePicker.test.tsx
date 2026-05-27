@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { DateTimePicker } from './index.js';
+import { useTimePickerContext } from '../../context/TimePickerContext.js';
 
 function renderDateTimePicker(
   props: {
@@ -450,5 +451,122 @@ describe('DateTimePicker — SSR safety', () => {
         </DateTimePicker>,
       );
     }).not.toThrow();
+  });
+});
+
+/**
+ * Test-only probe that exposes TimePickerContext for verification. Renders nothing visible —
+ * just emits a hidden span with the relevant fields serialized so assertions can read them.
+ */
+function TimeContextProbe({ id }: { id: string }) {
+  const ctx = useTimePickerContext('TimeContextProbe');
+  return (
+    <span
+      data-testid={id}
+      data-with-seconds={String(ctx.withSeconds)}
+      data-current-hours={String(ctx.currentTime.hours)}
+      data-current-minutes={String(ctx.currentTime.minutes)}
+      data-current-seconds={String(ctx.currentTime.seconds)}
+      data-has-filter-time={String(typeof ctx.filterTime === 'function')}
+    />
+  );
+}
+
+describe('DateTimePicker — composition API forwarding to TimePickerContext', () => {
+  it('forwards withSeconds=true through to TimePickerContext', () => {
+    render(
+      <DateTimePicker value="2026-01-15T14:30:45.000Z" onChange={vi.fn()} withSeconds>
+        <TimeContextProbe id="probe" />
+      </DateTimePicker>,
+    );
+    const probe = screen.getByTestId('probe');
+    expect(probe.getAttribute('data-with-seconds')).toBe('true');
+  });
+
+  it('defaults withSeconds to false when the prop is omitted', () => {
+    render(
+      <DateTimePicker value="2026-01-15T14:30:00.000Z" onChange={vi.fn()}>
+        <TimeContextProbe id="probe" />
+      </DateTimePicker>,
+    );
+    expect(screen.getByTestId('probe').getAttribute('data-with-seconds')).toBe('false');
+  });
+
+  it('forwards filterTime through to TimePickerContext (HourList reflects disabled hour)', async () => {
+    const user = userEvent.setup();
+    const filterTime = (h: number) => h === 12;
+    render(
+      <DateTimePicker
+        value="2026-01-15T10:00:00.000Z"
+        onChange={vi.fn()}
+        step={15}
+        filterTime={filterTime}
+      >
+        <DateTimePicker.Input />
+        <DateTimePicker.Popover>
+          <DateTimePicker.HourList />
+        </DateTimePicker.Popover>
+      </DateTimePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+
+    const hour12 = screen.getByRole('option', { name: '12 hours' });
+    expect(hour12).toHaveAttribute('aria-disabled', 'true');
+    const hour11 = screen.getByRole('option', { name: '11 hours' });
+    expect(hour11).not.toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('blocks click on a filterTime-disabled hour and never fires onChange', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DateTimePicker
+        value="2026-01-15T10:00:00.000Z"
+        onChange={onChange}
+        step={15}
+        filterTime={(h) => h === 12}
+      >
+        <DateTimePicker.Input />
+        <DateTimePicker.Popover>
+          <DateTimePicker.HourList />
+        </DateTimePicker.Popover>
+      </DateTimePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    await user.click(screen.getByRole('option', { name: '12 hours' }));
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});
+
+describe('DateTimePicker — hydration-safe currentTime fallback', () => {
+  it('exposes a deterministic {0,0,0} time fallback when value is null', () => {
+    render(
+      <DateTimePicker value={null} onChange={vi.fn()}>
+        <TimeContextProbe id="probe" />
+      </DateTimePicker>,
+    );
+    const probe = screen.getByTestId('probe');
+    expect(probe.getAttribute('data-current-hours')).toBe('0');
+    expect(probe.getAttribute('data-current-minutes')).toBe('0');
+    expect(probe.getAttribute('data-current-seconds')).toBe('0');
+  });
+
+  it('produces identical render output across two independent renders when value is null', () => {
+    // The render-path no longer calls adapter.today(), so two renders must agree on the
+    // currentTime even if a day boundary were to pass between them.
+    const first = render(
+      <DateTimePicker value={null} onChange={vi.fn()}>
+        <TimeContextProbe id="probe" />
+      </DateTimePicker>,
+    );
+    const firstHtml = first.container.innerHTML;
+    first.unmount();
+
+    const second = render(
+      <DateTimePicker value={null} onChange={vi.fn()}>
+        <TimeContextProbe id="probe" />
+      </DateTimePicker>,
+    );
+    expect(second.container.innerHTML).toBe(firstHtml);
   });
 });

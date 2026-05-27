@@ -99,5 +99,20 @@ export type {
   DisabledRule,
   DateAdapter,
   CalendarDay,
+  CalendarWeek,
+  CalendarGrid,
+  CalendarOptions,
+  WeekStartsOn,
   TimeValue,
+  WeekdayInfo,
+  DatePickerLabels,
+  RangePickerLabels,
+  TimePickerLabels,
+  DateTimePickerLabels,
+} from '@kalyx/core';
+export {
+  DEFAULT_DATEPICKER_LABELS,
+  DEFAULT_RANGEPICKER_LABELS,
+  DEFAULT_TIMEPICKER_LABELS,
+  DEFAULT_DATETIMEPICKER_LABELS,
 } from '@kalyx/core';
