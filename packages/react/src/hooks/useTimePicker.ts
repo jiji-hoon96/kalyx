@@ -1,6 +1,5 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import {
-  DateFnsAdapter,
   generateHours,
   generateMinutes,
   getTime,
@@ -10,6 +9,7 @@ import {
   to12Hour,
   to24Hour,
 } from '@kalyx/core';
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 import type { ISODateString, TimeValue } from '@kalyx/core';
 import type { TimePickerFormat } from '../context/TimePickerContext.js';
 

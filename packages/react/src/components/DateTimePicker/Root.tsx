@@ -1,7 +1,6 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import {
-  DateFnsAdapter,
   DEFAULT_DATEPICKER_LABELS,
   DEFAULT_TIMEPICKER_LABELS,
   getTime,
@@ -10,6 +9,7 @@ import {
   setTimeInTimezone,
   civilMidnightFromUtcDay,
 } from '@kalyx/core';
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 import type {
   DateAdapter,
   DateTimePickerLabels,

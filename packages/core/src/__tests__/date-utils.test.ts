@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { normalizeISO, parseInputValue } from '../utils/date.js';
-import { DateFnsAdapter } from '../adapters/date-fns.js';
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 
 const adapter = DateFnsAdapter;
 
