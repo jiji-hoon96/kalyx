@@ -334,6 +334,84 @@ describe('RangePicker — accessibility', () => {
     });
     expect(results).toHaveNoViolations();
   });
+
+  it('announces the next selection target after picking start', async () => {
+    const user = userEvent.setup();
+    render(
+      <ControlledRangePicker
+        initialValue={{ start: '2026-01-01T00:00:00.000Z', end: '2026-01-31T00:00:00.000Z' }}
+      />,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    await user.click(screen.getByRole('button', { name: /January 10, 2026/ }));
+
+    const live = screen.getByRole('status');
+    expect(live.textContent).toMatch(/January 10, 2026/);
+    expect(live.textContent).toMatch(/Now select end date/);
+  });
+
+  it('announces the full range when both endpoints commit', async () => {
+    const user = userEvent.setup();
+    render(
+      <ControlledRangePicker
+        initialValue={{ start: '2026-01-01T00:00:00.000Z', end: '2026-01-31T00:00:00.000Z' }}
+      />,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    await user.click(screen.getByRole('button', { name: /January 10, 2026/ }));
+    await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
+
+    const live = screen.getByRole('status');
+    expect(live.textContent).toMatch(/Range selected/);
+    expect(live.textContent).toMatch(/January 10, 2026/);
+    expect(live.textContent).toMatch(/January 20, 2026/);
+  });
+
+  it('announces the swapped range when the second click precedes the first', async () => {
+    const user = userEvent.setup();
+    render(
+      <ControlledRangePicker
+        initialValue={{ start: '2026-01-01T00:00:00.000Z', end: '2026-01-31T00:00:00.000Z' }}
+      />,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    // First click Jan 20 (becomes start), second click Jan 10 swaps so the announcement
+    // must reflect Jan 10 – Jan 20, not the click order.
+    await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
+    await user.click(screen.getByRole('button', { name: /January 10, 2026/ }));
+
+    const live = screen.getByRole('status');
+    const text = live.textContent ?? '';
+    const startIdx = text.indexOf('January 10, 2026');
+    const endIdx = text.indexOf('January 20, 2026');
+    expect(startIdx).toBeGreaterThan(-1);
+    expect(endIdx).toBeGreaterThan(startIdx);
+  });
+
+  it('respects the labels prop override for live-region announcements', async () => {
+    const user = userEvent.setup();
+    render(
+      <RangePicker
+        defaultValue={{ start: '2026-01-01T00:00:00.000Z', end: '2026-01-31T00:00:00.000Z' }}
+        labels={{ selectingEnd: '종료일을 선택하세요', rangeSelected: '범위 선택됨' }}
+      >
+        <RangePicker.Input part="start" />
+        <RangePicker.Input part="end" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    await user.click(screen.getByRole('button', { name: /January 10, 2026/ }));
+
+    const live = screen.getByRole('status');
+    expect(live.textContent).toMatch(/종료일을 선택하세요/);
+  });
 });
 
 describe('RangePicker — date rules and edge cases (CLAUDE.md §7)', () => {

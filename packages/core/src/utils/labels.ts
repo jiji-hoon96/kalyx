@@ -21,6 +21,16 @@ export interface RangePickerLabels extends DatePickerLabels {
   startInput: string;
   endInput: string;
   presetsGroup: string;
+  /**
+   * Screen-reader prompt appended after the start date is picked, telling the user
+   * the next click commits the end of the range.
+   */
+  selectingEnd: string;
+  /**
+   * Screen-reader prefix announced when both endpoints are committed, e.g.
+   * `"Range selected: Jan 5, 2026 – Jan 12, 2026"`.
+   */
+  rangeSelected: string;
 }
 
 export interface TimePickerLabels {
@@ -54,6 +64,8 @@ export const DEFAULT_RANGEPICKER_LABELS: RangePickerLabels = {
   startInput: 'Start date',
   endInput: 'End date',
   presetsGroup: 'Date range presets',
+  selectingEnd: 'Now select end date',
+  rangeSelected: 'Range selected',
 };
 
 export const DEFAULT_TIMEPICKER_LABELS: TimePickerLabels = {

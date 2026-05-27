@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { HTMLAttributes } from 'react';
 import {
   getCalendarDays,
@@ -66,18 +66,6 @@ function safeFormatFullDate(iso: string, locale: string): string {
   }
 }
 
-const srOnly: React.CSSProperties = {
-  position: 'absolute',
-  width: '1px',
-  height: '1px',
-  padding: 0,
-  margin: '-1px',
-  overflow: 'hidden',
-  clip: 'rect(0, 0, 0, 0)',
-  whiteSpace: 'nowrap',
-  border: 0,
-};
-
 export function RangePickerCalendar({
   classNames,
   selectionMode = 'range',
@@ -87,7 +75,6 @@ export function RangePickerCalendar({
 }: RangePickerCalendarProps) {
   const ctx = useRangePickerContext('RangePicker.Calendar');
   const gridRef = useRef<HTMLTableElement>(null);
-  const [announcement, setAnnouncement] = useState('');
 
   const {
     adapter,
@@ -149,7 +136,7 @@ export function RangePickerCalendar({
       ctx.setFocusedDate(adapter.startOfMonth(newMonth));
       const y = adapter.getYear(newMonth);
       const m = adapter.getMonth(newMonth);
-      setAnnouncement(formatMonthYear(y, m, locale));
+      ctx.announce(formatMonthYear(y, m, locale));
     },
     [adapter, viewMonth, ctx, locale],
   );
@@ -162,15 +149,36 @@ export function RangePickerCalendar({
         const range: DateRange = { start: weekStart, end: weekEnd };
         ctx.setRange(range);
         ctx.close();
-        setAnnouncement(
-          `${safeFormatFullDate(weekStart, locale)} – ${safeFormatFullDate(weekEnd, locale)}`,
+        ctx.announce(
+          `${ctx.labels.rangeSelected}: ${safeFormatFullDate(weekStart, locale)} – ${safeFormatFullDate(weekEnd, locale)}`,
         );
       } else {
+        // Capture selectingTarget BEFORE selectDate flips it so we can announce
+        // the right state. "start" click prompts for the end; "end" click closes
+        // the range and announces the full span.
+        const wasPickingStart = selectingTarget === 'start';
+        const previousStart = value.start;
         ctx.selectDate(iso);
-        setAnnouncement(safeFormatFullDate(iso, locale));
+        const formatted = safeFormatFullDate(iso, locale);
+        if (wasPickingStart) {
+          ctx.announce(`${formatted}. ${ctx.labels.selectingEnd}`);
+        } else if (previousStart) {
+          // Mirror the swap-if-before logic from RangePickerRoot.selectDate so the
+          // announcement matches what will be committed.
+          const [start, end] = adapter.isBefore(iso, previousStart)
+            ? [iso, previousStart]
+            : [previousStart, iso];
+          ctx.announce(
+            `${ctx.labels.rangeSelected}: ${safeFormatFullDate(start, locale)} – ${safeFormatFullDate(end, locale)}`,
+          );
+        } else {
+          // Safety: no previous start (e.g. preset cleared mid-flow) — fall back
+          // to a simple per-day announcement so the user still hears something.
+          ctx.announce(formatted);
+        }
       }
     },
-    [selectionMode, adapter, weekStartsOn, ctx, locale],
+    [selectionMode, adapter, weekStartsOn, ctx, locale, selectingTarget, value.start],
   );
 
   const handleDayClick = useCallback(
@@ -412,10 +420,6 @@ export function RangePickerCalendar({
           ))}
         </tbody>
       </table>
-
-      <div role="status" aria-live="polite" aria-atomic="true" style={srOnly}>
-        {announcement}
-      </div>
     </div>
   );
 }
