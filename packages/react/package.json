@@ -1,6 +1,6 @@
 {
 	"name": "@kalyx/react",
-	"version": "1.0.0-rc.12",
+	"version": "1.0.0-rc.13",
 	"description": "Headless, SSR-safe React DatePicker / RangePicker / TimePicker / DateTimePicker — ISO 8601 UTC strings, IANA timezone support, ≤16 KB gzipped",
 	"license": "MIT",
 	"author": "jiji-hoon96",
