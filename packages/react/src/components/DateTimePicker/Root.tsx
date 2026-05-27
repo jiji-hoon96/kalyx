@@ -58,6 +58,15 @@ export interface DateTimePickerRootProps {
   format?: TimePickerFormat;
   /** Minute step (e.g., 1, 5, 15, 30) */
   step?: number;
+  /** Whether to display seconds in the time controls */
+  withSeconds?: boolean;
+  /**
+   * Programmatic per-slot disable predicate for the time controls. Returns `true` for any
+   * `(hours, minutes)` pair that should be unselectable — same polarity as MUI X's
+   * `shouldDisableTime`, and the **inverse** of react-datepicker's `filterTime`. Always
+   * receives 24-hour values.
+   */
+  filterTime?: (hours: number, minutes: number) => boolean;
   /** Disabled rules (applied to dates) */
   disabled?: DisabledRule[] | boolean;
   /** Read-only */
@@ -82,11 +91,6 @@ export interface DateTimePickerRootProps {
   children: ReactNode;
 }
 
-/** Fallback ISO used when value is null (today at 00:00:00 UTC) */
-function getDefaultIso(): ISODateString {
-  return DateFnsAdapter.today();
-}
-
 /**
  * DateTimePicker.Root — Combined DatePicker + TimePicker component.
  *
@@ -107,6 +111,8 @@ export function DateTimePickerRoot({
   onCalendarNavigate,
   format = '24h',
   step = 1,
+  withSeconds = false,
+  filterTime,
   disabled = false,
   readOnly = false,
   weekStartsOn = 0,
@@ -154,12 +160,14 @@ export function DateTimePickerRoot({
     [disabled],
   );
 
-  // When value is null, use a fallback for time extraction
-  const baseIso = currentValue ?? getDefaultIso();
-  const currentTime: TimeValue = useMemo(
-    () => (displayTimezone ? getTimeInTimezone(baseIso, displayTimezone) : getTime(baseIso)),
-    [baseIso, displayTimezone],
-  );
+  // When value is null, use a stable {0,0,0} fallback for hydration safety —
+  // avoid invoking adapter.today() during render to keep server/client output deterministic.
+  const currentTime: TimeValue = useMemo(() => {
+    if (!currentValue) return { hours: 0, minutes: 0, seconds: 0 };
+    return displayTimezone
+      ? getTimeInTimezone(currentValue, displayTimezone)
+      : getTime(currentValue);
+  }, [currentValue, displayTimezone]);
 
   const updateValue = useCallback(
     (next: ISODateString | null) => {
@@ -205,14 +213,15 @@ export function DateTimePickerRoot({
    */
   const setTime = useCallback(
     (partial: Partial<TimeValue>) => {
-      // If no date yet, start from today at midnight (tz-aware)
-      const base = currentValue ?? getDefaultIso();
+      // If no date yet, start from today at midnight (tz-aware). today() is resolved at
+      // event time (not during render) so SSR hydration output stays stable.
+      const base = currentValue ?? adapter.today(displayTimezone);
       const merged = displayTimezone
         ? setTimeInTimezone(base, partial, displayTimezone)
         : setTimeOnIso(base, partial);
       updateValue(merged);
     },
-    [currentValue, updateValue, displayTimezone],
+    [currentValue, updateValue, displayTimezone, adapter],
   );
 
   const open = useCallback(() => {
@@ -286,25 +295,28 @@ export function DateTimePickerRoot({
       setTime,
       format,
       step,
-      withSeconds: false,
+      withSeconds,
       displayTimezone,
       isDisabled,
       isReadOnly: readOnly,
       currentTime,
       pickerId,
       labels: mergedTimeLabels,
+      filterTime,
     }),
     [
       currentValue,
       setTime,
       format,
       step,
+      withSeconds,
       displayTimezone,
       isDisabled,
       readOnly,
       currentTime,
       pickerId,
       mergedTimeLabels,
+      filterTime,
     ],
   );
 
