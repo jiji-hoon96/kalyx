@@ -331,6 +331,37 @@ describe('TimePicker — interactions', () => {
       expect(lastCall[0]).toMatch(/T10:00:/);
     }
   });
+
+  it('drops stale typed text when the parent re-sets value externally', async () => {
+    const user = userEvent.setup();
+
+    function ExternalUpdater() {
+      const [value, setValue] = useState<string | null>('2026-01-15T10:00:00.000Z');
+      return (
+        <>
+          <TimePicker value={value} onChange={setValue}>
+            <TimePicker.Input />
+          </TimePicker>
+          <button onClick={() => setValue('2026-01-15T22:30:00.000Z')}>jump-to-22-30</button>
+        </>
+      );
+    }
+
+    render(<ExternalUpdater />);
+    const input = screen.getByLabelText('Time');
+
+    // User types an incomplete time — parse fails, inputText holds the half-typed string.
+    await user.click(input);
+    await user.clear(input);
+    await user.type(input, '14:');
+    expect(input).toHaveValue('14:');
+
+    // Parent re-sets value externally (e.g. another control commits a time).
+    await user.click(screen.getByRole('button', { name: 'jump-to-22-30' }));
+
+    // Without the fix the input still shows "14:"; with the fix it reflects the new time.
+    expect(input).toHaveValue('22:30');
+  });
 });
 
 describe('TimePicker — keyboard navigation', () => {

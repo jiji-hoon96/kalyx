@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useState } from 'react';
 import type { InputHTMLAttributes } from 'react';
 import { formatTimeString, parseTimeString } from '@kalyx/core';
 import { useTimePickerContext } from '../../context/TimePickerContext.js';
@@ -16,6 +16,14 @@ export const TimePickerInput = forwardRef<HTMLInputElement, TimePickerInputProps
   function TimePickerInput({ onBlur, onKeyDown, ...props }, ref) {
     const ctx = useTimePickerContext('TimePicker.Input');
     const [inputText, setInputText] = useState<string | null>(null);
+
+    // Drop stale typed text when the value changes from outside (parent re-sets,
+    // HourList/MinuteList click, AM/PM toggle) so the input reflects the new time
+    // instead of holding the user's earlier half-typed string. Time inputs are
+    // numeric — no IME composition to worry about.
+    useEffect(() => {
+      setInputText(null);
+    }, [ctx.value]);
 
     const displayValue =
       inputText !== null ? inputText : formatTimeString(ctx.currentTime, ctx.withSeconds);

@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useRef, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import type { InputHTMLAttributes } from 'react';
 import { parseInputValue } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
@@ -37,6 +37,15 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
     // change events for in-progress composition characters. Parsing those mid-stream
     // throws away the user's input. Defer parsing until composition completes.
     const isComposingRef = useRef(false);
+
+    // Drop stale typed text when the value changes from outside (parent re-sets,
+    // calendar selection, preset click, etc.) so the input doesn't keep displaying
+    // an old half-typed string while the source-of-truth has already moved.
+    // Skip during IME composition so we don't wipe an in-flight character.
+    useEffect(() => {
+      if (isComposingRef.current) return;
+      setInputText(null);
+    }, [ctx.value]);
 
     let formattedValue = '';
     if (ctx.value) {

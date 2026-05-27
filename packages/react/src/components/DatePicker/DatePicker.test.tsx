@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
+import { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
@@ -105,6 +106,38 @@ describe('DatePicker — controlled / uncontrolled modes', () => {
   it('shows defaultValue as the initial value in uncontrolled mode', () => {
     renderDatePicker({ defaultValue: '2026-03-20T00:00:00.000Z' });
     expect(screen.getByRole('combobox')).toHaveValue('2026-03-20');
+  });
+
+  it('drops stale typed text when the parent re-sets value externally', async () => {
+    const user = userEvent.setup();
+
+    function ExternalUpdater() {
+      const [value, setValue] = useState<string | null>('2026-01-15T00:00:00.000Z');
+      return (
+        <>
+          <DatePicker value={value} onChange={setValue}>
+            <DatePicker.Input aria-label="날짜 선택" />
+          </DatePicker>
+          <button onClick={() => setValue('2026-12-25T00:00:00.000Z')}>jump-to-dec-25</button>
+        </>
+      );
+    }
+
+    render(<ExternalUpdater />);
+    const input = screen.getByRole('combobox');
+
+    // User types invalid text — parse fails, inputText holds the half-typed string.
+    await user.click(input);
+    await user.clear(input);
+    await user.type(input, '2026-01');
+    expect(input).toHaveValue('2026-01');
+
+    // Parent re-sets value externally (e.g. preset button, calendar callback).
+    await user.click(screen.getByRole('button', { name: 'jump-to-dec-25' }));
+
+    // Without the fix the input still shows "2026-01"; with the fix it reflects
+    // the new value so source-of-truth and display agree.
+    expect(input).toHaveValue('2026-12-25');
   });
 });
 
