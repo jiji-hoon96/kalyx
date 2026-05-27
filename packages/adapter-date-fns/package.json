@@ -1,6 +1,6 @@
 {
 	"name": "@kalyx/adapter-date-fns",
-	"version": "1.0.0-rc.0",
+	"version": "1.0.0-rc.1",
 	"description": "date-fns adapter for @kalyx/core — implements the DateAdapter contract using date-fns and date-fns-tz.",
 	"license": "MIT",
 	"author": "jiji-hoon96",
