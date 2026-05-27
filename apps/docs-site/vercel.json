@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "docusaurus-2",
-  "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @kalyx/core build && pnpm --filter @kalyx/react build && pnpm --filter docs-site build",
+  "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm build && pnpm --filter docs-site build",
   "outputDirectory": "build",
   "installCommand": "echo skip",
   "cleanUrls": true,
