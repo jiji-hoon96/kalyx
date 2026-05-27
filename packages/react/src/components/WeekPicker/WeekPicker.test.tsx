@@ -296,4 +296,25 @@ describe('WeekPicker — SSR safety', () => {
       );
     }).not.toThrow();
   });
+
+  // Week containing the 2026 US Eastern spring-forward (March 8). WeekPicker
+  // reuses RangePicker.Calendar in week-mode, so this also covers the in-range
+  // fill for the seven days that span the DST seam.
+  it('renders deterministic markup for a DST-boundary week with displayTimezone', async () => {
+    const { renderToString } = await import('react-dom/server');
+    const tree = (
+      <WeekPicker
+        value={{ start: '2026-03-08T05:00:00.000Z', end: '2026-03-14T04:00:00.000Z' }}
+        displayTimezone="America/New_York"
+        onChange={vi.fn()}
+      >
+        <WeekPicker.Input part="start" />
+        <WeekPicker.Input part="end" />
+        <WeekPicker.Popover>
+          <WeekPicker.Calendar />
+        </WeekPicker.Popover>
+      </WeekPicker>
+    );
+    expect(renderToString(tree)).toBe(renderToString(tree));
+  });
 });

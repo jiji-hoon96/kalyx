@@ -1027,6 +1027,27 @@ describe('DatePicker — SSR safety', () => {
       );
     }).not.toThrow();
   });
+
+  // 2026-03-08 — US Eastern spring-forward (02:00 EST jumps to 03:00 EDT). A
+  // controlled value on this day in `America/New_York` exercises every code path
+  // that has to map UTC ↔ civil time across a DST seam. Two independent renders
+  // must produce byte-identical output or hydration will mismatch.
+  it('renders deterministic markup at a DST boundary with displayTimezone', async () => {
+    const { renderToString } = await import('react-dom/server');
+    const tree = (
+      <DatePicker
+        value="2026-03-08T07:00:00.000Z"
+        displayTimezone="America/New_York"
+        onChange={vi.fn()}
+      >
+        <DatePicker.Input aria-label="날짜" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>
+    );
+    expect(renderToString(tree)).toBe(renderToString(tree));
+  });
 });
 
 describe('DatePicker.Popover — style merging', () => {
