@@ -47,11 +47,17 @@
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
+		"@kalyx/core": "workspace:^",
 		"date-fns": "^4.0.0",
 		"date-fns-tz": "^3.0.0"
 	},
 	"peerDependencies": {
 		"@kalyx/core": "workspace:^"
+	},
+	"peerDependenciesMeta": {
+		"@kalyx/core": {
+			"optional": false
+		}
 	},
 	"engines": {
 		"node": ">=20.0.0"
