@@ -1,5 +1,29 @@
 # @kalyx/react
 
+## 1.0.0-rc.10
+
+### Minor Changes
+
+- 4629384: chore(oss): unify node engines to >=20 and add public repository metadata
+  - `@kalyx/react` and `@kalyx/core` now require Node `>=20`, matching the root workspace and CI. This was the de-facto requirement; only the published manifests still claimed `>=18`.
+  - Root `package.json` now exposes `homepage`, `repository`, and `bugs` so `npm info` and the npm registry page link back to the GitHub repo.
+  - `.github/PULL_REQUEST_TEMPLATE.md` bundle ceiling updated `15KB → 16 KB` to match the post-rc.8 limit advertised in README and CI.
+  - `.gitignore` ignores `.codegraph/`, `.serena/`, and `.tmp-*/` (MCP server caches and worktree scratchpads).
+
+### Patch Changes
+
+- 63fb80a: fix(datetimepicker): close composition-API gap and expose missing public types
+  - `<DateTimePicker.Root>` now accepts `withSeconds` and `filterTime` props (was silently hard-coded to `withSeconds: false`, `filterTime: undefined`)
+  - `currentTime` no longer calls `DateFnsAdapter.today()` during render when `value` is null — eliminates the UTC-midnight hydration mismatch risk
+  - Public API now re-exports `CalendarWeek`, `CalendarGrid`, `CalendarOptions`, `WeekStartsOn`, `WeekdayInfo`, every `{Picker}Labels` type, and the four `DEFAULT_*_LABELS` runtime constants per CLAUDE.md §6
+
+- 4178a92: fix(timepicker, rangepicker): hydration-safe time fallback and memoized preset resolution
+  - `<TimePicker.Root>` no longer calls `DateFnsAdapter.today()` during render when `value` is null. The displayed `currentTime` now falls back to a stable `{ hours: 0, minutes: 0, seconds: 0 }` and `today()` is resolved at event time inside `setTime`. Removes the UTC-midnight SSR/CSR hydration mismatch risk.
+  - `<RangePicker.Preset>` memoizes the resolved preset range. Previously `resolvePreset` (and `adapter.today()`) ran twice per render per preset — once in the click handler and once in the `isActive` getter — turning a 5-preset row into 10 `today()` allocations per render. No behavioral change.
+
+- Updated dependencies [4629384]
+  - @kalyx/core@1.0.0-rc.10
+
 ## 1.0.0-rc.9
 
 ### Patch Changes

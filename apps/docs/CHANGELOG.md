@@ -1,5 +1,14 @@
 # @kalyx/docs
 
+## 0.0.6-rc.10
+
+### Patch Changes
+
+- Updated dependencies [63fb80a]
+- Updated dependencies [4629384]
+- Updated dependencies [4178a92]
+  - @kalyx/react@1.0.0-rc.10
+
 ## 0.0.6-rc.9
 
 ### Patch Changes
