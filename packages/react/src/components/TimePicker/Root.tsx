@@ -1,13 +1,13 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import {
-  DateFnsAdapter,
   DEFAULT_TIMEPICKER_LABELS,
   getTime,
   setTime as setTimeOnIso,
   getTimeInTimezone,
   setTimeInTimezone,
 } from '@kalyx/core';
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 import type { ISODateString, TimePickerLabels, TimeValue } from '@kalyx/core';
 import { TimePickerContext } from '../../context/TimePickerContext.js';
 import type { TimePickerContextValue, TimePickerFormat } from '../../context/TimePickerContext.js';

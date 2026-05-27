@@ -14,8 +14,9 @@
 		"url": "https://github.com/jiji-hoon96/kalyx/issues"
 	},
 	"scripts": {
-		"build": "pnpm -r build",
+		"build": "pnpm --filter @kalyx/core build && pnpm --filter @kalyx/adapter-date-fns build && pnpm --filter @kalyx/react build",
 		"build:core": "pnpm --filter @kalyx/core build",
+		"build:adapter-date-fns": "pnpm --filter @kalyx/adapter-date-fns build",
 		"build:react": "pnpm --filter @kalyx/react build",
 		"test": "vitest",
 		"test:run": "vitest run",

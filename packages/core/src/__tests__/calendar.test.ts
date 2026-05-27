@@ -6,7 +6,7 @@ import {
   minDate,
   maxDate,
 } from '../utils/calendar.js';
-import { DateFnsAdapter } from '../adapters/date-fns.js';
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 
 const adapter = DateFnsAdapter;
 

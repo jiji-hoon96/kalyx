@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DateFnsAdapter } from '../adapters/date-fns.js';
+import { DateFnsAdapter } from '../index.js';
 
 const adapter = DateFnsAdapter;
 

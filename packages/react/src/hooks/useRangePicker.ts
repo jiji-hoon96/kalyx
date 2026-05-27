@@ -1,5 +1,6 @@
 import { useCallback, useId, useRef, useState } from 'react';
-import { DateFnsAdapter, civilMidnightFromUtcDay, getCalendarDays } from '@kalyx/core';
+import { civilMidnightFromUtcDay, getCalendarDays } from '@kalyx/core';
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 import type {
   CalendarGrid,
   DateAdapter,

@@ -7,13 +7,13 @@ import {
   isAfter as dfIsAfter,
   isValid as dfIsValid,
 } from 'date-fns';
-import type { DateAdapter } from '../types.js';
+import type { DateAdapter } from '@kalyx/core';
 import {
   formatInTimezone,
   isSameDayInTimezone,
   startOfDayInTimezone,
   todayInTimezone,
-} from '../utils/timezone.js';
+} from '@kalyx/core';
 
 function toDate(iso: string): Date {
   return parseISO(iso);
@@ -67,7 +67,7 @@ function utcEndOfWeek(d: Date, weekStartsOn: 0 | 1): Date {
  *
  * @example
  * ```ts
- * import { DateFnsAdapter } from '@kalyx/core';
+ * import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
  *
  * DateFnsAdapter.format('2026-01-15T00:00:00.000Z', 'yyyy-MM-dd'); // "2026-01-15"
  * DateFnsAdapter.addDays('2026-01-15T00:00:00.000Z', 7);           // "2026-01-22T..."

@@ -173,22 +173,10 @@ importers:
         specifier: ~6.0.2
         version: 6.0.2
 
-  packages/core:
+  packages/adapter-date-fns:
     dependencies:
-      date-fns:
-        specifier: ^4.0.0
-        version: 4.1.0
-      date-fns-tz:
-        specifier: ^3.0.0
-        version: 3.2.0(date-fns@4.1.0)
-
-  packages/react:
-    dependencies:
-      '@floating-ui/react':
-        specifier: ^0.26.0
-        version: 0.26.28(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@kalyx/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
       date-fns:
         specifier: ^4.0.0
@@ -196,6 +184,24 @@ importers:
       date-fns-tz:
         specifier: ^3.0.0
         version: 3.2.0(date-fns@4.1.0)
+
+  packages/core:
+    devDependencies:
+      '@kalyx/adapter-date-fns':
+        specifier: workspace:*
+        version: link:../adapter-date-fns
+
+  packages/react:
+    dependencies:
+      '@floating-ui/react':
+        specifier: ^0.26.0
+        version: 0.26.28(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      '@kalyx/adapter-date-fns':
+        specifier: workspace:*
+        version: link:../adapter-date-fns
+      '@kalyx/core':
+        specifier: workspace:*
+        version: link:../core
       react:
         specifier: ^19.0.0
         version: 19.2.5

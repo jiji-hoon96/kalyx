@@ -91,8 +91,9 @@ export type { UseDatePickerOptions, UseDatePickerReturn } from './hooks/useDateP
 export type { UseRangePickerOptions, UseRangePickerReturn } from './hooks/useRangePicker.js';
 export type { UseTimePickerOptions, UseTimePickerReturn } from './hooks/useTimePicker.js';
 
-// Re-export from @kalyx/core for convenience
-export { DateFnsAdapter } from '@kalyx/core';
+// Re-export the default adapter so consumers can `import { DateFnsAdapter } from '@kalyx/react'`
+// without pulling in the adapter package directly. Source lives in @kalyx/adapter-date-fns now.
+export { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 export type {
   ISODateString,
   DateRange,

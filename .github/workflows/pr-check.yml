@@ -52,6 +52,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @kalyx/core build
+      - run: pnpm --filter @kalyx/adapter-date-fns build
       - run: pnpm test:run --coverage
       - name: 커버리지 업로드 (Node 22만)
         if: matrix.node == 22
@@ -172,6 +173,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @kalyx/core build
+      - run: pnpm --filter @kalyx/adapter-date-fns build
       - run: pnpm --filter @kalyx/react build
       - run: pnpm --filter docs-site build
 

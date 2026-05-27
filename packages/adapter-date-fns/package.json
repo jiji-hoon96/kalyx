@@ -1,35 +1,23 @@
 {
-	"name": "@kalyx/react",
-	"version": "1.0.0-rc.12",
-	"description": "Headless, SSR-safe React DatePicker / RangePicker / TimePicker / DateTimePicker — ISO 8601 UTC strings, IANA timezone support, ≤16 KB gzipped",
+	"name": "@kalyx/adapter-date-fns",
+	"version": "1.0.0-rc.0",
+	"description": "date-fns adapter for @kalyx/core — implements the DateAdapter contract using date-fns and date-fns-tz.",
 	"license": "MIT",
 	"author": "jiji-hoon96",
 	"homepage": "https://github.com/jiji-hoon96/kalyx#readme",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/jiji-hoon96/kalyx.git",
-		"directory": "packages/react"
+		"directory": "packages/adapter-date-fns"
 	},
 	"bugs": {
 		"url": "https://github.com/jiji-hoon96/kalyx/issues"
 	},
 	"keywords": [
-		"react",
-		"datepicker",
-		"daterangepicker",
-		"timepicker",
-		"datetimepicker",
-		"calendar",
-		"headless",
-		"typescript",
-		"tailwind",
-		"accessible",
-		"a11y",
-		"SSR",
-		"timezone",
-		"iana",
-		"dst",
-		"date-fns"
+		"date-fns",
+		"adapter",
+		"kalyx",
+		"datepicker"
 	],
 	"type": "module",
 	"sideEffects": false,
@@ -54,30 +42,22 @@
 		"LICENSE"
 	],
 	"scripts": {
-		"build": "tsup",
+		"build": "tsup src/index.ts --format esm,cjs --dts --clean",
 		"typecheck": "tsc --noEmit",
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
-		"@floating-ui/react": "^0.26.0",
-		"@kalyx/adapter-date-fns": "workspace:*",
-		"@kalyx/core": "workspace:*"
+		"@kalyx/core": "workspace:^",
+		"date-fns": "^4.0.0",
+		"date-fns-tz": "^3.0.0"
 	},
 	"peerDependencies": {
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"@kalyx/core": "workspace:^"
 	},
 	"peerDependenciesMeta": {
-		"react": {
-			"optional": false
-		},
-		"react-dom": {
+		"@kalyx/core": {
 			"optional": false
 		}
-	},
-	"devDependencies": {
-		"@types/react": "^19.0.0",
-		"@types/react-dom": "^19.0.0"
 	},
 	"engines": {
 		"node": ">=20.0.0"

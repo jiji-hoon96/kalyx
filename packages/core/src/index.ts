@@ -10,7 +10,14 @@ export type {
   WeekStartsOn,
 } from './types.js';
 
-export { DateFnsAdapter } from './adapters/date-fns.js';
+// DateFnsAdapter has been extracted to its own package (`@kalyx/adapter-date-fns`)
+// so `@kalyx/core` stays date-library-agnostic. Import the adapter from there:
+//
+//   import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
+//
+// `@kalyx/react` continues to wire the date-fns adapter as the default — direct
+// consumers of `@kalyx/core` who held a reference to the previous re-export need
+// to switch their import path.
 
 export {
   getCalendarDays,
