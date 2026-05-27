@@ -170,9 +170,29 @@ describe('generateMinutes', () => {
     expect(generateMinutes(30)).toEqual([0, 30]);
   });
 
+  it('returns [0, 45] when step is 45 (quarter-and-three-quarters)', () => {
+    expect(generateMinutes(45)).toEqual([0, 45]);
+  });
+
+  it('returns [0] when step is 60 (on-the-hour only)', () => {
+    expect(generateMinutes(60)).toEqual([0]);
+  });
+
+  it('returns 30 entries when step is 2', () => {
+    const result = generateMinutes(2);
+    expect(result).toHaveLength(30);
+    expect(result[0]).toBe(0);
+    expect(result[29]).toBe(58);
+  });
+
+  it('returns [0, 7, 14, 21, 28, 35, 42, 49, 56] when step is 7 (uneven divisor)', () => {
+    expect(generateMinutes(7)).toEqual([0, 7, 14, 21, 28, 35, 42, 49, 56]);
+  });
+
   it('throws on invalid step values', () => {
     expect(() => generateMinutes(0)).toThrow();
     expect(() => generateMinutes(61)).toThrow();
+    expect(() => generateMinutes(-1)).toThrow();
   });
 });
 
