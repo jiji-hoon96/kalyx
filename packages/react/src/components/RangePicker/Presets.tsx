@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
 import type { DateRange, ISODateString } from '@kalyx/core';
 import { useRangePickerContext } from '../../context/RangePickerContext.js';
@@ -139,44 +139,38 @@ export function RangePickerPreset({
 }: RangePickerPresetProps) {
   const ctx = useRangePickerContext('RangePicker.Preset');
 
+  // Resolve the preset once per render — previously `resolvePreset` + `adapter.today()`
+  // ran twice per render per preset (in handleClick AND isActive), turning a 5-preset
+  // row into 10 today() allocations per render.
+  const resolved = useMemo<DateRange | null>(() => {
+    if (directRange) return directRange;
+    if (presetKey)
+      return resolvePreset(presetKey, ctx.adapter.today(ctx.displayTimezone), ctx.adapter);
+    return null;
+  }, [directRange, presetKey, ctx.adapter, ctx.displayTimezone]);
+
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       if (ctx.isDisabled || ctx.isReadOnly) return;
-
-      let resolved: DateRange;
-      if (directRange) {
-        resolved = directRange;
-      } else if (presetKey) {
-        resolved = resolvePreset(presetKey, ctx.adapter.today(), ctx.adapter);
-      } else {
-        return;
-      }
+      if (!resolved) return;
 
       ctx.setRange(resolved);
       ctx.close();
       onClick?.(e);
     },
-    [ctx, presetKey, directRange, onClick],
+    [ctx, resolved, onClick],
   );
 
   // Determine whether the currently selected range matches this preset
-  const isActive = (() => {
-    if (!ctx.value.start || !ctx.value.end) return false;
-    let target: DateRange;
-    if (directRange) {
-      target = directRange;
-    } else if (presetKey) {
-      target = resolvePreset(presetKey, ctx.adapter.today(), ctx.adapter);
-    } else {
+  const isActive = useMemo(() => {
+    if (!ctx.value.start || !ctx.value.end || !resolved || !resolved.start || !resolved.end) {
       return false;
     }
     return (
-      target.start !== null &&
-      target.end !== null &&
-      ctx.adapter.isSameDay(ctx.value.start, target.start) &&
-      ctx.adapter.isSameDay(ctx.value.end, target.end)
+      ctx.adapter.isSameDay(ctx.value.start, resolved.start) &&
+      ctx.adapter.isSameDay(ctx.value.end, resolved.end)
     );
-  })();
+  }, [ctx.value.start, ctx.value.end, ctx.adapter, resolved]);
 
   // role="option" is invalid outside role="listbox"/role="combobox"; parent is
   // role="group". Use a regular toggle button with aria-pressed.
