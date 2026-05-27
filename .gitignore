@@ -11,3 +11,10 @@ test-results
 .next
 out
 scheduled_tasks.lock
+
+# MCP server caches
+.codegraph/
+.serena/
+
+# Temporary worktrees
+.tmp-*/

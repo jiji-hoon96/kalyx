@@ -5,6 +5,14 @@
 	"type": "module",
 	"packageManager": "pnpm@10.10.0",
 	"description": "Headless, SSR-safe React DatePicker",
+	"homepage": "https://github.com/jiji-hoon96/kalyx#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jiji-hoon96/kalyx.git"
+	},
+	"bugs": {
+		"url": "https://github.com/jiji-hoon96/kalyx/issues"
+	},
 	"scripts": {
 		"build": "pnpm -r build",
 		"build:core": "pnpm --filter @kalyx/core build",
