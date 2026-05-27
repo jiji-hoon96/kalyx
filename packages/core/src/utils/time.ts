@@ -97,13 +97,19 @@ export function generateHours(format: '12h' | '24h' = '24h'): number[] {
 
 /**
  * Builds a minutes list at the given step.
- * step=1 → [0, 1, 2, ..., 59]
- * step=15 → [0, 15, 30, 45]
- * step=5 → [0, 5, 10, ..., 55]
+ *
+ * - `step=1` → `[0, 1, 2, ..., 59]`
+ * - `step=15` → `[0, 15, 30, 45]`
+ * - `step=5` → `[0, 5, 10, ..., 55]`
+ * - `step=45` → `[0, 45]`
+ * - `step=60` → `[0]` (on-the-hour only)
+ *
+ * Steps above 60 are rejected because they always collapse to `[0]` — useful UX
+ * is impossible past that point.
  */
 export function generateMinutes(step = 1): number[] {
-  if (step < 1 || step > 30) {
-    throw new Error(`[generateMinutes] step must be between 1 and 30, got ${step}`);
+  if (step < 1 || step > 60) {
+    throw new Error(`[generateMinutes] step must be between 1 and 60, got ${step}`);
   }
   const result: number[] = [];
   for (let i = 0; i < 60; i += step) {
