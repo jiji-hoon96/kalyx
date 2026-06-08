@@ -35,10 +35,14 @@ import type {
 
 ### Adapter
 
+`@kalyx/core` defines the `DateAdapter` interface but ships no implementation — the package is date-library-agnostic. Install a separate adapter package:
+
 ```ts
-import { DateFnsAdapter } from '@kalyx/core';
-// UTC-safe default adapter, built on date-fns v4.
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
+// UTC-safe adapter built on date-fns v4.
 ```
+
+Bring your own adapter by implementing the `DateAdapter` interface from `@kalyx/core` against any date library (dayjs, luxon, Temporal, etc.).
 
 ### Calendar utilities
 
