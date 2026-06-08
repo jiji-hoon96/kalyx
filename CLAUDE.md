@@ -257,7 +257,7 @@ kalyx/
 
 ---
 
-## 5. 구현 현황 (v1.0-rc.8 기준)
+## 5. 구현 현황 (v1.0.0 기준)
 
 ### 컴포넌트 (7종 — 모두 구현 완료 ✅)
 
@@ -582,27 +582,36 @@ pnpm changeset publish # npm 배포 (CI 자동)
 
 ---
 
-## 14. 현재 이니셔티브 (2026-04 기준)
+## 14. 현재 이니셔티브 (2026-06 기준 — v1.0.0 stable 출시 완료)
 
-> v1.0 정식 릴리즈까지의 두 축. 각 이니셔티브의 상세 실행 계획은 `.claude/skills/` 해당 파일 참조.
+> v1.0.0 stable 출시 **완료** (2026-06-08). 이 섹션은 1.0 트랙 회고 + v1.1+ 다음 트랙으로 갱신됨.
 
-### A. v1.0 Release Candidate 공지
+### v1.0 완료 항목 (회고)
 
-- **상태**: `@kalyx/core 1.0.0-rc.7` / `@kalyx/react 1.0.0-rc.8` 까지 publish 됨 (`.changeset/pre.json` `mode: pre`, `tag: rc`). 26개 changeset이 누적된 상태로 pre-mode 유지 중.
-- **남은 작업**: npm `next` 사용자 안내 vs 실제 dist-tag(`rc`) 통일, GitHub Release 노트 갱신, RC 기간 만료 후 `pnpm changeset pre exit` → 1.0.0 stable
-- **스킬 파일**: `.claude/skills/rc-announcement.md`
-- **졸업 조건**: RC 기간 2주 + `v1-rc` open 이슈 0건 + 번들 ≤16KB + axe/SSR 그린
+- **RC → stable 졸업**: 2026-05-27 ~ 06-08, rc.0 ~ rc.14 누적 → `@kalyx/core@1.0.0`, `@kalyx/react@1.0.0`, `@kalyx/adapter-date-fns@1.0.0` publish. dist-tag `latest` = 1.0.0.
+- **어댑터 중립 추출 (Option C — Hybrid)**: `@kalyx/core` date-fns 의존 0 (PR #82), `@kalyx/adapter-date-fns` 별도 패키지화 (PR #82), `@kalyx/react/headless` 엔트리 + adapter 가이드 (PR #88).
+- **보안**: GHSA-5xrq-8626-4rwp Critical fix via vitest 4 업그레이드 (PR #89). OSV scan 0 vulnerabilities.
+- **stable release prep**: README / docs-site / announcementBar stale 카피 정리 (PR #91).
+- **거버넌스**: main branch ruleset `main-protection` 활성화 (required checks + force push 차단).
+- **번들**: ESM 15.63KB / CJS 15.76KB gzip (한계 16KB).
+- **테스트**: 497/497 unit pass, axe 14/14, e2e 31 scenarios.
 
-### C. 어댑터 중립 추출 (Option C — Hybrid)
+### v1.1+ 다음 트랙
 
-- **상태**: C1 진단 완료. 구현 착수 전.
-- **방향**: `@kalyx/core`에서 date-fns 제거 → `@kalyx/adapter-date-fns` 별도 패키지로 분리. `@kalyx/react`는 이중 엔트리(`.` / `./headless`)로 "그냥 쓰면 기본 어댑터 자동 주입 / 고급 사용 시 직접 선택"을 동시 제공.
-- **결정 근거**: 사용자의 약 절반이 dayjs 사용 → baked-in은 번들 중복. 동시에 "설치하면 바로 동작" 경험은 유지해야 함. TanStack Query / Zustand의 entry-split 선례 채택.
-- **Breaking 영향**: `@kalyx/react` 기본 엔트리는 **0건 breaking**. `@kalyx/core`만 major (직접 사용자 극소수).
-- **스킬 파일**: `.claude/skills/adapter-extraction.md`
-- **후속**: v1.1+에서 `@kalyx/adapter-dayjs`, `@kalyx/adapter-luxon` 추가
+- **신규 어댑터 패키지**: `@kalyx/adapter-dayjs` (우선순위 1 — 사용자 약 절반이 dayjs), `@kalyx/adapter-luxon` (2 — enterprise/timezone 심화), `@kalyx/adapter-temporal` (Temporal API stable 도달 시).
+- **adapter conformance test suite**: 공통 24개 메서드 계약 검증을 `@kalyx/core/test-helpers`에 모듈화 (현재 adapter-date-fns 단독).
+- **`/headless` 가이드 한국어 번역**: `apps/docs-site/i18n/ko/.../guides/adapters.md` 현재 영문 그대로.
+- **번들 마진 모니터링**: default ESM 15.63KB / 한계 16KB. 새 기능 추가 시 17KB 상향 또는 다이어트 필요. 한계 수정 시 4파일 동기 (`scripts/check-bundle-size.js`, `tsup.config.ts`, `pr-check.yml`, `release.yml`).
+- **`verify-entry-split.mjs` CI 통합**: 현재 manual only. headless의 date-fns 부재는 핵심 약속 — PR check에 회귀 가드 권장.
 
-> 이 두 이니셔티브는 서로 독립. A는 RC 창 동안만 유효하고, C는 v1.1까지 이어짐. 우선순위는 A → C 순.
+### v1.0 직후 처리 필요 (Follow-up)
+
+1. `@kalyx/adapter-date-fns` npmjs.com Trusted Publisher 등록 — 1.0.0 publish는 토큰 수동이라 다음부터 OIDC + provenance 자동화.
+2. `@kalyx/adapter-date-fns@1.0.0` GitHub Release 수동 backfill (토큰 publish는 GH Release 미생성).
+3. `release.yml` 견고화 — ignored 패키지 changeset이 publish 차단 안 하도록 사전 검증 step.
+4. `apps/docs/CHANGELOG.md`, vitest lockfile drift refresh, `@floating-ui/react` 0.26→0.27 검토.
+
+> 이전 RC 단계의 `.claude/skills/rc-announcement.md` 와 `.claude/skills/adapter-extraction.md` 는 회고 자료로 보존.
 
 ---
 
