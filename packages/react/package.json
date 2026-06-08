@@ -69,7 +69,7 @@
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
-		"@floating-ui/react": "^0.26.0",
+		"@floating-ui/react": "^0.27.0",
 		"@kalyx/adapter-date-fns": "workspace:*",
 		"@kalyx/core": "workspace:*"
 	},
