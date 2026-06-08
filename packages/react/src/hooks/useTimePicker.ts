@@ -9,9 +9,9 @@ import {
   to12Hour,
   to24Hour,
 } from '@kalyx/core';
-import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
-import type { ISODateString, TimeValue } from '@kalyx/core';
+import type { DateAdapter, ISODateString, TimeValue } from '@kalyx/core';
 import type { TimePickerFormat } from '../context/TimePickerContext.js';
+import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 
 export interface UseTimePickerOptions {
   /** Selected time (controlled mode) */
@@ -28,6 +28,12 @@ export interface UseTimePickerOptions {
   withSeconds?: boolean;
   /** IANA timezone for time interpretation (see TimePickerRoot#displayTimezone) */
   displayTimezone?: string;
+  /**
+   * Date adapter. Only used when the controlled `value` is `null` to derive
+   * "today" as the base for the first time edit. The main `@kalyx/react` entry
+   * auto-injects `DateFnsAdapter`; on `@kalyx/react/headless` you must pass one.
+   */
+  adapter?: DateAdapter;
 }
 
 export interface UseTimePickerReturn {
@@ -59,10 +65,6 @@ export interface UseTimePickerReturn {
   pickerId: string;
 }
 
-function getDefaultIso(): ISODateString {
-  return DateFnsAdapter.today();
-}
-
 /**
  * Hook that manages TimePicker state.
  * Use this when you want to build a fully custom UI without the built-in components.
@@ -88,8 +90,10 @@ export function useTimePicker(options: UseTimePickerOptions = {}): UseTimePicker
     format = '24h',
     step = 1,
     displayTimezone,
+    adapter: adapterProp,
   } = options;
 
+  const adapter = resolveAdapter(adapterProp, getDefaultAdapter(), 'useTimePicker');
   const pickerId = useId();
   const isControlled = useRef(controlledValue !== undefined).current;
 
@@ -98,7 +102,7 @@ export function useTimePicker(options: UseTimePickerOptions = {}): UseTimePicker
   );
 
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
-  const baseIso = currentValue ?? getDefaultIso();
+  const baseIso = currentValue ?? adapter.today();
   const currentTime = useMemo(
     () => (displayTimezone ? getTimeInTimezone(baseIso, displayTimezone) : getTime(baseIso)),
     [baseIso, displayTimezone],

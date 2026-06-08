@@ -1,6 +1,5 @@
 import { useCallback, useId, useRef, useState } from 'react';
 import { civilMidnightFromUtcDay, getCalendarDays } from '@kalyx/core';
-import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 import type {
   CalendarGrid,
   DateAdapter,
@@ -10,6 +9,7 @@ import type {
   WeekStartsOn,
 } from '@kalyx/core';
 import type { RangeSelectingTarget } from '../context/RangePickerContext.js';
+import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
 
@@ -87,10 +87,11 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
     onChange,
     disabled = [],
     weekStartsOn = 0,
-    adapter = DateFnsAdapter,
+    adapter: adapterProp,
     displayTimezone,
   } = options;
 
+  const adapter = resolveAdapter(adapterProp, getDefaultAdapter(), 'useRangePicker');
   const pickerId = useId();
   const isControlled = useRef(controlledValue !== undefined).current;
 

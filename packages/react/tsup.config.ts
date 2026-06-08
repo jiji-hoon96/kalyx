@@ -3,7 +3,14 @@ import { defineConfig } from "tsup";
 const USE_CLIENT_DIRECTIVE = '"use client";\n';
 
 export default defineConfig({
-	entry: ["src/index.ts"],
+	// Two physically separate bundles. `splitting: false` (below) guarantees the
+	// headless entry never pulls in date-fns code paths even though both entries
+	// share components — the import graph is duplicated rather than chunked, so
+	// `@kalyx/react/headless` can drop `@kalyx/adapter-date-fns` entirely.
+	entry: {
+		index: "src/index.ts",
+		headless: "src/headless.ts",
+	},
 	format: ["esm", "cjs"],
 	dts: true,
 	sourcemap: true,
@@ -24,9 +31,17 @@ export default defineConfig({
 		// Mirror scripts/check-bundle-size.js + .github/workflows/pr-check.yml + release.yml.
 		// Raised from 12 → 13 → 14 → 15 → 16 KB across RC milestones as features landed
 		// (CLAUDE.md §2 records each bump's rationale). Keep all four sources in sync.
+		// Only the default `index` entry is checked against the public size budget;
+		// the headless entry is intentionally smaller and measured separately by
+		// scripts/verify-entry-split.mjs.
 		const TARGET_KB = 16;
-		const outputs = [["ESM", "dist/index.js"], ["CJS", "dist/index.cjs"]] as const;
-		for (const [label, file] of outputs) {
+		const outputs = [
+			["ESM index", "dist/index.js", true],
+			["CJS index", "dist/index.cjs", true],
+			["ESM headless", "dist/headless.js", false],
+			["CJS headless", "dist/headless.cjs", false],
+		] as const;
+		for (const [label, file, enforceBudget] of outputs) {
 			try {
 				const original = readFileSync(file, "utf8");
 				if (!original.startsWith(USE_CLIENT_DIRECTIVE.trim())) {
@@ -34,8 +49,9 @@ export default defineConfig({
 				}
 				const content = readFileSync(file);
 				const kb = (gzipSync(content).length / 1024).toFixed(2);
-				const icon = parseFloat(kb) <= TARGET_KB ? "✅" : "⚠️";
-				console.log(`${icon} [${label}] gzip: ${kb}KB (목표: ≤${TARGET_KB}KB)`);
+				const icon = !enforceBudget || parseFloat(kb) <= TARGET_KB ? "✅" : "⚠️";
+				const suffix = enforceBudget ? ` (목표: ≤${TARGET_KB}KB)` : "";
+				console.log(`${icon} [${label}] gzip: ${kb}KB${suffix}`);
 			} catch {}
 		}
 	},

@@ -1,14 +1,29 @@
-// @kalyx/react — public API entry point
-// The published bundle is prefixed with `"use client";` (injected by tsup at build
-// time, see tsup.config.ts) so React Server Component hosts (Next.js App Router etc.)
-// treat it as a client boundary without consumers wrapping each import.
-
-// Auto-install the default adapter so users get "install and it works" out of the
-// box. The `@kalyx/react/headless` entry deliberately skips this step — see
-// src/headless.ts for the explicit-adapter contract.
-import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
-import { setDefaultAdapter } from './internal/defaultAdapter.js';
-setDefaultAdapter(DateFnsAdapter);
+// @kalyx/react/headless — adapter-explicit entry point.
+//
+// Re-exports the same public surface as `@kalyx/react`, but deliberately
+// skips installing a default `DateAdapter`. Pass one yourself via the `adapter`
+// prop on each Root component (or via the `adapter` option on each hook):
+//
+//   import { DatePicker } from '@kalyx/react/headless';
+//   import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
+//   // or your own dayjs/luxon/Temporal adapter:
+//   //   const MyAdapter: DateAdapter = { ... };
+//
+//   <DatePicker adapter={DateFnsAdapter} value={iso} onChange={setIso}>
+//     <DatePicker.Calendar />
+//   </DatePicker>
+//
+// If you forget the `adapter` prop, the Root will throw a friendly error at
+// render time telling you exactly what's missing.
+//
+// Why this entry exists: the default `@kalyx/react` entry bundles
+// `@kalyx/adapter-date-fns` (≈date-fns + date-fns-tz). Teams already shipping
+// dayjs / luxon don't want that duplication. Importing from `/headless` lets
+// tree-shaking strip the date-fns code path entirely while keeping the rest of
+// the component surface identical.
+//
+// The published bundle is prefixed with `"use client";` so RSC hosts treat it
+// as a client boundary without consumers wrapping each import.
 
 export { DatePicker } from './components/DatePicker/index.js';
 export { RangePicker } from './components/RangePicker/index.js';
@@ -98,9 +113,10 @@ export type { UseDatePickerOptions, UseDatePickerReturn } from './hooks/useDateP
 export type { UseRangePickerOptions, UseRangePickerReturn } from './hooks/useRangePicker.js';
 export type { UseTimePickerOptions, UseTimePickerReturn } from './hooks/useTimePicker.js';
 
-// Re-export the default adapter so consumers can `import { DateFnsAdapter } from '@kalyx/react'`
-// without pulling in the adapter package directly. Source lives in @kalyx/adapter-date-fns now.
-export { DateFnsAdapter } from '@kalyx/adapter-date-fns';
+// Core types/utilities — same as the main entry. We deliberately do NOT
+// re-export `DateFnsAdapter` here; importing it would defeat the point of
+// the headless entry. If you want date-fns, install `@kalyx/adapter-date-fns`
+// directly or just use the main `@kalyx/react` entry.
 export type {
   ISODateString,
   DateRange,
