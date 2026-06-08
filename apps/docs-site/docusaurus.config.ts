@@ -62,6 +62,7 @@ const config: Config = {
             'troubleshooting.{md,mdx}',
             'getting-started/**/*.{md,mdx}',
             'concepts/**/*.{md,mdx}',
+            'guides/**/*.{md,mdx}',
             'components/**/*.{md,mdx}',
             'hooks/**/*.{md,mdx}',
             'recipes/**/*.{md,mdx}',

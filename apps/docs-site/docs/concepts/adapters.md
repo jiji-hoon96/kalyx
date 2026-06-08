@@ -116,9 +116,18 @@ Day.js support is an *example*, not an officially supported adapter. Keep all ar
 
 ## Dependency note
 
-`date-fns` and `date-fns-tz` are **runtime dependencies** of `@kalyx/react` today. A future release will move them behind a separate `@kalyx/adapter-date-fns` package so zero-adapter bundles can drop the weight entirely.
+`@kalyx/core` is now date-library-agnostic — it carries no `date-fns`
+dependency of its own. The default adapter lives in `@kalyx/adapter-date-fns`
+and is auto-installed by the main `@kalyx/react` entry, so installing
+`@kalyx/react` still "just works".
+
+If you already ship `dayjs`, `luxon`, or `Temporal`, you can swap the
+adapter out and drop `date-fns` from your bundle entirely by importing from
+`@kalyx/react/headless`. See the [adapters guide](../guides/adapters.md) for
+the full how-to.
 
 ## Next
 
+- [Adapters guide (custom adapters, `/headless` entry) →](../guides/adapters.md)
 - [ISO strings →](./iso-string.md)
 - [API Reference — core →](../api/core.md)

@@ -1,7 +1,6 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { DEFAULT_RANGEPICKER_LABELS, civilMidnightFromUtcDay } from '@kalyx/core';
-import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 import type {
   DateAdapter,
   DateRange,
@@ -16,6 +15,7 @@ import type {
   RangeSelectingTarget,
 } from '../../context/RangePickerContext.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
+import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
 
@@ -95,10 +95,11 @@ export function RangePickerRoot({
   displayFormat = 'yyyy-MM-dd',
   locale = 'en-US',
   displayTimezone,
-  adapter = DateFnsAdapter,
+  adapter: adapterProp,
   labels: labelsProp,
   children,
 }: RangePickerRootProps) {
+  const adapter = resolveAdapter(adapterProp, getDefaultAdapter(), 'RangePicker');
   const pickerId = useId();
   const isControlled = useRef(controlledValue !== undefined).current;
   const referenceRef = useRef<HTMLElement | null>(null);

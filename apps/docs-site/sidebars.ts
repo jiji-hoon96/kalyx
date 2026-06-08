@@ -27,6 +27,13 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Guides',
+      items: [
+        'guides/adapters',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Components',
       items: [
         'components/datepicker',

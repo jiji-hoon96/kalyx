@@ -87,6 +87,21 @@ Every sub-component forwards `className`, `style`, and `ref`, and accepts a `cla
 
 Full recipes: [Tailwind](https://kalyx-docs.vercel.app/docs/recipes/tailwind), [shadcn/ui](https://kalyx-docs.vercel.app/docs/recipes/shadcn), [React Hook Form](https://kalyx-docs.vercel.app/docs/recipes/react-hook-form).
 
+## Bring your own adapter
+
+Already shipping `dayjs`, `luxon`, or `Temporal`? Skip the bundled `date-fns` and import from `@kalyx/react/headless` instead — same component surface, no auto-installed adapter:
+
+```tsx
+import { DatePicker } from '@kalyx/react/headless';
+import { DayjsAdapter } from './my-dayjs-adapter'; // your DateAdapter
+
+<DatePicker adapter={DayjsAdapter} value={iso} onChange={setIso}>
+  <DatePicker.Calendar />
+</DatePicker>
+```
+
+If you forget the `adapter` prop, the Root throws a clear error telling you exactly what's missing. The full how-to (interface, dayjs reference implementation, edge cases) is in the [adapters guide](https://kalyx-docs.vercel.app/docs/guides/adapters).
+
 ## Documentation
 
 - [Introduction](https://kalyx-docs.vercel.app/docs/intro)

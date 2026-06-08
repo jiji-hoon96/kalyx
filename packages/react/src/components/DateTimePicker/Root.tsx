@@ -9,7 +9,6 @@ import {
   setTimeInTimezone,
   civilMidnightFromUtcDay,
 } from '@kalyx/core';
-import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 import type {
   DateAdapter,
   DateTimePickerLabels,
@@ -23,6 +22,7 @@ import type { DatePickerContextValue } from '../../context/DatePickerContext.js'
 import { TimePickerContext } from '../../context/TimePickerContext.js';
 import type { TimePickerContextValue, TimePickerFormat } from '../../context/TimePickerContext.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
+import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
 
 /**
  * Props for the DateTimePicker Root component.
@@ -119,10 +119,11 @@ export function DateTimePickerRoot({
   displayFormat = 'yyyy-MM-dd HH:mm',
   locale = 'en-US',
   displayTimezone,
-  adapter = DateFnsAdapter,
+  adapter: adapterProp,
   labels: labelsProp,
   children,
 }: DateTimePickerRootProps) {
+  const adapter = resolveAdapter(adapterProp, getDefaultAdapter(), 'DateTimePicker');
   const pickerId = useId();
   const mergedDateLabels = useMemo(
     () => ({ ...DEFAULT_DATEPICKER_LABELS, ...labelsProp }),

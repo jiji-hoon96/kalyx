@@ -46,6 +46,16 @@
 				"types": "./dist/index.d.cts",
 				"default": "./dist/index.cjs"
 			}
+		},
+		"./headless": {
+			"import": {
+				"types": "./dist/headless.d.ts",
+				"default": "./dist/headless.js"
+			},
+			"require": {
+				"types": "./dist/headless.d.cts",
+				"default": "./dist/headless.cjs"
+			}
 		}
 	},
 	"files": [

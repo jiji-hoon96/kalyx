@@ -1,6 +1,5 @@
 import { useCallback, useId, useRef, useState } from 'react';
 import { civilMidnightFromUtcDay, getCalendarDays } from '@kalyx/core';
-import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 import type {
   CalendarGrid,
   DateAdapter,
@@ -8,6 +7,7 @@ import type {
   ISODateString,
   WeekStartsOn,
 } from '@kalyx/core';
+import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 
 export interface UseDatePickerOptions {
   /** Selected date (controlled mode) */
@@ -80,10 +80,11 @@ export function useDatePicker(options: UseDatePickerOptions = {}): UseDatePicker
     onChange,
     disabled = [],
     weekStartsOn = 0,
-    adapter = DateFnsAdapter,
+    adapter: adapterProp,
     displayTimezone,
   } = options;
 
+  const adapter = resolveAdapter(adapterProp, getDefaultAdapter(), 'useDatePicker');
   const pickerId = useId();
   const isControlled = useRef(controlledValue !== undefined).current;
 

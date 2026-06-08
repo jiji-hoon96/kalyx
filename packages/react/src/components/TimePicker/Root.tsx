@@ -7,10 +7,10 @@ import {
   getTimeInTimezone,
   setTimeInTimezone,
 } from '@kalyx/core';
-import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
-import type { ISODateString, TimePickerLabels, TimeValue } from '@kalyx/core';
+import type { DateAdapter, ISODateString, TimePickerLabels, TimeValue } from '@kalyx/core';
 import { TimePickerContext } from '../../context/TimePickerContext.js';
 import type { TimePickerContextValue, TimePickerFormat } from '../../context/TimePickerContext.js';
+import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
 
 /**
  * Props for the TimePicker Root component.
@@ -55,6 +55,12 @@ export interface TimePickerRootProps {
    * predicate returns `true` for every step within the hour. Always receives 24-hour values.
    */
   filterTime?: (hours: number, minutes: number) => boolean;
+  /**
+   * Date adapter. Only used when the controlled `value` is `null` to derive
+   * "today" as the base for the first time edit. The main `@kalyx/react` entry
+   * auto-injects `DateFnsAdapter`; on `@kalyx/react/headless` you must pass one.
+   */
+  adapter?: DateAdapter;
   /** Override ARIA labels (defaults to English) */
   labels?: Partial<TimePickerLabels>;
   /** Child components */
@@ -72,9 +78,11 @@ export function TimePickerRoot({
   disabled = false,
   readOnly = false,
   filterTime,
+  adapter: adapterProp,
   labels: labelsProp,
   children,
 }: TimePickerRootProps) {
+  const adapter = resolveAdapter(adapterProp, getDefaultAdapter(), 'TimePicker');
   const pickerId = useId();
   const mergedLabels = useMemo(
     () => ({ ...DEFAULT_TIMEPICKER_LABELS, ...labelsProp }),
@@ -100,7 +108,7 @@ export function TimePickerRoot({
   const setTime = useCallback(
     (partial: Partial<TimeValue>) => {
       if (disabled || readOnly) return;
-      const base = currentValue ?? DateFnsAdapter.today(displayTimezone);
+      const base = currentValue ?? adapter.today(displayTimezone);
       const newIso = displayTimezone
         ? setTimeInTimezone(base, partial, displayTimezone)
         : setTimeOnIso(base, partial);
@@ -109,7 +117,7 @@ export function TimePickerRoot({
       }
       onChange?.(newIso);
     },
-    [disabled, readOnly, currentValue, displayTimezone, isControlled, onChange],
+    [disabled, readOnly, currentValue, displayTimezone, isControlled, onChange, adapter],
   );
 
   const contextValue: TimePickerContextValue = useMemo(
