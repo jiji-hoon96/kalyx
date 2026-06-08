@@ -91,7 +91,7 @@ const config: Config = {
     announcementBar: {
       id: 'v1-rc',
       content:
-        'Kalyx v1.0 RC is out — try <code>pnpm add @kalyx/react@next</code> and share feedback on <a target="_blank" rel="noopener noreferrer" href="https://github.com/jiji-hoon96/kalyx/issues">GitHub</a>.',
+        'Kalyx v1.0 RC is out — try <code>pnpm add @kalyx/react@rc</code> and share feedback on <a target="_blank" rel="noopener noreferrer" href="https://github.com/jiji-hoon96/kalyx/issues">GitHub</a>.',
       backgroundColor: '#5b4fe1',
       textColor: '#ffffff',
       isCloseable: true,
@@ -102,7 +102,7 @@ const config: Config = {
     },
     metadata: [
       {name: 'keywords', content: 'react, datepicker, headless, typescript, tailwind, accessible, ssr, calendar, timepicker, rangepicker'},
-      {name: 'description', content: 'Headless, SSR-safe React DatePicker with Input, Calendar, TimePicker, and RangePicker in ~12 KB (≤ 13 KB ceiling).'},
+      {name: 'description', content: 'Headless, SSR-safe React DatePicker with Input, Calendar, TimePicker, and RangePicker in ~15.63 KB (≤ 16 KB ceiling).'},
     ],
     navbar: {
       title: 'Kalyx',
