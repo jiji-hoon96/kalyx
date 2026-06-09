@@ -372,6 +372,41 @@ None currently. All design decisions are locked in per the brainstorm session:
 3. Sandbox: hybrid (Docusaurus live blocks for inline; StackBlitz iframes for multi-file)
 4. Effort scope: Full (5 PRs)
 
+## Reconciliation with current state (2026-06-09, post-brainstorm)
+
+After the brainstorm was approved, a closer read of `apps/docs-site/src/pages/index.tsx`, `playground.mdx`, `src/theme/ReactLiveScope/index.tsx`, and the per-picker docs pages revealed that several pieces this spec proposed already exist. The deltas below replace the original PR breakdown.
+
+**Already done (no work needed):**
+- `ReactLiveScope/index.tsx` already exposes all 7 pickers + 3 hooks + `DateFnsAdapter` to inline live blocks. Sub-deliverable B.1 is complete; no change required.
+- `src/pages/index.tsx` already has the proposed landing structure: `Hero` (2-column grid: copy left, media right), `Features` (6 cards), `Compare` (10-row feature matrix table vs react-datepicker / react-day-picker / Ark UI / React Aria), `FinalCta` (mascot + CTAs). Sub-deliverable E ("Landing redesign") collapses into just **swapping the static `<img>` in `Hero` for `<HeroDemo />`**.
+- Each picker docs page (`docs/components/{datepicker,rangepicker,…}.md`) already contains a `tsx` static snippet plus a `jsx live` editable block. Per-picker live-block coverage is already there.
+- `playground.mdx` already renders 8 tabs (7 pickers + a "Timezone demo" tab), each with a full live-editable example. The proposed picker selector and timezone toggle are essentially already there. Sub-deliverable C's real delta is much smaller than originally scoped.
+- Static "Open in StackBlitz / Open in CodeSandbox" links already exist on `playground.mdx` (pointing at the docs-site tree).
+- The landing `Compare` section already includes a Bundle (gzip) row covering 5 libraries.
+
+**Real remaining delta per sub-deliverable:**
+
+| Original | Reconciled delta |
+|---|---|
+| **A.1** — Hero WebP | Unchanged. Static JPEG (`img/kalyx-hero.jpeg`) → animated WebP (light + dark) required. |
+| **A.2** — `<HeroDemo>` component | Unchanged. Build the live React component for the docs-site landing. |
+| **E** — Landing redesign | **Collapses into a 1-line swap** inside `Hero` in `index.tsx`: replace `<img className={styles.heroImage} … />` with `<HeroDemo />` (lazy-loaded). Preserve all SEO meta tags. Update og:image to a captured HeroDemo frame. |
+| **B** — Sandbox infra | `ReactLiveScope` is already done. Real work: build `<StackBlitzEmbed>` component, add 7 example projects under `examples/`, embed them on each picker docs page (alongside existing live blocks, **not replacing**), nightly URL check script, and remove stale `examples/stackblitz-rc/`. |
+| **C** — Playground enhancement | Real delta is small: (a) a classNames live editor sidebar (the existing playground edits the whole code block — a part-by-part editor is genuinely new); (b) a locale toggle (timezone is already a tab; locale isn't); (c) make the "Open in StackBlitz" link seed a sandbox with the **current playground state** (today it's a static link). Consider whether (a)+(b) are worth the complexity given how rich the playground already is — implementation plan may scope these down further or split into a separate PR. |
+| **D** — `/docs/comparison` page | Mostly unchanged. The landing has an inline 10-row table covering 4 competitors; this spec creates a deeper **dedicated** page with: extended matrix (add MUI X + mantine + ark-ui), inline SVG bundle bar chart, "When NOT to use Kalyx" honesty paragraph, freshness lint, en + ko. The landing table stays; the dedicated page is deeper. The landing's "How Kalyx compares" section gains a "Full comparison →" link to it. |
+
+**Updated PR sizing:**
+
+| # | PR | Original LoC | Reconciled LoC | Notes |
+|---|---|---|---|---|
+| 1 | **A1** Hero recorder + WebP + `<HeroDemo>` | ~400 | ~400 | unchanged |
+| 2 | **A2** Landing hero swap (not full redesign) | ~600 | **~50** | collapses to a swap + og:image script |
+| 3 | **B** StackBlitzEmbed + 7 examples + picker docs embeds | ~1200 | ~1000 | ReactLiveScope already done; rest unchanged |
+| 4 | **C** Playground enhancement | ~500 | **~200 or skip** | revisit during planning; may defer or split |
+| 5 | **D** Comparison page | ~300 | ~400 | grows slightly (more libs, bundle chart, honesty section) |
+
+**Decision impact:** Success criteria stay the same. Out-of-scope list stays the same. The brainstorm conclusions (hero story, sandbox hybrid, static matrix + bundle graph, full scope) all stand.
+
 ## References
 
 - Existing scaffolding leveraged:
