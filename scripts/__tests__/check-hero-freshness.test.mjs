@@ -40,4 +40,9 @@ describe('check-hero-freshness', () => {
   it('reports MAX_BYTES = 250 * 1024', () => {
     expect(MAX_BYTES).toBe(250 * 1024);
   });
+
+  it('checks the og-hero.png alongside the WebPs', async () => {
+    const mod = await import('../check-hero-freshness.mjs');
+    expect(mod.FILES).toContain('apps/docs-site/static/img/og-hero.png');
+  });
 });

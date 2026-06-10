@@ -1,157 +1,162 @@
 {
-  "home.eyebrow": {
-    "message": "Headless · SSR 안전 · ~15KB",
-    "description": "홈 상단 뱃지 텍스트"
+  "home.hero.eyebrow": {
+    "message": "Headless · SSR-safe · 16 KB 이하",
+    "description": "히어로 상단 뱃지"
   },
-  "home.title.line1": {
-    "message": "마침내 완성된",
-    "description": "홈 타이틀 1번째 줄"
+  "home.hero.title.line1": {
+    "message": "7개의 날짜 프리미티브.",
+    "description": "히어로 타이틀 1번째 줄"
   },
-  "home.title.accent": {
-    "message": "DatePicker",
-    "description": "홈 타이틀 강조어"
+  "home.hero.title.line2": {
+    "message": "하나의 API.",
+    "description": "히어로 타이틀 2번째 줄 (강조)"
   },
-  "home.title.line2": {
-    "message": "Headless DatePicker.",
-    "description": "홈 타이틀 2번째 줄"
+  "home.hero.subtitle": {
+    "message": "Kalyx는 DatePicker · RangePicker · TimePicker · DateTimePicker · MonthPicker · YearPicker · WeekPicker를 하나의 Composition API로 제공합니다. CSS 없음, SSR 안전, ISO-8601 그대로 입출력.",
+    "description": "히어로 부제"
   },
-  "home.subtitle": {
-    "message": "7개의 조합형 피커 — DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker. CSS 없음, SSR 안전, ~15KB (≤ 16KB).",
-    "description": "홈 부제"
+  "home.hero.cta.start": {
+    "message": "시작하기 →",
+    "description": "히어로 주 CTA"
   },
-  "home.cta.start": {
-    "message": "시작하기",
-    "description": "홈 메인 CTA 버튼"
-  },
-  "home.cta.github": {
+  "home.hero.cta.github": {
     "message": "GitHub에서 별 주기",
-    "description": "홈 보조 CTA 버튼"
+    "description": "히어로 보조 CTA"
   },
-  "home.hero.alt": {
-    "message": "Kalyx — 조합 가능한 DatePicker 컴포넌트",
-    "description": "홈 히어로 이미지 대체 텍스트"
+  "home.featureGrid.eyebrow": {
+    "message": "제공하는 것",
+    "description": "FeatureGrid 상단 뱃지"
   },
-  "home.features.eyebrow": {
-    "message": "제공 기능",
-    "description": "기능 섹션 뱃지"
-  },
-  "home.features.title": {
+  "home.featureGrid.heading": {
     "message": "방해되지 않는 프리미티브",
-    "description": "기능 섹션 타이틀"
+    "description": "FeatureGrid 섹션 제목"
   },
-  "home.feat.headless.title": {
-    "message": "CSS 제로",
-    "description": "기능: 헤드리스"
+  "home.featureGrid.zeroCss.title": {
+    "message": "Zero CSS",
+    "description": "FeatureGrid: Zero CSS 카드 제목"
   },
-  "home.feat.headless.desc": {
-    "message": "임포트할 스타일시트도, 재정의할 클래스도 없습니다. Tailwind, shadcn, Chakra, 직접 만든 CSS 무엇이든 짝 지으세요.",
-    "description": "기능: 헤드리스 설명"
+  "home.featureGrid.zeroCss.body": {
+    "message": "import할 스타일시트 없음. Tailwind · shadcn · CSS Modules · 순수 CSS 등 기존 스타일링 시스템으로 모든 파트를 직접 꾸미세요.",
+    "description": "FeatureGrid: Zero CSS 카드 본문"
   },
-  "home.feat.composition.title": {
-    "message": "진짜 조합형",
-    "description": "기능: 조합형"
-  },
-  "home.feat.composition.desc": {
-    "message": "Radix 스타일 dot 표기 API. Input, Popover, Calendar, TimePicker를 필요한 대로 조립합니다.",
-    "description": "기능: 조합형 설명"
-  },
-  "home.feat.ssr.title": {
+  "home.featureGrid.ssr.title": {
     "message": "SSR 안전",
-    "description": "기능: SSR"
+    "description": "FeatureGrid: SSR 카드 제목"
   },
-  "home.feat.ssr.desc": {
-    "message": "Next.js App Router 환경에서 검증. useId로 안정적인 ID, 모듈 스코프 window 접근 없음.",
-    "description": "기능: SSR 설명"
+  "home.featureGrid.ssr.body": {
+    "message": "렌더 시점에 window/document 접근 없음. RSC, Next.js App Router, Remix loader 안에서도 그대로 동작합니다.",
+    "description": "FeatureGrid: SSR 카드 본문"
   },
-  "home.feat.tz.title": {
-    "message": "타임존 인지",
-    "description": "기능: 타임존"
+  "home.featureGrid.timezone.title": {
+    "message": "Timezone-aware",
+    "description": "FeatureGrid: Timezone 카드 제목"
   },
-  "home.feat.tz.desc": {
-    "message": "모든 값은 ISO 8601 UTC 문자열. 원본을 변형하지 않고 어떤 타임존으로도 표시할 수 있습니다.",
-    "description": "기능: 타임존 설명"
+  "home.featureGrid.timezone.body": {
+    "message": "date-fns-tz 기반 IANA timezone, DST까지 처리. 입력도 출력도 ISO-8601 UTC string — 저장 계층은 깔끔하게.",
+    "description": "FeatureGrid: Timezone 카드 본문"
   },
-  "home.feat.a11y.title": {
-    "message": "기본으로 접근성",
-    "description": "기능: 접근성"
+  "home.featureGrid.bundle.title": {
+    "message": "16 KB gzip 이하",
+    "description": "FeatureGrid: 번들 카드 제목"
   },
-  "home.feat.a11y.desc": {
-    "message": "ARIA 역할, 키보드 네비게이션, 포커스 관리가 내장. 모든 컴포넌트가 axe 검사 통과.",
-    "description": "기능: 접근성 설명"
+  "home.featureGrid.bundle.body": {
+    "message": "7종 picker + hook + date-fns 어댑터 전부 포함. react-datepicker의 1/4 크기. tree-shakable — 쓰는 것만 비용 부담.",
+    "description": "FeatureGrid: 번들 카드 본문"
   },
-  "home.feat.bundle.title": {
-    "message": "~15KB",
-    "description": "기능: 번들"
+  "home.sameJsx.eyebrow": {
+    "message": "같은 JSX, 당신의 스타일",
+    "description": "SameJsxBlock 상단 뱃지"
   },
-  "home.feat.bundle.desc": {
-    "message": "7개 피커를 gzip 15.01KB에 담음 — react-datepicker 60KB 대비 일부. 사용한 만큼만 트리셰이킹됩니다.",
-    "description": "기능: 번들 설명"
+  "home.sameJsx.heading": {
+    "message": "하나의 컴포넌트. 모든 스타일링 시나리오.",
+    "description": "SameJsxBlock 섹션 제목"
   },
-  "home.compare.eyebrow": {
-    "message": "비교",
-    "description": "비교 섹션 뱃지"
+  "home.sameJsx.body": {
+    "message": "어떤 파트에도 원하는 클래스 문자열을 넘기세요. import할 CSS 파일도, 감쌀 테마 프로바이더도 없습니다. 라이브러리가 디자인 시스템을 침범하지 않습니다.",
+    "description": "SameJsxBlock 섹션 본문"
   },
-  "home.compare.title": {
-    "message": "다른 라이브러리와 비교",
-    "description": "비교 섹션 타이틀"
+  "home.pickerGrid.eyebrow": {
+    "message": "7종 프리미티브",
+    "description": "PickerGrid 상단 뱃지"
   },
-  "home.compare.col.feature": {
-    "message": "항목",
-    "description": "비교 표 헤더"
+  "home.pickerGrid.heading": {
+    "message": "찾던 그 picker를 고르세요.",
+    "description": "PickerGrid 섹션 제목"
   },
-  "home.compare.row.bundle": {
-    "message": "번들 (gzip)",
-    "description": "비교 행: 번들"
+  "home.pickerGrid.cta": {
+    "message": "문서 →",
+    "description": "PickerGrid 카드 CTA"
   },
-  "home.compare.row.css": {
-    "message": "CSS 임포트 필수",
-    "description": "비교 행: CSS"
+  "home.pickerGrid.datepicker.oneLine": {
+    "message": "단일 날짜 + 캘린더 popover.",
+    "description": "PickerGrid: DatePicker 한 줄 설명"
   },
-  "home.compare.row.tp": {
-    "message": "TimePicker 내장",
-    "description": "비교 행: TimePicker"
+  "home.pickerGrid.rangepicker.oneLine": {
+    "message": "시작-끝 range + hover preview + 프리셋.",
+    "description": "PickerGrid: RangePicker 한 줄 설명"
   },
-  "home.compare.row.range": {
-    "message": "RangePicker",
-    "description": "비교 행: RangePicker"
+  "home.pickerGrid.timepicker.oneLine": {
+    "message": "12/24시간 시·분 리스트, AM/PM 토글.",
+    "description": "PickerGrid: TimePicker 한 줄 설명"
   },
-  "home.compare.row.ssr": {
-    "message": "SSR 안전 (App Router)",
-    "description": "비교 행: SSR"
+  "home.pickerGrid.datetimepicker.oneLine": {
+    "message": "날짜 + 시간을 하나의 ISO string으로. 조합형 파트.",
+    "description": "PickerGrid: DateTimePicker 한 줄 설명"
   },
-  "home.compare.row.iso": {
-    "message": "ISO 문자열 값",
-    "description": "비교 행: ISO"
+  "home.pickerGrid.monthpicker.oneLine": {
+    "message": "12개월 그리드. 값은 해당 월 1일.",
+    "description": "PickerGrid: MonthPicker 한 줄 설명"
   },
-  "home.mascot.alt": {
-    "message": "Kalyx 마스코트",
-    "description": "마스코트 이미지 대체 텍스트"
+  "home.pickerGrid.yearpicker.oneLine": {
+    "message": "12년 decade 그리드. 값은 해당 연도 1월 1일.",
+    "description": "PickerGrid: YearPicker 한 줄 설명"
   },
-  "home.finalCta.title": {
-    "message": "60초면 시작",
-    "description": "최종 CTA 타이틀"
+  "home.pickerGrid.weekpicker.oneLine": {
+    "message": "한 번 클릭으로 한 주 전체 선택. 값은 DateRange.",
+    "description": "PickerGrid: WeekPicker 한 줄 설명"
   },
-  "home.finalCta.desc": {
-    "message": "패키지를 설치하고, 컴포넌트를 꽂고, 원하는 대로 스타일링하세요. 온보딩은 이게 전부입니다.",
-    "description": "최종 CTA 설명"
+  "home.whyKalyx.eyebrow": {
+    "message": "왜 Kalyx인가",
+    "description": "WhyKalyx 상단 뱃지"
   },
-  "home.finalCta.install": {
-    "message": "Kalyx 설치하기",
-    "description": "최종 CTA: 설치"
+  "home.whyKalyx.heading": {
+    "message": "조립 비용 없는 Headless.",
+    "description": "WhyKalyx 섹션 제목"
   },
-  "home.finalCta.components": {
-    "message": "컴포넌트 둘러보기",
-    "description": "최종 CTA: 컴포넌트"
+  "home.whyKalyx.body": {
+    "message": "react-day-picker는 headless지만 Calendar뿐. react-datepicker는 통합이지만 CSS를 강제합니다. Kalyx는 둘 다 — 모든 프리미티브, 스타일시트 없음, 16 KB 이하.",
+    "description": "WhyKalyx 섹션 본문"
   },
-  "home.meta.title": {
-    "message": "Kalyx — 마침내 완성된 Headless DatePicker",
-    "description": "홈 메타 타이틀"
+  "home.whyKalyx.cta": {
+    "message": "Kalyx 비교 보기 →",
+    "description": "WhyKalyx CTA 텍스트"
   },
-  "home.meta.description": {
-    "message": "Input, Calendar, TimePicker, RangePicker를 ~15KB (≤ 16KB)로 담은 Headless·SSR 안전 React DatePicker (실측 15.01KB).",
-    "description": "홈 메타 디스크립션"
+  "home.getStarted.eyebrow": {
+    "message": "60초면 준비 완료",
+    "description": "GetStarted 상단 뱃지"
+  },
+  "home.getStarted.heading": {
+    "message": "설치 → 조합 → 출시.",
+    "description": "GetStarted 섹션 제목"
+  },
+  "home.getStarted.install.label": {
+    "message": "1. 설치",
+    "description": "GetStarted: 설치 컬럼 라벨"
+  },
+  "home.getStarted.example.label": {
+    "message": "2. 조합",
+    "description": "GetStarted: 예제 컬럼 라벨"
+  },
+  "home.getStarted.cta.quickStart": {
+    "message": "빠른 시작 →",
+    "description": "GetStarted: 빠른 시작 CTA"
+  },
+  "home.getStarted.cta.playground": {
+    "message": "Playground 사용해보기",
+    "description": "GetStarted: Playground CTA"
   },
   "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
-    "message": "← 메인 메뉴로"
+    "message": "← 메인 메뉴로",
+    "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
   }
 }

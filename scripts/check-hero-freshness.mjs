@@ -22,9 +22,10 @@ const REPO_ROOT = resolve(__dirname, '..');
 export const MAX_BYTES = 250 * 1024;
 export const MAX_AGE_DAYS = 90;
 
-const FILES = [
+export const FILES = [
   'img/hero-light.webp',
   'img/hero-dark.webp',
+  'apps/docs-site/static/img/og-hero.png',
 ];
 
 export function evaluate({ exists, sizeBytes, mtimeMs }) {

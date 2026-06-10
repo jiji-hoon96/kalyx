@@ -1,0 +1,135 @@
+.hero {
+  padding: 6rem 0 4rem;
+  background: var(--ifm-background-color);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-self: flex-start;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary);
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--ifm-color-primary-light);
+  border-radius: 999px;
+}
+
+.title {
+  font-size: 3rem;
+  line-height: 1.1;
+  margin: 0;
+  font-weight: 800;
+  color: var(--ifm-heading-color);
+}
+
+.titleAccent {
+  background: linear-gradient(135deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-dark) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--ifm-color-emphasis-700);
+  margin: 0;
+  max-width: 36rem;
+}
+
+.ctas {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.ctaPrimary,
+.ctaSecondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.ctaPrimary {
+  background: var(--ifm-color-primary);
+  color: var(--ifm-color-primary-contrast-foreground);
+}
+
+.ctaPrimary:hover {
+  background: var(--ifm-color-primary-dark);
+  color: var(--ifm-color-primary-contrast-foreground);
+  text-decoration: none;
+}
+
+.ctaSecondary {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  color: var(--ifm-font-color-base);
+}
+
+.ctaSecondary:hover {
+  background: var(--ifm-color-emphasis-100);
+  text-decoration: none;
+}
+
+.installBar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.9rem;
+  width: fit-content;
+}
+
+.installPrefix {
+  color: var(--ifm-color-emphasis-600);
+}
+
+.installCmd {
+  color: var(--ifm-font-color-base);
+  user-select: all;
+}
+
+.demoColumn {
+  width: 100%;
+}
+
+.staticHero {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 996px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .title {
+    font-size: 2.25rem;
+  }
+}

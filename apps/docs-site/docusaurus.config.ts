@@ -96,7 +96,7 @@ const config: Config = {
       textColor: '#ffffff',
       isCloseable: true,
     },
-    image: 'img/social-card.jpeg',
+    image: 'img/og-hero.png',
     colorMode: {
       respectPrefersColorScheme: true,
     },

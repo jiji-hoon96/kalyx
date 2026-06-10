@@ -1,19 +1,23 @@
 #!/usr/bin/env node
 /**
- * Capture the HeroDemo as an animated WebP.
+ * Capture the HeroDemo as an animated WebP, or a single-frame PNG.
  *
  * Usage:
  *   node scripts/record-hero.mjs --theme=light --out=img/hero-light.webp
  *   node scripts/record-hero.mjs --theme=dark  --out=img/hero-dark.webp
+ *   node scripts/record-hero.mjs --theme=light --still=img/og-hero.png
  *
  * Prerequisites:
  *   - cwebp + webpmux installed (Homebrew: `brew install webp`)
+ *     (not required when using --still)
  *   - chromium installed (`pnpm exec playwright install chromium`)
  *   - docs-site dev server NOT already running on port 3100
  *
  * The script starts its own docusaurus dev server on port 3100, screenshots
  * each of the 7 frames at 960x540, then pipes the PNGs through cwebp into
  * a single animated WebP (loop=infinite, q=75).
+ *
+ * With --still=<path>, only frame 0 is captured as a PNG (no cwebp needed).
  */
 
 import { spawn, spawnSync } from 'node:child_process';
@@ -58,6 +62,16 @@ async function main() {
   const server = startDocsSite();
   try {
     await waitForPort(DOCS_PORT, SERVER_TIMEOUT_MS);
+
+    if (args.still) {
+      const stillAbs = resolve(REPO_ROOT, args.still);
+      await captureStill(stillAbs);
+      console.log(`[record-hero] wrote ${args.still} (still, frame 0)`);
+      const stat = statSync(stillAbs);
+      console.log(`[record-hero] size: ${(stat.size / 1024).toFixed(1)} KB`);
+      return;
+    }
+
     await captureFrames(tmpDir);
     await encodeWebp(tmpDir, outAbs);
     console.log(`[record-hero] wrote ${out}`);
@@ -178,5 +192,23 @@ async function encodeWebp(tmpDir, outAbs) {
   const r = spawnSync('webpmux', frameArgs, { encoding: 'utf-8' });
   if (r.status !== 0) {
     throw new Error(`webpmux failed: ${r.stderr}`);
+  }
+}
+
+async function captureStill(outAbs) {
+  await mkdir(dirname(outAbs), { recursive: true });
+  const browser = await chromium.launch();
+  try {
+    const ctx = await browser.newContext({
+      viewport: VIEWPORT,
+      colorScheme: theme,
+    });
+    const page = await ctx.newPage();
+    const url = `http://localhost:${DOCS_PORT}/recorder?frame=0&theme=${theme}`;
+    await page.goto(url, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(250);
+    await page.screenshot({ path: outAbs, type: 'png' });
+  } finally {
+    await browser.close();
   }
 }
