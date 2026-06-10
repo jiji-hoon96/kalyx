@@ -9,11 +9,11 @@
 
 **마침내 완성된 Headless React DatePicker.**
 
-[문서](https://kalyx-docs.vercel.app/ko) · [English](https://kalyx-docs.vercel.app) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.md](./README.md)
+[문서](https://kalyx-docs-site.vercel.app/ko) · [English](https://kalyx-docs-site.vercel.app) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.md](./README.md)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
 [![RC](https://img.shields.io/npm/v/@kalyx/react/rc?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
-[![Bundle](https://img.shields.io/badge/gzip-15.01KB-brightgreen)](https://kalyx-docs.vercel.app/ko/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-15.01KB-brightgreen)](https://kalyx-docs-site.vercel.app/ko/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -47,7 +47,7 @@ import { DatePicker } from '@kalyx/react';
 
 2026년 React 생태계는 양극단입니다 — **react-day-picker**는 캘린더 그리드만, **react-datepicker**는 통합됐지만 40–60 KB · CSS 결합, **Ark UI**는 TimePicker를 제거, **React Aria**는 `@internationalized/date` 강제. Kalyx는 그 사이를 채웁니다 — Headless + 통합 + date-fns 호환 + SSR 안전.
 
-상세 비교표 → [docs-site](https://kalyx-docs.vercel.app/ko/docs/intro#%EB%B9%84%EA%B5%90).
+상세 비교표 → [docs-site](https://kalyx-docs-site.vercel.app/ko/docs/intro#%EB%B9%84%EA%B5%90).
 
 ## 특징
 
@@ -79,14 +79,14 @@ import {
 } from '@kalyx/react';
 ```
 
-API 레퍼런스, 레시피 (Tailwind / shadcn / React Hook Form), 마이그레이션 가이드는 모두 **[공식 문서](https://kalyx-docs.vercel.app/ko)** 에 있습니다.
+API 레퍼런스, 레시피 (Tailwind / shadcn / React Hook Form), 마이그레이션 가이드는 모두 **[공식 문서](https://kalyx-docs-site.vercel.app/ko)** 에 있습니다.
 
 ## 문서
 
-- [소개](https://kalyx-docs.vercel.app/ko/docs/intro) · [빠른 시작](https://kalyx-docs.vercel.app/ko/docs/getting-started/quick-start)
-- [컴포넌트](https://kalyx-docs.vercel.app/ko/docs/components/datepicker) · [훅](https://kalyx-docs.vercel.app/ko/docs/hooks/use-date-picker)
-- [레시피](https://kalyx-docs.vercel.app/ko/docs/recipes/tailwind) · [테스트](https://kalyx-docs.vercel.app/ko/docs/recipes/testing) · [문제 해결](https://kalyx-docs.vercel.app/ko/docs/troubleshooting)
-- [마이그레이션 (react-datepicker / react-day-picker / React Aria)](https://kalyx-docs.vercel.app/ko/docs/migration)
+- [소개](https://kalyx-docs-site.vercel.app/ko/docs/intro) · [빠른 시작](https://kalyx-docs-site.vercel.app/ko/docs/getting-started/quick-start)
+- [컴포넌트](https://kalyx-docs-site.vercel.app/ko/docs/components/datepicker) · [훅](https://kalyx-docs-site.vercel.app/ko/docs/hooks/use-date-picker)
+- [레시피](https://kalyx-docs-site.vercel.app/ko/docs/recipes/tailwind) · [테스트](https://kalyx-docs-site.vercel.app/ko/docs/recipes/testing) · [문제 해결](https://kalyx-docs-site.vercel.app/ko/docs/troubleshooting)
+- [마이그레이션 (react-datepicker / react-day-picker / React Aria)](https://kalyx-docs-site.vercel.app/ko/docs/migration)
 
 ## 번들
 

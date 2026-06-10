@@ -11,7 +11,7 @@ const config: Config = {
     v4: true,
   },
 
-  url: 'https://kalyx-docs.vercel.app',
+  url: 'https://kalyx-docs-site.vercel.app',
   baseUrl: '/',
 
   organizationName: 'jiji-hoon96',

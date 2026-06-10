@@ -7,7 +7,7 @@
 
 Most users should install [`@kalyx/react`](https://www.npmjs.com/package/@kalyx/react) directly — it re-exports what you need. Install `@kalyx/core` only if you're building your own picker layer or a custom platform adapter.
 
-**📚 Full docs:** [kalyx-docs.vercel.app/docs/api/core](https://kalyx-docs.vercel.app/docs/api/core)
+**📚 Full docs:** [kalyx-docs-site.vercel.app/docs/api/core](https://kalyx-docs-site.vercel.app/docs/api/core)
 
 ## Install
 
