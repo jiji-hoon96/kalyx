@@ -1,6 +1,9 @@
 <div align="center">
 
-<img src="./img/main.jpeg" alt="Kalyx — the headless DatePicker, finally complete" width="720" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./img/hero-dark.webp">
+  <img src="./img/hero-light.webp" alt="Kalyx — seven date primitives, one API" width="720">
+</picture>
 
 # Kalyx
 

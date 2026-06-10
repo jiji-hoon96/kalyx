@@ -32,3 +32,19 @@ global.IntersectionObserver = class IntersectionObserver {
 } as unknown as typeof IntersectionObserver;
 
 Element.prototype.scrollIntoView = () => {};
+
+// jsdom does not implement matchMedia; HeroDemo (and any prefers-reduced-motion
+// consumer) reads it. Provide a no-op default that reports no match.
+if (typeof window !== "undefined" && !window.matchMedia) {
+	window.matchMedia = (query: string) =>
+		({
+			matches: false,
+			media: query,
+			onchange: null,
+			addListener: () => {},
+			removeListener: () => {},
+			addEventListener: () => {},
+			removeEventListener: () => {},
+			dispatchEvent: () => false,
+		}) as unknown as MediaQueryList;
+}
