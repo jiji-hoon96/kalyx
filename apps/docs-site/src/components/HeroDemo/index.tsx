@@ -133,9 +133,11 @@ function useFrames(): HeroFrame[] {
         label: 'TimePicker',
         render: () => (
           <TimePicker value={FROZEN_TIME} onChange={() => {}} format="12h">
-            <TimePicker.HourList />
-            <TimePicker.MinuteList />
-            <TimePicker.AmPmToggle />
+            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+              <TimePicker.HourList />
+              <TimePicker.MinuteList />
+              <TimePicker.AmPmToggle />
+            </div>
           </TimePicker>
         ),
       },
@@ -144,9 +146,13 @@ function useFrames(): HeroFrame[] {
         label: 'DateTimePicker',
         render: () => (
           <DateTimePicker value={FROZEN_DATE} onChange={() => {}} format="24h">
-            <DateTimePicker.Calendar />
-            <DateTimePicker.HourList />
-            <DateTimePicker.MinuteList />
+            <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+              <DateTimePicker.Calendar />
+              <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                <DateTimePicker.HourList />
+                <DateTimePicker.MinuteList />
+              </div>
+            </div>
           </DateTimePicker>
         ),
       },

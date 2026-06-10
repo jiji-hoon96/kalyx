@@ -21,7 +21,7 @@ import { mkdir, rm } from 'node:fs/promises';
 import { statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright';
+import { chromium } from '@playwright/test';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(__dirname, '..');
@@ -97,7 +97,7 @@ async function waitForPort(port, timeoutMs) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     try {
-      const res = await fetch(`http://localhost:${port}/__recorder?frame=0`);
+      const res = await fetch(`http://localhost:${port}/recorder?frame=0`);
       if (res.ok) return;
     } catch { /* still starting */ }
     await new Promise(r => setTimeout(r, 500));
@@ -108,14 +108,35 @@ async function waitForPort(port, timeoutMs) {
 async function captureFrames(tmpDir) {
   const browser = await chromium.launch();
   try {
-    const ctx = await browser.newContext({ viewport: VIEWPORT });
+    // Docusaurus is configured with `respectPrefersColorScheme: true`, so the
+    // active theme on first paint is driven entirely by the OS color-scheme
+    // media query — not by localStorage. Emulating it at the browser layer
+    // is more robust than setting a (namespaced) localStorage key.
+    const ctx = await browser.newContext({
+      viewport: VIEWPORT,
+      colorScheme: theme,
+    });
+
     const page = await ctx.newPage();
 
     for (let i = 0; i < FRAMES; i++) {
-      const url = `http://localhost:${DOCS_PORT}/__recorder?frame=${i}&theme=${theme}`;
+      const url = `http://localhost:${DOCS_PORT}/recorder?frame=${i}&theme=${theme}`;
       await page.goto(url, { waitUntil: 'networkidle' });
       // Give the picker popovers/lists a moment to settle.
       await page.waitForTimeout(250);
+
+      if (i === 0) {
+        // One-shot diagnostic: confirms the FROZEN value actually lands as
+        // data-selected on the calendar grid. If this attribute is missing,
+        // every theme/screenshot tweak below is treating a symptom rather
+        // than the bug.
+        const selected = await page.evaluate(() => {
+          const el = document.querySelector('[data-selected="true"]');
+          return el?.textContent ?? null;
+        });
+        console.log(`[record-hero] data-selected sample: ${selected ?? 'NONE'}`);
+      }
+
       const file = join(tmpDir, `frame-${String(i).padStart(2, '0')}.png`);
       await page.screenshot({ path: file, type: 'png' });
       console.log(`[record-hero] captured frame ${i}`);
@@ -141,10 +162,15 @@ async function encodeWebp(tmpDir, outAbs) {
   }
 
   // Step 2: combine into animated WebP via webpmux.
+  // webpmux frame syntax requires the file path and the `+duration+x+y+...`
+  // params as two separate argv tokens. Older webpmux tolerated `file+dur`
+  // glued, but recent versions (1.4+) parse `file+dur` as a filename and
+  // then read the next `-frame ...` as a duplicate input ("Multiple input
+  // files specified").
   const frameArgs = [];
   for (let i = 0; i < FRAMES; i++) {
     const webp = join(tmpDir, `frame-${String(i).padStart(2, '0')}.webp`);
-    frameArgs.push('-frame', `${webp}+${FRAME_HOLD_MS}+0+0+1`);
+    frameArgs.push('-frame', webp, `+${FRAME_HOLD_MS}+0+0+1`);
   }
   frameArgs.push('-loop', '0', '-bgcolor', '255,255,255,255');
   frameArgs.push('-o', outAbs);

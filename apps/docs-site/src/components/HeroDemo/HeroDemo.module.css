@@ -4,10 +4,11 @@
   aspect-ratio: 16 / 9;
   display: grid;
   place-items: center;
-  background: var(--kalyx-surface, #fff);
+  background: var(--ifm-background-color, #fff);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  color: var(--ifm-font-color-base, #1f1f1f);
 }
 
 .frame {
@@ -17,6 +18,7 @@
   place-items: center;
   opacity: 0;
   transition: opacity 300ms ease;
+  padding: 32px;
 }
 
 .frameActive {
@@ -31,7 +33,8 @@
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--kalyx-text-muted, #666);
+  color: var(--ifm-color-emphasis-700, #555);
+  font-family: var(--ifm-font-family-base, sans-serif);
 }
 
 .cycleHint {
@@ -39,5 +42,78 @@
   bottom: 1rem;
   right: 1.25rem;
   font-size: 0.75rem;
-  color: var(--kalyx-text-muted, #888);
+  color: var(--ifm-color-emphasis-600, #888);
+  font-family: var(--ifm-font-family-base, sans-serif);
+}
+
+/*
+ * Minimal styling for the headless kalyx pickers inside the demo. Real
+ * consumers pass `classNames`; for the hero we hand-target the data
+ * attributes the library sets so the demo feels designed without forcing
+ * a particular design system on every user.
+ */
+.frame :global([role='grid']) {
+  border-collapse: collapse;
+  font-family: var(--ifm-font-family-base, sans-serif);
+}
+
+.frame :global([role='gridcell']) {
+  padding: 0;
+}
+
+.frame :global([role='gridcell'] button),
+.frame :global([role='option']) {
+  width: 36px;
+  height: 36px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.frame :global([role='gridcell'] button[data-today='true']) {
+  border-color: var(--ifm-color-primary, #6366f1);
+  font-weight: 600;
+}
+
+.frame :global([role='gridcell'] button[data-selected='true']),
+.frame :global([role='gridcell'] button[data-in-range='true']),
+.frame :global([role='option'][data-selected='true']) {
+  background: var(--ifm-color-primary, #6366f1);
+  color: var(--ifm-color-primary-contrast-foreground, #fff);
+  border-color: var(--ifm-color-primary, #6366f1);
+}
+
+.frame :global([role='gridcell'] button[data-focused='true']) {
+  outline: 2px solid var(--ifm-color-primary-light, #818cf8);
+  outline-offset: 1px;
+}
+
+.frame :global([role='gridcell'] button[data-disabled='true'][data-outside='true']),
+.frame :global([role='gridcell'] button[data-disabled='true']) {
+  color: var(--ifm-color-emphasis-500, #9ca3af);
+}
+
+.frame :global([role='listbox']) {
+  display: inline-flex;
+  flex-direction: column;
+  max-height: 240px;
+  overflow: hidden;
+  border: 1px solid var(--ifm-color-emphasis-200, #e5e7eb);
+  border-radius: 8px;
+  padding: 4px 0;
+}
+
+.frame :global(thead th) {
+  font-weight: 600;
+  padding: 6px 0;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--ifm-color-emphasis-700, #555);
 }
