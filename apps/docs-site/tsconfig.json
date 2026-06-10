@@ -8,5 +8,11 @@
     "ignoreDeprecations": "6.0",
     "strict": true
   },
-  "exclude": [".docusaurus", "build"]
+  "exclude": [
+    ".docusaurus",
+    "build",
+    "**/__tests__/**",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
 }
