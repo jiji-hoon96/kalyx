@@ -53,6 +53,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @kalyx/core build
       - run: pnpm --filter @kalyx/adapter-date-fns build
+      # HeroDemo tests in apps/docs-site import from @kalyx/react,
+      # so it must be built before vitest can resolve the package entry.
+      - run: pnpm --filter @kalyx/react build
       - run: pnpm test:run --coverage
       - name: 커버리지 업로드 (Node 22만)
         if: matrix.node == 22
