@@ -1,6 +1,9 @@
 <div align="center">
 
-<img src="./img/main.jpeg" alt="Kalyx — 마침내 완성된 Headless DatePicker" width="720" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./img/hero-dark.webp">
+  <img src="./img/hero-light.webp" alt="Kalyx — 7개의 날짜 프리미티브, 하나의 API" width="720">
+</picture>
 
 # Kalyx
 
