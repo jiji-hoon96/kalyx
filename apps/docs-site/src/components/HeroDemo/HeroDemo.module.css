@@ -1,0 +1,43 @@
+.root {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  background: var(--kalyx-surface, #fff);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.frameActive {
+  opacity: 1;
+}
+
+.label {
+  position: absolute;
+  bottom: 1rem;
+  left: 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--kalyx-text-muted, #666);
+}
+
+.cycleHint {
+  position: absolute;
+  bottom: 1rem;
+  right: 1.25rem;
+  font-size: 0.75rem;
+  color: var(--kalyx-text-muted, #888);
+}
