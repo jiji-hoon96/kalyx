@@ -1,4 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  DatePicker,
+  RangePicker,
+  TimePicker,
+  DateTimePicker,
+  MonthPicker,
+  YearPicker,
+  WeekPicker,
+} from '@kalyx/react';
 import styles from './HeroDemo.module.css';
 import { FRAME_DURATION_MS, sequence, type HeroFrame } from './sequence';
 
@@ -72,20 +81,103 @@ function usePrefersReducedMotion(): boolean {
   return reduced;
 }
 
+// Frozen values so every captured frame is byte-deterministic. The
+// recorder reuses these via `?frame=N`.
+const FROZEN_DATE = '2026-06-15T00:00:00.000Z';
+const FROZEN_RANGE = {
+  start: '2026-06-15T00:00:00.000Z',
+  end: '2026-06-19T00:00:00.000Z',
+};
+const FROZEN_WEEK = {
+  start: '2026-06-14T00:00:00.000Z',
+  end: '2026-06-20T00:00:00.000Z',
+};
+const FROZEN_TIME = '2026-06-15T14:30:00.000Z';
+
 /**
  * Returns the sequence with real render functions wired in. Memoised so we
  * don't recreate the picker JSX every state change.
  *
- * NOTE: actual picker rendering is added in Task 4. For this skeleton we
- * use a labelled placeholder so the timer/cycle tests pass first.
+ * The kalyx pickers have no `defaultOpen` on the Popover — the Popover
+ * renders null while `ctx.isOpen` is false, and there is no public API
+ * to force-open from the outside. For the hero demo we side-step the
+ * Popover wrapper entirely and render the body components (Calendar /
+ * Grid / TimePicker lists) directly inside the Root. They read the same
+ * context, so the visual surface matches what a user sees with the
+ * Popover open, and we avoid both library mutation and an imperative
+ * open-on-mount trick.
  */
 function useFrames(): HeroFrame[] {
   return useMemo(
-    () =>
-      sequence.map(f => ({
-        ...f,
-        render: () => <div data-placeholder-for={f.id}>{f.label}</div>,
-      })),
+    () => [
+      {
+        id: 'datepicker',
+        label: 'DatePicker',
+        render: () => (
+          <DatePicker value={FROZEN_DATE} onChange={() => {}}>
+            <DatePicker.Calendar />
+          </DatePicker>
+        ),
+      },
+      {
+        id: 'rangepicker',
+        label: 'RangePicker',
+        render: () => (
+          <RangePicker value={FROZEN_RANGE} onChange={() => {}}>
+            <RangePicker.Calendar />
+          </RangePicker>
+        ),
+      },
+      {
+        id: 'timepicker',
+        label: 'TimePicker',
+        render: () => (
+          <TimePicker value={FROZEN_TIME} onChange={() => {}} format="12h">
+            <TimePicker.HourList />
+            <TimePicker.MinuteList />
+            <TimePicker.AmPmToggle />
+          </TimePicker>
+        ),
+      },
+      {
+        id: 'datetimepicker',
+        label: 'DateTimePicker',
+        render: () => (
+          <DateTimePicker value={FROZEN_DATE} onChange={() => {}} format="24h">
+            <DateTimePicker.Calendar />
+            <DateTimePicker.HourList />
+            <DateTimePicker.MinuteList />
+          </DateTimePicker>
+        ),
+      },
+      {
+        id: 'monthpicker',
+        label: 'MonthPicker',
+        render: () => (
+          <MonthPicker value={FROZEN_DATE} onChange={() => {}}>
+            <MonthPicker.Grid />
+          </MonthPicker>
+        ),
+      },
+      {
+        id: 'yearpicker',
+        label: 'YearPicker',
+        render: () => (
+          <YearPicker value={FROZEN_DATE} onChange={() => {}}>
+            <YearPicker.Grid />
+          </YearPicker>
+        ),
+      },
+      {
+        id: 'weekpicker',
+        label: 'WeekPicker',
+        render: () => (
+          <WeekPicker value={FROZEN_WEEK} onChange={() => {}}>
+            <WeekPicker.Calendar />
+          </WeekPicker>
+        ),
+      },
+    ],
     []
   );
 }

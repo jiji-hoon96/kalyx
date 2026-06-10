@@ -69,4 +69,14 @@ describe('<HeroDemo>', () => {
     });
     expect(screen.getByTestId('hero-demo-root').getAttribute('data-frame')).toBe('4');
   });
+
+  it('renders a real kalyx DatePicker on frame 0', () => {
+    render(<HeroDemo autoplay={false} />);
+    // The DatePicker root sets role="combobox" on its trigger button.
+    // For the hero we just want to assert the frame contains something
+    // resembling the actual kalyx component, not a placeholder.
+    const root = screen.getByTestId('hero-demo-root');
+    expect(root.querySelector('[data-placeholder-for]')).toBeNull();
+    expect(root.querySelector('[data-frame-id="datepicker"]')).not.toBeNull();
+  });
 });
