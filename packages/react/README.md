@@ -3,13 +3,13 @@
 > The headless React DatePicker, finally complete. Zero CSS · SSR-safe · ~15.63 KB gzip (≤ 16 KB ceiling).
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-15.63KB-brightgreen)](https://kalyx-docs.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-15.63KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/jiji-hoon96/kalyx/blob/main/LICENSE)
 
 Composable React primitives for single dates, date ranges, time, and date + time. Radix-style dot notation. Pair with Tailwind, shadcn/ui, Chakra, or any CSS.
 
-**📚 Full docs:** [kalyx-docs.vercel.app](https://kalyx-docs.vercel.app) · [한국어](https://kalyx-docs.vercel.app/ko)
+**📚 Full docs:** [kalyx-docs-site.vercel.app](https://kalyx-docs-site.vercel.app) · [한국어](https://kalyx-docs-site.vercel.app/ko)
 
 ## Install
 
@@ -85,7 +85,7 @@ Every sub-component forwards `className`, `style`, and `ref`, and accepts a `cla
 />
 ```
 
-Full recipes: [Tailwind](https://kalyx-docs.vercel.app/docs/recipes/tailwind), [shadcn/ui](https://kalyx-docs.vercel.app/docs/recipes/shadcn), [React Hook Form](https://kalyx-docs.vercel.app/docs/recipes/react-hook-form).
+Full recipes: [Tailwind](https://kalyx-docs-site.vercel.app/docs/recipes/tailwind), [shadcn/ui](https://kalyx-docs-site.vercel.app/docs/recipes/shadcn), [React Hook Form](https://kalyx-docs-site.vercel.app/docs/recipes/react-hook-form).
 
 ## Bring your own adapter
 
@@ -100,17 +100,17 @@ import { DayjsAdapter } from './my-dayjs-adapter'; // your DateAdapter
 </DatePicker>
 ```
 
-If you forget the `adapter` prop, the Root throws a clear error telling you exactly what's missing. The full how-to (interface, dayjs reference implementation, edge cases) is in the [adapters guide](https://kalyx-docs.vercel.app/docs/guides/adapters).
+If you forget the `adapter` prop, the Root throws a clear error telling you exactly what's missing. The full how-to (interface, dayjs reference implementation, edge cases) is in the [adapters guide](https://kalyx-docs-site.vercel.app/docs/guides/adapters).
 
 ## Documentation
 
-- [Introduction](https://kalyx-docs.vercel.app/docs/intro)
-- [Quick Start](https://kalyx-docs.vercel.app/docs/getting-started/quick-start)
-- [Components](https://kalyx-docs.vercel.app/docs/components/datepicker)
-- [Hooks](https://kalyx-docs.vercel.app/docs/hooks/use-date-picker)
-- [Testing](https://kalyx-docs.vercel.app/docs/recipes/testing)
-- [Troubleshooting](https://kalyx-docs.vercel.app/docs/troubleshooting)
-- [Migration from react-datepicker / react-day-picker / React Aria](https://kalyx-docs.vercel.app/docs/migration)
+- [Introduction](https://kalyx-docs-site.vercel.app/docs/intro)
+- [Quick Start](https://kalyx-docs-site.vercel.app/docs/getting-started/quick-start)
+- [Components](https://kalyx-docs-site.vercel.app/docs/components/datepicker)
+- [Hooks](https://kalyx-docs-site.vercel.app/docs/hooks/use-date-picker)
+- [Testing](https://kalyx-docs-site.vercel.app/docs/recipes/testing)
+- [Troubleshooting](https://kalyx-docs-site.vercel.app/docs/troubleshooting)
+- [Migration from react-datepicker / react-day-picker / React Aria](https://kalyx-docs-site.vercel.app/docs/migration)
 
 ## License
 

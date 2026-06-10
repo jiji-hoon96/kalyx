@@ -10,7 +10,7 @@ From your laptop (not Claude):
 
 ```bash
 cd apps/docs-site
-npx vercel link      # follow prompts — pick your scope, name the project "kalyx-docs"
+npx vercel link      # follow prompts — pick your scope, name the project "kalyx-docs-site"
 ```
 
 This creates `.vercel/project.json` — commit it or keep it local (either works).
@@ -38,7 +38,7 @@ None required. The site is fully static.
 
 Vercel's GitHub app will auto-deploy on every push. The default setup gives you:
 
-- **Production** — commits to `main` → `https://kalyx-docs.vercel.app`
+- **Production** — commits to `main` → `https://kalyx-docs-site.vercel.app`
 - **Preview** — all other branches and PRs → unique URL per PR
 
 ### 5. Custom domain (optional)

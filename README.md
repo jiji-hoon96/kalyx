@@ -9,11 +9,11 @@
 
 **The headless React DatePicker, finally complete.**
 
-[Docs](https://kalyx-docs.vercel.app) · [한국어](https://kalyx-docs.vercel.app/ko) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.ko](./README.ko.md)
+[Docs](https://kalyx-docs-site.vercel.app) · [한국어](https://kalyx-docs-site.vercel.app/ko) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.ko](./README.ko.md)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
 [![RC](https://img.shields.io/npm/v/@kalyx/react/rc?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
-[![Bundle](https://img.shields.io/badge/gzip-15.01KB-brightgreen)](https://kalyx-docs.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-15.01KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -47,7 +47,7 @@ import { DatePicker } from '@kalyx/react';
 
 The 2026 React date-picker landscape forces a tradeoff: **react-day-picker** ships only a calendar grid; **react-datepicker** is integrated but 40–60 KB and CSS-coupled; **Ark UI** dropped TimePicker; **React Aria** locks you into `@internationalized/date`. Kalyx fills the gap — headless + integrated + date-fns compatible + SSR-safe.
 
-Detailed comparison table → [docs-site](https://kalyx-docs.vercel.app/docs/intro#comparison).
+Detailed comparison table → [docs-site](https://kalyx-docs-site.vercel.app/docs/intro#comparison).
 
 ## Features
 
@@ -79,14 +79,14 @@ import {
 } from '@kalyx/react';
 ```
 
-API reference, recipes (Tailwind / shadcn / React Hook Form), and migration guides live in the **[full docs](https://kalyx-docs.vercel.app)**.
+API reference, recipes (Tailwind / shadcn / React Hook Form), and migration guides live in the **[full docs](https://kalyx-docs-site.vercel.app)**.
 
 ## Documentation
 
-- [Introduction](https://kalyx-docs.vercel.app/docs/intro) · [Quick Start](https://kalyx-docs.vercel.app/docs/getting-started/quick-start)
-- [Components](https://kalyx-docs.vercel.app/docs/components/datepicker) · [Hooks](https://kalyx-docs.vercel.app/docs/hooks/use-date-picker)
-- [Recipes](https://kalyx-docs.vercel.app/docs/recipes/tailwind) · [Testing](https://kalyx-docs.vercel.app/docs/recipes/testing) · [Troubleshooting](https://kalyx-docs.vercel.app/docs/troubleshooting)
-- [Migration from react-datepicker / react-day-picker / React Aria](https://kalyx-docs.vercel.app/docs/migration)
+- [Introduction](https://kalyx-docs-site.vercel.app/docs/intro) · [Quick Start](https://kalyx-docs-site.vercel.app/docs/getting-started/quick-start)
+- [Components](https://kalyx-docs-site.vercel.app/docs/components/datepicker) · [Hooks](https://kalyx-docs-site.vercel.app/docs/hooks/use-date-picker)
+- [Recipes](https://kalyx-docs-site.vercel.app/docs/recipes/tailwind) · [Testing](https://kalyx-docs-site.vercel.app/docs/recipes/testing) · [Troubleshooting](https://kalyx-docs-site.vercel.app/docs/troubleshooting)
+- [Migration from react-datepicker / react-day-picker / React Aria](https://kalyx-docs-site.vercel.app/docs/migration)
 
 ## Bundle
 
