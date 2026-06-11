@@ -26,7 +26,7 @@ function setAt(obj: ClassNamesShape, path: LeafPath, next: string): ClassNamesSh
   }
   const sub = obj[head];
   if (typeof sub !== 'object') return obj;
-  return { ...obj, [head]: setAt(sub, tail, next) };
+  return { ...obj, [head]: setAt(sub, tail, next) } as ClassNamesShape;
 }
 
 export default function ClassNamesEditor({ pickerId, value, onChange }: ClassNamesEditorProps) {

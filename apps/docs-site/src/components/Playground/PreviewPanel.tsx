@@ -3,13 +3,14 @@ import {
   DatePicker, RangePicker, TimePicker, DateTimePicker,
   MonthPicker, YearPicker, WeekPicker,
 } from '@kalyx/react';
+import type { DateRange } from '@kalyx/react';
 import type { ClassNamesShape, PickerId } from './classNamesByPicker';
 import type { Locale, Timezone } from './LocaleTimezoneToggles';
 import styles from './Playground.module.css';
 
 const FROZEN_DATE = '2026-06-15T00:00:00.000Z';
-const FROZEN_RANGE = { start: '2026-06-15T00:00:00.000Z', end: '2026-06-19T00:00:00.000Z' };
-const FROZEN_WEEK = { start: '2026-06-14T00:00:00.000Z', end: '2026-06-20T00:00:00.000Z' };
+const FROZEN_RANGE: DateRange = { start: '2026-06-15T00:00:00.000Z', end: '2026-06-19T00:00:00.000Z' };
+const FROZEN_WEEK: DateRange = { start: '2026-06-14T00:00:00.000Z', end: '2026-06-20T00:00:00.000Z' };
 const FROZEN_TIME = '2026-06-15T14:30:00.000Z';
 
 export type PreviewPanelProps = {
@@ -55,7 +56,7 @@ function DatePickerPreview({ classNames, locale, timezone }: SubProps) {
 // adjust the picker component + value type. For brevity each preview is short:
 
 function RangePickerPreview({ classNames, locale, timezone }: SubProps) {
-  const [v, setV] = useState(FROZEN_RANGE);
+  const [v, setV] = useState<DateRange>(FROZEN_RANGE);
   const cn = classNames as { input?: string; calendar?: Record<string, string> };
   return (
     <RangePicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
@@ -68,10 +69,10 @@ function RangePickerPreview({ classNames, locale, timezone }: SubProps) {
   );
 }
 
-function TimePickerPreview({ classNames, locale, timezone }: SubProps) {
+function TimePickerPreview({ classNames, timezone }: SubProps) {
   const [v, setV] = useState<string | null>(FROZEN_TIME);
   return (
-    <TimePicker value={v} onChange={setV} format="12h" locale={locale} displayTimezone={timezone}>
+    <TimePicker value={v} onChange={setV} format="12h" displayTimezone={timezone}>
       <TimePicker.Input />
       <div style={{ display: 'flex', gap: 8 }}>
         <TimePicker.HourList />
@@ -121,7 +122,7 @@ function YearPickerPreview({ locale, timezone }: SubProps) {
 }
 
 function WeekPickerPreview({ locale, timezone }: SubProps) {
-  const [v, setV] = useState(FROZEN_WEEK);
+  const [v, setV] = useState<DateRange>(FROZEN_WEEK);
   return (
     <WeekPicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
       <WeekPicker.Input part="start" />
