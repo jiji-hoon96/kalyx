@@ -21,6 +21,7 @@ export default defineConfig({
 				__dirname,
 				"test/__mocks__/docusaurus-browser-only.tsx"
 			),
+			"@stackblitz/sdk": path.resolve(__dirname, "test/__mocks__/stackblitz-sdk.ts"),
 		},
 	},
 	test: {
