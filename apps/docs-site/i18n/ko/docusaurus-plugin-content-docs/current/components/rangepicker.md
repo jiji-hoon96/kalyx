@@ -4,6 +4,8 @@ title: RangePicker
 sidebar_position: 2
 ---
 
+import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
+
 # RangePicker
 
 시작과 끝, 두 날짜를 선택합니다. 선택 사항으로 프리셋 제공.
@@ -33,6 +35,10 @@ function Example() {
 ```
 
 **선택 흐름:** 첫 클릭이 `start`를, 두 번째가 `end`를 설정합니다. 두 번째 클릭이 더 이르면 자동으로 위치가 교환됩니다.
+
+## 직접 사용해보기
+
+<StackBlitzEmbed id="rangepicker-presets" />
 
 ## `<RangePicker>` (Root)
 

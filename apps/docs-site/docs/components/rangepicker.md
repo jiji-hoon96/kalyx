@@ -4,6 +4,8 @@ title: RangePicker
 sidebar_position: 2
 ---
 
+import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
+
 # RangePicker
 
 Two-date selection — a start and an end — with optional presets.
@@ -73,6 +75,8 @@ function BasicRange() {
   );
 }
 ```
+
+<StackBlitzEmbed id="rangepicker-presets" />
 
 ## `<RangePicker>` (Root)
 
