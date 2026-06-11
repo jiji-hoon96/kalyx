@@ -69,15 +69,15 @@ function RangePickerPreview({ classNames, locale, timezone }: SubProps) {
   );
 }
 
-function TimePickerPreview({ classNames, timezone }: SubProps) {
+function TimePickerPreview({ timezone }: SubProps) {
   const [v, setV] = useState<string | null>(FROZEN_TIME);
   return (
     <TimePicker value={v} onChange={setV} format="12h" displayTimezone={timezone}>
       <TimePicker.Input />
-      <div style={{ display: 'flex', gap: 8 }}>
-        <TimePicker.HourList />
-        <TimePicker.MinuteList />
-        <TimePicker.AmPmToggle />
+      <div className={styles.timeRow}>
+        <TimePicker.HourList classNames={{ root: 'kx-live-list', option: 'kx-live-option', optionSelected: 'kx-live-option-selected' }} />
+        <TimePicker.MinuteList classNames={{ root: 'kx-live-list', option: 'kx-live-option', optionSelected: 'kx-live-option-selected' }} />
+        <TimePicker.AmPmToggle classNames={{ root: 'kx-live-ampm', option: 'kx-live-ampm-btn', optionSelected: 'kx-live-ampm-selected' }} />
       </div>
     </TimePicker>
   );
@@ -85,13 +85,18 @@ function TimePickerPreview({ classNames, timezone }: SubProps) {
 
 function DateTimePickerPreview({ classNames, locale, timezone }: SubProps) {
   const [v, setV] = useState<string | null>(FROZEN_DATE);
+  const cn = classNames as { input?: string; calendar?: Record<string, string> };
   return (
     <DateTimePicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
-      <DateTimePicker.Input />
+      <DateTimePicker.Input className={cn.input} />
       <DateTimePicker.Popover>
-        <DateTimePicker.Calendar />
-        <DateTimePicker.HourList />
-        <DateTimePicker.MinuteList />
+        <div className={styles.dateTimeRow}>
+          <DateTimePicker.Calendar classNames={cn.calendar} />
+          <div className={styles.timeRow}>
+            <DateTimePicker.HourList classNames={{ root: 'kx-live-list', option: 'kx-live-option', optionSelected: 'kx-live-option-selected' }} />
+            <DateTimePicker.MinuteList classNames={{ root: 'kx-live-list', option: 'kx-live-option', optionSelected: 'kx-live-option-selected' }} />
+          </div>
+        </div>
       </DateTimePicker.Popover>
     </DateTimePicker>
   );
