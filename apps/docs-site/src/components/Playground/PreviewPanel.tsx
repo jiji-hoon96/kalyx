@@ -73,7 +73,7 @@ function TimePickerPreview({ timezone }: SubProps) {
   const [v, setV] = useState<string | null>(FROZEN_TIME);
   return (
     <TimePicker value={v} onChange={setV} format="12h" displayTimezone={timezone}>
-      <TimePicker.Input />
+      <TimePicker.Input className="kx-live-input" />
       <div className={styles.timeRow}>
         <TimePicker.HourList classNames={{ root: 'kx-live-list', option: 'kx-live-option', optionSelected: 'kx-live-option-selected' }} />
         <TimePicker.MinuteList classNames={{ root: 'kx-live-list', option: 'kx-live-option', optionSelected: 'kx-live-option-selected' }} />
