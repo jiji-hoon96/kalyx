@@ -14,6 +14,12 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Why Kalyx',
+      collapsed: false,
+      items: ['comparison'],
+    },
+    {
+      type: 'category',
       label: 'Concepts',
       items: [
         'concepts/composition',
