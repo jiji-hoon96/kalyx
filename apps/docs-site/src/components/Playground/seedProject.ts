@@ -72,28 +72,123 @@ const TSCONFIG = `{
 }`;
 
 function renderAppCode(pickerId: PickerId, classNames: ClassNamesShape, locale: Locale, tz: Timezone): string {
-  // For brevity here, generate a uniform App.tsx that imports the right picker.
+  // Each picker has a different child shape. Dispatch per id so the
+  // generated App.tsx compiles in the sandbox.
   const cn = JSON.stringify(classNames, null, 2);
   const importName = pickerName(pickerId);
-  return `import { useState } from 'react';
+  const header = `import { useState } from 'react';
 import { ${importName} } from '@kalyx/react';
 
-export default function App() {
-  const [iso, setIso] = useState<string | null>('2026-06-15T00:00:00.000Z');
-  const classNames = ${cn};
-  return (
+export default function App() {`;
+  const footer = `}`;
+  const wrapperOpen = `  return (
     <div style={{ padding: 32, fontFamily: 'sans-serif' }}>
       <h1>Kalyx — ${importName}</h1>
-      <p>Locale: ${locale} · Timezone: ${tz}</p>
+      <p>Locale: ${locale} · Timezone: ${tz}</p>`;
+  const wrapperClose = `    </div>
+  );`;
+
+  switch (pickerId) {
+    case 'timepicker':
+      return `${header}
+  const [iso, setIso] = useState<string | null>('2026-06-15T14:30:00.000Z');
+  const classNames = ${cn};
+${wrapperOpen}
+      <${importName} value={iso} onChange={setIso} format="12h" locale="${locale}" displayTimezone="${tz}">
+        <${importName}.Input className={classNames.input} />
+        <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+          <${importName}.HourList />
+          <${importName}.MinuteList />
+          <${importName}.AmPmToggle />
+        </div>
+      </${importName}>
+${wrapperClose}
+${footer}`;
+
+    case 'monthpicker':
+    case 'yearpicker':
+      return `${header}
+  const [iso, setIso] = useState<string | null>('2026-06-15T00:00:00.000Z');
+  const classNames = ${cn};
+${wrapperOpen}
+      <${importName} value={iso} onChange={setIso} locale="${locale}" displayTimezone="${tz}">
+        <${importName}.Input className={classNames.input} />
+        <${importName}.Popover>
+          <${importName}.Grid classNames={classNames.grid} />
+        </${importName}.Popover>
+      </${importName}>
+${wrapperClose}
+${footer}`;
+
+    case 'rangepicker':
+      return `${header}
+  const [range, setRange] = useState({
+    start: '2026-06-15T00:00:00.000Z',
+    end: '2026-06-19T00:00:00.000Z',
+  });
+  const classNames = ${cn};
+${wrapperOpen}
+      <${importName} value={range} onChange={setRange} locale="${locale}" displayTimezone="${tz}">
+        <${importName}.Input className={classNames.input} part="start" />
+        <${importName}.Input className={classNames.input} part="end" />
+        <${importName}.Popover>
+          <${importName}.Calendar classNames={classNames.calendar} />
+        </${importName}.Popover>
+      </${importName}>
+${wrapperClose}
+${footer}`;
+
+    case 'weekpicker':
+      return `${header}
+  const [range, setRange] = useState({
+    start: '2026-06-14T00:00:00.000Z',
+    end: '2026-06-20T00:00:00.000Z',
+  });
+  const classNames = ${cn};
+${wrapperOpen}
+      <${importName} value={range} onChange={setRange} locale="${locale}" displayTimezone="${tz}">
+        <${importName}.Input className={classNames.input} part="start" />
+        <${importName}.Input className={classNames.input} part="end" />
+        <${importName}.Popover>
+          <${importName}.Calendar classNames={classNames.calendar} />
+        </${importName}.Popover>
+      </${importName}>
+${wrapperClose}
+${footer}`;
+
+    case 'datetimepicker':
+      return `${header}
+  const [iso, setIso] = useState<string | null>('2026-06-15T14:30:00.000Z');
+  const classNames = ${cn};
+${wrapperOpen}
+      <${importName} value={iso} onChange={setIso} locale="${locale}" displayTimezone="${tz}">
+        <${importName}.Input className={classNames.input} />
+        <${importName}.Popover>
+          <${importName}.Calendar classNames={classNames.calendar} />
+          <div style={{ display: 'flex', gap: 12 }}>
+            <${importName}.HourList />
+            <${importName}.MinuteList />
+          </div>
+        </${importName}.Popover>
+      </${importName}>
+${wrapperClose}
+${footer}`;
+
+    case 'datepicker':
+    default:
+      return `${header}
+  const [iso, setIso] = useState<string | null>('2026-06-15T00:00:00.000Z');
+  const classNames = ${cn};
+${wrapperOpen}
       <${importName} value={iso} onChange={setIso} locale="${locale}" displayTimezone="${tz}">
         <${importName}.Input className={classNames.input} />
         <${importName}.Popover>
           <${importName}.Calendar classNames={classNames.calendar} />
         </${importName}.Popover>
       </${importName}>
-    </div>
-  );
-}`;
+${wrapperClose}
+${footer}`;
+  }
 }
 
 function pickerName(id: PickerId): string {
