@@ -138,30 +138,23 @@
   border-bottom: none;
 }
 
-/* Docusaurus's Infima theme also injects styles into `table th, table td`
- * directly (no `.markdown` prefix) — `border: 1px solid` and
- * `padding: var(--ifm-table-cell-padding)` (~12px). These leak into
- * calendar grids regardless of the `:not()` guard above, because the
- * upstream selector doesn't include `.markdown`.
+/* Global reset for any <table role="grid"> rendered by a Kalyx picker.
  *
- * On pages that omit the `gridCell` className (e.g. the React Hook Form
- * recipe), the `<td>` has no class to override Infima with, so each cell
- * grows to 60-62px (36px button + 12px×2 padding + 2px border) and the
- * calendar overflows the popover. Pin the calendar's `<th>` / `<td>`
- * box model directly.
+ * Docusaurus's Infima injects `table th, table td { border: 1px solid;
+ * padding: var(--ifm-table-cell-padding) }` directly (no `.markdown` prefix),
+ * which leaks into every Kalyx calendar that renders as a <table>. This rule
+ * scopes the reset to ARIA grids so prose tables in Markdown stay untouched.
  *
- * Specificity: 1 class + 1 type beats Infima's pure-type selector.
- * See issue #35. */
-.kx-live-grid th,
-.kx-live-grid td,
-.kx-tw-grid th,
-.kx-tw-grid td {
+ * Replaces the per-surface guards (`.kx-live-grid th, td`, `.kx-tw-grid th,
+ * td`) that lived here before. See spec 2026-06-11 §4.7 and issue #35. */
+[data-theme] [role='grid'] th,
+[data-theme] [role='grid'] td {
   border: 0;
+  padding: 0;
 }
 
-.kx-live-grid td,
-.kx-tw-grid td {
-  padding: 0;
+[data-theme] [role='grid'] {
+  border-collapse: collapse;
 }
 
 /* Admonitions */
@@ -218,50 +211,99 @@
  * =======================================================*/
 
 :root {
-  --kx-ex-bg: var(--kalyx-surface-raised);
-  --kx-ex-border: var(--kalyx-border);
-  --kx-ex-muted: var(--kalyx-text-muted);
-  --kx-ex-primary: var(--ifm-color-primary);
-  --kx-ex-primary-weak: rgba(91, 79, 225, 0.12);
-  --kx-ex-primary-hover: rgba(91, 79, 225, 0.08);
-  --kx-ex-ring: rgba(91, 79, 225, 0.22);
-  --kx-ex-shadow: 0 10px 30px rgba(10, 10, 15, 0.08);
-  --kx-ex-cell: 36px;
+  /* Aurora — light */
+  --kx-bg:            #ffffff;
+  --kx-bg-quiet:      #fafafa;
+  --kx-fg:            #18181b;
+  --kx-fg-muted:      #71717a;
+  --kx-fg-subtle:     #a1a1aa;
+  --kx-border:        rgba(91, 79, 225, 0.10);
+  --kx-primary:       #5b4fe1;
+  --kx-primary-fg:    #ffffff;
+  --kx-primary-weak:  rgba(91, 79, 225, 0.12);
+  --kx-primary-hover: rgba(91, 79, 225, 0.06);
+  --kx-glow:          0 3px 12px rgba(91, 79, 225, 0.32);
+  --kx-shadow-card:   0 8px 24px rgba(91, 79, 225, 0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --kx-radius-cell:   8px;
+  --kx-radius-card:   14px;
+  --kx-radius-input:  8px;
+  --kx-cell:          32px;
+
+  /* Back-compat aliases for sections that intentionally still reference
+   * --kx-ex-* (Input/Trigger, Presets sidebar, shadcn recipe, RHF form,
+   * Tailwind recipe reset). These resolve through to the canonical
+   * --kx-* tokens defined above. Migrating those sections to the new
+   * names is out of scope for PR-1. */
+  --kx-ex-bg:            var(--kx-bg);
+  --kx-ex-border:        var(--kx-border);
+  --kx-ex-muted:         var(--kx-fg-muted);
+  --kx-ex-primary:       var(--kx-primary);
+  --kx-ex-primary-weak:  var(--kx-primary-weak);
+  --kx-ex-primary-hover: var(--kx-primary-hover);
+  --kx-ex-ring:          rgba(91, 79, 225, 0.22);
+  --kx-ex-shadow:        var(--kx-shadow-card);
+  --kx-ex-cell:          var(--kx-cell);
 }
 
 [data-theme='dark'] {
-  --kx-ex-primary-weak: rgba(139, 128, 255, 0.2);
-  --kx-ex-primary-hover: rgba(139, 128, 255, 0.12);
-  --kx-ex-ring: rgba(139, 128, 255, 0.28);
-  --kx-ex-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  --kx-bg:            #111117;
+  --kx-bg-quiet:      #0a0a0f;
+  --kx-fg:            #f4f4f5;
+  --kx-fg-muted:      #a1a1aa;
+  --kx-fg-subtle:     #71717a;
+  --kx-border:        rgba(255, 255, 255, 0.08);
+  --kx-primary:       #8b80ff;
+  --kx-primary-fg:    #0a0a0f;
+  --kx-primary-weak:  rgba(139, 128, 255, 0.18);
+  --kx-primary-hover: rgba(139, 128, 255, 0.12);
+  --kx-glow:          0 3px 12px rgba(139, 128, 255, 0.32);
+  --kx-shadow-card:   0 12px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+
+  --kx-ex-primary-weak:  var(--kx-primary-weak);
+  --kx-ex-primary-hover: var(--kx-primary-hover);
+  --kx-ex-ring:          rgba(139, 128, 255, 0.28);
+  --kx-ex-shadow:        var(--kx-shadow-card);
 }
 
 /* Day cell buttons (single-date variant) */
 .live-day {
-  width: var(--kx-ex-cell);
-  height: var(--kx-ex-cell);
+  width: var(--kx-cell);
+  height: var(--kx-cell);
   padding: 0;
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--kx-radius-cell);
   background: transparent;
   color: inherit;
   font-size: 13px;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition: background 120ms;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.live-day:hover {
-  background: var(--kx-ex-primary-hover);
+.live-day:hover:not(:disabled):not(.live-day-selected) {
+  background: var(--kx-primary-hover);
 }
 
 .live-day-selected {
-  background: var(--kx-ex-primary) !important;
-  color: #fff !important;
+  background: var(--kx-primary) !important;
+  color: var(--kx-primary-fg) !important;
+  font-weight: 600;
+  box-shadow: var(--kx-glow);
 }
 
 .live-day-today {
-  box-shadow: inset 0 0 0 1px var(--kx-ex-primary);
+  box-shadow: inset 0 0 0 1.5px var(--kx-primary);
+  color: var(--kx-primary);
+  font-weight: 600;
+}
+
+.live-day-today.live-day-selected {
+  /* selected wins; glow replaces the ring */
+  box-shadow: var(--kx-glow);
+  color: var(--kx-primary-fg);
 }
 
 /* -----------------------------------------------------------
@@ -341,29 +383,23 @@
 
 .kx-live-popover {
   padding: 14px;
-  border: 1px solid var(--kx-ex-border);
-  border-radius: 14px;
-  background: var(--kx-ex-bg);
-  box-shadow: var(--kx-ex-shadow);
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-card);
+  background: var(--kx-bg);
+  box-shadow: var(--kx-shadow-card);
   margin-top: 6px;
   z-index: 50;
-  /* Explicit width — see issue #35. The popover is `position: absolute`
-   * (set by Floating UI). Without an explicit width, descendants like the
-   * calendar header (`display: flex` with `flex: 1` on the title) cause
-   * `width: max-content` to resolve against the viewport, stretching the
-   * popover edge-to-edge inside Docusaurus's live preview area.
-   *
-   * 7 cells × var(--kx-ex-cell, 36px) + 2 × 14px padding = 280px.
-   */
-  width: 280px;
+  /* width: fit-content — hug the 7×var(--kx-cell) calendar grid. Replaces
+   * the hardcoded 280px from issue #35 now that header and grid are the
+   * same width. See spec 2026-06-11 §4.2. */
+  width: fit-content;
 }
 
 .kx-live-popover--split {
   display: flex;
   gap: 12px;
   align-items: stretch;
-  /* presets sidebar (140px) + gap (12px) + calendar (252px) + 2×14px padding */
-  width: 432px;
+  width: fit-content;
 }
 
 /* -----------------------------------------------------------
@@ -374,26 +410,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 10px;
+  margin-bottom: 4px;
   gap: 4px;
 }
 
 .kx-live-title {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13.5px;
+  flex: 1;
+  text-align: center;
   background: transparent;
   border: 0;
   color: inherit;
   cursor: pointer;
-  padding: 6px 10px;
+  padding: 4px 8px;
   border-radius: 6px;
-  flex: 1;
-  text-align: center;
-  transition: background 120ms;
+  transition: background 120ms, color 120ms;
 }
 
 .kx-live-title:hover {
-  background: var(--kx-ex-primary-hover);
+  background: var(--kx-primary-hover);
+  color: var(--kx-primary);
 }
 
 span.kx-live-title,
@@ -402,49 +439,56 @@ span.kx-live-title,
 }
 
 .kx-live-nav {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   border: 0;
   background: transparent;
-  color: inherit;
+  color: var(--kx-fg-muted);
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
+  transition: background 120ms, color 120ms;
 }
 
 .kx-live-nav:hover {
-  background: var(--kx-ex-primary-hover);
+  background: var(--kx-primary-hover);
+  color: var(--kx-primary);
 }
 
 .kx-live-grid {
-  width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
+  font-size: 13px;
+  /* No explicit width — the first row's th widths (each var(--kx-cell))
+   * size the table via table-layout: fixed. Total width = 7 × var(--kx-cell)
+   * = 224px, which matches the popover's fit-content + 14px padding. */
 }
 
 .kx-live-weekday {
-  width: var(--kx-ex-cell);
-  font-size: 11px;
+  width: var(--kx-cell);
+  font-size: 10px;
   font-weight: 500;
-  color: var(--kx-ex-muted);
+  color: var(--kx-fg-subtle);
   text-align: center;
-  padding: 6px 0;
+  padding: 6px 0 8px;
+  letter-spacing: 0.04em;
 }
 
 .kx-live-cell {
+  width: var(--kx-cell);
   padding: 0;
   text-align: center;
   vertical-align: middle;
-  height: var(--kx-ex-cell);
+  height: var(--kx-cell);
 }
 
 .kx-live-outside {
-  color: var(--kx-ex-muted);
-  opacity: 0.45;
+  color: var(--kx-fg-subtle);
+  opacity: 0.5;
 }
 
 .kx-live-disabled {
@@ -464,8 +508,8 @@ span.kx-live-title,
  * ---------------------------------------------------------*/
 
 .kx-live-day-range {
-  width: 100%;
-  height: var(--kx-ex-cell);
+  width: var(--kx-cell);
+  height: var(--kx-cell);
   padding: 0;
   border: 0;
   background: transparent;
@@ -474,39 +518,50 @@ span.kx-live-title,
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition: background 120ms;
-  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--kx-radius-cell);
 }
 
-.kx-live-day-range:hover:not(:disabled) {
-  background: var(--kx-ex-primary-hover);
-  border-radius: 8px;
+.kx-live-day-range:hover:not(:disabled):not(.kx-live-range-start):not(.kx-live-range-end):not(.kx-live-inrange) {
+  background: var(--kx-primary-hover);
 }
 
+/* In-range middle cells — fully rounded with primary-weak background.
+ * Reads as a row of soft pills inside the band, per v7 spec. */
 .kx-live-inrange {
-  background: var(--kx-ex-primary-weak) !important;
-  border-radius: 0 !important;
+  background: var(--kx-primary-weak) !important;
+  border-radius: var(--kx-radius-cell) !important;
 }
 
-.kx-live-range-start,
-.kx-live-range-end {
-  background: var(--kx-ex-primary) !important;
-  color: #fff !important;
-}
-
-/* Start of range = round left edge only. End = round right edge only. */
+/* Start cell — left side rounded, right side flat (anchors to band). */
 .kx-live-range-start {
-  border-top-left-radius: 8px !important;
-  border-bottom-left-radius: 8px !important;
+  background: var(--kx-primary) !important;
+  color: var(--kx-primary-fg) !important;
+  font-weight: 600;
+  box-shadow: var(--kx-glow);
+  border-top-left-radius: var(--kx-radius-cell) !important;
+  border-bottom-left-radius: var(--kx-radius-cell) !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 
+/* End cell — right side rounded, left flat. */
 .kx-live-range-end {
-  border-top-right-radius: 8px !important;
-  border-bottom-right-radius: 8px !important;
+  background: var(--kx-primary) !important;
+  color: var(--kx-primary-fg) !important;
+  font-weight: 600;
+  box-shadow: var(--kx-glow);
+  border-top-right-radius: var(--kx-radius-cell) !important;
+  border-bottom-right-radius: var(--kx-radius-cell) !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
 }
 
-/* Single-day range — when start === end, round both sides. */
+/* Single-day range — start === end → full radius. */
 .kx-live-range-start.kx-live-range-end {
-  border-radius: 8px !important;
+  border-radius: var(--kx-radius-cell) !important;
 }
 
 /* -----------------------------------------------------------
@@ -519,15 +574,21 @@ span.kx-live-title,
   margin: 0;
   padding: 4px;
   list-style: none;
-  border: 1px solid var(--kx-ex-border);
+  border: 1px solid var(--kx-border);
   border-radius: 10px;
-  background: var(--kx-ex-bg);
-  min-width: 72px;
+  background: var(--kx-bg);
+  min-width: 56px;
   scrollbar-width: thin;
+  /* inline-block so multiple lists sit side-by-side in a flex/inline
+   * time-row layout (HourList + MinuteList + AmPm). vertical-align: top
+   * keeps headers aligned when one list scrolls. */
+  display: inline-block;
+  vertical-align: top;
 }
 
 .kx-live-option {
   padding: 6px 12px;
+  margin-block: 1px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
@@ -538,12 +599,14 @@ span.kx-live-title,
 }
 
 .kx-live-option:hover {
-  background: var(--kx-ex-primary-hover);
+  background: var(--kx-primary-hover);
 }
 
 .kx-live-option-selected {
-  background: var(--kx-ex-primary) !important;
-  color: #fff !important;
+  background: var(--kx-primary) !important;
+  color: var(--kx-primary-fg) !important;
+  font-weight: 600;
+  box-shadow: var(--kx-glow);
 }
 
 .kx-live-ampm {
@@ -553,21 +616,26 @@ span.kx-live-title,
 }
 
 .kx-live-ampm-btn {
-  padding: 6px 14px;
-  border: 1px solid var(--kx-ex-border);
-  background: var(--kx-ex-bg);
+  padding: 5px 12px;
+  border: 1px solid var(--kx-border);
+  background: var(--kx-bg);
   border-radius: 8px;
   cursor: pointer;
   font-size: 12px;
   color: inherit;
-  min-width: 56px;
+  min-width: 46px;
   font-weight: 500;
 }
 
+.kx-live-ampm-btn:hover:not(.kx-live-ampm-selected) {
+  background: var(--kx-primary-hover);
+}
+
 .kx-live-ampm-selected {
-  background: var(--kx-ex-primary) !important;
-  color: #fff !important;
-  border-color: var(--kx-ex-primary) !important;
+  background: var(--kx-primary) !important;
+  color: var(--kx-primary-fg) !important;
+  border-color: var(--kx-primary) !important;
+  box-shadow: var(--kx-glow);
 }
 
 /* -----------------------------------------------------------
@@ -616,16 +684,16 @@ span.kx-live-title,
 .kx-live-month-grid,
 .kx-live-year-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* 7 × var(--kx-cell) - 2 × 6px gap, then /3 — matches calendar grid width
+   * so MonthPicker and DatePicker line up to the pixel. */
+  grid-template-columns: repeat(3, calc((7 * var(--kx-cell) - 2 * 6px) / 3));
   gap: 6px;
   padding: 4px 0;
 }
 
-/* MonthGrid / YearGrid wrap each row in `<div role="row">` for ARIA. The
- * row wrapper would otherwise become a single grid item — collapsing
- * three months into one cell each. `display: contents` lets the buttons
- * participate in the parent grid directly while keeping the a11y tree
- * intact. */
+/* ARIA row wrappers must not become grid items — they'd collapse 3 cells
+ * into one each. `display: contents` lets the cells participate in the
+ * outer grid directly while keeping the a11y tree intact. */
 .kx-live-month-grid > [role='row'],
 .kx-live-year-grid > [role='row'] {
   display: contents !important;
@@ -643,17 +711,20 @@ span.kx-live-title,
   transition: background 120ms;
 }
 
-.kx-live-my-cell:hover {
-  background: var(--kx-ex-primary-hover);
+.kx-live-my-cell:hover:not(.kx-live-my-selected) {
+  background: var(--kx-primary-hover);
 }
 
 .kx-live-my-selected {
-  background: var(--kx-ex-primary) !important;
-  color: #fff !important;
+  background: var(--kx-primary) !important;
+  color: var(--kx-primary-fg) !important;
+  font-weight: 600;
+  box-shadow: var(--kx-glow);
 }
 
 .kx-live-my-current {
-  box-shadow: inset 0 0 0 1px var(--kx-ex-primary);
+  box-shadow: inset 0 0 0 1.5px var(--kx-primary);
+  color: var(--kx-primary);
 }
 
 /* -----------------------------------------------------------
