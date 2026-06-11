@@ -23,12 +23,7 @@ export default function WhyKalyx() {
               ≤16 KB.
             </Translate>
           </p>
-          {/*
-            PR-D will ship /docs/comparison; until then point at the
-            existing anchor on /docs/intro. PR-D's plan must swap this
-            href to '/docs/comparison'.
-          */}
-          <Link className={styles.cta} to="/docs/intro#comparison">
+          <Link className={styles.cta} to="/docs/comparison">
             <Translate id="home.whyKalyx.cta">See how Kalyx compares →</Translate>
           </Link>
         </div>

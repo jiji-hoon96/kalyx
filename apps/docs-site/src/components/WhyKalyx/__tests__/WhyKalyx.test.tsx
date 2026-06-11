@@ -24,12 +24,10 @@ describe('<WhyKalyx>', () => {
     expect(link).toHaveAttribute('href');
   });
 
-  it('CTA points at the comparison anchor (stub until PR-D ships /docs/comparison)', () => {
+  it('CTA points at /docs/comparison', () => {
     render(<WhyKalyx />);
     const link = screen.getByRole('link');
-    // PR-D swap-target: '/docs/comparison'. Until then we point at the
-    // anchor that already exists on /docs/intro.
-    expect(link.getAttribute('href')).toBe('/docs/intro#comparison');
+    expect(link.getAttribute('href')).toBe('/docs/comparison');
   });
 
   it('passes axe', async () => {
