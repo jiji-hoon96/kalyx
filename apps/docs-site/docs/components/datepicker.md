@@ -4,6 +4,8 @@ title: DatePicker
 sidebar_position: 1
 ---
 
+import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
+
 # DatePicker
 
 Single-date selection with an input, trigger, popover, and calendar grid.
@@ -99,6 +101,8 @@ function BasicDatePicker() {
   );
 }
 ```
+
+<StackBlitzEmbed id="datepicker-basic" />
 
 ## `<DatePicker>` (Root)
 

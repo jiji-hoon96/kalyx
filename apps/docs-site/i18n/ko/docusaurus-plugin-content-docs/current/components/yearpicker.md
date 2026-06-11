@@ -4,6 +4,8 @@ title: YearPicker
 sidebar_position: 6
 ---
 
+import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
+
 # YearPicker
 
 Year selector. The value is January 1 of the selected year in UTC-ISO form — for example, picking 2026 yields `"2026-01-01T00:00:00.000Z"`.
@@ -32,6 +34,10 @@ function Example() {
 ```
 
 The default `displayFormat` is `"yyyy"`.
+
+## 직접 사용해보기
+
+<StackBlitzEmbed id="datepicker-basic" />
 
 ## Parts
 

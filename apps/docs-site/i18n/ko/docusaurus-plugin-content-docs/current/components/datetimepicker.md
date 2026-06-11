@@ -4,6 +4,8 @@ title: DateTimePicker
 sidebar_position: 4
 ---
 
+import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
+
 # DateTimePicker
 
 날짜 + 시간을 하나의 popover, 하나의 ISO 문자열로 결합합니다.
@@ -34,6 +36,10 @@ function Example() {
 ```
 
 일자를 고른 뒤에도 **popover가 닫히지 않습니다** — 이어서 시간을 조정하세요. 닫기는 자체 버튼이나 바깥 클릭으로 처리합니다.
+
+## 직접 사용해보기
+
+<StackBlitzEmbed id="datetimepicker-timezone" />
 
 ## `<DateTimePicker>` (Root)
 

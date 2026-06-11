@@ -4,6 +4,8 @@ title: TimePicker
 sidebar_position: 3
 ---
 
+import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
+
 # TimePicker
 
 Hour + minute (+ optional seconds) selection. 12- or 24-hour mode.
@@ -63,6 +65,8 @@ function Basic24h() {
   );
 }
 ```
+
+<StackBlitzEmbed id="timepicker-12h" />
 
 ## `<TimePicker>` (Root)
 

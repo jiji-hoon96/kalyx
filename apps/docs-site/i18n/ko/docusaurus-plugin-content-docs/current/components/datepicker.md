@@ -4,6 +4,8 @@ title: DatePicker
 sidebar_position: 1
 ---
 
+import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
+
 # DatePicker
 
 input, trigger, popover, 캘린더 그리드로 이뤄진 단일 날짜 선택.
@@ -31,6 +33,10 @@ function Example() {
   );
 }
 ```
+
+## 직접 사용해보기
+
+<StackBlitzEmbed id="datepicker-basic" />
 
 ## `<DatePicker>` (Root)
 
