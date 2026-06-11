@@ -11,6 +11,7 @@ vi.mock('@docusaurus/Translate', () => ({
 import PickerSelector from '../PickerSelector';
 import { PICKER_IDS, CLASSNAMES_BY_PICKER } from '../classNamesByPicker';
 import ClassNamesEditor from '../ClassNamesEditor';
+import LocaleTimezoneToggles from '../LocaleTimezoneToggles';
 
 describe('<PickerSelector>', () => {
   it('renders an option for each picker id', () => {
@@ -48,5 +49,22 @@ describe('<ClassNamesEditor>', () => {
     const dayInput = screen.getByLabelText('calendar.day');
     fireEvent.change(dayInput, { target: { value: 'bg-indigo-100' } });
     expect(handle).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('<LocaleTimezoneToggles>', () => {
+  it('renders 4 locale options and 4 timezone options', () => {
+    render(<LocaleTimezoneToggles locale="en-US" timezone="UTC" onLocaleChange={() => {}} onTimezoneChange={() => {}} />);
+    const localeSelect = screen.getByRole('combobox', { name: /locale/i });
+    const tzSelect = screen.getByRole('combobox', { name: /timezone/i });
+    expect(localeSelect.querySelectorAll('option')).toHaveLength(4);
+    expect(tzSelect.querySelectorAll('option')).toHaveLength(4);
+  });
+
+  it('reports locale change', () => {
+    const onLocale = vi.fn();
+    render(<LocaleTimezoneToggles locale="en-US" timezone="UTC" onLocaleChange={onLocale} onTimezoneChange={() => {}} />);
+    fireEvent.change(screen.getByRole('combobox', { name: /locale/i }), { target: { value: 'ko-KR' } });
+    expect(onLocale).toHaveBeenCalledWith('ko-KR');
   });
 });
