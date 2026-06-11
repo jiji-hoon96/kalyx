@@ -20,4 +20,4 @@ scheduled_tasks.lock
 .tmp-*/
 
 # scripts/verify-entry-split.mjs output
-.tmp/
+.tmp/.superpowers/
