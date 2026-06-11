@@ -17,14 +17,14 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ifm-color-primary);
+  color: var(--kx-primary);
 }
 
 .heading {
   font-size: 2rem;
   margin: 0;
   font-weight: 700;
-  color: var(--ifm-heading-color);
+  color: var(--kx-fg);
 }
 
 .grid {
@@ -72,19 +72,19 @@
 .label {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--ifm-heading-color);
+  color: var(--kx-fg);
 }
 
 .oneLine {
   font-size: 0.9rem;
   line-height: 1.5;
-  color: var(--ifm-color-emphasis-700);
+  color: var(--kx-fg-muted);
   flex: 1;
 }
 
 .cta {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--ifm-color-primary);
+  color: var(--kx-primary);
   margin-top: 0.25rem;
 }
