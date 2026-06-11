@@ -115,7 +115,22 @@ function useFrames(): HeroFrame[] {
         label: 'DatePicker',
         render: () => (
           <DatePicker value={FROZEN_DATE} onChange={() => {}}>
-            <DatePicker.Calendar />
+            <DatePicker.Calendar
+              classNames={{
+                root: 'kx-live-calendar',
+                header: 'kx-live-header',
+                title: 'kx-live-title',
+                navButton: 'kx-live-nav',
+                grid: 'kx-live-grid',
+                weekdayHeader: 'kx-live-weekday',
+                gridCell: 'kx-live-cell',
+                day: 'live-day',
+                daySelected: 'live-day-selected',
+                dayToday: 'live-day-today',
+                dayOutsideMonth: 'kx-live-outside',
+                dayDisabled: 'kx-live-disabled',
+              }}
+            />
           </DatePicker>
         ),
       },
@@ -124,7 +139,24 @@ function useFrames(): HeroFrame[] {
         label: 'RangePicker',
         render: () => (
           <RangePicker value={FROZEN_RANGE} onChange={() => {}}>
-            <RangePicker.Calendar />
+            <RangePicker.Calendar
+              classNames={{
+                root: 'kx-live-calendar',
+                header: 'kx-live-header',
+                title: 'kx-live-title',
+                navButton: 'kx-live-nav',
+                grid: 'kx-live-grid',
+                weekdayHeader: 'kx-live-weekday',
+                gridCell: 'kx-live-cell',
+                day: 'kx-live-day-range',
+                dayInRange: 'kx-live-inrange',
+                dayRangeStart: 'kx-live-range-start',
+                dayRangeEnd: 'kx-live-range-end',
+                dayToday: 'live-day-today',
+                dayOutsideMonth: 'kx-live-outside',
+                dayDisabled: 'kx-live-disabled',
+              }}
+            />
           </RangePicker>
         ),
       },
@@ -133,10 +165,28 @@ function useFrames(): HeroFrame[] {
         label: 'TimePicker',
         render: () => (
           <TimePicker value={FROZEN_TIME} onChange={() => {}} format="12h">
-            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-              <TimePicker.HourList />
-              <TimePicker.MinuteList />
-              <TimePicker.AmPmToggle />
+            <div className={styles.timeRow}>
+              <TimePicker.HourList
+                classNames={{
+                  root: 'kx-live-list',
+                  option: 'kx-live-option',
+                  optionSelected: 'kx-live-option-selected',
+                }}
+              />
+              <TimePicker.MinuteList
+                classNames={{
+                  root: 'kx-live-list',
+                  option: 'kx-live-option',
+                  optionSelected: 'kx-live-option-selected',
+                }}
+              />
+              <TimePicker.AmPmToggle
+                classNames={{
+                  root: 'kx-live-ampm',
+                  option: 'kx-live-ampm-btn',
+                  optionSelected: 'kx-live-ampm-selected',
+                }}
+              />
             </div>
           </TimePicker>
         ),
@@ -146,11 +196,38 @@ function useFrames(): HeroFrame[] {
         label: 'DateTimePicker',
         render: () => (
           <DateTimePicker value={FROZEN_DATE} onChange={() => {}} format="24h">
-            <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-              <DateTimePicker.Calendar />
-              <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                <DateTimePicker.HourList />
-                <DateTimePicker.MinuteList />
+            <div className={styles.dateTimeRow}>
+              <DateTimePicker.Calendar
+                classNames={{
+                  root: 'kx-live-calendar',
+                  header: 'kx-live-header',
+                  title: 'kx-live-title',
+                  navButton: 'kx-live-nav',
+                  grid: 'kx-live-grid',
+                  weekdayHeader: 'kx-live-weekday',
+                  gridCell: 'kx-live-cell',
+                  day: 'live-day',
+                  daySelected: 'live-day-selected',
+                  dayToday: 'live-day-today',
+                  dayOutsideMonth: 'kx-live-outside',
+                  dayDisabled: 'kx-live-disabled',
+                }}
+              />
+              <div className={styles.timeRow}>
+                <DateTimePicker.HourList
+                  classNames={{
+                    root: 'kx-live-list',
+                    option: 'kx-live-option',
+                    optionSelected: 'kx-live-option-selected',
+                  }}
+                />
+                <DateTimePicker.MinuteList
+                  classNames={{
+                    root: 'kx-live-list',
+                    option: 'kx-live-option',
+                    optionSelected: 'kx-live-option-selected',
+                  }}
+                />
               </div>
             </div>
           </DateTimePicker>
@@ -161,7 +238,17 @@ function useFrames(): HeroFrame[] {
         label: 'MonthPicker',
         render: () => (
           <MonthPicker value={FROZEN_DATE} onChange={() => {}}>
-            <MonthPicker.Grid />
+            <MonthPicker.Grid
+              classNames={{
+                root: 'kx-live-month-grid',
+                header: 'kx-live-header',
+                title: 'kx-live-title',
+                navButton: 'kx-live-nav',
+                month: 'kx-live-my-cell',
+                monthSelected: 'kx-live-my-selected',
+                monthCurrent: 'kx-live-my-current',
+              }}
+            />
           </MonthPicker>
         ),
       },
@@ -170,7 +257,17 @@ function useFrames(): HeroFrame[] {
         label: 'YearPicker',
         render: () => (
           <YearPicker value={FROZEN_DATE} onChange={() => {}}>
-            <YearPicker.Grid />
+            <YearPicker.Grid
+              classNames={{
+                root: 'kx-live-year-grid',
+                header: 'kx-live-header',
+                title: 'kx-live-title',
+                navButton: 'kx-live-nav',
+                year: 'kx-live-my-cell',
+                yearSelected: 'kx-live-my-selected',
+                yearCurrent: 'kx-live-my-current',
+              }}
+            />
           </YearPicker>
         ),
       },
@@ -179,7 +276,23 @@ function useFrames(): HeroFrame[] {
         label: 'WeekPicker',
         render: () => (
           <WeekPicker value={FROZEN_WEEK} onChange={() => {}}>
-            <WeekPicker.Calendar />
+            <WeekPicker.Calendar
+              classNames={{
+                root: 'kx-live-calendar',
+                header: 'kx-live-header',
+                title: 'kx-live-title',
+                navButton: 'kx-live-nav',
+                grid: 'kx-live-grid',
+                weekdayHeader: 'kx-live-weekday',
+                gridCell: 'kx-live-cell',
+                day: 'kx-live-day-range',
+                dayInRange: 'kx-live-inrange',
+                dayRangeStart: 'kx-live-range-start',
+                dayRangeEnd: 'kx-live-range-end',
+                dayToday: 'live-day-today',
+                dayOutsideMonth: 'kx-live-outside',
+              }}
+            />
           </WeekPicker>
         ),
       },
