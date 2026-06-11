@@ -4,6 +4,8 @@ title: MonthPicker
 sidebar_position: 5
 ---
 
+import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
+
 # MonthPicker
 
 Month selector. The value is the first day of the selected month in UTC-ISO form — for example, picking April 2026 yields `"2026-04-01T00:00:00.000Z"`.
@@ -32,6 +34,10 @@ function Example() {
 ```
 
 The default `displayFormat` is `"yyyy-MM"`. Override it if you prefer a different representation (e.g., `"MMMM yyyy"` for `"April 2026"`).
+
+## 직접 사용해보기
+
+<StackBlitzEmbed id="datepicker-basic" />
 
 ## Parts
 

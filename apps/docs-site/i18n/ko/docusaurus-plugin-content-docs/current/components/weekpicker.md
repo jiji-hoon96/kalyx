@@ -4,6 +4,8 @@ title: WeekPicker
 sidebar_position: 7
 ---
 
+import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
+
 # WeekPicker
 
 Week selector. A single click commits the entire week containing the clicked day, based on `weekStartsOn`. The value is a `DateRange` spanning all seven days.
@@ -32,6 +34,10 @@ function Example() {
   );
 }
 ```
+
+## 직접 사용해보기
+
+<StackBlitzEmbed id="datepicker-basic" />
 
 ## weekStartsOn
 
