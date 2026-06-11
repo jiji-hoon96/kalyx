@@ -4,6 +4,8 @@ title: TimePicker
 sidebar_position: 3
 ---
 
+import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
+
 # TimePicker
 
 시 + 분 (+ 선택적으로 초) 선택. 12시간제 또는 24시간제.
@@ -31,6 +33,10 @@ function Example() {
 ```
 
 값은 여전히 ISO 8601 UTC 문자열 — 날짜 부분은 placeholder 역할. 시/분만 필요하면 `@kalyx/core`의 `getTime(iso)`를 쓰세요.
+
+## 직접 사용해보기
+
+<StackBlitzEmbed id="timepicker-12h" />
 
 ## `<TimePicker>` (Root)
 

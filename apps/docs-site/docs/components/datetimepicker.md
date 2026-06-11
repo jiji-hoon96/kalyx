@@ -4,6 +4,8 @@ title: DateTimePicker
 sidebar_position: 4
 ---
 
+import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
+
 # DateTimePicker
 
 Combined date + time, one popover, one ISO string.
@@ -85,6 +87,8 @@ function BasicDateTime() {
   );
 }
 ```
+
+<StackBlitzEmbed id="datetimepicker-timezone" />
 
 ## `<DateTimePicker>` (Root)
 
