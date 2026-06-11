@@ -58,6 +58,7 @@ const config: Config = {
           routeBasePath: 'docs',
           include: [
             'intro.{md,mdx}',
+            'comparison.{md,mdx}',
             'migration.{md,mdx}',
             'troubleshooting.{md,mdx}',
             'getting-started/**/*.{md,mdx}',
