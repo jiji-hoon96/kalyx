@@ -21,13 +21,14 @@
 /* the rest of this module is filled in across tasks 4–8 */
 
 .classNamesEditor {
-  border: 1px solid var(--ifm-color-emphasis-200);
+  border: 1px solid var(--kx-border);
   border-radius: 8px;
   padding: 0.75rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
   margin: 0;
+  background: var(--kx-bg-quiet);
 }
 
 .leafRow {
@@ -46,10 +47,10 @@
 
 .leafInput {
   padding: 0.3rem 0.5rem;
-  border: 1px solid var(--ifm-color-emphasis-200);
+  border: 1px solid var(--kx-border);
   border-radius: 4px;
-  background: var(--ifm-background-color);
-  color: var(--ifm-font-color-base);
+  background: var(--kx-bg);
+  color: var(--kx-fg);
   font-family: var(--ifm-font-family-monospace);
   font-size: 0.78rem;
 }
@@ -61,14 +62,27 @@
 }
 
 .preview {
-  border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: 8px;
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius-card);
   padding: 1.5rem;
-  background: var(--ifm-background-color);
+  background: var(--kx-bg);
+  box-shadow: var(--kx-shadow-card);
   min-height: 320px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
+}
+
+.timeRow {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.dateTimeRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
 }
 
 .stackblitzButton {

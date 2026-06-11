@@ -1,6 +1,6 @@
 .section {
   padding: 5rem 0;
-  background: var(--ifm-color-emphasis-100);
+  background: var(--kx-bg-quiet);
 }
 
 .header {
@@ -49,8 +49,8 @@
 }
 
 .card {
-  background: var(--ifm-background-color);
-  border: 1px solid var(--ifm-color-emphasis-200);
+  background: var(--kx-bg);
+  border: 1px solid var(--kx-border);
   border-radius: 12px;
   padding: 1.25rem;
   display: flex;
@@ -58,12 +58,13 @@
   gap: 0.5rem;
   text-decoration: none;
   color: inherit;
-  transition: border-color 150ms ease, transform 150ms ease;
+  transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
 
 .card:hover {
-  border-color: var(--ifm-color-primary);
+  border-color: var(--kx-primary);
   transform: translateY(-2px);
+  box-shadow: var(--kx-shadow-card);
   text-decoration: none;
   color: inherit;
 }
