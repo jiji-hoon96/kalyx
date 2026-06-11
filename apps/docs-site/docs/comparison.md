@@ -16,11 +16,12 @@ seven complete primitives, one composition API, no required stylesheet,
 ## Popularity at a glance
 
 Stars and weekly downloads move quickly — treat these as a snapshot, not a leaderboard.
+For libraries that live in a monorepo (react-aria, ark-ui, @mui/x-date-pickers, @mantine/dates), star counts reflect the parent repo, not the sub-package.
 
 | Library | GitHub stars | npm weekly downloads |
 | --- | :---: | :---: |
 | react-datepicker | 8.4k | 4,600,048 |
-| react-day-picker | 6.8k | 39,161,992 |
+| react-day-picker | 6.8k | 39,161,992[^14] |
 | react-calendar | 3.8k | 1,132,734 |
 | react-native-calendars | 10.3k | 541,161 |
 | react-aria | 15.5k | 5,934,915 |
@@ -67,6 +68,7 @@ Stars and weekly downloads move quickly — treat these as a snapshot, not a lea
 [^11]: Surfaces a `view` or `defaultView` prop for month/year drill-down; not exported as a dedicated standalone component.
 [^12]: Inline styles by default; theme can be customized but there is no CSS-free escape hatch comparable to Kalyx.
 [^13]: React Native first; the web shim runs in browsers but the package isn't designed for Next.js App Router server boundaries.
+[^14]: shadcn/ui's `Calendar` component depends on react-day-picker; the count includes downstream adoption via shadcn rather than direct use only.
 
 > _Last measured 2026-06-11. Methodology: bundle sizes via bundlephobia + each
 > library's published `size-limit`; feature presence verified against each
