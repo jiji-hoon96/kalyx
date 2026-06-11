@@ -7,7 +7,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/jiji-hoon96/kalyx/blob/main/LICENSE)
 
-Composable React primitives for single dates, date ranges, time, and date + time. Radix-style dot notation. Pair with Tailwind, shadcn/ui, Chakra, or any CSS.
+Composable React primitives for **seven date-related surfaces** — single date, date range, time, date+time, month, year, and week — under one Radix-style dot-notation API. Pair with Tailwind, shadcn/ui, Chakra, or any CSS.
 
 **📚 Full docs:** [kalyx-docs-site.vercel.app](https://kalyx-docs-site.vercel.app) · [한국어](https://kalyx-docs-site.vercel.app/ko)
 
@@ -20,6 +20,8 @@ pnpm add @kalyx/react
 ```
 
 Requires React ≥ 19.
+
+> Comparing alternatives? See the [feature matrix](https://kalyx-docs-site.vercel.app/docs/comparison) — we hold every cell honestly, including where react-datepicker / react-aria / MUI win.
 
 ## Quick example
 
