@@ -13,6 +13,8 @@ import { PICKER_IDS, CLASSNAMES_BY_PICKER } from '../classNamesByPicker';
 import ClassNamesEditor from '../ClassNamesEditor';
 import LocaleTimezoneToggles from '../LocaleTimezoneToggles';
 import PreviewPanel from '../PreviewPanel';
+import OpenInStackBlitz from '../OpenInStackBlitz';
+import sdk from '@stackblitz/sdk';
 
 describe('<PickerSelector>', () => {
   it('renders an option for each picker id', () => {
@@ -93,5 +95,26 @@ describe('<PreviewPanel>', () => {
       <PreviewPanel pickerId="timepicker" classNames={CLASSNAMES_BY_PICKER.timepicker} locale="en-US" timezone="UTC" />
     );
     expect(screen.getByTestId('preview-panel').getAttribute('data-picker')).toBe('timepicker');
+  });
+});
+
+describe('<OpenInStackBlitz>', () => {
+  it('renders a button that calls sdk.openProject when clicked', () => {
+    const openProject = vi.spyOn(sdk, 'openProject');
+    render(
+      <OpenInStackBlitz
+        pickerId="datepicker"
+        classNames={CLASSNAMES_BY_PICKER.datepicker}
+        locale="en-US"
+        timezone="UTC"
+      />
+    );
+    const btn = screen.getByRole('button', { name: /open in stackblitz/i });
+    fireEvent.click(btn);
+    expect(openProject).toHaveBeenCalledTimes(1);
+    const arg = openProject.mock.calls[0][0] as { title: string; files: Record<string, string> };
+    expect(arg.title).toContain('datepicker');
+    expect(arg.files['src/App.tsx']).toContain('<DatePicker');
+    openProject.mockRestore();
   });
 });

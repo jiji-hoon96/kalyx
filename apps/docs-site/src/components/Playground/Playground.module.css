@@ -70,3 +70,20 @@
   align-items: flex-start;
   justify-content: center;
 }
+
+.stackblitzButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  border: 0;
+  border-radius: 8px;
+  background: var(--ifm-color-primary);
+  color: var(--ifm-color-primary-contrast-foreground);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.stackblitzButton:hover {
+  background: var(--ifm-color-primary-dark);
+}
