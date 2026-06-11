@@ -12,6 +12,7 @@ import PickerSelector from '../PickerSelector';
 import { PICKER_IDS, CLASSNAMES_BY_PICKER } from '../classNamesByPicker';
 import ClassNamesEditor from '../ClassNamesEditor';
 import LocaleTimezoneToggles from '../LocaleTimezoneToggles';
+import PreviewPanel from '../PreviewPanel';
 
 describe('<PickerSelector>', () => {
   it('renders an option for each picker id', () => {
@@ -66,5 +67,31 @@ describe('<LocaleTimezoneToggles>', () => {
     render(<LocaleTimezoneToggles locale="en-US" timezone="UTC" onLocaleChange={onLocale} onTimezoneChange={() => {}} />);
     fireEvent.change(screen.getByRole('combobox', { name: /locale/i }), { target: { value: 'ko-KR' } });
     expect(onLocale).toHaveBeenCalledWith('ko-KR');
+  });
+});
+
+describe('<PreviewPanel>', () => {
+  it('renders a DatePicker when pickerId="datepicker"', () => {
+    render(
+      <PreviewPanel
+        pickerId="datepicker"
+        classNames={CLASSNAMES_BY_PICKER.datepicker}
+        locale="en-US"
+        timezone="UTC"
+      />
+    );
+    // DatePicker.Input ends up as a button/combobox at the top of the tree
+    expect(screen.getByTestId('preview-panel')).toBeInTheDocument();
+    expect(screen.getByTestId('preview-panel').getAttribute('data-picker')).toBe('datepicker');
+  });
+
+  it('switches to TimePicker when pickerId="timepicker"', () => {
+    const { rerender } = render(
+      <PreviewPanel pickerId="datepicker" classNames={CLASSNAMES_BY_PICKER.datepicker} locale="en-US" timezone="UTC" />
+    );
+    rerender(
+      <PreviewPanel pickerId="timepicker" classNames={CLASSNAMES_BY_PICKER.timepicker} locale="en-US" timezone="UTC" />
+    );
+    expect(screen.getByTestId('preview-panel').getAttribute('data-picker')).toBe('timepicker');
   });
 });
