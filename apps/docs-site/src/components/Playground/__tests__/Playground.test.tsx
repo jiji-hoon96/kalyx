@@ -15,6 +15,7 @@ import LocaleTimezoneToggles from '../LocaleTimezoneToggles';
 import PreviewPanel from '../PreviewPanel';
 import OpenInStackBlitz from '../OpenInStackBlitz';
 import sdk from '@stackblitz/sdk';
+import Playground from '../index';
 
 describe('<PickerSelector>', () => {
   it('renders an option for each picker id', () => {
@@ -116,5 +117,28 @@ describe('<OpenInStackBlitz>', () => {
     expect(arg.title).toContain('datepicker');
     expect(arg.files['src/App.tsx']).toContain('<DatePicker');
     openProject.mockRestore();
+  });
+});
+
+describe('<Playground>', () => {
+  it('renders all four controls + preview + StackBlitz button', () => {
+    render(<Playground />);
+    expect(screen.getByRole('combobox', { name: /picker/i })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /locale/i })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /timezone/i })).toBeInTheDocument();
+    expect(screen.getByTestId('preview-panel')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /open in stackblitz/i })).toBeInTheDocument();
+  });
+
+  it('changing picker selector swaps the preview', () => {
+    render(<Playground />);
+    const select = screen.getByRole('combobox', { name: /picker/i });
+    fireEvent.change(select, { target: { value: 'timepicker' } });
+    expect(screen.getByTestId('preview-panel').getAttribute('data-picker')).toBe('timepicker');
+  });
+
+  it('passes axe', async () => {
+    const { container } = render(<Playground />);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

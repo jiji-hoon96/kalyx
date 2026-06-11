@@ -87,3 +87,33 @@
 .stackblitzButton:hover {
   background: var(--ifm-color-primary-dark);
 }
+
+.root {
+  display: grid;
+  grid-template-columns: 22rem 1fr;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 996px) {
+  .root {
+    grid-template-columns: 1fr;
+  }
+}
