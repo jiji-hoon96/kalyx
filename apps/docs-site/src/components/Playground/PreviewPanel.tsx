@@ -13,6 +13,18 @@ const FROZEN_RANGE: DateRange = { start: '2026-06-15T00:00:00.000Z', end: '2026-
 const FROZEN_WEEK: DateRange = { start: '2026-06-14T00:00:00.000Z', end: '2026-06-20T00:00:00.000Z' };
 const FROZEN_TIME = '2026-06-15T14:30:00.000Z';
 
+const LIVE_LIST_CN = {
+  root: 'kx-live-list',
+  option: 'kx-live-option',
+  optionSelected: 'kx-live-option-selected',
+} as const;
+
+const LIVE_AMPM_CN = {
+  root: 'kx-live-ampm',
+  option: 'kx-live-ampm-btn',
+  optionSelected: 'kx-live-ampm-selected',
+} as const;
+
 export type PreviewPanelProps = {
   pickerId: PickerId;
   classNames: ClassNamesShape;
@@ -75,9 +87,9 @@ function TimePickerPreview({ timezone }: SubProps) {
     <TimePicker value={v} onChange={setV} format="12h" displayTimezone={timezone}>
       <TimePicker.Input className="kx-live-input" />
       <div className={styles.timeRow}>
-        <TimePicker.HourList classNames={{ root: 'kx-live-list', option: 'kx-live-option', optionSelected: 'kx-live-option-selected' }} />
-        <TimePicker.MinuteList classNames={{ root: 'kx-live-list', option: 'kx-live-option', optionSelected: 'kx-live-option-selected' }} />
-        <TimePicker.AmPmToggle classNames={{ root: 'kx-live-ampm', option: 'kx-live-ampm-btn', optionSelected: 'kx-live-ampm-selected' }} />
+        <TimePicker.HourList classNames={LIVE_LIST_CN} />
+        <TimePicker.MinuteList classNames={LIVE_LIST_CN} />
+        <TimePicker.AmPmToggle classNames={LIVE_AMPM_CN} />
       </div>
     </TimePicker>
   );
@@ -93,8 +105,8 @@ function DateTimePickerPreview({ classNames, locale, timezone }: SubProps) {
         <div className={styles.dateTimeRow}>
           <DateTimePicker.Calendar classNames={cn.calendar} />
           <div className={styles.timeRow}>
-            <DateTimePicker.HourList classNames={{ root: 'kx-live-list', option: 'kx-live-option', optionSelected: 'kx-live-option-selected' }} />
-            <DateTimePicker.MinuteList classNames={{ root: 'kx-live-list', option: 'kx-live-option', optionSelected: 'kx-live-option-selected' }} />
+            <DateTimePicker.HourList classNames={LIVE_LIST_CN} />
+            <DateTimePicker.MinuteList classNames={LIVE_LIST_CN} />
           </div>
         </div>
       </DateTimePicker.Popover>
