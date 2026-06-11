@@ -229,8 +229,11 @@
   --kx-radius-input:  8px;
   --kx-cell:          32px;
 
-  /* Back-compat aliases — keep until any third-party docs page referencing
-   * the old names is updated. Safe to delete in a follow-up PR. */
+  /* Back-compat aliases for sections that intentionally still reference
+   * --kx-ex-* (Input/Trigger, Presets sidebar, shadcn recipe, RHF form,
+   * Tailwind recipe reset). These resolve through to the canonical
+   * --kx-* tokens defined above. Migrating those sections to the new
+   * names is out of scope for PR-1. */
   --kx-ex-bg:            var(--kx-bg);
   --kx-ex-border:        var(--kx-border);
   --kx-ex-muted:         var(--kx-fg-muted);
@@ -263,7 +266,7 @@
 }
 
 /* Day cell buttons (single-date variant) */
-.kx-live-day {
+.live-day {
   width: var(--kx-cell);
   height: var(--kx-cell);
   padding: 0;
@@ -280,24 +283,24 @@
   justify-content: center;
 }
 
-.kx-live-day:hover:not(:disabled):not(.kx-live-day-selected) {
+.live-day:hover:not(:disabled):not(.live-day-selected) {
   background: var(--kx-primary-hover);
 }
 
-.kx-live-day-selected {
+.live-day-selected {
   background: var(--kx-primary) !important;
   color: var(--kx-primary-fg) !important;
   font-weight: 600;
   box-shadow: var(--kx-glow);
 }
 
-.kx-live-day-today {
+.live-day-today {
   box-shadow: inset 0 0 0 1.5px var(--kx-primary);
   color: var(--kx-primary);
   font-weight: 600;
 }
 
-.kx-live-day-today.kx-live-day-selected {
+.live-day-today.live-day-selected {
   /* selected wins; glow replaces the ring */
   box-shadow: var(--kx-glow);
   color: var(--kx-primary-fg);
@@ -457,10 +460,12 @@ span.kx-live-title,
 }
 
 .kx-live-grid {
-  display: grid;
-  grid-template-columns: repeat(7, var(--kx-cell));
-  gap: 0;
+  border-collapse: collapse;
+  table-layout: fixed;
   font-size: 13px;
+  /* No explicit width — the first row's th widths (each var(--kx-cell))
+   * size the table via table-layout: fixed. Total width = 7 × var(--kx-cell)
+   * = 224px, which matches the popover's fit-content + 14px padding. */
 }
 
 .kx-live-weekday {
@@ -474,6 +479,7 @@ span.kx-live-title,
 }
 
 .kx-live-cell {
+  width: var(--kx-cell);
   padding: 0;
   text-align: center;
   vertical-align: middle;
@@ -573,6 +579,9 @@ span.kx-live-title,
   background: var(--kx-bg);
   min-width: 56px;
   scrollbar-width: thin;
+  /* inline-block so multiple lists sit side-by-side in a flex/inline
+   * time-row layout (HourList + MinuteList + AmPm). vertical-align: top
+   * keeps headers aligned when one list scrolls. */
   display: inline-block;
   vertical-align: top;
 }
