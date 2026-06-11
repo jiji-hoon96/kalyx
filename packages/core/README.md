@@ -1,6 +1,6 @@
 # @kalyx/core
 
-> Platform-independent date logic powering [Kalyx](https://github.com/jiji-hoon96/kalyx). Types, adapters, and UTC-safe utilities.
+> Platform-independent date logic powering the seven [Kalyx](https://github.com/jiji-hoon96/kalyx) pickers — single date, range, time, date+time, month, year, week. Types, adapters, and UTC-safe utilities.
 
 [![npm](https://img.shields.io/npm/v/@kalyx/core?color=5b4fe1)](https://www.npmjs.com/package/@kalyx/core)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/jiji-hoon96/kalyx/blob/main/LICENSE)

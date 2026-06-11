@@ -13,7 +13,7 @@
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
 [![RC](https://img.shields.io/npm/v/@kalyx/react/rc?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
-[![Bundle](https://img.shields.io/badge/gzip-15.01KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-15.63KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -45,9 +45,11 @@ import { DatePicker } from '@kalyx/react';
 
 ## Why Kalyx
 
-The 2026 React date-picker landscape forces a tradeoff: **react-day-picker** ships only a calendar grid; **react-datepicker** is integrated but 40–60 KB and CSS-coupled; **Ark UI** dropped TimePicker; **React Aria** locks you into `@internationalized/date`. Kalyx fills the gap — headless + integrated + date-fns compatible + SSR-safe.
+In 2026, the React date-picker landscape forces a trade-off: integrated-but-heavy (react-datepicker ~62 KB, MUI ~45 KB) or headless-but-partial (react-day-picker, react-aria, ark-ui — calendar grid only). react-calendar covers single dates and ranges but stops short of time, RSC, and timezone-aware storage. react-native-calendars is mobile-first.
 
-Detailed comparison table → [docs-site](https://kalyx-docs-site.vercel.app/docs/intro#comparison).
+Kalyx ships **seven primitives** — single date, range, time, date+time, month, year, week — under one composition API. Headless, ~15 KB gzip, SSR-safe, ISO strings in / ISO strings out, adapter pattern for date-fns / dayjs / luxon.
+
+[See the full comparison →](https://kalyx-docs-site.vercel.app/docs/comparison)
 
 ## Features
 
@@ -90,7 +92,7 @@ API reference, recipes (Tailwind / shadcn / React Hook Form), and migration guid
 
 ## Bundle
 
-`@kalyx/react` v1.0.0-rc.8 → **15.01 KB** gzip (ESM) / **15.16 KB** (CJS). CI gate: ≤ 16 KB.
+`@kalyx/react` v1.0.0 → **15.63 KB** gzip (ESM) / **15.76 KB** (CJS). CI gate: ≤ 16 KB.
 
 ## Browser support
 

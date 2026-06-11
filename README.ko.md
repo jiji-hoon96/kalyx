@@ -13,7 +13,7 @@
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
 [![RC](https://img.shields.io/npm/v/@kalyx/react/rc?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
-[![Bundle](https://img.shields.io/badge/gzip-15.01KB-brightgreen)](https://kalyx-docs-site.vercel.app/ko/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-15.63KB-brightgreen)](https://kalyx-docs-site.vercel.app/ko/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -43,11 +43,13 @@ import { DatePicker } from '@kalyx/react';
 
 `onChange`는 항상 `ISODateString | null` — UTC 안전, `Date` 객체 없음.
 
-## 왜 Kalyx인가
+## Kalyx를 쓰는 이유
 
-2026년 React 생태계는 양극단입니다 — **react-day-picker**는 캘린더 그리드만, **react-datepicker**는 통합됐지만 40–60 KB · CSS 결합, **Ark UI**는 TimePicker를 제거, **React Aria**는 `@internationalized/date` 강제. Kalyx는 그 사이를 채웁니다 — Headless + 통합 + date-fns 호환 + SSR 안전.
+2026년 React 데이트 피커 시장은 둘 중 하나를 강요한다: 통합됐지만 무거운 것(react-datepicker ~62 KB, MUI ~45 KB), 또는 가볍지만 부분적인 것(react-day-picker · react-aria · ark-ui — calendar grid만). react-calendar는 단일 날짜·범위는 다루지만 time·RSC·timezone 저장이 빠지고, react-native-calendars는 모바일 우선이다.
 
-상세 비교표 → [docs-site](https://kalyx-docs-site.vercel.app/ko/docs/intro#%EB%B9%84%EA%B5%90).
+Kalyx는 **7개 프리미티브** — 단일 날짜, 범위, 시간, 날짜+시간, 월, 연, 주 — 를 하나의 composition API로 묶는다. Headless, ~15 KB gzip, SSR 안전, ISO 문자열 입출력, date-fns/dayjs/luxon용 adapter 패턴.
+
+[전체 비교 표 →](https://kalyx-docs-site.vercel.app/ko/docs/comparison)
 
 ## 특징
 
@@ -90,7 +92,7 @@ API 레퍼런스, 레시피 (Tailwind / shadcn / React Hook Form), 마이그레�
 
 ## 번들
 
-`@kalyx/react` v1.0.0-rc.8 → **15.01 KB** gzip (ESM) / **15.16 KB** (CJS). CI 한계 ≤ 16 KB.
+`@kalyx/react` v1.0.0 → **15.63 KB** gzip (ESM) / **15.76 KB** (CJS). CI 한계 ≤ 16 KB.
 
 ## 지원 환경
 
