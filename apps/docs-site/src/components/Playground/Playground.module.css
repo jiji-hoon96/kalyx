@@ -19,3 +19,37 @@
 }
 
 /* the rest of this module is filled in across tasks 4–8 */
+
+.classNamesEditor {
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.leafRow {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.leafKey {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.78rem;
+  color: var(--ifm-color-emphasis-700);
+  word-break: break-all;
+}
+
+.leafInput {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 4px;
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.78rem;
+}
