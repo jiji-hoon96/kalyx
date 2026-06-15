@@ -1,0 +1,159 @@
+---
+slug: introducing-kalyx-1-0
+title: Kalyx 1.0 — 모든 프리미티브를 갖춘 Headless DatePicker
+authors: [jihoon]
+tags: [release, design]
+description: 1년의 "직접 만들 것인가 조합할 것인가" 끝에 Kalyx 1.0을 출시했습니다 — 7개 DatePicker 프리미티브, 하나의 Composition API, CSS 임포트 없음, gzip 15.63KB.
+image: /img/og-hero.png
+---
+
+지난주 npm에 `@kalyx/react@1.0.0`을 태깅했습니다. 이 글은 그 전 1년간 "직접 만들 것인가, 기존 라이브러리를 조합할 것인가" 사이에서 고민했던 이야기, 그 끝에 내린 설계 결정들, 그리고 솔직히 아직 확신이 덜한 부분들에 대한 기록입니다.
+
+<!-- truncate -->
+
+## 채워지지 않았던 공백
+
+지난 1년 동안 React 프로젝트에 DatePicker를 고를 때마다 같은 벽을 만났습니다. npm의 모든 라이브러리가 한 가지는 잘하지만 다른 모든 면에서 트레이드오프를 강요했습니다.
+
+| 라이브러리 | 강점 | 강요되는 것 |
+|---|---|---|
+| **react-day-picker** (주간 1,100만) | 깔끔한 Headless | Calendar 그리드만 — Input, Popover, TimePicker는 직접 |
+| **react-datepicker** (주간 1,750만) | 모든 프리미티브 통합 | CSS 임포트 필수, native `Date` 의존, props 100개 이상 |
+| **Ark UI** | Composition + Headless | v3에서 TimePicker를 제거하고 복구하지 않음 |
+| **React Aria** | 명세 수준 접근성 | `@internationalized/date` 강제 — date-fns 코드베이스와 비호환 |
+| **Headless UI** | Headless 패턴의 선구자 | "유지보수 부담이 너무 크다"며 거절 |
+
+기능 하나만 보면 각각 우승자가 명확합니다. 하지만 현실 — SaaS 폼에 날짜 입력 + 범위 필터 + 시간 선택 + 월·연도 점프가 모두 필요한 경우 — 어느 것도 다음을 **모두** 충족하지 않았습니다.
+
+- Headless (CSS 임포트 없음)
+- 모든 프리미티브 (Date, Range, Time, DateTime, Month, Year, Week)
+- 작은 번들
+- Next.js App Router에서 SSR 안전
+- ISO-8601 문자열 입출력 (소비자 측에서 `Date` 객체 다룰 필요 없음)
+
+"이번에도 react-day-picker + 직접 만든 TimePicker + 어디서 빌려온 Popover를 꿰매자"를 세 번째 프로젝트에서 반복한 뒤, 제가 갖고 싶었던 실제 API를 메모로 모으기 시작했습니다. Kalyx는 그 메모를 코드로 옮긴 결과입니다.
+
+## 1.0에 포함된 것
+
+프리미티브 7개. Composition API 하나. CSS 임포트 0.
+
+```tsx
+import { DateTimePicker } from '@kalyx/react';
+
+<DateTimePicker value={iso} onChange={setIso} format="24h">
+  <DateTimePicker.Input />
+  <DateTimePicker.Popover>
+    <DateTimePicker.Calendar
+      classNames={{
+        daySelected: 'bg-violet-600 text-white',
+        dayToday: 'ring-2 ring-violet-400',
+        dayOutsideMonth: 'opacity-40',
+      }}
+    />
+    <DateTimePicker.HourList />
+    <DateTimePicker.MinuteList step={15} />
+  </DateTimePicker.Popover>
+</DateTimePicker>
+```
+
+같은 Composition 패턴이 모든 프리미티브에서 반복됩니다.
+
+- `DatePicker` — 단일 날짜 선택
+- `RangePicker` — 시작/끝 + 중간 밴드 스타일링 슬롯
+- `TimePicker` — 12시간/24시간, hour/minute 리스트, AM/PM 토글
+- `DateTimePicker` — 날짜 + 시간 묶음
+- `MonthPicker` — 월 그리드 (12 셀)
+- `YearPicker` — 연도 그리드 (16 셀, 이전/다음 10년 이동)
+- `WeekPicker` — Calendar 형태 + 주 밴드 하이라이트
+
+각 프리미티브는 Context + 점 표기 서브 컴포넌트입니다. 거대한 설정 객체나 `showTimeSelect`·`showMonthDropdown` 같은 boolean이 서로의 의미를 조용히 깨뜨리는 구조가 없습니다.
+
+상태 기계 위에 완전히 직접 만든 UI를 올리고 싶은 분들을 위한 Headless Hooks 3종(`useDatePicker`, `useRangePicker`, `useTimePicker`)도 함께 노출됩니다.
+
+## 가장 단단하게 결정한 것들
+
+### Props가 아니라 Composition
+
+첫 설계 초안은 `<DatePicker showTime showMonthGrid presets={[...]} renderHeader={(props) => ...} />` 형태였습니다 — react-datepicker 기본 패턴. 일주일 동안 prop 간 상호작용을 깔끔하게 타이핑하려다 결국 지웠습니다. Composition은 호출 지점에서 제약을 명시적으로 만듭니다.
+
+```tsx
+// "이 피커를 원하고, 이 부분들을 이렇게 스타일링하겠다"고 말하는 것 —
+// "키친 싱크 주세요, 14개 boolean으로 모양 비틀게요"가 아니라.
+<DatePicker value={iso} onChange={setIso}>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+    <DatePicker.Presets>
+      <DatePicker.Preset label="오늘" value={today} />
+      <DatePicker.Preset label="내일" value={tomorrow} />
+    </DatePicker.Presets>
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+한 번의 비용을 치릅니다 — props 12개짜리 한 줄 대신 6줄 JSX 블록. 그 대가로 1년 뒤에도 읽히는 명확함, props 조합 사이로 새지 않는 타입, 그리고 확장 가능한 스타일링 표면(모든 서브 컴포넌트가 자기 `classNames` 슬롯 맵을 가짐)을 얻습니다.
+
+### 모든 곳에서 ISO-8601 문자열
+
+`value`는 `string | null` (ISO-8601 UTC). `onChange`는 `string | null`을 돌려줍니다. 공개 API에 `Date` 객체는 없습니다.
+
+"자연스러운" 대안은 `Date`입니다. 그리고 native-Date 기반 모든 피커에서 수년째 열려 있는 이슈들의 원인이기도 합니다 — 타임존 오프셋, JSON 라운드트립 변형, 서버·클라이언트 불일치. ISO-8601 문자열은 와이어로 그대로 직렬화되고, `JSON.stringify`에서 살아남고, 서버와 클라이언트에서 바이트 단위로 같고, 표시 타임존을 `displayTimezone="Asia/Seoul"` 같이 명시하도록 강제합니다.
+
+비용: 다운스트림에서 `Date`가 필요하면 `new Date(iso)`를 직접 호출해야 합니다. 충분히 받아들일 만한 비용이라고 봤습니다.
+
+### 1일차부터 Adapter 패턴
+
+`@kalyx/core`는 date-fns 의존성이 0입니다. `@kalyx/adapter-date-fns`는 17개 메서드의 `DateAdapter` 인터페이스를 구현한 별도 패키지입니다. `@kalyx/react`는 Context로 adapter를 받습니다. 기본값이 date-fns인 이유는 2026년 React 코드베이스에서 가장 흔하기 때문이지, 종속된 게 아닙니다 — dayjs, luxon, Temporal adapter가 그대로 끼워질 수 있도록 구조를 짰습니다. 그게 v1.1 작업입니다.
+
+직접 만든 date 라이브러리를 쓰면서 기본 adapter를 빼고 싶다면, `@kalyx/react/headless`가 date 라이브러리 의존성 0인 엔트리입니다. 자체 adapter 구현과 함께 쓰면 됩니다.
+
+### 번들 천장, 강제
+
+ESM gzip 15.63KB, 천장 16KB. 천장은 CI에 들어가 있습니다 — 모든 PR이 gzip 출력이 16KB를 넘으면 빌드가 실패하는 번들 사이즈 검사를 돌립니다. 오늘 마진은 0.37KB. 새 기능 하나하나가 그 마진을 정당화해야 합니다.
+
+이 숫자는 우연이 아닙니다. react-day-picker 한 줄짜리(Calendar만)에 17.5KB라고 인용된 수치 아래로 분명히 보이는 무언가를 목표로 잡았습니다. 15.63KB에서 Kalyx는 7개 프리미티브를 react-day-picker가 하나에 쓰는 공간보다 적게 담습니다. 그게 명시적으로 보여주고 싶었던 승부수입니다.
+
+트레이드오프: 기능에 "No"를 자주 했어야 했습니다. RTL 모드 — 1.0 미포함. 휴일 플러그인 — 미포함. 가상화된 연도·월 그리드 — 미포함. 마진이 더 좁아지면 둘 중 하나입니다. opt-in 서브패키지로 분리하거나, 천장을 의도적으로 올리고 공지합니다.
+
+## 솔직하게
+
+1.0이 출시된 지 7일 됐습니다. API는 동결됐고, 사용자 기반은 작습니다. 어떤 엣지 케이스에 부딪치는 첫 사람이 될 수 있습니다.
+
+- **React 19+ 전용입니다.** 죄송합니다. RSC, `useId`, `useLayoutEffect` 경고 없음, `<Input>`의 form-action 통합 — React 19 leverage 포인트들에 기댔습니다. 18 backport는 1인 프로젝트로 유지보수하고 싶지 않은 호환 shim을 짊어지는 일입니다.
+- **React Native adapter는 아직 없습니다.** 웹 전용. RN은 v1.x 로드맵에 있지만 단기 우선순위는 아닙니다 — 웹 표면에 실제 사용자가 먼저 필요합니다.
+- **메인테이너는 저 혼자입니다.** 로드맵은 `ROADMAP.md`로 공개됩니다(곧). 계획된 주기는 수요가 있다면 월 1 minor. 100,000건 배포 안정성이 오늘 필요하다면 react-datepicker가 여전히 더 안전합니다. Kalyx는 더 작고 Headless한 미래에 거는 베팅입니다.
+- **"검증 완료" 주장은 하지 않습니다.** 1주일짜리 라이브러리가 검증됐다고 말하는 척하지 않겠습니다. 다만 제가 말할 수 있는 건 — 모든 프리미티브가 자체 단위 테스트 슈트를 가지고(1.0에서 497개), 모든 컴포넌트가 axe를 통과하고, SSR 안전성이 실제 Next.js App Router 빌드에서 CI로 검증된다는 것입니다.
+
+## 다음에 작업할 것
+
+여러분이 실제로 요청하는 것에 따라 우선순위가 결정됩니다.
+
+1. **`@kalyx/adapter-dayjs`** — 이 글을 읽는 분들의 절반 정도는 dayjs를 쓰실 겁니다. 같은 17개 메서드 인터페이스, 같은 conformance 테스트 슈트.
+2. **`@kalyx/adapter-luxon`** — 엔터프라이즈·타임존 집중 코드베이스.
+3. **`@kalyx/adapter-temporal`** — Temporal이 stage 4 / 브라우저 stable에 도달하면.
+4. **통합 레시피** — Formik, Zod, React Hook Form, MUI, Chakra. 현재 `/docs/recipes/`는 기초만 — 더 깊은 레시피가 다음입니다.
+5. **jscodeshift 코드모드** — `react-datepicker → kalyx` 마이그레이션. 모양이 가깝습니다. 80% 자동화는 가능성 있습니다.
+6. **RTL + 휴일 플러그인** — 번들 마진이 허락하거나, 16KB 천장을 올릴 명확한 수요가 있을 때만.
+
+v1.x에서 React Native adapter, 가상화 그리드, DevTools 패널은 **약속하지 않습니다**. 생길 수도 있고, 안 생길 수도 있습니다.
+
+## 시작하기
+
+```bash
+pnpm add @kalyx/react
+```
+
+"이게 나에게 맞는지" 가장 빠른 길:
+
+- **[라이브 플레이그라운드](/playground)** — 프리미티브 선택, `classNames` 교체, 즉시 렌더. StackBlitz 한 클릭 열기.
+- **[비교 페이지](/docs/comparison)** — Kalyx vs react-day-picker, react-datepicker, Ark UI, React Aria, react-calendar, react-native-calendars 번들·기능 나란히.
+- **[컴포넌트 문서](/docs/components/datepicker)** — 모든 프리미티브, 모든 prop, 모든 슬롯.
+
+그리고 React에서 폼을 만드신다면, 피드백을 진심으로 환영합니다.
+
+- 🐛 [버그 리포트](https://github.com/jiji-hoon96/kalyx/issues/new?template=bug_report.yml)
+- ✨ [기능 요청](https://github.com/jiji-hoon96/kalyx/issues/new?template=feature_request.yml)
+- 💬 [Discussions에서 질문](https://github.com/jiji-hoon96/kalyx/discussions)
+- ⭐ [GitHub Star](https://github.com/jiji-hoon96/kalyx) — 누가 쓰고 있는지 알 수 있는 거의 유일한 방법입니다
+
+읽어주셔서 감사합니다. 이슈 트래커에서 뵙겠습니다.

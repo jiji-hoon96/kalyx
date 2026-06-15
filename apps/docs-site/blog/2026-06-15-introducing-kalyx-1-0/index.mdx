@@ -1,0 +1,159 @@
+---
+slug: introducing-kalyx-1-0
+title: Introducing Kalyx 1.0 — the headless DatePicker that ships every primitive
+authors: [jihoon]
+tags: [release, design]
+description: After a year of "build vs. compose existing", I shipped Kalyx 1.0 — seven DatePicker primitives, one Composition API, no CSS imports, 15.63 KB gzip.
+image: /img/og-hero.png
+---
+
+Last week I tagged `@kalyx/react@1.0.0` on npm. This post is the story of the year of "build vs. compose" deliberation that preceded the rewrite, the design choices that came out of it, and the parts I'm honestly less sure about.
+
+<!-- truncate -->
+
+## The gap that existed
+
+For the past year I kept hitting the same wall when picking a DatePicker for React projects. Every library on npm was great at one thing and forced a tradeoff on the rest:
+
+| Library | What it gets right | What it forces |
+|---|---|---|
+| **react-day-picker** (11M/wk) | Beautifully headless | Calendar grid only — Input, Popover, TimePicker are mine to wire |
+| **react-datepicker** (17.5M/wk) | All the primitives bundled | CSS import required; runs on native `Date`; props surface > 100 |
+| **Ark UI** | Composition + headless | They removed TimePicker in v3 and didn't put it back |
+| **React Aria** | Spec-grade accessibility | Locked to `@internationalized/date` — won't compose with my date-fns codebase |
+| **Headless UI** | The headless pioneer | Declined to ship one ("maintenance burden too high") |
+
+For one feature each I could pick a winner. For the realistic case — building a SaaS form with date input + range filter + time selection + month/year jump — none of them gave me _all_ of:
+
+- headless (no CSS imports)
+- every primitive (Date, Range, Time, DateTime, Month, Year, Week)
+- small bundle
+- SSR-safe on Next.js App Router
+- ISO-8601 strings in/out (no `Date` wrangling on the consumer side)
+
+After the third "I'll just stitch react-day-picker + my own TimePicker + a borrowed Popover together" project, I started keeping a list of the actual API shape I wished I had. Kalyx is that list, shipped.
+
+## What 1.0 ships
+
+Seven primitives. One Composition API. Zero CSS imports.
+
+```tsx
+import { DateTimePicker } from '@kalyx/react';
+
+<DateTimePicker value={iso} onChange={setIso} format="24h">
+  <DateTimePicker.Input />
+  <DateTimePicker.Popover>
+    <DateTimePicker.Calendar
+      classNames={{
+        daySelected: 'bg-violet-600 text-white',
+        dayToday: 'ring-2 ring-violet-400',
+        dayOutsideMonth: 'opacity-40',
+      }}
+    />
+    <DateTimePicker.HourList />
+    <DateTimePicker.MinuteList step={15} />
+  </DateTimePicker.Popover>
+</DateTimePicker>
+```
+
+The same composition pattern repeats across every primitive:
+
+- `DatePicker` — single-date selection
+- `RangePicker` — start/end range with mid-band styling slots
+- `TimePicker` — 12h/24h, hour/minute lists, AM/PM toggle
+- `DateTimePicker` — date + time bundled
+- `MonthPicker` — month-grid (12 cells)
+- `YearPicker` — year-grid (16 cells with prev/next decade nav)
+- `WeekPicker` — calendar-style with week-band highlight
+
+Each primitive is a Context + dot-notation subcomponents. No "kitchen sink" config object. No `showTimeSelect`/`showMonthDropdown` Booleans that quietly invalidate other props.
+
+Three headless Hooks (`useDatePicker`, `useRangePicker`, `useTimePicker`) are exported for people who want to build a fully custom UI on top of the same state machine.
+
+## The decisions I'm most opinionated about
+
+### Composition, not props
+
+The first design draft had a `<DatePicker showTime showMonthGrid presets={[...]} renderHeader={(props) => ...} />` shape — what I'd call the "react-datepicker default" pattern. I deleted it after a week of trying to type the prop interactions cleanly. Composition makes the constraint explicit at the call site:
+
+```tsx
+// You're saying "I want this picker, with these parts, styled this way" —
+// not "give me the kitchen sink, here are 14 booleans to twist it into shape".
+<DatePicker value={iso} onChange={setIso}>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+    <DatePicker.Presets>
+      <DatePicker.Preset label="Today" value={today} />
+      <DatePicker.Preset label="Tomorrow" value={tomorrow} />
+    </DatePicker.Presets>
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+You pay a one-time cost: a six-line JSX block instead of a one-line `<DatePicker>` with twelve props. You get clarity that's still readable in a year, types that don't leak across prop combinations, and a styling surface that scales — every subcomponent owns its own `classNames` slot map.
+
+### ISO-8601 strings everywhere
+
+`value` is `string | null` (ISO-8601 UTC). `onChange` returns `string | null`. There are no `Date` objects in the public API.
+
+The "obvious" alternative is `Date`. It's also the source of years-old open issues in every native-Date picker (timezone offsets, JSON round-trip mutation, server vs. client mismatch). ISO-8601 strings serialize to the wire, survive `JSON.stringify`, compare byte-for-byte across server and client, and force the consumer to be explicit about the timezone they're displaying in via `displayTimezone="Asia/Seoul"`.
+
+The cost: you write `new Date(iso)` if you need a `Date` for downstream code. I think that's a fine cost.
+
+### Adapter pattern from day one
+
+`@kalyx/core` has zero dependencies on date-fns. `@kalyx/adapter-date-fns` is a separate package that implements a 17-method `DateAdapter` interface. `@kalyx/react` accepts an adapter via context. The default is date-fns because it's the most common in 2026 React codebases, but the API is structured so dayjs/luxon/Temporal adapters are drop-in replacements — that's the v1.1 work.
+
+If you want to bring your own date library and skip the default adapter, `@kalyx/react/headless` is the entry that carries zero date-library dependency. Pair it with your own adapter implementation.
+
+### A bundle ceiling, enforced
+
+15.63 KB gzip (ESM) at a 16 KB ceiling. The ceiling is in CI — every PR runs a bundle-size check that fails the build if it would push the gzipped output past 16 KB. Today's margin is 0.37 KB. Any new feature has to justify itself against that margin.
+
+The number wasn't pulled out of a hat. I aimed for something visibly under the 17.5 KB I saw quoted for `react-day-picker` (Calendar only). At 15.63 KB Kalyx ships seven primitives in less space than react-day-picker ships one. That's the win I wanted to make legible.
+
+The tradeoff: I've had to say no to features. RTL mode isn't in 1.0. Holiday plugins aren't in 1.0. Virtualized year/month grids aren't in 1.0. If the margin tightens further, I'll either ship them as opt-in subpackages or raise the ceiling deliberately and announce it.
+
+## The honest parts
+
+1.0 shipped seven days ago. The API is frozen. The user base is tiny. You'll be one of the first people to hit any edge case.
+
+- **React 19+ only.** Sorry. RSC, `useId`, no `useLayoutEffect` warnings, the form-action integration on `<Input>` — these are the React 19 leverage points I leaned on. Back-porting to 18 would mean carrying compatibility shims I don't want to maintain on a one-person project.
+- **No React Native adapter yet.** Web only. RN is in the v1.x roadmap but not a near-term priority — the web surface needs real users first.
+- **I'm one maintainer.** The roadmap is published in `ROADMAP.md` (coming soon) and the planned cadence is one minor per month if there's demand. If you need 100K-deploy stability today, react-datepicker is still the safer call. Kalyx is the bet on a smaller, headless future.
+- **No "battle-tested" claim.** I won't pretend a week-old library has been battle-tested. What I _can_ say is that every primitive has its own unit test suite (497 tests at 1.0), every component passes axe, and SSR safety is verified in CI on a real Next.js App Router build.
+
+## What I'm working on next
+
+Listed roughly in the order I'd ship them, gated on what people actually ask for:
+
+1. **`@kalyx/adapter-dayjs`** — likely half of you reading this use dayjs. Same 17-method interface, same conformance test suite.
+2. **`@kalyx/adapter-luxon`** — enterprise / timezone-heavy codebases.
+3. **`@kalyx/adapter-temporal`** — once Temporal hits stage 4 / browser-stable.
+4. **Integration recipes** — Formik, Zod, React Hook Form, MUI, Chakra. Today's `/docs/recipes/` has the basics; deeper recipes are next.
+5. **A jscodeshift codemod** — `react-datepicker → kalyx` migration. The shape match is close; an 80%-automated codemod is feasible.
+6. **RTL + holiday plugin** — only if the bundle margin allows or there's clear demand to raise the 16 KB ceiling.
+
+I'm explicitly _not_ promising a React Native adapter, virtualized grids, or a DevTools panel for v1.x. They might happen; they might not.
+
+## Try it
+
+```bash
+pnpm add @kalyx/react
+```
+
+The fastest path to "is this for me":
+
+- **[Live playground](/playground)** — pick a primitive, swap `classNames`, see it render. Open in StackBlitz with one click.
+- **[Comparison page](/docs/comparison)** — kalyx vs. react-day-picker, react-datepicker, Ark UI, React Aria, react-calendar, react-native-calendars, with bundle and feature side-by-side.
+- **[Component docs](/docs/components/datepicker)** — every primitive, every prop, every slot.
+
+And if you build forms in React, I'd genuinely value your feedback:
+
+- 🐛 [Open a bug](https://github.com/jiji-hoon96/kalyx/issues/new?template=bug_report.yml)
+- ✨ [Request a feature](https://github.com/jiji-hoon96/kalyx/issues/new?template=feature_request.yml)
+- 💬 [Ask anything in Discussions](https://github.com/jiji-hoon96/kalyx/discussions)
+- ⭐ [Star on GitHub](https://github.com/jiji-hoon96/kalyx) — visibility is the only way I find out you're using it
+
+Thanks for reading. See you in the issue tracker.
