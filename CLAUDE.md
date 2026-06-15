@@ -36,8 +36,8 @@
 
 2026년 React 생태계의 DatePicker는 두 극단만 존재한다:
 
-- **react-day-picker (11M/week, ~22KB gzip)**: Headless지만 Calendar Grid만. Input·TimePicker 없음. v9에서도 개발자가 3개 컴포넌트를 직접 조합해야 함.
-- **react-datepicker (17.5M/week, ~40-60KB gzip)**: 통합됐지만 CSS 필수 import, timezone 이슈(#1018, native Date 의존), Props 100개 이상.
+- **react-day-picker (41.7M/week, ~22KB gzip)**: Headless지만 Calendar Grid만. Input·TimePicker 없음. v9에서도 개발자가 3개 컴포넌트를 직접 조합해야 함.
+- **react-datepicker (4.7M/week, ~40-60KB gzip)**: 통합됐지만 CSS 필수 import, timezone 이슈(#1018, native Date 의존), Props 100개 이상.
 - **Ark UI**: Composition 패턴이지만 **TimePicker를 버그로 제거함**. 45개 이상 컴포넌트의 범용 UI 라이브러리.
 - **React Aria**: 기능 완전하지만 복잡하고, `@internationalized/date` 의존 강제 (date-fns 비호환).
 - **Headless UI**: DatePicker 구현 거부 ("유지보수가 너무 큼").

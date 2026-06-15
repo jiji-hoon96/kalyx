@@ -12,7 +12,6 @@
 [문서](https://kalyx-docs-site.vercel.app/ko) · [English](https://kalyx-docs-site.vercel.app) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.md](./README.md)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![RC](https://img.shields.io/npm/v/@kalyx/react/rc?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
 [![Bundle](https://img.shields.io/badge/gzip-15.63KB-brightgreen)](https://kalyx-docs-site.vercel.app/ko/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
@@ -27,8 +26,6 @@ Kalyx는 **완결된 채로** 배포되는 Headless React DatePicker 라이브�
 ```bash
 pnpm add @kalyx/react
 ```
-
-> **v1.0 RC를 시도?** `pnpm add @kalyx/react@rc` — 이슈는 [`v1-rc`](https://github.com/jiji-hoon96/kalyx/issues?q=label%3Av1-rc) 라벨로.
 
 ```tsx
 import { DatePicker } from '@kalyx/react';
