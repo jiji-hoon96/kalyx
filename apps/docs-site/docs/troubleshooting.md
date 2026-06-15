@@ -198,4 +198,5 @@ Kalyx's `@kalyx/react` is ~15 KB gzipped (CI ceiling 16 KB). If your bundle is l
 
 - Search [existing issues](https://github.com/jiji-hoon96/kalyx/issues)
 - Open a [bug report](https://github.com/jiji-hoon96/kalyx/issues/new?template=bug_report.yml)
-- For v1.0 RC feedback, use the [RC feedback template](https://github.com/jiji-hoon96/kalyx/issues/new?template=v1-rc-feedback.yml)
+- Request a [feature](https://github.com/jiji-hoon96/kalyx/issues/new?template=feature_request.yml)
+- Ask a question in [Discussions](https://github.com/jiji-hoon96/kalyx/discussions)
