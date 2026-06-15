@@ -12,7 +12,6 @@
 [Docs](https://kalyx-docs-site.vercel.app) · [한국어](https://kalyx-docs-site.vercel.app/ko) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.ko](./README.ko.md)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![RC](https://img.shields.io/npm/v/@kalyx/react/rc?color=f59e0b&label=RC)](https://www.npmjs.com/package/@kalyx/react?activeTab=versions)
 [![Bundle](https://img.shields.io/badge/gzip-15.63KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
@@ -27,8 +26,6 @@ Kalyx ships a **complete** set of date-related React primitives — single dates
 ```bash
 pnpm add @kalyx/react
 ```
-
-> **Trying v1.0?** `pnpm add @kalyx/react@rc` — feedback via [`v1-rc`](https://github.com/jiji-hoon96/kalyx/issues?q=label%3Av1-rc) issue label.
 
 ```tsx
 import { DatePicker } from '@kalyx/react';

@@ -196,11 +196,14 @@ jobs:
     needs: [typecheck, lint, test, build, bundle-size, ssr-check, docs-site, hero-freshness]
     if: always()
     steps:
+      # `toJSON(needs)` serialises with `": "` (space after colon), so the
+      # previous `grep -q '"result":"failure"'` (no space) never matched —
+      # any failure in a dependent job slipped through this gate. Use the
+      # built-in `contains(needs.*.result, …)` instead; it operates on the
+      # parsed object, not the serialised string.
       - name: 결과 확인
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
         run: |
-          results='${{ toJSON(needs) }}'
-          if echo "$results" | grep -q '"result":"failure"'; then
-            echo "❌ 일부 검사 실패"
-            exit 1
-          fi
-          echo "✅ 모든 검사 통과"
+          echo "❌ 일부 검사 실패"
+          exit 1
+      - run: echo "✅ 모든 검사 통과"

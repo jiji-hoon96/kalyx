@@ -1,0 +1,316 @@
+<style>
+  .stage {
+    --au-radius-cell: 8px;
+    --au-radius-card: 14px;
+    --au-cell: 32px; /* v6: back from 36 → 32 */
+    --au-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    padding: 22px 18px;
+    border-radius: 16px;
+    margin-bottom: 18px;
+  }
+  .stage.light {
+    --au-bg: #ffffff;
+    --au-bg-quiet: #fafafa;
+    --au-fg: #18181b;
+    --au-fg-muted: #71717a;
+    --au-fg-subtle: #a1a1aa;
+    --au-border: rgba(91, 79, 225, 0.10);
+    --au-primary: #5b4fe1;
+    --au-primary-fg: #ffffff;
+    --au-primary-weak: rgba(91, 79, 225, 0.12);
+    --au-primary-hover: rgba(91, 79, 225, 0.06);
+    --au-primary-glow: 0 3px 12px rgba(91, 79, 225, 0.32);
+    --au-shadow-card: 0 8px 24px rgba(91, 79, 225, 0.06), 0 1px 2px rgba(0,0,0,0.04);
+    background: var(--au-bg-quiet);
+    color: var(--au-fg);
+  }
+  .stage.dark {
+    --au-bg: #111117;
+    --au-bg-quiet: #0a0a0f;
+    --au-fg: #f4f4f5;
+    --au-fg-muted: #a1a1aa;
+    --au-fg-subtle: #71717a;
+    --au-border: rgba(255, 255, 255, 0.08);
+    --au-primary: #8b80ff;
+    --au-primary-fg: #0a0a0f;
+    --au-primary-weak: rgba(139, 128, 255, 0.18);
+    --au-primary-hover: rgba(139, 128, 255, 0.12);
+    --au-primary-glow: 0 3px 12px rgba(139, 128, 255, 0.32);
+    --au-shadow-card: 0 12px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.02);
+    background: var(--au-bg-quiet);
+    color: var(--au-fg);
+  }
+
+  .stage-label {
+    font-family: var(--au-font-mono);
+    font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--au-fg-subtle);
+    margin-bottom: 14px; display: inline-block;
+    padding: 3px 9px; border: 1px solid var(--au-border); border-radius: 4px;
+  }
+
+  .ba-split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .ba-card {
+    border: 1px solid var(--au-border); border-radius: 12px;
+    padding: 14px; background: var(--au-bg);
+  }
+  .ba-card h4 {
+    font-size: 10.5px; letter-spacing: 0.06em;
+    text-transform: uppercase; margin: 0 0 10px 0; font-weight: 600;
+  }
+  .stage.dark .ba-bad h4 { color: #f87171; }
+  .stage.dark .ba-good h4 { color: #4ade80; }
+  .stage.light .ba-bad h4 { color: #dc2626; }
+  .stage.light .ba-good h4 { color: #16a34a; }
+  .ba-note { margin-top: 8px; font-size: 10.5px; color: var(--au-fg-muted); line-height: 1.45; }
+
+  .picker-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .picker {
+    background: var(--au-bg); border: 1px solid var(--au-border);
+    border-radius: var(--au-radius-card); padding: 14px;
+    box-shadow: var(--au-shadow-card);
+    font-family: -apple-system, 'Inter', sans-serif; color: var(--au-fg);
+  }
+  .picker-label {
+    font-family: var(--au-font-mono); font-size: 10.5px;
+    color: var(--au-fg-subtle); letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .nav {
+    width: 26px; height: 26px; border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--au-fg-muted);
+  }
+  .nav.is-hover { background: var(--au-primary-hover); color: var(--au-primary); }
+  .title { font-weight: 600; font-size: 13.5px; flex: 1; text-align: center; }
+
+  /* GRID — v6: columns are exactly --au-cell wide.
+     Center the grid block so it doesn't stretch to picker width. */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(7, var(--au-cell)); /* v6: was 1fr */
+    gap: 0;
+    font-size: 12px;
+    justify-content: center;
+    margin: 0 auto;
+  }
+  .wkd {
+    /* weekday now naturally takes the column's 32px width — text-align centers within */
+    width: var(--au-cell);
+    text-align: center; font-size: 10px; padding: 6px 0 8px;
+    color: var(--au-fg-subtle); font-weight: 500; letter-spacing: 0.04em;
+  }
+  .day {
+    /* v6: 32×32, same as column — alignment + size both fixed */
+    width: var(--au-cell);
+    height: var(--au-cell);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--au-radius-cell);
+    font-variant-numeric: tabular-nums;
+  }
+  .day.is-hover { background: var(--au-primary-hover); }
+  .day.out { color: var(--au-fg-subtle); opacity: 0.5; }
+  .day.today {
+    box-shadow: inset 0 0 0 1.5px var(--au-primary);
+    color: var(--au-primary); font-weight: 600;
+  }
+  .day.sel {
+    background: var(--au-primary); color: var(--au-primary-fg);
+    font-weight: 600; box-shadow: var(--au-primary-glow);
+  }
+
+  .day.range {
+    background: var(--au-primary-weak);
+    border-radius: var(--au-radius-cell);
+  }
+  .day.range.start {
+    background: var(--au-primary); color: var(--au-primary-fg);
+    box-shadow: var(--au-primary-glow); font-weight: 600;
+    border-top-left-radius: var(--au-radius-cell);
+    border-bottom-left-radius: var(--au-radius-cell);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .day.range.end {
+    background: var(--au-primary); color: var(--au-primary-fg);
+    box-shadow: var(--au-primary-glow); font-weight: 600;
+    border-top-right-radius: var(--au-radius-cell);
+    border-bottom-right-radius: var(--au-radius-cell);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .day.range.start.end { border-radius: var(--au-radius-cell); }
+
+  .day.week-mark {
+    background: var(--au-primary-weak);
+    border-radius: var(--au-radius-cell);
+  }
+
+  .time-row { display: flex; gap: 6px; justify-content: center; }
+  .listbox { border: 1px solid var(--au-border); border-radius: 10px; padding: 4px; min-width: 56px; }
+  .opt {
+    padding: 6px 12px; text-align: center; border-radius: 6px;
+    font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--au-fg);
+    margin-block: 1px;
+  }
+  .opt.is-hover { background: var(--au-primary-hover); }
+  .opt.opt-sel {
+    background: var(--au-primary); color: var(--au-primary-fg);
+    font-weight: 600; box-shadow: var(--au-primary-glow);
+  }
+  .ampm { display: flex; flex-direction: column; gap: 6px; }
+  .ampm-btn {
+    padding: 5px 12px; min-width: 46px;
+    border: 1px solid var(--au-border); border-radius: 8px;
+    font-size: 12px; background: var(--au-bg); color: var(--au-fg);
+  }
+  .ampm-btn.sel {
+    background: var(--au-primary); color: var(--au-primary-fg);
+    border-color: var(--au-primary); box-shadow: var(--au-primary-glow);
+  }
+
+  /* v5 demo for before */
+  .demo-v5 { --au-cell: 36px; }
+  .demo-v5 .grid { grid-template-columns: repeat(7, 1fr) !important; justify-content: stretch; }
+  .demo-v5 .day { width: 100% !important; }
+</style>
+
+<h2>v6 — 셀 크기 32px 복원 + 컬럼 너비 = 셀 너비</h2>
+<p class="subtitle">v5에서 --au-cell이 36px이 되고 width: 100%로 컬럼을 채워 12.5% 커졌던 거. v6에선 그리드 컬럼 자체를 32px 고정으로.</p>
+
+<!-- LIGHT -->
+<div class="stage light">
+  <span class="stage-label">Light mode — 크기 비교</span>
+
+  <div class="ba-split">
+    <div class="ba-card ba-bad">
+      <h4>v5 · cell 36px · width 100% · 컬럼 1fr</h4>
+      <div class="demo-v5">
+        <div class="grid">
+          <span class="wkd">S</span><span class="wkd">M</span><span class="wkd">T</span><span class="wkd">W</span><span class="wkd">T</span><span class="wkd">F</span><span class="wkd">S</span>
+          <span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day today">10</span><span class="day">11</span><span class="day">12</span><span class="day">13</span>
+          <span class="day">14</span><span class="day range start">15</span><span class="day range">16</span><span class="day range">17</span><span class="day range">18</span><span class="day range end">19</span><span class="day">20</span>
+          <span class="day">21</span><span class="day sel">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span><span class="day">27</span>
+        </div>
+      </div>
+      <div class="ba-note">선택·hover 박스가 컬럼을 다 채워서 너무 큰 느낌</div>
+    </div>
+    <div class="ba-card ba-good">
+      <h4>v6 · cell 32px · 컬럼 = 32px 고정 (선택)</h4>
+      <div class="grid">
+        <span class="wkd">S</span><span class="wkd">M</span><span class="wkd">T</span><span class="wkd">W</span><span class="wkd">T</span><span class="wkd">F</span><span class="wkd">S</span>
+        <span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day today">10</span><span class="day">11</span><span class="day">12</span><span class="day">13</span>
+        <span class="day">14</span><span class="day range start">15</span><span class="day range">16</span><span class="day range">17</span><span class="day range">18</span><span class="day range end">19</span><span class="day">20</span>
+        <span class="day">21</span><span class="day sel">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span><span class="day">27</span>
+      </div>
+      <div class="ba-note">셀 32×32 컴팩트 · 컬럼 = 셀 너비라서 정렬도 OK · 범위 밴드도 연속</div>
+    </div>
+  </div>
+
+  <h3 style="font-size:12px;color:var(--au-fg-subtle);letter-spacing:0.04em;text-transform:uppercase;margin:14px 0 10px;">전체 적용 — 라이트</h3>
+  <div class="picker-row">
+    <div class="picker">
+      <div class="picker-label">DatePicker</div>
+      <div class="head"><span class="nav is-hover">‹</span><span class="title">June 2026</span><span class="nav">›</span></div>
+      <div class="grid">
+        <span class="wkd">S</span><span class="wkd">M</span><span class="wkd">T</span><span class="wkd">W</span><span class="wkd">T</span><span class="wkd">F</span><span class="wkd">S</span>
+        <span class="day out">31</span><span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day">4</span><span class="day">5</span><span class="day">6</span>
+        <span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day today">10</span><span class="day">11</span><span class="day">12</span><span class="day">13</span>
+        <span class="day">14</span><span class="day sel">15</span><span class="day">16</span><span class="day">17</span><span class="day is-hover">18</span><span class="day">19</span><span class="day">20</span>
+        <span class="day">21</span><span class="day">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span><span class="day">27</span>
+        <span class="day">28</span><span class="day">29</span><span class="day">30</span><span class="day out">1</span><span class="day out">2</span><span class="day out">3</span><span class="day out">4</span>
+      </div>
+    </div>
+    <div class="picker">
+      <div class="picker-label">RangePicker</div>
+      <div class="head"><span class="nav">‹</span><span class="title">June 2026</span><span class="nav">›</span></div>
+      <div class="grid">
+        <span class="wkd">S</span><span class="wkd">M</span><span class="wkd">T</span><span class="wkd">W</span><span class="wkd">T</span><span class="wkd">F</span><span class="wkd">S</span>
+        <span class="day out">31</span><span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day">4</span><span class="day">5</span><span class="day">6</span>
+        <span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day today">10</span><span class="day">11</span><span class="day">12</span><span class="day">13</span>
+        <span class="day">14</span><span class="day range start">15</span><span class="day range">16</span><span class="day range">17</span><span class="day range">18</span><span class="day range end">19</span><span class="day">20</span>
+        <span class="day">21</span><span class="day is-hover">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span><span class="day">27</span>
+        <span class="day">28</span><span class="day">29</span><span class="day">30</span><span class="day out">1</span><span class="day out">2</span><span class="day out">3</span><span class="day out">4</span>
+      </div>
+    </div>
+    <div class="picker">
+      <div class="picker-label">TimePicker</div>
+      <div class="time-row">
+        <div class="listbox">
+          <div class="opt">10</div><div class="opt">11</div><div class="opt is-hover">12</div><div class="opt">01</div><div class="opt opt-sel">02</div><div class="opt">03</div>
+        </div>
+        <div class="listbox">
+          <div class="opt">00</div><div class="opt is-hover">15</div><div class="opt opt-sel">30</div><div class="opt">45</div>
+        </div>
+        <div class="ampm">
+          <button class="ampm-btn">AM</button><button class="ampm-btn sel">PM</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DARK -->
+<div class="stage dark">
+  <span class="stage-label">Dark mode — v6 final</span>
+  <div class="picker-row">
+    <div class="picker">
+      <div class="picker-label">DatePicker</div>
+      <div class="head"><span class="nav is-hover">‹</span><span class="title">June 2026</span><span class="nav">›</span></div>
+      <div class="grid">
+        <span class="wkd">S</span><span class="wkd">M</span><span class="wkd">T</span><span class="wkd">W</span><span class="wkd">T</span><span class="wkd">F</span><span class="wkd">S</span>
+        <span class="day out">31</span><span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day">4</span><span class="day">5</span><span class="day">6</span>
+        <span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day today">10</span><span class="day">11</span><span class="day">12</span><span class="day">13</span>
+        <span class="day">14</span><span class="day sel">15</span><span class="day">16</span><span class="day">17</span><span class="day is-hover">18</span><span class="day">19</span><span class="day">20</span>
+        <span class="day">21</span><span class="day">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span><span class="day">27</span>
+      </div>
+    </div>
+    <div class="picker">
+      <div class="picker-label">RangePicker</div>
+      <div class="head"><span class="nav">‹</span><span class="title">June 2026</span><span class="nav">›</span></div>
+      <div class="grid">
+        <span class="wkd">S</span><span class="wkd">M</span><span class="wkd">T</span><span class="wkd">W</span><span class="wkd">T</span><span class="wkd">F</span><span class="wkd">S</span>
+        <span class="day out">31</span><span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day">4</span><span class="day">5</span><span class="day">6</span>
+        <span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day today">10</span><span class="day">11</span><span class="day">12</span><span class="day">13</span>
+        <span class="day">14</span><span class="day range start">15</span><span class="day range">16</span><span class="day range">17</span><span class="day range">18</span><span class="day range end">19</span><span class="day">20</span>
+        <span class="day">21</span><span class="day is-hover">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span><span class="day">27</span>
+      </div>
+    </div>
+    <div class="picker">
+      <div class="picker-label">TimePicker</div>
+      <div class="time-row">
+        <div class="listbox">
+          <div class="opt">10</div><div class="opt">11</div><div class="opt is-hover">12</div><div class="opt">01</div><div class="opt opt-sel">02</div><div class="opt">03</div>
+        </div>
+        <div class="listbox">
+          <div class="opt">00</div><div class="opt is-hover">15</div><div class="opt opt-sel">30</div><div class="opt">45</div>
+        </div>
+        <div class="ampm">
+          <button class="ampm-btn">AM</button><button class="ampm-btn sel">PM</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="options" style="margin-top:18px">
+  <div class="option" data-choice="approve-v6" onclick="toggleSelect(this)">
+    <div class="letter">✓</div>
+    <div class="content">
+      <h3>OK — v6 락인. 컴포넌트 매핑 단계로</h3>
+    </div>
+  </div>
+  <div class="option" data-choice="more-tune" onclick="toggleSelect(this)">
+    <div class="letter">~</div>
+    <div class="content">
+      <h3>더 조정 (터미널)</h3>
+    </div>
+  </div>
+</div>
