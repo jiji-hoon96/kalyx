@@ -15,8 +15,8 @@ TL;DR — `pnpm add @kalyx/react`. Docs: https://kalyx-docs-site.vercel.app · R
 
 Every React DatePicker I tried last year forced a tradeoff:
 
-- **react-day-picker** (11M/week) — beautifully headless, but it's a Calendar grid only. I still had to wire my own Input, my own Popover, my own TimePicker.
-- **react-datepicker** (17.5M/week) — has the primitives, but imports a stylesheet I have to wrestle and runs on the native `Date` object (timezone bug #1018 has been open for years).
+- **react-day-picker** (41.7M/week) — beautifully headless, but it's a Calendar grid only. I still had to wire my own Input, my own Popover, my own TimePicker.
+- **react-datepicker** (4.7M/week) — has the primitives, but imports a stylesheet I have to wrestle and runs on the native `Date` object (timezone bug #1018 has been open for years).
 - **Ark UI** — almost there, but they removed TimePicker in v3 and didn't put it back.
 - **React Aria** — fully featured, but I have to commit to `@internationalized/date`. My codebase already uses date-fns.
 - **Headless UI** — they explicitly refused to ship one.

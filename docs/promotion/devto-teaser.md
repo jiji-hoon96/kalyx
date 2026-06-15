@@ -39,8 +39,8 @@ Every React DatePicker I tried on npm picked one of these tradeoffs:
 
 | Library | What it gets right | What it forces |
 |---|---|---|
-| **react-day-picker** (11M/wk) | Beautifully headless | Calendar grid only — I write Input, Popover, TimePicker myself |
-| **react-datepicker** (17.5M/wk) | All primitives bundled | CSS import required; runs on native `Date`; props surface > 100 |
+| **react-day-picker** (41.7M/wk) | Beautifully headless | Calendar grid only — I write Input, Popover, TimePicker myself |
+| **react-datepicker** (4.7M/wk) | All primitives bundled | CSS import required; runs on native `Date`; props surface > 100 |
 | **Ark UI** | Composition pattern | Removed TimePicker in v3 |
 | **React Aria** | Spec-grade a11y | Locked to `@internationalized/date` |
 | **Headless UI** | The headless pioneer | They declined to ship one |
