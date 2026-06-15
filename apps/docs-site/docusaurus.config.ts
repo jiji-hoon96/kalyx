@@ -90,9 +90,9 @@ const config: Config = {
 
   themeConfig: {
     announcementBar: {
-      id: 'v1-rc',
+      id: 'v1-stable',
       content:
-        'Kalyx v1.0 RC is out — try <code>pnpm add @kalyx/react@rc</code> and share feedback on <a target="_blank" rel="noopener noreferrer" href="https://github.com/jiji-hoon96/kalyx/issues">GitHub</a>.',
+        'Kalyx 1.0 is out — <code>pnpm add @kalyx/react</code> · <a target="_blank" rel="noopener noreferrer" href="https://github.com/jiji-hoon96/kalyx">star on GitHub</a> · <a target="_blank" rel="noopener noreferrer" href="https://github.com/jiji-hoon96/kalyx/discussions">join Discussions</a>.',
       backgroundColor: '#5b4fe1',
       textColor: '#ffffff',
       isCloseable: true,
