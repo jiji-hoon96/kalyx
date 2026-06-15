@@ -76,7 +76,27 @@ const config: Config = {
             return `https://github.com/jiji-hoon96/kalyx/edit/main/apps/docs-site/docs/${docPath}`;
           },
         },
-        blog: false,
+        blog: {
+          routeBasePath: 'blog',
+          blogTitle: 'Kalyx blog',
+          blogDescription: 'Release notes, design decisions, and stories from the Kalyx project.',
+          blogSidebarTitle: 'All posts',
+          blogSidebarCount: 'ALL',
+          showReadingTime: true,
+          postsPerPage: 10,
+          feedOptions: {
+            type: ['rss', 'atom'],
+            title: 'Kalyx blog',
+            description: 'Release notes, design decisions, and stories from the Kalyx project.',
+            copyright: `Copyright © ${new Date().getFullYear()} Kalyx contributors.`,
+          },
+          editUrl: ({locale, blogDirPath, blogPath}) => {
+            if (locale !== 'en') {
+              return `https://github.com/jiji-hoon96/kalyx/edit/main/apps/docs-site/i18n/${locale}/docusaurus-plugin-content-blog/${blogPath}`;
+            }
+            return `https://github.com/jiji-hoon96/kalyx/edit/main/apps/docs-site/${blogDirPath}/${blogPath}`;
+          },
+        },
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -126,6 +146,11 @@ const config: Config = {
         {
           to: '/playground',
           label: 'Playground',
+          position: 'left',
+        },
+        {
+          to: '/blog',
+          label: 'Blog',
           position: 'left',
         },
         {
