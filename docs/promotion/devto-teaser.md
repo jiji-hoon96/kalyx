@@ -1,30 +1,23 @@
 # dev.to teaser article
 
-A short teaser article — links to the full "Introducing Kalyx 1.0" blog post on the docs site. Goal: catch dev.to's algorithmic surface, drive traffic back to the docs site for the long-form story.
-
 ## Title
 
-**Every React DatePicker forced a tradeoff. I built one that doesn't.**
+Every React DatePicker forced a tradeoff. I built one that doesn't.
 
 ## Tags
 
-`#react #typescript #opensource #showdev`
-
-(dev.to allows max 4 tags. `#showdev` is the launch-announcement tag.)
+#react #typescript #opensource #showdev
 
 ## Canonical URL
 
-`https://kalyx-docs-site.vercel.app/blog/2026-06-15-introducing-kalyx-1-0`
-
-(Set this once the blog post is live — dev.to handles it as a republication marker so SEO goes to the docs site, not dev.to.)
+https://kalyx-docs-site.vercel.app/blog/introducing-kalyx-1-0
 
 ## Cover image
 
-Use `apps/docs-site/static/img/og-hero.png` — uploaded to dev.to's image host. 1000×420 minimum for dev.to's hero size. Crop the og-hero (960×540) or re-export at a wider aspect.
+`apps/docs-site/static/img/og-hero.png` (re-export to ≥ 1000×420 for dev.to hero)
 
 ## Body
 
-```md
 > **TL;DR** — I built [kalyx](https://kalyx-docs-site.vercel.app), a headless React DatePicker that ships 7 primitives (Date, Range, Time, DateTime, Month, Year, Week) under one Composition API. No CSS imports. 15.63 KB gzip. React 19+.
 >
 > `pnpm add @kalyx/react`
@@ -83,7 +76,7 @@ If you need 100K-deploy stability today, [react-datepicker](https://www.npmjs.co
 
 ## Want the full story?
 
-**[Read the full "Introducing Kalyx 1.0" post on the docs site →](https://kalyx-docs-site.vercel.app/blog)**
+**[Read the full "Introducing Kalyx 1.0" post on the docs site →](https://kalyx-docs-site.vercel.app/blog/introducing-kalyx-1-0)**
 
 It covers the API design choices in depth, the bundle work, the timezone model, and the year of "build vs. compose existing" deliberation that preceded the rewrite.
 
@@ -97,17 +90,3 @@ If you build forms in React, try it:
 - **Discussions**: https://github.com/jiji-hoon96/kalyx/discussions
 
 I'd genuinely value your feedback — what's missing, what's awkward, what you broke.
-```
-
-## Posting notes
-
-- dev.to's algorithmic surface picks new posts within 2–6 hours of publish. Post Tue/Thu 09:00 KST = US 19:00–20:00 PT (peak EN audience).
-- Set the canonical URL **before** publishing or dev.to indexes the dev.to URL as primary.
-- The `#showdev` tag has a "be honest" culture — the "honest parts" section above matches that.
-- Don't cross-post this verbatim to Hashnode/Medium the same day. Stagger by 2–3 days or leave them out entirely.
-
-## Don't say
-
-- "Awesome", "amazing", "blazing fast" — generic adjectives bury the substance
-- "Inspired by [bigger library]" unless you mean it — readers cross-check
-- "Open source!" as a selling point — every dev.to reader assumes that

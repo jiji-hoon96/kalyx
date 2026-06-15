@@ -1,16 +1,11 @@
 # Reddit r/reactjs
 
-## Title (pick one)
+## Title
 
-- **A.** I built kalyx because every React DatePicker forced a tradeoff I didn't want to make
-- **B.** kalyx 1.0 — headless DatePicker with the 7 primitives bundled (no CSS, ≤ 16 KB)
-- **C.** Show /r/reactjs: kalyx — react-day-picker's headless philosophy + react-datepicker's primitives
-
-> Pick A if you want comments. Pick B if you want clicks. Pick C if posting in a "Show" thread.
+I built kalyx because every React DatePicker forced a tradeoff I didn't want to make
 
 ## Body
 
-```md
 TL;DR — `pnpm add @kalyx/react`. Docs: https://kalyx-docs-site.vercel.app · Repo: https://github.com/jiji-hoon96/kalyx
 
 Every React DatePicker I tried last year forced a tradeoff:
@@ -54,17 +49,3 @@ So I built kalyx to be the thing I wanted: react-day-picker's headless philosoph
 - No React Native adapter yet. Web only.
 
 Happy to take pointed questions on the design choices — composition vs. props, why date-fns and not just-Date, the 16 KB ceiling, anything.
-```
-
-## Reply playbook
-
-- **"How is this different from shadcn's calendar?"** → shadcn uses react-day-picker under the hood, so you still get Calendar-only. kalyx ships the other 6 primitives in the same composition style.
-- **"Why not just use Ark?"** → Ark dropped TimePicker. If you can ship a DatePicker without time selection on a SaaS app, sure — most apps can't.
-- **"react-datepicker works fine"** → For most use cases, yes. The bundle and the CSS coupling are the tradeoffs. If neither hurts your app, stay where you are.
-- **"Is this maintained?"** → 1.0 is the freeze line. I'm one person. The roadmap is in `ROADMAP.md` (link). Adapter packages for dayjs/luxon are the next priority.
-
-## Don't say
-
-- "Better than X" — let the reader decide.
-- "Production-ready" — let downloads speak.
-- "Easy to use" — show the code instead.
