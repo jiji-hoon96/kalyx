@@ -21,3 +21,7 @@ scheduled_tasks.lock
 
 # scripts/verify-entry-split.mjs output
 .tmp/.superpowers/
+
+# Claude Code session-local tooling (brainstorm artifacts, worktree leftovers)
+.superpowers/
+.claire/
