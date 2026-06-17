@@ -127,6 +127,12 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
     const handleKeyDown = useCallback(
       (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Escape') {
+          if (ctx.isOpen) {
+            // Stop the synthetic Escape from bubbling to a host modal/dialog
+            // whose own Escape handler would otherwise also close.
+            e.preventDefault();
+            e.stopPropagation();
+          }
           ctx.close();
         } else if (e.key === 'Enter') {
           // Block form submission while the calendar is open. Otherwise an Enter

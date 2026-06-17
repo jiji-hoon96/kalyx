@@ -167,6 +167,34 @@ describe('RangePicker — basic interactions', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
+  it('does not propagate Escape to parent handlers when popover is open', async () => {
+    const user = userEvent.setup();
+    const parentKeyDown = vi.fn();
+
+    render(
+      <div onKeyDown={parentKeyDown}>
+        <RangePicker onChange={vi.fn()}>
+          <RangePicker.Input part="start" />
+          <RangePicker.Input part="end" />
+          <RangePicker.Popover>
+            <RangePicker.Calendar />
+          </RangePicker.Popover>
+        </RangePicker>
+      </div>,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+    const escapeBubbles = parentKeyDown.mock.calls.filter(
+      ([e]: [React.KeyboardEvent]) => e.key === 'Escape',
+    );
+    expect(escapeBubbles).toHaveLength(0);
+  });
+
   it('shows the selected range in the inputs', () => {
     renderRangePicker({
       value: {

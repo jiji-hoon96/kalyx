@@ -93,6 +93,37 @@ describe('MonthPicker — basic interactions', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
+  it('does not propagate grid-keyboard Escape to parent handlers', async () => {
+    // Exercises the _shared/grid-keyboard Escape path used by MonthPicker.Grid,
+    // YearPicker.Grid, DatePicker.MonthGrid, DatePicker.YearGrid. Focus must
+    // be on a gridcell (not the Input) for this path to trigger.
+    const user = userEvent.setup();
+    const parentKeyDown = vi.fn();
+
+    render(
+      <div onKeyDown={parentKeyDown}>
+        <MonthPicker value="2026-04-15T00:00:00.000Z" onChange={vi.fn()}>
+          <MonthPicker.Input aria-label="Select month" />
+          <MonthPicker.Popover>
+            <MonthPicker.Grid />
+          </MonthPicker.Popover>
+        </MonthPicker>
+      </div>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    // Focus a month cell so grid-keyboard handles the next keypress.
+    screen.getByRole('gridcell', { name: 'April' }).focus();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+    const escapeBubbles = parentKeyDown.mock.calls.filter(
+      ([e]: [React.KeyboardEvent]) => e.key === 'Escape',
+    );
+    expect(escapeBubbles).toHaveLength(0);
+  });
+
   it('navigates years with the prev/next buttons', async () => {
     const user = userEvent.setup();
     renderMonthPicker({ value: '2026-01-15T00:00:00.000Z' });

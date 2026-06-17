@@ -196,6 +196,10 @@ export function DatePickerCalendar({
           }
           return;
         case 'Escape':
+          // Stop the synthetic Escape from bubbling to a host modal/dialog
+          // whose own Escape handler would otherwise also close.
+          e.preventDefault();
+          e.stopPropagation();
           ctx.close();
           return;
         default:
