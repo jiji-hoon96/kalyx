@@ -1,8 +1,22 @@
 #!/usr/bin/env node
 // scripts/check-bundle-size.js
+//
+// Single source of truth for `@kalyx/react`'s gzip footprint:
+//
+// 1. Local dev: `pnpm check-bundle` invokes this script.
+// 2. tsup post-build hook (tsup.config.ts) imports the same Node `gzipSync`
+//    primitive on the same payload.
+// 3. CI (`.github/workflows/pr-check.yml` `bundle-size` job) invokes this
+//    script directly instead of running its own `gzip -c | wc -c` pipeline,
+//    so shell-gzip vs. Node-zlib defaults can't drift apart inside the
+//    ~380-byte 16KB margin.
+//
+// When `$GITHUB_OUTPUT` is set, the script appends per-bundle gzip KB values
+// (kb_esm, kb_cjs) so the workflow can read them back for the PR comment
+// without re-measuring.
 
 import { gzipSync } from "zlib";
-import { readFileSync, statSync } from "fs";
+import { readFileSync, statSync, appendFileSync } from "fs";
 
 // Bundle target. 12KB → 13KB after the v1.0-rc audit added user-facing
 // features (IME composition handling, popover focus-out, `name`/hidden-input
@@ -21,8 +35,8 @@ import { readFileSync, statSync } from "fs";
 const TARGET_KB = 16;
 
 const BUNDLES = [
-	{ label: "ESM", path: "packages/react/dist/index.js" },
-	{ label: "CJS", path: "packages/react/dist/index.cjs" },
+	{ label: "ESM", path: "packages/react/dist/index.js", outputKey: "kb_esm" },
+	{ label: "CJS", path: "packages/react/dist/index.cjs", outputKey: "kb_cjs" },
 ];
 
 function getGzipKB(filePath) {
@@ -35,13 +49,18 @@ function getRawKB(filePath) {
 	return (statSync(filePath).size / 1024).toFixed(2);
 }
 
+function emitGithubOutput(key, value) {
+	if (!process.env.GITHUB_OUTPUT) return;
+	appendFileSync(process.env.GITHUB_OUTPUT, `${key}=${value}\n`);
+}
+
 try {
 	console.log("\n📦 Bundle Size Report");
 	console.log("─".repeat(48));
 
 	let allOk = true;
 
-	for (const { label, path } of BUNDLES) {
+	for (const { label, path, outputKey } of BUNDLES) {
 		const gzipKB = parseFloat(getGzipKB(path));
 		const rawKB = parseFloat(getRawKB(path));
 		const ok = gzipKB <= TARGET_KB;
@@ -49,6 +68,7 @@ try {
 
 		console.log(`  [${label}] ${path}`);
 		console.log(`    원본: ${rawKB}KB | gzip: ${gzipKB}KB | ${ok ? "✅" : "❌ 초과!"}`);
+		emitGithubOutput(outputKey, gzipKB);
 	}
 
 	console.log("─".repeat(48));
