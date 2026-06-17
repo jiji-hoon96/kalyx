@@ -15,8 +15,10 @@
 // is only ~2KB gzip after tree-shaking. Teams already shipping a date library
 // still benefit from skipping that ~2KB and avoiding the duplicate parse cost.
 //
-// Manual verification only — not wired into CI. Run after edits to either
-// entry, the `internal/defaultAdapter` module, or `tsup.config.ts`.
+// Runs in CI as the `entry-split` job in pr-check.yml — the primary contract
+// ("no date-fns in headless") is a hard pass/fail gate on every PR. Also
+// runnable locally after edits to either entry, the `internal/defaultAdapter`
+// module, or `tsup.config.ts`: `node scripts/verify-entry-split.mjs`.
 
 import { build } from "esbuild";
 import { gzipSync } from "node:zlib";

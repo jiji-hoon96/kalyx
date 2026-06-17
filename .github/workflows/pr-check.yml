@@ -190,10 +190,28 @@ jobs:
           node-version: 22
       - run: node scripts/check-hero-freshness.mjs
 
+  entry-split:
+    name: Headless Entry Split (no date-fns)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Regression-guard for the `/headless` contract: the headless entry must
+      # NOT pull in date-fns or @kalyx/adapter-date-fns. The script bundles
+      # both entries with esbuild and asserts the headless metafile is
+      # date-fns-free + at least 5% smaller gzipped than the default entry.
+      - run: node scripts/verify-entry-split.mjs
+
   all-pass:
     name: All Checks Pass
     runs-on: ubuntu-latest
-    needs: [typecheck, lint, test, build, bundle-size, ssr-check, docs-site, hero-freshness]
+    needs:
+      [typecheck, lint, test, build, bundle-size, ssr-check, docs-site, hero-freshness, entry-split]
     if: always()
     steps:
       # `toJSON(needs)` serialises with `": "` (space after colon), so the
