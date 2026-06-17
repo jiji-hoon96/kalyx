@@ -38,7 +38,7 @@
 
 - **react-day-picker (41.7M/week, ~22KB gzip)**: Headless지만 Calendar Grid만. Input·TimePicker 없음. v9에서도 개발자가 3개 컴포넌트를 직접 조합해야 함.
 - **react-datepicker (4.7M/week, ~40-60KB gzip)**: 통합됐지만 CSS 필수 import, timezone 이슈(#1018, native Date 의존), Props 100개 이상.
-- **Ark UI**: Composition 패턴이지만 **TimePicker를 버그로 제거함**. 45개 이상 컴포넌트의 범용 UI 라이브러리.
+- **Ark UI**: Composition 패턴이지만 **standalone TimePicker 없음** — 시간은 `@internationalized/date`의 `CalendarDateTime`을 통해 DatePicker 내부에서만 다룬다. 45개 이상 컴포넌트의 범용 UI 라이브러리.
 - **React Aria**: 기능 완전하지만 복잡하고, `@internationalized/date` 의존 강제 (date-fns 비호환).
 - **Headless UI**: DatePicker 구현 거부 ("유지보수가 너무 큼").
 
@@ -582,9 +582,14 @@ pnpm changeset publish # npm 배포 (CI 자동)
 
 ---
 
-## 14. 현재 이니셔티브 (2026-06 기준 — v1.0.0 stable 출시 완료)
+## 14. 현재 이니셔티브 (2026-06-17 기준 — 1.0 stable + 1.0.x patch 준비)
 
-> v1.0.0 stable 출시 **완료** (2026-06-08). 이 섹션은 1.0 트랙 회고 + v1.1+ 다음 트랙으로 갱신됨.
+> v1.0.0 stable 출시 **완료** (2026-06-08). 2026-06-17 시점 외부 라이브러리 경쟁 리서치 + 내부 결함 audit 종합 결과는 별도 spec으로 분리.
+>
+> - **v1.1 로드맵 + 경쟁 라이브러리 분석**: [`docs/superpowers/specs/2026-06-17-competitive-landscape-and-v1.1-roadmap.md`](docs/superpowers/specs/2026-06-17-competitive-landscape-and-v1.1-roadmap.md)
+> - **1.0.x 결함/갭 카탈로그**: [`docs/superpowers/specs/2026-06-17-kalyx-1.0-functional-audit.md`](docs/superpowers/specs/2026-06-17-kalyx-1.0-functional-audit.md)
+>
+> 핵심 요약: 1.0 thesis (headless + 7 picker + adapter + ISO/UTC + ≤16KB) **그대로 유효**. Headless UI는 여전히 DatePicker 거부 (Discussion #289 open since 2021), react-day-picker v10.0.1은 cleanup release로 TimePicker/Input 없음, react-datepicker #1018은 docs-only "not a bug" 종결, MUI X 9.5.0은 58.2KB gzip에 Range가 Pro 유료. 새로 닫힌 갭은 Chakra v3.34 (March 2026) DatePicker 출시 — 단, Ark UI 경유 `@internationalized/date` 강결합 심화로 어댑터 패턴 비교 우위는 더 선명. 가장 큰 새 차원은 **Adobe stack의 Temporal-bound 아키텍처** — `@kalyx/adapter-temporal` 우선순위 상향.
 
 ### v1.0 완료 항목 (회고)
 
@@ -596,20 +601,64 @@ pnpm changeset publish # npm 배포 (CI 자동)
 - **번들**: ESM 15.63KB / CJS 15.76KB gzip (한계 16KB).
 - **테스트**: 497/497 unit pass, axe 14/14, e2e 31 scenarios.
 
-### v1.1+ 다음 트랙
+### Track A — 1.0.x patch (즉시, 2-4주)
 
-- **신규 어댑터 패키지**: `@kalyx/adapter-dayjs` (우선순위 1 — 사용자 약 절반이 dayjs), `@kalyx/adapter-luxon` (2 — enterprise/timezone 심화), `@kalyx/adapter-temporal` (Temporal API stable 도달 시).
-- **adapter conformance test suite**: 공통 24개 메서드 계약 검증을 `@kalyx/core/test-helpers`에 모듈화 (현재 adapter-date-fns 단독).
-- **`/headless` 가이드 한국어 번역**: `apps/docs-site/i18n/ko/.../guides/adapters.md` 현재 영문 그대로.
-- **번들 마진 모니터링**: default ESM 15.63KB / 한계 16KB. 새 기능 추가 시 17KB 상향 또는 다이어트 필요. 한계 수정 시 4파일 동기 (`scripts/check-bundle-size.js`, `tsup.config.ts`, `pr-check.yml`, `release.yml`).
-- **`verify-entry-split.mjs` CI 통합**: 현재 manual only. headless의 date-fns 부재는 핵심 약속 — PR check에 회귀 가드 권장.
+audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 이내. 자세한 근거는 `docs/superpowers/specs/2026-06-17-kalyx-1.0-functional-audit.md` 의 ID 참조.
 
-### v1.0 직후 처리 필요 (Follow-up)
+| # | 항목 | audit ID | 비고 |
+|---|---|---|---|
+| A1 | Escape 소비 + 이중 핸들러 수정 | A-D1, A-D2 | `usePopover.ts:92-96`, `Calendar.tsx:198-200` |
+| A2 | Popover 닫힐 때 focus restore | A-D3 | `usePopover.ts:58` guard 제거 (코멘트가 틀림) |
+| A3 | DST gap-time `setTimeInTimezone` snap-forward + JSDoc + 테스트 | T-D1 | `timezone.ts:199-225` |
+| A4 | DST ambiguous-time 명시 (`disambiguation: 'earlier'` 선언) + strict 테스트 | T-D2 | `timezone.test.ts:93-106` |
+| A5 | `verify-entry-split.mjs` PR check 통합 | B-D1 | `/headless` date-fns 부재 회귀 가드 |
+| A6 | gzip 측정 한 곳으로 통일 (Node `gzipSync`) | B-R1 | tsup / script / CI 한 소스 |
+| A7 | RangePicker hover preview 회귀 테스트 | TC-H1 | 0건 → 최소 1건 |
+| A8 | 롤링 커버리지: 반시간 offset (T-D3), `minDate`/`maxDate` × TZ (T-G1), value-on-disabled (TC-M1), controlled↔uncontrolled (TC-M2), props-during-open (TC-M3), DateTimePicker TZ round-trip (TC-M5), TimePicker step snap (TC-M6), WeekPicker year boundary (TC-M7) | various | 코드 변경 없이 테스트만 |
+
+### Track B — v1.1 minor (6-10주)
+
+어댑터 패턴을 "약속"에서 "검증된 실력"으로. 두 번째 어댑터 출시 + conformance suite + 누락 hook이 척추.
+
+| # | 항목 | 근거 |
+|---|---|---|
+| B1 | `@kalyx/adapter-dayjs` 출시 (P0) | Mantine + ~50% dayjs 사용자에게 drop-in headless 옵션 |
+| B2 | `@kalyx/core/test-helpers` 어댑터 conformance test suite | B1/B3/B6 unblock — adapter 작성자 테스트 부담 제거 |
+| B3 | `@kalyx/adapter-luxon` | B2 후 비용 낮음. enterprise/timezone 사용자 |
+| B4 | `useMonthPicker` / `useYearPicker` / `useWeekPicker` / `useDateTimePicker` hooks (`/headless` 전용) | audit API-G1. 기본 entry 번들 압력 회피 |
+| B5 | `DateTimePicker.Presets` (`/headless`에서 RangePicker.Presets 패턴 재사용) | audit API-G2 |
+| B6 | `@kalyx/adapter-temporal@0.x` (experimental, 별도 publish) | Adobe stack이 Temporal-bound — 늦으면 "Temporal-native"로 보이지 않음 |
+| B7 | `weekStartsOn` locale 자동 추론 (명시 prop override) | audit T-G2 |
+| B8 | `/headless` adapter guide 한국어 번역 | 주 성장 오디언스 KO 부재 |
+| B9 | 번들 margin 도구: `scripts/bundle-diff.mjs` + PR comment | audit B-D2 — ~380바이트 마진 가시화 |
+| B10 | a11y polish set: A-G1..A-G5 | DatePicker `announce()` 패리티, WeekPicker nav 결정, axe-when-open, Trigger focus-restore 테스트, week-mode aria-label |
+| B11 | docs-site comparison + MUI X Pro 유료 vs Kalyx "Free Range Picker, ≤16KB" 랜딩 비교 | research [R-6] — 마케팅 모먼트 |
+
+### Track C — v1.2 (다음 분기)
+
+- RTL 지원 + 테스트 (audit TC-M4)
+- `fast-check` property test 도입 (audit TC-H2)
+- `DisabledRule` 타입 narrowing per picker 또는 시맨틱 명시 (audit API-G3)
+- e2e 확장: mid-flight prop 변경, locale switch
+- per-dependency 번들 크기 리포트 (audit B-R2, 특히 `@floating-ui/react` 기여도)
+
+### Track D — Strategic watch (착수 보류)
+
+- **Persian/Buddhist/Islamic/Hebrew 등 비-Gregorian 캘린더**: 사용자 GitHub issue ≥3 또는 enterprise sponsor 1 시 착수. 현재 docs는 "Gregorian-only v1" 명시.
+- **React Native adapter**: 동일하게 보류.
+- **Storybook / visual regression**: 1.0.x ~ 1.1에서 시각 회귀 3건 이상 시 escalation.
+
+### v1.0 직후 처리 필요 (1.0 cleanup follow-up)
 
 1. `@kalyx/adapter-date-fns` npmjs.com Trusted Publisher 등록 — 1.0.0 publish는 토큰 수동이라 다음부터 OIDC + provenance 자동화.
 2. `@kalyx/adapter-date-fns@1.0.0` GitHub Release 수동 backfill (토큰 publish는 GH Release 미생성).
 3. `release.yml` 견고화 — ignored 패키지 changeset이 publish 차단 안 하도록 사전 검증 step.
 4. `apps/docs/CHANGELOG.md`, vitest lockfile drift refresh, `@floating-ui/react` 0.26→0.27 검토.
+
+### 카피 정정 (낮은 우선순위)
+
+- ~~**§1**: "Ark UI: TimePicker를 버그로 제거함" 문구~~ → **이 spec과 함께 정정 완료**: "standalone TimePicker 없음 — 시간은 `@internationalized/date`의 `CalendarDateTime`을 통해 DatePicker 내부에서만". 추가 README 정리는 README 다음 패스에서.
+- comparison.md / 마케팅: Adobe의 `@internationalized/date` 8KB/2.8KB는 Brotli이고 Kalyx 15.63KB는 gzip — 직접 비교 금지. 마케팅 카피에는 "~4× smaller than MUI X" (58.2/15.63 ≈ 3.7×) 정도가 정직한 한계.
 
 > 이전 RC 단계의 `.claude/skills/rc-announcement.md` 와 `.claude/skills/adapter-extraction.md` 는 회고 자료로 보존.
 

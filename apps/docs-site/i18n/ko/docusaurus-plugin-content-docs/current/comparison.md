@@ -13,6 +13,13 @@ CSS 강제 vs 빠진 프리미티브라는 실제 트레이드오프를 받아�
 중간을 차지하도록 설계됐습니다 — 7개의 완전한 프리미티브, 하나의 조합 API,
 강제 스타일시트 없음, 16 KB gzip 이하.
 
+아래 표를 처음 작성한 뒤 두 가지 변화가 있었습니다. Chakra UI v3.34 (2026-03)
+가 Ark UI 기반 DatePicker를 출시했고, react-datepicker 9.1.0 (2025-11)
+이 `date-fns-tz` peer 뒤에 가려진 `timeZone` IANA prop을 선택적으로 추가했습니다.
+두 변화 모두 매트릭스 안에서의 Kalyx 위치를 바꾸지 않습니다 — Chakra는 Ark의
+`@internationalized/date` 강결합을 그대로 상속하고, react-datepicker는 여전히
+native `Date`를 값 타입으로 사용합니다. 자세한 차이는 각주 [^4]/[^15]/[^16].
+
 ## 인기도 한눈에
 
 별 수와 주간 다운로드는 빠르게 움직인다 — 리더보드가 아니라 스냅샷으로 받아들이면 된다.
@@ -37,13 +44,13 @@ CSS 강제 vs 빠진 프리미티브라는 실제 트레이드오프를 받아�
 | 기능 | react-datepicker | react-day-picker | react-calendar | react-native-calendars | react-aria | ark-ui | @mui/x-date-pickers | @mantine/dates | **Kalyx** |
 | --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | DatePicker                | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | **✓** |
-| RangePicker               | ✓ | 부분[^1] | ✓ | ✓ | ✓ | 부분[^1] | ✓ | ✓ | **✓** |
+| RangePicker               | ✓ | 부분[^1] | ✓ | ✓ | ✓ | 부분[^1] | Pro[^16] | ✓ | **✓** |
 | TimePicker                | 부분[^2] | ✗ | ✗ | ✗ | ✓ | ✗ | ✓ | ✓ | **✓** |
 | DateTimePicker            | 부분[^2] | ✗ | ✗ | ✗ | 부분[^3] | ✗ | ✓ | ✓ | **✓** |
 | MonthPicker               | ✓ | ✗ | 부분[^11] | ✓ | 부분[^3] | ✗ | ✓ | ✓ | **✓** |
 | YearPicker                | ✓ | ✗ | 부분[^11] | 부분[^11] | ✗ | ✗ | ✓ | ✓ | **✓** |
 | WeekPicker                | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | **✓** |
-| Timezone (IANA)           | 부분[^4] | ✗ | ✗ | 부분[^4] | ✓ | ✗ | ✓ | 부분[^4] | **✓** |
+| Timezone (IANA)           | 부분[^4][^15] | ✗ | ✗ | 부분[^4] | ✓ | ✗ | ✓ | 부분[^4] | **✓** |
 | Zero CSS (강제 import 없음) | ✗ | ✓ | ✗ | 부분[^12] | ✓ | ✓ | ✗ | ✗ | **✓** |
 | SSR 안전 (App Router)     | 부분[^5] | ✓ | ✓ | 부분[^13] | ✓ | ✓ | 부분[^5] | ✓ | **✓** |
 | RSC 친화                  | ✗ | ✓ | 부분[^6] | ✗ | 부분[^6] | ✓ | ✗ | 부분[^6] | **✓** |
@@ -69,9 +76,13 @@ CSS 강제 vs 빠진 프리미티브라는 실제 트레이드오프를 받아�
 [^12]: 기본은 인라인 스타일이고, 테마 커스터마이징은 가능하지만 Kalyx 수준의 CSS-free 옵트아웃은 없다.
 [^13]: React Native 우선. 웹 shim으로 브라우저에서 동작하긴 하지만 Next.js App Router의 server boundary용으로 설계되지 않았다.
 [^14]: shadcn/ui의 `Calendar` 컴포넌트가 react-day-picker를 dependency로 쓴다 — 직접 사용자보다 다운스트림 채택분이 큰 비중.
+[^15]: react-datepicker 9.1.0 (2025-11)은 `date-fns-tz` peer 뒤에 가려진 선택적 `timeZone` prop을 추가했다. 값 타입은 여전히 native `Date` 객체이고 ISO string이 아니다. 2017년부터 열려있던 이슈 [#1018](https://github.com/Hacker0x01/react-datepicker/issues/1018)은 2025-12에 docs-only 결정으로 마감됐고, 원래 증상은 "expected `Date` behavior"라고 분류됐다.
+[^16]: MUI X DateRangePicker / TimeRangePicker는 `@mui/x-date-pickers-pro`에 들어있고 상업 Pro 라이선스가 필요하다. 무료 MIT `@mui/x-date-pickers`는 DatePicker, TimePicker, DateTimePicker는 포함하지만 range pickers는 포함하지 않는다.
 
-> _2026-06-11 기준 측정. 방법론: 번들 크기는 bundlephobia + 각 라이브러리의 공식
-> `size-limit`으로 측정, 기능 유무는 각 라이브러리의 v-latest 문서로 검증._
+> _2026-06-17 기준 측정. 방법론: 번들 크기는 bundlephobia + 각 라이브러리의 공식
+> `size-limit`으로 측정, 기능 유무는 각 라이브러리의 v-latest 문서로 검증.
+> Adobe의 `@internationalized/date` 크기 수치는 Brotli (gzip 아님)이고, 압축
+> 단위 혼동을 피하기 위해 번들 차트에서는 제외했다._
 
 ## 한 눈에 보는 번들 크기
 
@@ -134,12 +145,25 @@ CSS 강제 vs 빠진 프리미티브라는 실제 트레이드오프를 받아�
 **`react-aria`를 쓰세요** — 디자인 시스템을 처음부터 만들고 모든 프리미티브에
 Adobe의 접근성 팀이 보증해주길 원한다면. React Aria의 접근성 보장과 플랫폼
 인식 동작(선택 모델, focus ring, screen reader hint)은 우리가 제공하는 것보다
-깊습니다. 트레이드오프는 더 많은 조립 코드와 `@internationalized/date`에 대한
-엄격한 의존성입니다.
+깊습니다. 트레이드오프는 더 많은 조립 코드, `@internationalized/date`에 대한
+엄격한 의존성, 그리고 Adobe가 그 패키지를 어디로 끌고 가든 따라가야 한다는
+점입니다 (그 패키지는 브라우저가 TC39 Temporal을 출하하면 Temporal을 백엔드로
+삼도록 포지셔닝돼 있다 — 원한다면 기능, 원치 않는다면 결합).
 
 **`@mui/x-date-pickers`를 쓰세요** — 앱이 이미 MUI를 사용한다면. MUI 디자인
 토큰과의 시각/테마 통합이 자동입니다. MUI 코드베이스에 Kalyx를 도입하려면
-`classNames`를 MUI의 클래스 API로 매핑하는 재작성이 필요합니다.
+`classNames`를 MUI의 클래스 API로 매핑하는 재작성이 필요합니다. 단,
+DateRangePicker와 TimeRangePicker는 `@mui/x-date-pickers-pro`에 들어있고
+상업 Pro 라이선스가 필요합니다 — Kalyx의 RangePicker는 MIT입니다.
+
+**`ark-ui` (또는 그것을 wrap한 Chakra UI v3.34+)를 쓰세요** — Persian, Buddhist,
+Islamic, Hebrew 등 비-Gregorian 캘린더를 위해 `@internationalized/date`에
+이미 들어가 있다면. Ark v5.32부터 비-Gregorian 캘린더 스토리가 first-class가
+됐습니다. Kalyx는 v1 라인에서 Gregorian-only이고 가까운 시일 내에 바뀌지 않습니다.
+
+**`@mantine/dates`를 쓰세요** — dayjs로 표준화돼 있고 Mantine의 batteries-included
+폼 통합을 원한다면. Mantine은 dayjs를 협상 불가능한 peer로 선언합니다. dayjs가
+트리에 없다면 추가 설치 비용이 실제로 발생합니다.
 
 그 외 모든 경우 — 모던 Next.js / Remix 앱, headless 스타일링 스토리, 저장
 프리미티브로 ISO string, 한 자릿수 KB 번들 목표 — Kalyx가 올바른 선택이
