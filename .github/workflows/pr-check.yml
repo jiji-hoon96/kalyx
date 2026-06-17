@@ -92,38 +92,35 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
       - name: dist 다운로드
         uses: actions/download-artifact@v8
         with:
           name: dist-${{ github.run_id }}
           path: packages/react/dist/
+      # Single source of truth for gzip measurement: shell `gzip -c` and Node's
+      # zlib could drift apart inside the ~380-byte 16KB margin, so we delegate
+      # to scripts/check-bundle-size.js — the same script tsup + local dev use.
+      # The script appends kb_esm and kb_cjs to $GITHUB_OUTPUT for the comment.
       - name: 크기 측정 및 판정
         id: check
-        run: |
-          BYTES=$(gzip -c packages/react/dist/index.js | wc -c)
-          KB=$(echo "scale=2; $BYTES / 1024" | bc)
-          MAX=16
-          echo "gzip_kb=$KB" >> $GITHUB_OUTPUT
-          echo "📦 번들 크기: ${KB}KB (목표: ≤${MAX}KB)"
-          if (( $(echo "$KB > $MAX" | bc -l) )); then
-            echo "❌ 초과: ${KB}KB > ${MAX}KB"; exit 1
-          else
-            echo "✅ OK: ${KB}KB ≤ ${MAX}KB"
-          fi
+        run: node scripts/check-bundle-size.js
       - name: PR 코멘트
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v9
         with:
           script: |
-            const kb   = '${{ steps.check.outputs.gzip_kb }}';
-            const ok   = parseFloat(kb) <= 16;
-            const icon = ok ? '✅' : '❌';
+            const kbEsm = '${{ steps.check.outputs.kb_esm }}';
+            const kbCjs = '${{ steps.check.outputs.kb_cjs }}';
+            const ok = parseFloat(kbEsm) <= 16 && parseFloat(kbCjs) <= 16;
             const body = [
-
               '',
-              '| | gzip |',
+              '| 번들 | gzip |',
               '|---|---|',
-              `| **현재** | **${kb}KB** |`,
+              `| **ESM** (\`dist/index.js\`) | **${kbEsm}KB** |`,
+              `| **CJS** (\`dist/index.cjs\`) | **${kbCjs}KB** |`,
               `| 목표 | ≤ 16KB |`,
               '',
               ok
