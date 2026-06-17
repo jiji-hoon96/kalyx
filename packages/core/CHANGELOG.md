@@ -1,5 +1,54 @@
 # @kalyx/core
 
+## 1.0.2
+
+### Patch Changes
+
+- 66bd6dc: fix(timezone): snap forward for non-existent civil times in DST gaps; document deterministic disambiguation
+
+  `setTimeInTimezone` previously returned a pre-transition instant when the
+  requested civil time fell in a DST spring-forward gap. Asking for
+  `2026-03-08 02:30 America/New_York` — which does not exist because clocks jump
+  02:00 EST → 03:00 EDT — returned `2026-03-08T06:30:00.000Z` (= 01:30 EST, an
+  hour before the gap), silently corrupting the user's intent.
+
+  `setTimeInTimezone` now classifies its two-pass offset candidates by whether
+  their civil round-trip matches the requested civil time, and:
+
+  - **Spring-forward gap** (neither candidate matches): snap forward to the
+    later candidate — the first valid civil instant past the gap. `2026-03-08
+02:30 America/New_York` now returns `2026-03-08T07:30:00.000Z` (= 03:30
+    EDT).
+  - **Fall-back ambiguity** (both candidates match): pick the earlier instant
+    (EDT before EST in US Eastern, BST before GMT in Europe/London). Matches
+    `@internationalized/date` and the TC39 Temporal default
+    (`disambiguation: 'earlier'`).
+  - **Single-match** (one candidate matches, near a transition): return the
+    matching candidate. This was the source of intermittent off-by-one-hour
+    drift near transitions.
+
+  The JSDoc above `setTimeInTimezone` now documents the policy explicitly. The
+  existing ambiguous-hour test was tightened from
+  `expect([...]).toContain(result)` (two-valid-answers) to an exact-equality
+  assertion against the documented choice.
+
+  Audit reference: `docs/superpowers/specs/2026-06-17-kalyx-1.0-functional-audit.md`
+  (items T-D1, T-D2).
+
+- 288b2ed: fix(a11y): stop Escape from bubbling out of the picker when the popover is open
+
+  When a Kalyx picker (DatePicker / RangePicker / DateTimePicker / MonthPicker /
+  YearPicker / WeekPicker) is mounted inside a host modal or dialog with its own
+  Escape handler, a single Escape press used to close BOTH the picker and the
+  modal. The picker now calls `preventDefault()` and `stopPropagation()` on the
+  synthetic Escape in its Input and Calendar/Grid key handlers (and on the
+  native document-level listener inside `usePopover`), so Escape stays scoped to
+  the picker when it would have closed the popover. When the popover is closed,
+  Escape still propagates normally to parent handlers.
+
+  Audit reference: `docs/superpowers/specs/2026-06-17-kalyx-1.0-functional-audit.md`
+  (items A-D1, A-D2).
+
 ## 1.0.0
 
 ### Major Changes
