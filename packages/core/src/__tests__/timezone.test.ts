@@ -90,19 +90,15 @@ describe('DST transition — America/New_York fall back 2026-11-01', () => {
     );
   });
 
-  it('setTimeInTimezone for the ambiguous 01:30 hour on fall-back day picks one occurrence deterministically', () => {
-    // 2026-11-01 01:30 America/New_York occurs twice — once in EDT (UTC-4) and once
-    // in EST (UTC-5). Without disambiguation, applying setTime is undefined behavior.
-    // Lock the current implementation's choice so future regressions surface as test
-    // failures rather than silent drift.
-    // Base: 2026-11-01T12:00:00.000Z (UTC noon) is firmly inside the Nov 1 civil day
-    // in America/New_York (08:00 EST) — far away from the 01:00 transition window.
+  it('setTimeInTimezone picks the earlier offset for an ambiguous fall-back hour', () => {
+    // 2026-11-01 01:30 America/New_York occurs twice — once in EDT (UTC-4) and
+    // once in EST (UTC-5). The documented policy is `disambiguation: 'earlier'`
+    // (matches @internationalized/date + TC39 Temporal default): pick the EDT
+    // occurrence. Base 2026-11-01T12:00:00.000Z is far from the transition
+    // window so the choice isn't driven by the base's own offset.
     const base = '2026-11-01T12:00:00.000Z';
     const result = setTimeInTimezone(base, { hours: 1, minutes: 30 }, 'America/New_York');
-    // Either '2026-11-01T05:30:00.000Z' (EDT 01:30, pre-transition) or
-    // '2026-11-01T06:30:00.000Z' (EST 01:30, post-transition) are valid wall-clock
-    // interpretations of the ambiguous hour; we assert the result is one of them.
-    expect(['2026-11-01T05:30:00.000Z', '2026-11-01T06:30:00.000Z']).toContain(result);
+    expect(result).toBe('2026-11-01T05:30:00.000Z');
   });
 });
 
@@ -240,5 +236,35 @@ describe('setTimeInTimezone', () => {
     const { hours, minutes, seconds } = getTimeInTimezone(input, tz);
     const round = setTimeInTimezone(input, { hours, minutes, seconds }, tz);
     expect(round).toBe(input);
+  });
+
+  it('snaps forward when the civil time falls in a spring-forward gap (DST gap)', () => {
+    // 2026-03-08 02:30 in America/New_York doesn't exist — clocks jump
+    // 02:00 EST → 03:00 EDT. Without explicit handling, the two-pass offset
+    // algorithm lands on the pre-transition reading (01:30 EST = 06:30 UTC),
+    // silently corrupting the user's intent. The documented policy is
+    // snap-forward: return the equivalent post-transition instant
+    // (03:30 EDT = 07:30 UTC). This matches @internationalized/date and the
+    // TC39 Temporal default disambiguation behavior for non-existent times.
+    const base = '2026-03-08T12:00:00.000Z';
+    const result = setTimeInTimezone(base, { hours: 2, minutes: 30 }, 'America/New_York');
+    expect(result).toBe('2026-03-08T07:30:00.000Z');
+  });
+
+  it('snaps forward when the civil time falls in the Europe/London spring-forward gap', () => {
+    // 2026-03-29 01:30 in Europe/London doesn't exist — clocks jump
+    // 01:00 GMT → 02:00 BST. Snap forward to 02:30 BST = 01:30 UTC.
+    const base = '2026-03-29T12:00:00.000Z';
+    const result = setTimeInTimezone(base, { hours: 1, minutes: 30 }, 'Europe/London');
+    expect(result).toBe('2026-03-29T01:30:00.000Z');
+  });
+
+  it('leaves non-gap times unchanged near a DST transition', () => {
+    // 03:30 on spring-forward day in NY exists (it's after the gap, in EDT).
+    // Must NOT be modified by snap-forward logic.
+    const base = '2026-03-08T12:00:00.000Z';
+    const result = setTimeInTimezone(base, { hours: 3, minutes: 30 }, 'America/New_York');
+    // 03:30 EDT = 07:30 UTC
+    expect(result).toBe('2026-03-08T07:30:00.000Z');
   });
 });
