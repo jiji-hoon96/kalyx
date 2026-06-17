@@ -136,6 +136,80 @@ describe('RangePicker — basic interactions', () => {
     expect(lastCall.end).toMatch(/^2026-01-20T/);
   });
 
+  it('renders a hover preview range after the start is committed (TC-H1)', async () => {
+    // Regression guard for the RangePicker's signature UX: while only `start`
+    // is committed, hovering over a candidate end-date should mark every day
+    // between (exclusive) with data-in-range="true" so consumers can paint a
+    // preview shading. Pre-fix the test suite had zero `onMouseEnter`/`hover`
+    // assertions against any RangePicker behaviour.
+    const user = userEvent.setup();
+    render(
+      <ControlledRangePicker
+        initialValue={{ start: '2026-01-01T00:00:00.000Z', end: '2026-01-31T00:00:00.000Z' }}
+      />,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    // Commit Jan 10 as start.
+    await user.click(screen.getByRole('button', { name: /January 10, 2026/ }));
+
+    // Sanity: end is now null and only start is committed → no preview yet.
+    expect(screen.getByRole('button', { name: /January 12, 2026/ })).not.toHaveAttribute(
+      'data-in-range',
+    );
+
+    // Hover Jan 15 — the candidate end. Days 11..14 should show preview shading
+    // (data-in-range) and Jan 15 itself should NOT (it's the candidate endpoint,
+    // not strictly between).
+    await user.hover(screen.getByRole('button', { name: /January 15, 2026/ }));
+
+    for (const day of [11, 12, 13, 14]) {
+      expect(
+        screen.getByRole('button', { name: new RegExp(`January ${day}, 2026`) }),
+      ).toHaveAttribute('data-in-range', 'true');
+    }
+    expect(screen.getByRole('button', { name: /January 15, 2026/ })).not.toHaveAttribute(
+      'data-in-range',
+    );
+    expect(screen.getByRole('button', { name: /January 10, 2026/ })).toHaveAttribute(
+      'data-range-start',
+      'true',
+    );
+
+    // Moving hover further extends the preview window.
+    await user.hover(screen.getByRole('button', { name: /January 20, 2026/ }));
+    expect(screen.getByRole('button', { name: /January 17, 2026/ })).toHaveAttribute(
+      'data-in-range',
+      'true',
+    );
+  });
+
+  it('clears the hover preview when the pointer leaves the calendar grid', async () => {
+    const user = userEvent.setup();
+    render(
+      <ControlledRangePicker
+        initialValue={{ start: '2026-01-01T00:00:00.000Z', end: '2026-01-31T00:00:00.000Z' }}
+      />,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    await user.click(screen.getByRole('button', { name: /January 10, 2026/ }));
+    await user.hover(screen.getByRole('button', { name: /January 15, 2026/ }));
+
+    expect(screen.getByRole('button', { name: /January 12, 2026/ })).toHaveAttribute(
+      'data-in-range',
+      'true',
+    );
+
+    // Move pointer off the grid entirely.
+    await user.unhover(screen.getByRole('button', { name: /January 15, 2026/ }));
+    await user.hover(screen.getByLabelText('Start date'));
+
+    expect(screen.getByRole('button', { name: /January 12, 2026/ })).not.toHaveAttribute(
+      'data-in-range',
+    );
+  });
+
   it('closes the popover after the range is fully selected', async () => {
     const user = userEvent.setup();
     render(
