@@ -245,6 +245,9 @@ export function RangePickerCalendar({
           }
           return;
         case 'Escape':
+          // Stop the synthetic Escape from bubbling to a host modal/dialog.
+          e.preventDefault();
+          e.stopPropagation();
           ctx.close();
           return;
         default:

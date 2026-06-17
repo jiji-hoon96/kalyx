@@ -86,6 +86,63 @@ describe('DatePicker — basic interactions', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
+  it('does not propagate Escape to parent handlers when popover is open', async () => {
+    // Reproduces the modal-host bug: opening a Kalyx DatePicker inside a
+    // Modal/Dialog whose own Escape handler also closes the modal would close
+    // BOTH on a single Escape. The popover Escape must be consumed.
+    const user = userEvent.setup();
+    const parentKeyDown = vi.fn();
+
+    render(
+      <div onKeyDown={parentKeyDown}>
+        <DatePicker onChange={vi.fn()}>
+          <DatePicker.Input aria-label="날짜 선택" />
+          <DatePicker.Popover>
+            <DatePicker.Calendar />
+          </DatePicker.Popover>
+        </DatePicker>
+      </div>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+    const escapeBubbles = parentKeyDown.mock.calls.filter(
+      ([e]: [React.KeyboardEvent]) => e.key === 'Escape',
+    );
+    expect(escapeBubbles).toHaveLength(0);
+  });
+
+  it('lets Escape pass through when the popover is closed', async () => {
+    // The consume-Escape fix must scope to the open state. With the popover
+    // closed, a parent's Escape handler must still receive the keypress.
+    const user = userEvent.setup();
+    const parentKeyDown = vi.fn();
+
+    render(
+      <div onKeyDown={parentKeyDown}>
+        <DatePicker onChange={vi.fn()}>
+          <DatePicker.Input aria-label="날짜 선택" />
+          <DatePicker.Popover>
+            <DatePicker.Calendar />
+          </DatePicker.Popover>
+        </DatePicker>
+      </div>,
+    );
+
+    const input = screen.getByRole('combobox');
+    input.focus();
+    await user.keyboard('{Escape}');
+
+    const escapeBubbles = parentKeyDown.mock.calls.filter(
+      ([e]: [React.KeyboardEvent]) => e.key === 'Escape',
+    );
+    expect(escapeBubbles.length).toBeGreaterThan(0);
+  });
+
   it('shows the selected value in the input', () => {
     renderDatePicker({ value: '2026-01-15T00:00:00.000Z' });
     expect(screen.getByRole('combobox')).toHaveValue('2026-01-15');

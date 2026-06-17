@@ -47,6 +47,11 @@ export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputPro
     const handleKeyDown = useCallback(
       (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Escape') {
+          if (ctx.isOpen) {
+            // Stop the synthetic Escape from bubbling to a host modal/dialog.
+            e.preventDefault();
+            e.stopPropagation();
+          }
           ctx.close();
         } else if (e.key === 'Enter' && ctx.isOpen) {
           // Don't submit the surrounding form when the calendar is open.

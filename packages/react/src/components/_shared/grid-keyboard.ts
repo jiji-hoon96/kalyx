@@ -101,6 +101,9 @@ export function useGridState(opts: UseGridStateOptions) {
         onSelect(focusedIndex);
         return;
       case 'Escape':
+        // Stop the synthetic Escape from bubbling to a host modal/dialog.
+        e.preventDefault();
+        e.stopPropagation();
         onEscape();
         return;
       default:

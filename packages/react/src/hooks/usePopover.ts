@@ -91,6 +91,13 @@ export function usePopover({
 
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
+        // Consume the Escape so a host modal/dialog whose own Escape handler
+        // also closes the modal doesn't close both on a single keypress.
+        // Bubble-phase listener at document is too late to block React's
+        // synthetic bubble — Input/Calendar React handlers cover that path.
+        // This document-level call protects against other native listeners.
+        e.preventDefault();
+        e.stopPropagation();
         close();
       }
     }
