@@ -201,6 +201,12 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # esbuild resolves @kalyx/* through the workspace packages' `main`/
+      # `module` fields, which point at `dist/`. Pre-build those packages so
+      # esbuild can find them. We don't need @kalyx/react built — the script
+      # bundles its `src/` directly.
+      - run: pnpm --filter @kalyx/core build
+      - run: pnpm --filter @kalyx/adapter-date-fns build
       # Regression-guard for the `/headless` contract: the headless entry must
       # NOT pull in date-fns or @kalyx/adapter-date-fns. The script bundles
       # both entries with esbuild and asserts the headless metafile is
