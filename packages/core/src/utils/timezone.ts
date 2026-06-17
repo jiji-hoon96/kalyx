@@ -195,6 +195,17 @@ export function getTimeInTimezone(
  * // In Asia/Seoul (UTC+9): set the hour to 10
  * setTimeInTimezone('2026-01-15T00:00:00.000Z', { hours: 10 }, 'Asia/Seoul');
  * // → '2026-01-15T01:00:00.000Z'   (Seoul Jan 15 10:00 = UTC 01:00)
+ *
+ * DST disambiguation policy:
+ *
+ * - **Spring-forward gaps** (non-existent civil time): the requested civil time
+ *   is snapped forward to the first valid instant past the gap. Asking for
+ *   2026-03-08 02:30 America/New_York — which doesn't exist because clocks
+ *   jump 02:00 EST → 03:00 EDT — returns 03:30 EDT (= 2026-03-08T07:30:00.000Z).
+ * - **Fall-back ambiguity** (civil time occurs twice): the earlier offset
+ *   (e.g. EDT before EST in US Eastern, BST before GMT in Europe/London) is
+ *   chosen, matching `@internationalized/date` and the TC39 Temporal default
+ *   (`disambiguation: 'earlier'`).
  */
 export function setTimeInTimezone(
   iso: ISODateString,
@@ -214,12 +225,46 @@ export function setTimeInTimezone(
     targetSeconds,
   );
 
-  // First pass: use the offset at the civil-as-UTC probe, correct once to absorb DST.
+  // Two-pass offset resolution: probe at civil-as-UTC, then re-probe at the
+  // first-pass result so the second probe sees the offset that actually applies
+  // at the resolved instant. The two candidate UTC instants are then classified
+  // by whether their civil round-trip in the target zone matches the requested
+  // civil time:
+  //
+  //   match1 && match2  → fall-back ambiguity, both are valid wall-clock
+  //                       interpretations → pick the earlier instant (matches
+  //                       @internationalized/date and TC39 Temporal default).
+  //   match1 ^ match2   → the matching candidate is the correct one. (This is
+  //                       the common case near a DST boundary where one of the
+  //                       two probes picked the wrong-side offset.)
+  //   neither match     → spring-forward gap: the requested civil time does not
+  //                       exist → snap forward to the later instant.
   const probe1 = new Date(civilEpoch).toISOString();
   const offset1 = getTimezoneOffsetMinutes(probe1, timeZone);
   const realEpoch1 = civilEpoch - offset1 * 60_000;
   const probe2 = new Date(realEpoch1).toISOString();
   const offset2 = getTimezoneOffsetMinutes(probe2, timeZone);
   const realEpoch2 = civilEpoch - offset2 * 60_000;
-  return new Date(realEpoch2).toISOString();
+
+  const civilMatches = (epoch: number) => {
+    const rt = partsInTimezone(new Date(epoch), timeZone);
+    return (
+      rt.year === p.year &&
+      rt.month === p.month &&
+      rt.day === p.day &&
+      rt.hour === targetHours &&
+      rt.minute === targetMinutes &&
+      rt.second === targetSeconds
+    );
+  };
+  const match1 = civilMatches(realEpoch1);
+  const match2 = civilMatches(realEpoch2);
+
+  let chosen: number;
+  if (match1 && match2) chosen = Math.min(realEpoch1, realEpoch2);
+  else if (match1) chosen = realEpoch1;
+  else if (match2) chosen = realEpoch2;
+  else chosen = Math.max(realEpoch1, realEpoch2);
+
+  return new Date(chosen).toISOString();
 }
