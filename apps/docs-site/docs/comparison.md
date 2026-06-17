@@ -13,6 +13,13 @@ cost, CSS lock-in vs missing primitives. Kalyx is built to occupy the middle:
 seven complete primitives, one composition API, no required stylesheet,
 ≤16 KB gzipped.
 
+Two updates since the table below was first compiled: Chakra UI v3.34 (March 2026)
+shipped a DatePicker built on Ark UI, and react-datepicker 9.1.0 (Nov 2025) added
+an optional `timeZone` IANA prop behind a `date-fns-tz` peer dependency. Neither
+changes Kalyx's position in the matrix — Chakra inherits Ark's
+`@internationalized/date` lock-in, and react-datepicker still uses native `Date`
+as its value type. Notes [^4] and [^15] below describe the deltas.
+
 ## Popularity at a glance
 
 Stars and weekly downloads move quickly — treat these as a snapshot, not a leaderboard.
@@ -37,13 +44,13 @@ For libraries that live in a monorepo (react-aria, ark-ui, @mui/x-date-pickers, 
 | Feature | react-datepicker | react-day-picker | react-calendar | react-native-calendars | react-aria | ark-ui | @mui/x-date-pickers | @mantine/dates | **Kalyx** |
 | --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | DatePicker                | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | **✓** |
-| RangePicker               | ✓ | partial[^1] | ✓ | ✓ | ✓ | partial[^1] | ✓ | ✓ | **✓** |
+| RangePicker               | ✓ | partial[^1] | ✓ | ✓ | ✓ | partial[^1] | Pro[^16] | ✓ | **✓** |
 | TimePicker                | partial[^2] | ✗ | ✗ | ✗ | ✓ | ✗ | ✓ | ✓ | **✓** |
 | DateTimePicker            | partial[^2] | ✗ | ✗ | ✗ | partial[^3] | ✗ | ✓ | ✓ | **✓** |
 | MonthPicker               | ✓ | ✗ | partial[^11] | ✓ | partial[^3] | ✗ | ✓ | ✓ | **✓** |
 | YearPicker                | ✓ | ✗ | partial[^11] | partial[^11] | ✗ | ✗ | ✓ | ✓ | **✓** |
 | WeekPicker                | ✓ | ✗ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ | **✓** |
-| Timezone-aware (IANA)     | partial[^4] | ✗ | ✗ | partial[^4] | ✓ | ✗ | ✓ | partial[^4] | **✓** |
+| Timezone-aware (IANA)     | partial[^4][^15] | ✗ | ✗ | partial[^4] | ✓ | ✗ | ✓ | partial[^4] | **✓** |
 | Zero CSS (no required import) | ✗ | ✓ | ✗ | partial[^12] | ✓ | ✓ | ✗ | ✗ | **✓** |
 | SSR-safe (App Router)     | partial[^5] | ✓ | ✓ | partial[^13] | ✓ | ✓ | partial[^5] | ✓ | **✓** |
 | RSC-friendly              | ✗ | ✓ | partial[^6] | ✗ | partial[^6] | ✓ | ✗ | partial[^6] | **✓** |
@@ -69,10 +76,14 @@ For libraries that live in a monorepo (react-aria, ark-ui, @mui/x-date-pickers, 
 [^12]: Inline styles by default; theme can be customized but there is no CSS-free escape hatch comparable to Kalyx.
 [^13]: React Native first; the web shim runs in browsers but the package isn't designed for Next.js App Router server boundaries.
 [^14]: shadcn/ui's `Calendar` component depends on react-day-picker; the count includes downstream adoption via shadcn rather than direct use only.
+[^15]: react-datepicker 9.1.0 (Nov 2025) added an optional `timeZone` prop accepting IANA identifiers, gated behind a `date-fns-tz` peer. Value type is still the native `Date` object, not an ISO string. Issue [#1018](https://github.com/Hacker0x01/react-datepicker/issues/1018) — open since 2017 — was closed 2025-12 as a docs-only resolution that classifies the original symptom as expected `Date` behavior.
+[^16]: MUI X DateRangePicker and TimeRangePicker live in `@mui/x-date-pickers-pro` and require a commercial Pro license. The free MIT `@mui/x-date-pickers` ships DatePicker, TimePicker, and DateTimePicker, but not the range pickers.
 
-> _Last measured 2026-06-11. Methodology: bundle sizes via bundlephobia + each
+> _Last measured 2026-06-17. Methodology: bundle sizes via bundlephobia + each
 > library's published `size-limit`; feature presence verified against each
-> library's v-latest docs at the time of writing._
+> library's v-latest docs at the time of writing. Adobe's `@internationalized/date`
+> size figures are reported in Brotli (not gzip) and are excluded from the bundle
+> chart to avoid mixing compression units._
 
 ## Bundle size at a glance
 
@@ -135,12 +146,27 @@ will never catch up on for its v1 line.
 **Use `react-aria`** if you're building a design system from scratch and want
 Adobe's a11y team standing behind every primitive. React Aria's accessibility
 guarantees and platform-aware behavior (selection models, focus rings, screen
-reader hints) are deeper than what we ship. The trade is more code to assemble
-and a strict dependency on `@internationalized/date`.
+reader hints) are deeper than what we ship. The trade is more code to assemble,
+a strict dependency on `@internationalized/date`, and inheriting whatever
+direction Adobe takes that package (which is positioned to be backed by TC39
+Temporal once browsers ship it — a feature, if you want it; a coupling, if you
+don't).
 
 **Use `@mui/x-date-pickers`** if your app already uses MUI. The visual / theme
 integration with MUI's design tokens is automatic; bringing Kalyx into a
-MUI codebase means rewriting `classNames` to map to MUI's class API.
+MUI codebase means rewriting `classNames` to map to MUI's class API. Note that
+the DateRangePicker and TimeRangePicker live in `@mui/x-date-pickers-pro` and
+require a commercial Pro license; Kalyx's RangePicker is MIT.
+
+**Use `ark-ui` (or Chakra UI v3.34+, which wraps it)** if you're committed to
+`@internationalized/date` for non-Gregorian calendars (Persian, Buddhist,
+Islamic, Hebrew). Ark v5.32 made that calendar story first-class; Kalyx is
+Gregorian-only in v1 and that's not changing soon.
+
+**Use `@mantine/dates`** if you've already standardized on dayjs and want
+Mantine's batteries-included form integration. Mantine declares dayjs as a
+non-negotiable peer; if dayjs isn't in your tree, the marginal install cost is
+real.
 
 In every other case — modern Next.js / Remix app, headless styling story, ISO
 strings as your storage primitive, single-digit-KB bundle target — Kalyx is
