@@ -1,5 +1,12 @@
 # @kalyx-example/timepicker-12h
 
+## 0.0.2
+
+### Patch Changes
+
+- Updated dependencies [2f8ee84]
+  - @kalyx/react@1.0.3
+
 ## 0.0.1
 
 ### Patch Changes
