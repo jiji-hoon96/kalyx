@@ -46,17 +46,31 @@ export function usePopover({
     }
   }, [referenceRef, refs, isOpen]);
 
-  // Focus restoration: restore focus to the previous element on close.
-  // Skip restoration to the reference element itself (Input auto-opens on
-  // focus, which would immediately reopen the popover).
+  // Focus restoration on close — but only to recover focus that was actually
+  // lost. The calendar grid auto-focuses the selected day on open, so the
+  // captured element is usually a day button inside the popover; when the
+  // popover unmounts that button detaches and the browser drops focus to
+  // <body>. In that case we restore to the captured element if it's still
+  // connected, otherwise to the reference control (the Input / Trigger) — the
+  // correct keyboard recovery point per WAI-ARIA. Opening is bound to a pointer
+  // click, not focus (see Input's handleClick), so this does NOT reopen.
+  //
+  // If focus already moved elsewhere (e.g. the user closed the popover by
+  // clicking another field), `document.activeElement` is that element, not
+  // <body>, and we leave it alone — stealing it back would be a regression.
   useEffect(() => {
     if (isOpen) {
       previousFocusRef.current = document.activeElement as HTMLElement;
     } else if (previousFocusRef.current) {
-      const el = previousFocusRef.current;
+      const captured = previousFocusRef.current;
       previousFocusRef.current = null;
-      if (el !== referenceRef.current && typeof el.focus === 'function') {
-        el.focus({ preventScroll: true });
+      const active = document.activeElement;
+      const focusWasLost = active === null || active === document.body;
+      if (focusWasLost) {
+        const target = captured.isConnected ? captured : referenceRef.current;
+        if (target && typeof target.focus === 'function') {
+          target.focus({ preventScroll: true });
+        }
       }
     }
   }, [isOpen, referenceRef]);
