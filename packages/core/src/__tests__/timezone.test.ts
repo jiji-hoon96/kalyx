@@ -167,6 +167,36 @@ describe('getTimezoneOffsetMinutes — spot checks', () => {
   });
 });
 
+describe('getTimezoneOffsetMinutes — fractional-offset zones (T-D3)', () => {
+  // Winter (Northern-hemisphere) instant well clear of any DST window, so the
+  // offset is the zone's standard, non-DST value.
+  const WINTER = '2026-01-15T12:00:00.000Z';
+
+  it('Asia/Kolkata is +330 (+5:30)', () => {
+    expect(getTimezoneOffsetMinutes(WINTER, 'Asia/Kolkata')).toBe(330);
+  });
+
+  it('Asia/Kathmandu is +345 (+5:45)', () => {
+    expect(getTimezoneOffsetMinutes(WINTER, 'Asia/Kathmandu')).toBe(345);
+  });
+
+  it('Australia/Eucla is +525 (+8:45)', () => {
+    // January is summer in Australia, but Eucla observes no DST, so the offset
+    // is the constant +8:45.
+    expect(getTimezoneOffsetMinutes(WINTER, 'Australia/Eucla')).toBe(525);
+  });
+
+  it('round-trips a fractional offset end-to-end (Kolkata +5:30)', () => {
+    // 2026-01-15 12:00 UTC observed in Kolkata is 17:30 local.
+    expect(getTimeInTimezone(WINTER, 'Asia/Kolkata')).toEqual({
+      hours: 17,
+      minutes: 30,
+      seconds: 0,
+    });
+    expect(formatInTimezone(WINTER, 'yyyy-MM-dd HH:mm', 'Asia/Kolkata')).toBe('2026-01-15 17:30');
+  });
+});
+
 describe('civilMidnightFromUtcDay — calendar-grid cell bridge', () => {
   it('maps UTC-midnight Jan 15 to Seoul civil midnight (Jan 14 15:00 UTC)', () => {
     expect(civilMidnightFromUtcDay('2026-01-15T00:00:00.000Z', 'Asia/Seoul')).toBe(

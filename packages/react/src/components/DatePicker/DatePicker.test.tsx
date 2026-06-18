@@ -1126,6 +1126,104 @@ describe('DatePicker — date rules and edge cases (CLAUDE.md §7)', () => {
   });
 });
 
+describe('DatePicker — value/prop transition edge cases', () => {
+  it('renders with an initial value that lands on a disabled day (TC-M1)', () => {
+    // 2026-01-04 is a Sunday (Jan 1 2026 is a Thursday). With Sundays disabled,
+    // the controlled value itself sits on a disabled day. The component must
+    // still render and display the value — disabled rules gate *selection*, not
+    // the display of an externally-supplied value.
+    const onChange = vi.fn();
+    expect(() => {
+      render(
+        <DatePicker
+          value="2026-01-04T00:00:00.000Z"
+          onChange={onChange}
+          disabled={[{ dayOfWeek: [0] }]}
+        >
+          <DatePicker.Input aria-label="날짜 선택" />
+          <DatePicker.Popover>
+            <DatePicker.Calendar />
+          </DatePicker.Popover>
+        </DatePicker>,
+      );
+    }).not.toThrow();
+
+    // Input still shows the supplied (disabled) value.
+    expect(screen.getByRole('combobox')).toHaveValue('2026-01-04');
+    // onChange is NOT fired just for rendering a disabled value.
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('switching from controlled value to uncontrolled (value=undefined) does not crash and keeps a sensible value (TC-M2)', () => {
+    const onChange = vi.fn();
+    const { rerender } = render(
+      <DatePicker value="2026-06-15T00:00:00.000Z" onChange={onChange}>
+        <DatePicker.Input aria-label="날짜 선택" />
+      </DatePicker>,
+    );
+    expect(screen.getByRole('combobox')).toHaveValue('2026-06-15');
+
+    // React warns about a controlled→uncontrolled switch; the component must not
+    // crash. Documented behavior: `isControlled` is latched at mount via a ref,
+    // so the picker stays in controlled mode and `value ?? null` resolves to an
+    // empty input rather than throwing.
+    expect(() => {
+      rerender(
+        <DatePicker value={undefined} onChange={onChange}>
+          <DatePicker.Input aria-label="날짜 선택" />
+        </DatePicker>,
+      );
+    }).not.toThrow();
+
+    // Sensible value: the input is now empty (controlled value resolved to null),
+    // not stale and not garbage.
+    expect(screen.getByRole('combobox')).toHaveValue('');
+  });
+
+  it('changing the disabled range while the popover is open updates day availability live (TC-M3)', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const { rerender } = render(
+      <DatePicker
+        value="2026-01-15T00:00:00.000Z"
+        onChange={onChange}
+        disabled={[{ before: '2026-01-10T00:00:00.000Z' }]}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    // Jan 12 is currently enabled (after the before-boundary of Jan 10).
+    expect(screen.getByRole('button', { name: /January 12, 2026/ })).not.toBeDisabled();
+
+    // Tighten the range WITHOUT re-opening: now disable everything before Jan 14.
+    rerender(
+      <DatePicker
+        value="2026-01-15T00:00:00.000Z"
+        onChange={onChange}
+        disabled={[{ before: '2026-01-14T00:00:00.000Z' }]}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    // Popover stayed open and Jan 12 is now disabled.
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /January 12, 2026/ })).toBeDisabled();
+    // Jan 15 (the selected value, still after the new boundary) remains enabled.
+    expect(screen.getByRole('button', { name: /January 15, 2026/ })).not.toBeDisabled();
+  });
+});
+
 describe('DatePicker — SSR safety', () => {
   it('renderToString runs without errors on the server', async () => {
     const { renderToString } = await import('react-dom/server');

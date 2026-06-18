@@ -253,6 +253,49 @@ describe('TimePicker — minute step', () => {
   });
 });
 
+describe('TimePicker — off-step minute value (TC-M6)', () => {
+  it('renders the documented step options and snaps NOTHING for an off-step value', () => {
+    // step=15 → the MinuteList renders exactly [00, 15, 30, 45]. A controlled
+    // value whose minute (37) is not on the step grid is NOT snapped: the input
+    // shows the raw 14:37, and because no rendered option equals 37, none is
+    // marked aria-selected. This documents that `step` only constrains the list
+    // of selectable options, not the displayed value.
+    renderTimePicker({ value: '2026-01-15T14:37:00.000Z', step: 15 });
+
+    const minuteList = screen.getByRole('listbox', { name: 'Minute' });
+    const options = minuteList.querySelectorAll('[role="option"]');
+    expect(Array.from(options).map((o) => o.textContent)).toEqual(['00', '15', '30', '45']);
+
+    // No option matches the off-step minute 37.
+    expect(minuteList.querySelector('[aria-selected="true"]')).toBeNull();
+
+    // The input keeps the un-snapped value.
+    expect(screen.getByLabelText('Time')).toHaveValue('14:37');
+  });
+
+  it('selecting an on-step minute from an off-step value snaps to that option', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <ControlledTimePicker
+        initialValue="2026-01-15T14:37:00.000Z"
+        step={15}
+        onChange={onChange}
+      />,
+    );
+
+    // Clicking the 30 option commits 14:30; the hour is preserved.
+    await user.click(screen.getByRole('option', { name: '30 minutes' }));
+    expect(onChange).toHaveBeenLastCalledWith(expect.stringMatching(/T14:30:/));
+
+    // After the controlled state updates, 30 is now the selected option.
+    const selected = screen
+      .getByRole('listbox', { name: 'Minute' })
+      .querySelector('[aria-selected="true"]');
+    expect(selected).toHaveTextContent('30');
+  });
+});
+
 describe('TimePicker — interactions', () => {
   it('calls onChange when an hour is clicked', async () => {
     const user = userEvent.setup();
