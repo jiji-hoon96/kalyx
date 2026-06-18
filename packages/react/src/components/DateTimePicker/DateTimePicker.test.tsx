@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { DateTimePicker } from './index.js';
 import { useTimePickerContext } from '../../context/TimePickerContext.js';
+import { formatInTimezone } from '@kalyx/core';
 
 function renderDateTimePicker(
   props: {
@@ -187,6 +188,108 @@ describe('DateTimePicker — preserves date and time independently', () => {
 
     const lastValue = onChange.mock.calls[onChange.mock.calls.length - 1]![0] as string;
     expect(lastValue).toMatch(/^2026-01-20T18:30:/);
+  });
+});
+
+/** Controlled wrapper that threads a displayTimezone through. */
+function ControlledTzDateTimePicker({
+  initialValue,
+  displayTimezone,
+  onChange,
+}: {
+  initialValue: string;
+  displayTimezone: string;
+  onChange?: (v: string | null) => void;
+}) {
+  const [value, setValue] = useState<string | null>(initialValue);
+  return (
+    <DateTimePicker
+      value={value}
+      displayTimezone={displayTimezone}
+      onChange={(v) => {
+        setValue(v);
+        onChange?.(v);
+      }}
+    >
+      <DateTimePicker.Input />
+      <DateTimePicker.Popover>
+        <DateTimePicker.Calendar />
+        <DateTimePicker.HourList />
+        <DateTimePicker.MinuteList />
+      </DateTimePicker.Popover>
+    </DateTimePicker>
+  );
+}
+
+describe('DateTimePicker — non-UTC displayTimezone round-trip (TC-M5)', () => {
+  const TZ = 'Asia/Seoul'; // UTC+9, no DST
+
+  it('a time edit keeps the Seoul civil date stable across the UTC-day boundary', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    // 2026-01-15T15:00:00Z = Seoul 2026-01-16 00:00 (midnight). Editing only the
+    // hour in Seoul must keep the Seoul date on Jan 16 — a naive UTC setHours
+    // would drift the UTC date and the Seoul day would slip.
+    render(
+      <ControlledTzDateTimePicker
+        initialValue="2026-01-15T15:00:00.000Z"
+        displayTimezone={TZ}
+        onChange={onChange}
+      />,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    // Set Seoul hour to 10:00.
+    await user.click(screen.getByRole('option', { name: '10 hours' }));
+
+    const emitted = onChange.mock.calls.at(-1)![0] as string;
+    // Seoul civil date unchanged (Jan 16); Seoul time is now 10:00.
+    expect(formatInTimezone(emitted, 'yyyy-MM-dd', TZ)).toBe('2026-01-16');
+    expect(formatInTimezone(emitted, 'HH:mm', TZ)).toBe('10:00');
+  });
+
+  it('a date edit keeps the Seoul wall-clock time stable', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    // Seoul 2026-01-16 00:00 again. Click a different calendar day; the Seoul
+    // wall-clock time (00:00) must be preserved while only the civil date moves.
+    render(
+      <ControlledTzDateTimePicker
+        initialValue="2026-01-15T15:00:00.000Z"
+        displayTimezone={TZ}
+        onChange={onChange}
+      />,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    // The grid is rendered in the Seoul civil month (January 2026). Click Jan 20.
+    await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
+
+    const emitted = onChange.mock.calls.at(-1)![0] as string;
+    // Seoul date moved to Jan 20, Seoul time still midnight.
+    expect(formatInTimezone(emitted, 'yyyy-MM-dd', TZ)).toBe('2026-01-20');
+    expect(formatInTimezone(emitted, 'HH:mm', TZ)).toBe('00:00');
+  });
+
+  it('sequential date-then-time edits round-trip coherently in Seoul', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <ControlledTzDateTimePicker
+        initialValue="2026-01-15T15:00:00.000Z"
+        displayTimezone={TZ}
+        onChange={onChange}
+      />,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    // 1) Move the Seoul date to Jan 20.
+    await user.click(screen.getByRole('button', { name: /January 20, 2026/ }));
+    // 2) Then set the Seoul hour to 18.
+    await user.click(screen.getByRole('option', { name: '18 hours' }));
+
+    const emitted = onChange.mock.calls.at(-1)![0] as string;
+    expect(formatInTimezone(emitted, 'yyyy-MM-dd HH:mm', TZ)).toBe('2026-01-20 18:00');
   });
 });
 

@@ -182,6 +182,27 @@ describe('isDateDisabled — combined rules', () => {
     expect(isDateDisabled('2026-01-15T00:00:00.000Z', [], adapter)).toBe(false);
   });
 
+  it('compares before/after as pure UTC instants, not display-tz midnights (T-G1)', () => {
+    // The {before}/{after} rules route through adapter.isBefore/isAfter, which
+    // are raw instant comparisons (parseISO). isDateDisabled takes NO timezone
+    // argument, so the boundary is the literal UTC instant — never the civil
+    // midnight of any display timezone. This locks that documented semantics.
+    const before = [{ before: '2026-06-17T00:00:00.000Z' as const }];
+
+    // An instant strictly before the boundary → disabled.
+    expect(isDateDisabled('2026-06-16T23:00:00.000Z', before, adapter)).toBe(true);
+    // The boundary instant itself (equal) → NOT before → enabled.
+    expect(isDateDisabled('2026-06-17T00:00:00.000Z', before, adapter)).toBe(false);
+    // An instant after the boundary → enabled.
+    expect(isDateDisabled('2026-06-17T01:00:00.000Z', before, adapter)).toBe(false);
+
+    // Symmetric check for {after}: boundary is exclusive on the equal instant.
+    const after = [{ after: '2026-06-17T00:00:00.000Z' as const }];
+    expect(isDateDisabled('2026-06-17T01:00:00.000Z', after, adapter)).toBe(true);
+    expect(isDateDisabled('2026-06-17T00:00:00.000Z', after, adapter)).toBe(false);
+    expect(isDateDisabled('2026-06-16T23:00:00.000Z', after, adapter)).toBe(false);
+  });
+
   it('honors a programmatic filter rule', () => {
     const holidays = new Set(['2026-01-01T00:00:00.000Z', '2026-12-25T00:00:00.000Z']);
     const rules = [{ filter: (iso: string) => holidays.has(iso) }];

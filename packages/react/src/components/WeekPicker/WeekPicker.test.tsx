@@ -108,6 +108,66 @@ describe('WeekPicker — single-click commits the full week', () => {
   });
 });
 
+describe('WeekPicker — year-boundary week (TC-M7)', () => {
+  it('computes a week spanning Dec 31 2026 → Jan 1 2027 across the year boundary', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    // Anchor the view on December 2026 so the grid renders that month.
+    render(
+      <WeekPicker
+        value={{ start: '2026-12-15T00:00:00.000Z', end: '2026-12-15T00:00:00.000Z' }}
+        onChange={onChange}
+        weekStartsOn={0}
+      >
+        <WeekPicker.Input part="start" />
+        <WeekPicker.Input part="end" />
+        <WeekPicker.Popover>
+          <WeekPicker.Calendar />
+        </WeekPicker.Popover>
+      </WeekPicker>,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', 'December 2026');
+
+    // Dec 31 2026 is a Thursday. Sunday-anchored week = Dec 27 2026 – Jan 2 2027,
+    // which crosses the year boundary and contains both Dec 31 and Jan 1.
+    await user.click(screen.getByRole('button', { name: /December 31, 2026/ }));
+
+    expect(onChange).toHaveBeenCalledWith({
+      start: expect.stringMatching(/^2026-12-27T/),
+      end: expect.stringMatching(/^2027-01-02T/),
+    });
+  });
+
+  it('highlights every day of the year-boundary week, including the Jan 1 2027 trailing cell', async () => {
+    const user = userEvent.setup();
+    // A committed week that straddles the boundary: Dec 27 2026 – Jan 2 2027.
+    render(
+      <WeekPicker
+        value={{ start: '2026-12-27T00:00:00.000Z', end: '2027-01-02T00:00:00.000Z' }}
+        weekStartsOn={0}
+        onChange={vi.fn()}
+      >
+        <WeekPicker.Input part="start" />
+        <WeekPicker.Input part="end" />
+        <WeekPicker.Popover>
+          <WeekPicker.Calendar />
+        </WeekPicker.Popover>
+      </WeekPicker>,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+
+    // Dec 31 2026 (in-month) and Jan 1 2027 (trailing/outside-month cell) both
+    // carry aria-selected on their gridcell.
+    const dec31 = screen.getByRole('button', { name: /December 31, 2026/ });
+    expect(dec31.closest('[role="gridcell"]')).toHaveAttribute('aria-selected', 'true');
+    const jan1 = screen.getByRole('button', { name: /January 1, 2027/ });
+    expect(jan1.closest('[role="gridcell"]')).toHaveAttribute('aria-selected', 'true');
+  });
+});
+
 describe('WeekPicker — visual range highlighting', () => {
   it('highlights every day in the selected week with aria-selected', () => {
     renderWeekPicker({
