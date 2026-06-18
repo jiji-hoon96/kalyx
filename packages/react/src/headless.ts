@@ -36,6 +36,13 @@ export { WeekPicker } from './components/WeekPicker/index.js';
 export { useDatePicker } from './hooks/useDatePicker.js';
 export { useRangePicker } from './hooks/useRangePicker.js';
 export { useTimePicker } from './hooks/useTimePicker.js';
+// Headless-only hooks for the remaining pickers. These deliberately live on the
+// `/headless` entry alone (not the default `@kalyx/react`) to keep the budgeted
+// default bundle unchanged — see the 2026-06-18 correctness-first direction spec.
+export { useMonthPicker } from './hooks/useMonthPicker.js';
+export { useYearPicker } from './hooks/useYearPicker.js';
+export { useWeekPicker } from './hooks/useWeekPicker.js';
+export { useDateTimePicker } from './hooks/useDateTimePicker.js';
 
 export type {
   DatePickerRootProps,
@@ -112,6 +119,17 @@ export type {
 export type { UseDatePickerOptions, UseDatePickerReturn } from './hooks/useDatePicker.js';
 export type { UseRangePickerOptions, UseRangePickerReturn } from './hooks/useRangePicker.js';
 export type { UseTimePickerOptions, UseTimePickerReturn } from './hooks/useTimePicker.js';
+export type {
+  UseMonthPickerOptions,
+  UseMonthPickerReturn,
+  MonthCell,
+} from './hooks/useMonthPicker.js';
+export type { UseYearPickerOptions, UseYearPickerReturn, YearCell } from './hooks/useYearPicker.js';
+export type { UseWeekPickerOptions, UseWeekPickerReturn } from './hooks/useWeekPicker.js';
+export type {
+  UseDateTimePickerOptions,
+  UseDateTimePickerReturn,
+} from './hooks/useDateTimePicker.js';
 
 // Core types/utilities — same as the main entry. We deliberately do NOT
 // re-export `DateFnsAdapter` here; importing it would defeat the point of
