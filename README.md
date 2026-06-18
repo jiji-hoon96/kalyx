@@ -46,8 +46,6 @@ In 2026, the React date-picker landscape forces a trade-off: integrated-but-heav
 
 Kalyx ships **seven primitives** — single date, range, time, date+time, month, year, week — under one composition API. Headless, ~15 KB gzip, SSR-safe, ISO strings in / ISO strings out, adapter pattern for date-fns / dayjs / luxon.
 
-[See the full comparison →](https://kalyx-docs-site.vercel.app/docs/comparison)
-
 ## Features
 
 - **Zero CSS** — bring your own (Tailwind, shadcn/ui, Chakra, plain CSS).

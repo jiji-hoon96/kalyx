@@ -58,7 +58,6 @@ const config: Config = {
           routeBasePath: 'docs',
           include: [
             'intro.{md,mdx}',
-            'comparison.{md,mdx}',
             'migration.{md,mdx}',
             'troubleshooting.{md,mdx}',
             'getting-started/**/*.{md,mdx}',
@@ -76,27 +75,7 @@ const config: Config = {
             return `https://github.com/jiji-hoon96/kalyx/edit/main/apps/docs-site/docs/${docPath}`;
           },
         },
-        blog: {
-          routeBasePath: 'blog',
-          blogTitle: 'Kalyx blog',
-          blogDescription: 'Release notes, design decisions, and stories from the Kalyx project.',
-          blogSidebarTitle: 'All posts',
-          blogSidebarCount: 'ALL',
-          showReadingTime: true,
-          postsPerPage: 10,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            title: 'Kalyx blog',
-            description: 'Release notes, design decisions, and stories from the Kalyx project.',
-            copyright: `Copyright © ${new Date().getFullYear()} Kalyx contributors.`,
-          },
-          editUrl: ({locale, blogDirPath, blogPath}) => {
-            if (locale !== 'en') {
-              return `https://github.com/jiji-hoon96/kalyx/edit/main/apps/docs-site/i18n/${locale}/docusaurus-plugin-content-blog/${blogPath}`;
-            }
-            return `https://github.com/jiji-hoon96/kalyx/edit/main/apps/docs-site/${blogDirPath}/${blogPath}`;
-          },
-        },
+        blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -109,14 +88,6 @@ const config: Config = {
   ],
 
   themeConfig: {
-    announcementBar: {
-      id: 'v1-stable',
-      content:
-        'Kalyx 1.0 is out — <code>pnpm add @kalyx/react</code> · <a target="_blank" rel="noopener noreferrer" href="https://github.com/jiji-hoon96/kalyx">star on GitHub</a> · <a target="_blank" rel="noopener noreferrer" href="https://github.com/jiji-hoon96/kalyx/discussions">join Discussions</a>.',
-      backgroundColor: '#5b4fe1',
-      textColor: '#ffffff',
-      isCloseable: true,
-    },
     image: 'img/og-hero.png',
     colorMode: {
       respectPrefersColorScheme: true,
@@ -146,11 +117,6 @@ const config: Config = {
         {
           to: '/playground',
           label: 'Playground',
-          position: 'left',
-        },
-        {
-          to: '/blog',
-          label: 'Blog',
           position: 'left',
         },
         {

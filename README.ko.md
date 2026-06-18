@@ -46,8 +46,6 @@ import { DatePicker } from '@kalyx/react';
 
 Kalyx는 **7개 프리미티브** — 단일 날짜, 범위, 시간, 날짜+시간, 월, 연, 주 — 를 하나의 composition API로 묶는다. Headless, ~15 KB gzip, SSR 안전, ISO 문자열 입출력, date-fns/dayjs/luxon용 adapter 패턴.
 
-[전체 비교 표 →](https://kalyx-docs-site.vercel.app/ko/docs/comparison)
-
 ## 특징
 
 - **Zero CSS** — 임포트할 스타일시트도, 재정의할 클래스도 없음.

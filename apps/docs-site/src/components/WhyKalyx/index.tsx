@@ -23,8 +23,8 @@ export default function WhyKalyx() {
               ≤16 KB.
             </Translate>
           </p>
-          <Link className={styles.cta} to="/docs/comparison">
-            <Translate id="home.whyKalyx.cta">See how Kalyx compares →</Translate>
+          <Link className={styles.cta} to="/docs/intro">
+            <Translate id="home.whyKalyx.cta">Read the docs →</Translate>
           </Link>
         </div>
       </div>
