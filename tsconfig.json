@@ -3,6 +3,7 @@
 	"references": [
 		{ "path": "packages/core" },
 		{ "path": "packages/adapter-date-fns" },
+		{ "path": "packages/adapter-dayjs" },
 		{ "path": "packages/react" }
 	]
 }
