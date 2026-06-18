@@ -8,12 +8,16 @@
 // ship.
 //
 // The primary contract is "the headless bundle must not contain date-fns at
-// all" — that's the hard pass/fail. We also assert a minimum gzip reduction
-// (currently 5%) as a sanity check that the entry split is doing something
-// measurable. The reduction will look small in absolute % because the bulk of
-// `@kalyx/react`'s gzip is component + core code; the date-fns adapter footprint
-// is only ~2KB gzip after tree-shaking. Teams already shipping a date library
-// still benefit from skipping that ~2KB and avoiding the duplicate parse cost.
+// all" — that's the hard pass/fail (the `includesDateFns` metafile check below).
+// We also assert a minimum gzip reduction as a secondary sanity check that the
+// split is doing something measurable. The reduction looks small in absolute %
+// because the bulk of `@kalyx/react`'s gzip is component + core code; the
+// date-fns adapter footprint is only ~2KB gzip after tree-shaking. It shrank
+// further once `/headless` started carrying the headless-only picker hooks
+// (useMonthPicker/useYearPicker/useWeekPicker/useDateTimePicker), which the
+// default entry deliberately omits — so headless legitimately has API the
+// default lacks, partly offsetting the date-fns savings. The authoritative
+// guard is the no-date-fns check; this threshold is just a regression tripwire.
 //
 // Runs in CI as the `entry-split` job in pr-check.yml — the primary contract
 // ("no date-fns in headless") is a hard pass/fail gate on every PR. Also
@@ -84,7 +88,7 @@ for (const r of results) {
 
 const [def, hl] = results;
 const reductionPct = ((def.gzipKb - hl.gzipKb) / def.gzipKb) * 100;
-const target = 5;
+const target = 2;
 console.log("─".repeat(60));
 console.log(
 	`  headless vs default: -${(def.gzipKb - hl.gzipKb).toFixed(2)}KB gzip (${reductionPct.toFixed(1)}% smaller)`,
