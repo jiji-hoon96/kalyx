@@ -143,6 +143,59 @@ describe('DatePicker — basic interactions', () => {
     expect(escapeBubbles.length).toBeGreaterThan(0);
   });
 
+  it('restores focus to the input after closing with Escape from inside the grid', async () => {
+    // A-D3: a keyboard user opens the picker (focus on Input), arrow-keys into
+    // the calendar grid, then presses Escape. The day button unmounts, so focus
+    // must return to the Input — not fall back to <body>. The old focus-restore
+    // guard skipped restoration whenever the previous element was the Input,
+    // which is exactly this case.
+    const user = userEvent.setup();
+    renderDatePicker({ value: '2026-01-15T00:00:00.000Z' });
+
+    const input = screen.getByRole('combobox');
+    await user.click(input);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    // Move focus off the Input and onto a day button inside the popover.
+    await user.keyboard('{ArrowRight}');
+    expect(input).not.toHaveFocus();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(input).toHaveFocus();
+  });
+
+  it('does not steal focus to the input when closing by clicking another field', async () => {
+    // The focus-restore fix must only recover lost focus (Escape unmounts the
+    // focused day → focus falls to <body>). When the user closes the popover by
+    // clicking a different field, focus already moved there deliberately and
+    // must be left alone. (jsdom flushes the native-mousedown close before the
+    // click focuses `other`, so this passed even before the activeElement===body
+    // guard; the guard makes it correct in real browsers, where React batches
+    // the close and restore would otherwise run after `other` is focused.)
+    const user = userEvent.setup();
+    render(
+      <>
+        <DatePicker onChange={vi.fn()}>
+          <DatePicker.Input aria-label="날짜 선택" />
+          <DatePicker.Popover>
+            <DatePicker.Calendar />
+          </DatePicker.Popover>
+        </DatePicker>
+        <input aria-label="다른 입력" />
+      </>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    const other = screen.getByLabelText('다른 입력');
+    await user.click(other);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(other).toHaveFocus();
+  });
+
   it('shows the selected value in the input', () => {
     renderDatePicker({ value: '2026-01-15T00:00:00.000Z' });
     expect(screen.getByRole('combobox')).toHaveValue('2026-01-15');
