@@ -1,26 +1,25 @@
 {
-	"name": "@kalyx/adapter-date-fns",
-	"version": "1.0.0",
-	"description": "date-fns adapter for @kalyx/core — implements the DateAdapter contract using date-fns (timezone work is delegated to @kalyx/core's Intl-based utilities).",
+	"name": "@kalyx/adapter-dayjs",
+	"version": "0.0.0",
+	"description": "dayjs adapter for @kalyx/core — implements the DateAdapter contract using dayjs (UTC mode). Timezone work is delegated to @kalyx/core's Intl-based utilities.",
 	"license": "MIT",
 	"author": "jiji-hoon96",
 	"homepage": "https://github.com/jiji-hoon96/kalyx#readme",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/jiji-hoon96/kalyx.git",
-		"directory": "packages/adapter-date-fns"
+		"directory": "packages/adapter-dayjs"
 	},
 	"bugs": {
 		"url": "https://github.com/jiji-hoon96/kalyx/issues"
 	},
 	"keywords": [
-		"date-fns",
+		"dayjs",
 		"adapter",
 		"kalyx",
 		"datepicker"
 	],
 	"type": "module",
-	"sideEffects": false,
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -48,7 +47,7 @@
 	},
 	"dependencies": {
 		"@kalyx/core": "workspace:^",
-		"date-fns": "^4.0.0"
+		"dayjs": "^1.11.13"
 	},
 	"peerDependencies": {
 		"@kalyx/core": "workspace:^"
@@ -62,7 +61,6 @@
 		"node": ">=20.0.0"
 	},
 	"publishConfig": {
-		"access": "public",
-		"provenance": true
+		"access": "public"
 	}
 }
