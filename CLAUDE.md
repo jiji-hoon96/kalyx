@@ -582,14 +582,19 @@ pnpm changeset publish # npm 배포 (CI 자동)
 
 ---
 
-## 14. 현재 이니셔티브 (2026-06-17 기준 — 1.0 stable + 1.0.x patch 준비)
+## 14. 현재 이니셔티브 (2026-06-18 기준 — Track A 종료, "정확성 먼저" 방향 확정)
 
-> v1.0.0 stable 출시 **완료** (2026-06-08). 2026-06-17 시점 외부 라이브러리 경쟁 리서치 + 내부 결함 audit 종합 결과는 별도 spec으로 분리.
+> **🧭 2026-06-18 확정 방향 (single source of truth):** [`docs/superpowers/specs/2026-06-18-current-state-analysis-and-correctness-first-direction.md`](docs/superpowers/specs/2026-06-18-current-state-analysis-and-correctness-first-direction.md)
+> 10-에이전트 멀티에이전트 현 시점 분석(7차원 → 적대적 검증 → 종합, 1차 출처 검증)으로 선행 방향을 validate. 결론:
+> - **홍보는 접는다** (사용자 결정 — 외부 사용자 0, HN 신규계정 auto-dead). 라이브 홍보 콘텐츠(블로그·announcementBar·comparison) 제거. → 아래 Track 우선순위는 이 spec을 따른다.
+> - **확정 실행 순서 (전부 bundle-0):** ①fast-check 속성테스트 `@kalyx/core` (1.0.4 patch, T-G3 리드) → ②`@kalyx/core/test-helpers` conformance suite → ③누락 hook 4종(`/headless`) → ④(선택) dayjs 어댑터.
+> - **`@kalyx/adapter-temporal` 근시일 드롭** (정확성 0 검증 — 어댑터는 core Intl로 재위임. 인터페이스가 ISO-string이라 Temporal 역량 운반 불가). Temporal **전략**은 core 레벨 Track D demand-gate로 보존.
+> - **번들 마진 = CJS 126 B / ESM 221 B** (binding=CJS). 런타임 기능 추가 = CI 깸. (이전 "~380 B" 표기는 stale.)
 >
-> - **v1.1 로드맵 + 경쟁 라이브러리 분석**: [`docs/superpowers/specs/2026-06-17-competitive-landscape-and-v1.1-roadmap.md`](docs/superpowers/specs/2026-06-17-competitive-landscape-and-v1.1-roadmap.md)
-> - **1.0.x 결함/갭 카탈로그**: [`docs/superpowers/specs/2026-06-17-kalyx-1.0-functional-audit.md`](docs/superpowers/specs/2026-06-17-kalyx-1.0-functional-audit.md)
+> 이전 spec (2026-06-17, 여전히 유효한 근거 카탈로그):
+> - **경쟁 분석 + 결함 audit**: [`2026-06-17-competitive-landscape-and-v1.1-roadmap.md`](docs/superpowers/specs/2026-06-17-competitive-landscape-and-v1.1-roadmap.md) · [`2026-06-17-kalyx-1.0-functional-audit.md`](docs/superpowers/specs/2026-06-17-kalyx-1.0-functional-audit.md)
 >
-> 핵심 요약: 1.0 thesis (headless + 7 picker + adapter + ISO/UTC + ≤16KB) **그대로 유효**. Headless UI는 여전히 DatePicker 거부 (Discussion #289 open since 2021), react-day-picker v10.0.1은 cleanup release로 TimePicker/Input 없음, react-datepicker #1018은 docs-only "not a bug" 종결, MUI X 9.5.0은 58.2KB gzip에 Range가 Pro 유료. 새로 닫힌 갭은 Chakra v3.34 (March 2026) DatePicker 출시 — 단, Ark UI 경유 `@internationalized/date` 강결합 심화로 어댑터 패턴 비교 우위는 더 선명. 가장 큰 새 차원은 **Adobe stack의 Temporal-bound 아키텍처** — `@kalyx/adapter-temporal` 우선순위 상향.
+> 핵심 요약: 1.0 thesis (headless + 7 picker + adapter + ISO/UTC + ≤16KB) **그대로 유효** (2026-06 적대적 재검증 통과). Headless UI는 여전히 DatePicker 거부, react-day-picker v10.0.1은 cleanup release로 TimePicker/Input 없음, react-datepicker #1018은 "not a bug" 종결(native Date 유지), MUI X 9.5.0은 58.2KB gzip에 Range가 Pro 유료, Chakra v3.34 (March 2026) DatePicker는 Ark UI/`@internationalized/date` 강결합 심화 → **포지셔닝 승리**. Adobe stack은 Temporal-bound이나, Temporal 역량은 어댑터가 아니라 **core**에 속함(위 드롭 근거).
 
 ### v1.0 완료 항목 (회고)
 
@@ -620,6 +625,8 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 
 어댑터 패턴을 "약속"에서 "검증된 실력"으로. 두 번째 어댑터 출시 + conformance suite + 누락 hook이 척추.
 
+> **⚠️ 실행 순서는 2026-06-18 spec을 따른다** (위 §14 intro): ①fast-check 속성테스트(1.0.4, 아래 Track C에서 끌어올림) → ②B2 conformance → ③B4 hooks → ④(선택) B1 dayjs. **B6 temporal·B11 comparison 랜딩은 드롭됨** (아래 표 참조).
+
 | # | 항목 | 근거 |
 |---|---|---|
 | B1 | `@kalyx/adapter-dayjs` 출시 (P0) | Mantine + ~50% dayjs 사용자에게 drop-in headless 옵션 |
@@ -627,17 +634,17 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 | B3 | `@kalyx/adapter-luxon` | B2 후 비용 낮음. enterprise/timezone 사용자 |
 | B4 | `useMonthPicker` / `useYearPicker` / `useWeekPicker` / `useDateTimePicker` hooks (`/headless` 전용) | audit API-G1. 기본 entry 번들 압력 회피 |
 | B5 | `DateTimePicker.Presets` (`/headless`에서 RangePicker.Presets 패턴 재사용) | audit API-G2 |
-| B6 | `@kalyx/adapter-temporal@0.x` (experimental, 별도 publish) | Adobe stack이 Temporal-bound — 늦으면 "Temporal-native"로 보이지 않음 |
+| ~~B6~~ | ~~`@kalyx/adapter-temporal@0.x`~~ → **드롭** (2026-06-18) | 정확성 0 검증: 어댑터 인터페이스는 ISO-string in/out이라 Temporal 역량 운반 불가, core Intl로 재위임. 홍보 접어 optics 청중도 없음. Temporal **전략**은 core 레벨 Track D demand-gate로 보존 |
 | B7 | `weekStartsOn` locale 자동 추론 (명시 prop override) | audit T-G2 |
 | B8 | `/headless` adapter guide 한국어 번역 | 주 성장 오디언스 KO 부재 |
-| B9 | 번들 margin 도구: `scripts/bundle-diff.mjs` + PR comment | audit B-D2 — ~380바이트 마진 가시화 |
+| B9 | 번들 margin 도구: `scripts/bundle-diff.mjs` + PR comment | audit B-D2 — **CJS 126 B / ESM 221 B** 마진 가시화 (이전 "~380 B"는 stale; binding=CJS) |
 | B10 | a11y polish set: A-G1..A-G5 | DatePicker `announce()` 패리티, WeekPicker nav 결정, axe-when-open, Trigger focus-restore 테스트, week-mode aria-label |
-| B11 | docs-site comparison + MUI X Pro 유료 vs Kalyx "Free Range Picker, ≤16KB" 랜딩 비교 | research [R-6] — 마케팅 모먼트 |
+| ~~B11~~ | ~~docs-site comparison 랜딩 비교~~ → **드롭** (2026-06-18) | 홍보 접음. comparison 페이지 자체도 제거 (마케팅 모먼트 폐기) |
 
 ### Track C — v1.2 (다음 분기)
 
 - RTL 지원 + 테스트 (audit TC-M4)
-- `fast-check` property test 도입 (audit TC-H2)
+- ~~`fast-check` property test 도입 (audit TC-H2)~~ → **#1로 끌어올림** (2026-06-18, 1.0.4 patch — 해자 강화 최우선). 2026-06-18 spec 참조
 - `DisabledRule` 타입 narrowing per picker 또는 시맨틱 명시 (audit API-G3)
 - e2e 확장: mid-flight prop 변경, locale switch
 - per-dependency 번들 크기 리포트 (audit B-R2, 특히 `@floating-ui/react` 기여도)
@@ -653,7 +660,7 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 1. `@kalyx/adapter-date-fns` npmjs.com Trusted Publisher 등록 — 1.0.0 publish는 토큰 수동이라 다음부터 OIDC + provenance 자동화.
 2. `@kalyx/adapter-date-fns@1.0.0` GitHub Release 수동 backfill (토큰 publish는 GH Release 미생성).
 3. `release.yml` 견고화 — ignored 패키지 changeset이 publish 차단 안 하도록 사전 검증 step.
-4. `apps/docs/CHANGELOG.md`, vitest lockfile drift refresh, `@floating-ui/react` 0.26→0.27 검토.
+4. `apps/docs/CHANGELOG.md`, vitest lockfile drift refresh. (~~`@floating-ui/react` 0.26→0.27 검토~~ → **완료**: package.json 이미 `^0.27.0`. docs-site `api/react.md` 의 0.26 표기만 정정 대상 — 2026-06-18 stale-fact 스윕)
 
 ### 카피 정정 (낮은 우선순위)
 
