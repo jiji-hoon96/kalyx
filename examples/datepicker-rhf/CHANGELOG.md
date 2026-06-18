@@ -1,5 +1,12 @@
 # @kalyx-example/datepicker-rhf
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [53c94f3]
+  - @kalyx/react@1.1.0
+
 ## 0.0.2
 
 ### Patch Changes
