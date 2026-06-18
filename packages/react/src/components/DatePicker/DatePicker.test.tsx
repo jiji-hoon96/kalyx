@@ -1070,6 +1070,45 @@ describe('DatePicker — date rules and edge cases (CLAUDE.md §7)', () => {
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-12T/));
   });
 
+  it('before/after bounds (minDate/maxDate) compare UTC instants and are unaffected by displayTimezone (T-G1)', async () => {
+    // The grid emits UTC-midnight ISO cells and isDateDisabled compares pure UTC
+    // instants, so a displayTimezone must NOT shift which day a UTC bound gates —
+    // even a +9:00 zone where the bound sits near the civil-midnight boundary.
+    const renderWith = (displayTimezone?: string) =>
+      render(
+        <DatePicker
+          value="2026-06-17T00:00:00.000Z"
+          disabled={[{ before: '2026-06-17T00:00:00.000Z' }, { after: '2026-06-20T00:00:00.000Z' }]}
+          displayTimezone={displayTimezone}
+        >
+          <DatePicker.Input aria-label="날짜 선택" />
+          <DatePicker.Popover>
+            <DatePicker.Calendar />
+          </DatePicker.Popover>
+        </DatePicker>,
+      );
+
+    const user = userEvent.setup();
+
+    // Asia/Seoul (+9): the boundary days are gated by the UTC instant, not the
+    // Seoul civil day. Equal-to-bound is enabled; strictly outside is disabled.
+    const seoul = renderWith('Asia/Seoul');
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('button', { name: /June 16, 2026/ })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /June 17, 2026/ })).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: /June 20, 2026/ })).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: /June 21, 2026/ })).toBeDisabled();
+    seoul.unmount();
+
+    // Identical disabled set without displayTimezone — proves the zone is inert
+    // for the bound comparison (locks the UTC-only semantics at the React boundary).
+    renderWith(undefined);
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('button', { name: /June 16, 2026/ })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /June 17, 2026/ })).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: /June 21, 2026/ })).toBeDisabled();
+  });
+
   it('blocks per-day disabled rules (dayOfWeek) and shows them as visually disabled', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
