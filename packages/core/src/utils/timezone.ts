@@ -105,16 +105,15 @@ export function getTimezoneOffsetMinutes(iso: ISODateString, timeZone: string): 
  * startOfDayInTimezone('2026-03-09T12:00:00.000Z', 'America/New_York'); // '2026-03-09T04:00:00.000Z' (EDT)
  */
 export function startOfDayInTimezone(iso: ISODateString, timeZone: string): ISODateString {
-  const utc = new Date(iso);
-  const p = partsInTimezone(utc, timeZone);
-  // Civil midnight as a UTC epoch (what it would be if the wall clock reading lived in UTC).
-  const civilMidnightUtc = Date.UTC(p.year, p.month - 1, p.day, 0, 0, 0);
-  // Must compute the offset at civil midnight itself — the offset at the input `iso` can
-  // differ (DST transition occurs between midnight and the input), which would shift the
-  // result by one hour on transition days.
-  const midnightProbe = new Date(civilMidnightUtc).toISOString();
-  const offsetMinutes = getTimezoneOffsetMinutes(midnightProbe, timeZone);
-  return new Date(civilMidnightUtc - offsetMinutes * 60_000).toISOString();
+  // Civil midnight of the input's civil day. Delegates to setTimeInTimezone so it
+  // reuses the two-pass DST disambiguation: a single offset probe taken at
+  // "civil-midnight-as-UTC" can land on the wrong side of a DST transition and be
+  // off by one hour. Example (the bug this replaced): Australia/Sydney on a
+  // spring-forward Oct 1 — 00:00 local is still AEST (+10), but 00:00 UTC reads as
+  // post-transition AEDT (+11), so the naive probe produced 23:00 of the prior day.
+  // For midnight-DST zones where 00:00 itself doesn't exist, setTimeInTimezone's
+  // gap policy snaps forward to the first valid instant.
+  return setTimeInTimezone(iso, { hours: 0, minutes: 0, seconds: 0 }, timeZone);
 }
 
 /**

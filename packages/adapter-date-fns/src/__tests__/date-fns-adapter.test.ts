@@ -216,4 +216,31 @@ describe('DateFnsAdapter', () => {
       expect(adapter.startOfDay('2026-01-15T14:30:00.000Z')).toBe('2026-01-15T00:00:00.000Z');
     });
   });
+
+  describe('UTC-stable arithmetic across a historical local DST (regression)', () => {
+    // date-fns' add* mutate the LOCAL date field, so on a runtime whose zone
+    // observed DST in the iterated range (Asia/Seoul did in 1987–88) the UTC
+    // grid drifted by an hour — duplicating/skipping a UTC day. The adapter now
+    // adds in UTC, so the sequence is stable regardless of process.env.TZ.
+    it('addDays steps one clean UTC day across 1987-05-10 (Korea DST start)', () => {
+      let cur = '1987-05-08T00:00:00.000Z';
+      const seq: string[] = [];
+      for (let i = 0; i < 5; i++) {
+        seq.push(cur);
+        cur = adapter.addDays(cur, 1);
+      }
+      expect(seq).toEqual([
+        '1987-05-08T00:00:00.000Z',
+        '1987-05-09T00:00:00.000Z',
+        '1987-05-10T00:00:00.000Z',
+        '1987-05-11T00:00:00.000Z',
+        '1987-05-12T00:00:00.000Z',
+      ]);
+    });
+
+    it('addMonths clamps and stays at UTC midnight; addYears clamps off a leap day', () => {
+      expect(adapter.addMonths('2026-01-31T00:00:00.000Z', 1)).toBe('2026-02-28T00:00:00.000Z');
+      expect(adapter.addYears('2024-02-29T00:00:00.000Z', 1)).toBe('2025-02-28T00:00:00.000Z');
+    });
+  });
 });

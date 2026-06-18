@@ -172,3 +172,20 @@ describe('Feb 29 round-trip where the civil date differs from the UTC date (T-R2
     expect(formatInTimezone(at0930, 'yyyy-MM-dd HH:mm', 'Asia/Seoul')).toBe('2024-02-29 09:30');
   });
 });
+
+describe('startOfDayInTimezone on a DST-transition day (regression)', () => {
+  // Counterexample the "reads back as 00:00:00" property surfaced: Australia/Sydney
+  // springs forward on 2034-10-01 (02:00 AEST -> 03:00 AEDT). Civil midnight Oct 1 is
+  // still AEST (+10) = 2034-09-30T14:00:00Z, but the old single-probe code took the
+  // offset of "Oct 1 00:00 UTC" (post-transition AEDT, +11) and returned 13:00Z,
+  // which read back as 23:00 of Sep 30. It must be civil midnight (00:00:00).
+  it('returns true civil midnight, not one hour early (Australia/Sydney 2034-10-01)', () => {
+    const sod = startOfDayInTimezone('2034-09-30T14:00:00.000Z', 'Australia/Sydney');
+    expect(sod).toBe('2034-09-30T14:00:00.000Z');
+    expect(getTimeInTimezone(sod, 'Australia/Sydney')).toEqual({
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+    });
+  });
+});
