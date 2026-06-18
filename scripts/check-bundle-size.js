@@ -9,7 +9,7 @@
 // 3. CI (`.github/workflows/pr-check.yml` `bundle-size` job) invokes this
 //    script directly instead of running its own `gzip -c | wc -c` pipeline,
 //    so shell-gzip vs. Node-zlib defaults can't drift apart inside the
-//    ~380-byte 16KB margin.
+//    tight 16KB margin (currently ~126 B on CJS / ~221 B on ESM — CJS binds).
 //
 // When `$GITHUB_OUTPUT` is set, the script appends per-bundle gzip KB values
 // (kb_esm, kb_cjs) so the workflow can read them back for the PR comment

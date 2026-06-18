@@ -24,10 +24,10 @@ describe('<WhyKalyx>', () => {
     expect(link).toHaveAttribute('href');
   });
 
-  it('CTA points at /docs/comparison', () => {
+  it('CTA points at /docs/intro', () => {
     render(<WhyKalyx />);
     const link = screen.getByRole('link');
-    expect(link.getAttribute('href')).toBe('/docs/comparison');
+    expect(link.getAttribute('href')).toBe('/docs/intro');
   });
 
   it('passes axe', async () => {

@@ -12,7 +12,7 @@
 [Docs](https://kalyx-docs-site.vercel.app) · [한국어](https://kalyx-docs-site.vercel.app/ko) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.ko](./README.ko.md)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-15.63KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-15.78KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -42,11 +42,9 @@ import { DatePicker } from '@kalyx/react';
 
 ## Why Kalyx
 
-In 2026, the React date-picker landscape forces a trade-off: integrated-but-heavy (react-datepicker ~62 KB, MUI ~45 KB) or headless-but-partial (react-day-picker, react-aria, ark-ui — calendar grid only). react-calendar covers single dates and ranges but stops short of time, RSC, and timezone-aware storage. react-native-calendars is mobile-first.
+In 2026, the React date-picker landscape forces a trade-off: integrated-but-heavy (react-datepicker ~62 KB, MUI ~58 KB) or headless-but-partial (react-day-picker, react-aria, ark-ui — calendar grid only). react-calendar covers single dates and ranges but stops short of time, RSC, and timezone-aware storage. react-native-calendars is mobile-first.
 
 Kalyx ships **seven primitives** — single date, range, time, date+time, month, year, week — under one composition API. Headless, ~15 KB gzip, SSR-safe, ISO strings in / ISO strings out, adapter pattern for date-fns / dayjs / luxon.
-
-[See the full comparison →](https://kalyx-docs-site.vercel.app/docs/comparison)
 
 ## Features
 
@@ -89,7 +87,7 @@ API reference, recipes (Tailwind / shadcn / React Hook Form), and migration guid
 
 ## Bundle
 
-`@kalyx/react` v1.0.0 → **15.63 KB** gzip (ESM) / **15.76 KB** (CJS). CI gate: ≤ 16 KB.
+`@kalyx/react` v1.0.3 → **15.78 KB** gzip (ESM) / **15.88 KB** (CJS). CI gate: ≤ 16 KB.
 
 ## Browser support
 

@@ -176,15 +176,14 @@ import type {
 ## Runtime dependencies
 
 - `@kalyx/core` (workspace)
-- `@floating-ui/react ^0.26.0`
-- `date-fns ^4.0.0`
-- `date-fns-tz ^3.0.0`
+- `@kalyx/adapter-date-fns` (workspace — bundles `date-fns` for the default entry)
+- `@floating-ui/react ^0.27.0`
 
 Peer dependencies: `react ^19.0.0`, `react-dom ^19.0.0`.
 
 ## Bundle size
 
-Gzipped build of the full public surface: **~15.63 KB** (v1.0.0-rc.14, 7 components, CI ceiling 16 KB). Tree-shakes per import — e.g., using only `TimePicker` drops DatePicker code. Verified in CI by `scripts/check-bundle-size.js`.
+Gzipped build of the full public surface: **~15.78 KB** (v1.0.3, 7 components, CI ceiling 16 KB). Tree-shakes per import — e.g., using only `TimePicker` drops DatePicker code. Verified in CI by `scripts/check-bundle-size.js`.
 
 ## See also
 
