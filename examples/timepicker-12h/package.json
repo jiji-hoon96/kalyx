@@ -1,6 +1,6 @@
 {
   "name": "@kalyx-example/timepicker-12h",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "type": "module",
   "scripts": {

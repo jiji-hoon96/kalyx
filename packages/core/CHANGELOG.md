@@ -1,5 +1,15 @@
 # @kalyx/core
 
+## 1.1.0
+
+### Minor Changes
+
+- 96993f5: Add `@kalyx/core/test-helpers` — a framework-agnostic adapter **conformance suite**. `runAdapterConformanceTests(adapter, { describe, it, expect })` executes the full `DateAdapter` contract (UTC / ISO-8601 semantics across all 22 methods) so any adapter — the built-in `@kalyx/adapter-date-fns` and future dayjs / luxon / Temporal adapters — can prove it conforms with a single call. Zero runtime footprint (type-only import, separate `./test-helpers` entry) and no effect on the `@kalyx/react` bundle.
+
+### Patch Changes
+
+- eb44024: Fix `startOfDayInTimezone` returning an instant one hour early on a DST-transition day. It took a single UTC-offset probe at "civil-midnight-as-UTC", which can land on the wrong side of a transition (e.g. Australia/Sydney springing forward on Oct 1: 00:00 local is still AEST +10, but 00:00 UTC reads as post-transition AEDT +11). It now delegates to `setTimeInTimezone`'s two-pass DST disambiguation, so civil midnight is correct on transition days; this also flows through `todayInTimezone` and `civilMidnightFromUtcDay`. Surfaced by the new fast-check property suite.
+
 ## 1.0.2
 
 ### Patch Changes
