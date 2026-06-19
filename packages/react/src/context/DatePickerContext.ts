@@ -62,6 +62,13 @@ export interface DatePickerContextValue {
   pickerId: string;
   /** ARIA labels */
   labels: DatePickerLabels;
+  /**
+   * Push a screen-reader announcement into the Root-level live region. Provided by
+   * DatePicker/DateTimePicker Root so month navigation and date selection are announced
+   * even though the live region lives on Root (and thus survives Calendar unmount) —
+   * parity with RangePickerContext.announce.
+   */
+  announce: (message: string) => void;
 }
 
 export const DatePickerContext = createContext<DatePickerContextValue | null>(null);

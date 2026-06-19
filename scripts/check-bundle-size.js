@@ -30,9 +30,12 @@ import { readFileSync, statSync, appendFileSync } from "fs";
 // v1.0-rc.4. 15KB → 16KB for `TimePicker.filterTime` — programmatic
 // per-slot disable predicate covering business-hours / lunch-break /
 // blackout-slot use cases, closing the gap with react-datepicker's
-// `filterTime` and MUI X's `shouldDisableTime` (PR following this comment).
-// Still ~4× smaller than react-datepicker (~40KB).
-export const TARGET_KB = 16;
+// `filterTime` and MUI X's `shouldDisableTime`. 16KB → 17KB (v1.1) for the
+// B10 a11y polish — Root-level `announce()` live-region parity across
+// DatePicker/DateTimePicker (audit A-G1), so month-nav and date selection are
+// announced from a region that survives Calendar unmount, matching RangePicker.
+// Still ~3.5× smaller than react-datepicker (~40KB).
+export const TARGET_KB = 17;
 export const TARGET_BYTES = TARGET_KB * 1024;
 
 export const BUNDLES = [

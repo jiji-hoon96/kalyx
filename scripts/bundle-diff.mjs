@@ -20,7 +20,7 @@
 // the `comment` key (heredoc-delimited) for the PR-comment step to read back.
 
 import { appendFileSync } from "fs";
-import { getGzipBytes, BUNDLES, TARGET_BYTES } from "./check-bundle-size.js";
+import { getGzipBytes, BUNDLES, TARGET_BYTES, TARGET_KB } from "./check-bundle-size.js";
 
 const BASE_ENV = {
 	ESM: "BUNDLE_BASE_ESM",
@@ -74,12 +74,12 @@ console.log("\n📊 Bundle Diff (gzip, vs base)");
 console.log("─".repeat(60));
 for (const { label, head, delta, margin } of rows) {
 	console.log(`  [${label}] head ${fmtKB(head)} (${fmtBytes(head)})`);
-	console.log(`        delta ${fmtDelta(delta)} | margin ${fmtBytes(margin)} to 16KB`);
+	console.log(`        delta ${fmtDelta(delta)} | margin ${fmtBytes(margin)} to ${TARGET_KB}KB`);
 }
 console.log("─".repeat(60));
 console.log(
 	anyOverBudget
-		? "  ❌ over 16KB budget"
+		? `  ❌ over ${TARGET_KB}KB budget`
 		: anyGrowth
 			? "  ⚠️  grows the bundle — confirm the margin is intended"
 			: "  ✅ no growth",
@@ -95,15 +95,15 @@ const tableRows = rows
 	.join("\n");
 
 const summary = anyOverBudget
-	? "❌ **Over the 16KB budget.** Run `pnpm bundle-diff` locally and trim before merge."
+	? `❌ **Over the ${TARGET_KB}KB budget.** Run \`pnpm bundle-diff\` locally and trim before merge.`
 	: anyGrowth
-		? "⚠️ This PR **grows** the bundle. The 16KB ceiling is CJS-bound and the working margin is small — confirm the cost is intended."
+		? `⚠️ This PR **grows** the bundle. The ${TARGET_KB}KB ceiling is CJS-bound and the working margin is small — confirm the cost is intended.`
 		: "✅ No bundle growth vs base.";
 
 const body = [
 	"#### 📊 Bundle diff (gzip, vs base)",
 	"",
-	"| Bundle | head | Δ vs base | margin to 16KB |",
+	`| Bundle | head | Δ vs base | margin to ${TARGET_KB}KB |`,
 	"|---|---|---|---|",
 	tableRows,
 	"",

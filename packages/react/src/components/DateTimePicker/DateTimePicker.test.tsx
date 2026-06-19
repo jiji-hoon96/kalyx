@@ -712,3 +712,17 @@ describe('DateTimePicker — hydration-safe currentTime fallback', () => {
     expect(second.container.innerHTML).toBe(firstHtml);
   });
 });
+
+describe('DateTimePicker — announce() live-region parity (B10 A-G1)', () => {
+  it('exposes a polite live region from Root and announces month navigation', async () => {
+    const user = userEvent.setup();
+    renderDateTimePicker({ value: '2026-01-15T14:30:00.000Z' });
+
+    const status = screen.getByRole('status');
+    expect(status).toHaveAttribute('aria-live', 'polite');
+
+    await user.click(screen.getByLabelText('Date and time'));
+    await user.click(screen.getByRole('button', { name: /next month/i }));
+    expect(screen.getByRole('status')).toHaveTextContent(/February 2026/i);
+  });
+});

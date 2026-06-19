@@ -1428,3 +1428,37 @@ describe('DatePicker — weekStartsOn locale inference (B7)', () => {
     expect(header.getAttribute('aria-label') ?? header.textContent).toMatch(/Sun/i);
   });
 });
+
+describe('DatePicker — announce() live-region parity (B10 A-G1)', () => {
+  it('exposes a polite live region from Root (survives Calendar unmount)', async () => {
+    const user = userEvent.setup();
+    renderDatePicker({ value: '2026-01-15T00:00:00.000Z' });
+    // The live region is on Root, so it exists even before the calendar opens.
+    const status = screen.getByRole('status');
+    expect(status).toHaveAttribute('aria-live', 'polite');
+
+    // Closing the popover unmounts Calendar but the region (and its message) persist.
+    await user.click(screen.getByRole('combobox'));
+    await user.keyboard('{Escape}');
+    expect(screen.getByRole('status')).toBeInTheDocument();
+  });
+
+  it('announces month navigation', async () => {
+    const user = userEvent.setup();
+    renderDatePicker({ value: '2026-01-15T00:00:00.000Z' });
+    await user.click(screen.getByRole('combobox'));
+
+    // Next-month button label comes from DEFAULT_DATEPICKER_LABELS.nextMonth.
+    await user.click(screen.getByRole('button', { name: /next month/i }));
+    expect(screen.getByRole('status')).toHaveTextContent(/February 2026/i);
+  });
+
+  it('announces a date selection', async () => {
+    const user = userEvent.setup();
+    renderDatePicker({ value: '2026-01-15T00:00:00.000Z' });
+    await user.click(screen.getByRole('combobox'));
+
+    await user.click(screen.getByRole('button', { name: /January 20, 2026/i }));
+    expect(screen.getByRole('status')).toHaveTextContent(/January 20, 2026/i);
+  });
+});

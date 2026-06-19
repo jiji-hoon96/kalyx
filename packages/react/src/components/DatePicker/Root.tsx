@@ -16,6 +16,7 @@ import { DatePickerContext } from '../../context/DatePickerContext.js';
 import type { DatePickerContextValue } from '../../context/DatePickerContext.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
+import { SR_ONLY } from '../../internal/srOnly.js';
 
 /**
  * Props for the DatePicker Root component.
@@ -125,9 +126,12 @@ export function DatePickerRoot({
     [labelsProp],
   );
 
-  // When the consumer doesn't pin weekStartsOn, infer it from the locale
-  // (e.g. ko-KR / en-GB → Monday, en-US / ja-JP → Sunday). An explicit prop always wins.
+  // Infer weekStartsOn from locale when the consumer doesn't pin it; explicit prop wins.
   const weekStartsOn = weekStartsOnProp ?? getWeekStartForLocale(locale);
+
+  // Live-region announcement (mounted on Root so it survives Calendar unmount).
+  const [announcement, setAnnouncement] = useState('');
+  const announce = useCallback((message: string) => setAnnouncement(message), []);
 
   const isDisabled = typeof disabled === 'boolean' ? disabled : false;
   const disabledRules: DisabledRule[] = useMemo(
@@ -200,6 +204,7 @@ export function DatePickerRoot({
       isReadOnly: readOnly,
       pickerId,
       labels: mergedLabels,
+      announce,
     }),
     [
       currentValue,
@@ -220,8 +225,16 @@ export function DatePickerRoot({
       readOnly,
       pickerId,
       mergedLabels,
+      announce,
     ],
   );
 
-  return <DatePickerContext.Provider value={contextValue}>{children}</DatePickerContext.Provider>;
+  return (
+    <DatePickerContext.Provider value={contextValue}>
+      {children}
+      <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>
+        {announcement}
+      </div>
+    </DatePickerContext.Provider>
+  );
 }
