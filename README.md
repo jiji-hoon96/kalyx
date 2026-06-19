@@ -87,7 +87,7 @@ API reference, recipes (Tailwind / shadcn / React Hook Form), and migration guid
 
 ## Bundle
 
-`@kalyx/react` v1.0.3 → **15.78 KB** gzip (ESM) / **15.88 KB** (CJS). CI gate: ≤ 16 KB.
+`@kalyx/react` → **15.78 KB** gzip (ESM) / **15.88 KB** (CJS). CI gate: ≤ 16 KB.
 
 ## Browser support
 

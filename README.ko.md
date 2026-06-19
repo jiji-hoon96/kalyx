@@ -87,7 +87,7 @@ API 레퍼런스, 레시피 (Tailwind / shadcn / React Hook Form), 마이그레�
 
 ## 번들
 
-`@kalyx/react` v1.0.3 → **15.78 KB** gzip (ESM) / **15.88 KB** (CJS). CI 한계 ≤ 16 KB.
+`@kalyx/react` → **15.78 KB** gzip (ESM) / **15.88 KB** (CJS). CI 한계 ≤ 16 KB.
 
 ## 지원 환경
 
