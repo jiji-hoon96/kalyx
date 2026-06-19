@@ -15,6 +15,13 @@ export interface DatePickerContextValue {
   value: ISODateString | null;
   /** Date selection handler */
   selectDate: (iso: ISODateString | null) => void;
+  /**
+   * Apply a full datetime (date + time) in a single update. Only provided by
+   * DateTimePicker.Root — undefined for plain DatePicker. Used by
+   * DateTimePicker.Presets so a preset like "today 09:00" commits both portions
+   * atomically instead of racing `selectDate` (time-preserving) with `setTime`.
+   */
+  selectDateTime?: (iso: ISODateString | null) => void;
   /** Popover open state */
   isOpen: boolean;
   /** Open the popover */

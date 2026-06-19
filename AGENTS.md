@@ -636,7 +636,7 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 | B2 | `@kalyx/core/test-helpers` 어댑터 conformance test suite | B1/B3/B6 unblock — adapter 작성자 테스트 부담 제거 |
 | B3 | `@kalyx/adapter-luxon` | B2 후 비용 낮음. enterprise/timezone 사용자 |
 | B4 | `useMonthPicker` / `useYearPicker` / `useWeekPicker` / `useDateTimePicker` hooks (`/headless` 전용) | audit API-G1. 기본 entry 번들 압력 회피 |
-| B5 | `DateTimePicker.Presets` (`/headless`에서 RangePicker.Presets 패턴 재사용) | audit API-G2 |
+| ~~B5~~ | ~~`DateTimePicker.Presets` (`/headless`에서 RangePicker.Presets 패턴 재사용)~~ → **완료** | audit API-G2 — `DateTimePicker.Presets`/`.Preset` 가 datetime 전체(날짜+시간)를 원자적으로 커밋. `/headless` 전용 배치(기본 엔트리 천장 회피), `selectDateTime` Root 메서드는 양쪽 엔트리 공통 (+~40 B CJS) |
 | ~~B6~~ | ~~`@kalyx/adapter-temporal@0.x`~~ → **드롭** (2026-06-18) | 정확성 0 검증: 어댑터 인터페이스는 ISO-string in/out이라 Temporal 역량 운반 불가, core Intl로 재위임. 홍보 접어 optics 청중도 없음. Temporal **전략**은 core 레벨 Track D demand-gate로 보존 |
 | ~~B7~~ | ~~`weekStartsOn` locale 자동 추론 (명시 prop override)~~ → **완료** | audit T-G2 — `getWeekStartForLocale` (core) + DatePicker/RangePicker Root 가 `weekStartsOn` 미지정 시 locale 추론 (명시 prop 우선). +44 B CJS |
 | B8 | `/headless` adapter guide 한국어 번역 | 주 성장 오디언스 KO 부재 |
