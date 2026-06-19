@@ -183,7 +183,7 @@ Peer dependencies: `react ^19.0.0`, `react-dom ^19.0.0`.
 
 ## Bundle size
 
-Gzipped build of the full public surface: **~15.78 KB** (v1.0.3, 7 components, CI ceiling 16 KB). Tree-shakes per import — e.g., using only `TimePicker` drops DatePicker code. Verified in CI by `scripts/check-bundle-size.js`.
+Gzipped build of the full public surface: **~15.99 KB** (7 components, CI ceiling 17 KB). Tree-shakes per import — e.g., using only `TimePicker` drops DatePicker code. Verified in CI by `scripts/check-bundle-size.js`.
 
 ## See also
 

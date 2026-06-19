@@ -23,6 +23,7 @@ import { TimePickerContext } from '../../context/TimePickerContext.js';
 import type { TimePickerContextValue, TimePickerFormat } from '../../context/TimePickerContext.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
+import { SR_ONLY } from '../../internal/srOnly.js';
 
 /**
  * Props for the DateTimePicker Root component.
@@ -143,6 +144,10 @@ export function DateTimePickerRoot({
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
 
   const [isOpen, setIsOpen] = useState(false);
+
+  // Live-region announcement (mounted on Root so it survives Calendar unmount).
+  const [announcement, setAnnouncement] = useState('');
+  const announce = useCallback((message: string) => setAnnouncement(message), []);
   // Lazy initializers — see DatePicker/Root.tsx for the SSR/hydration rationale.
   const [viewMonth, setViewMonth] = useState<ISODateString>(
     () => currentValue ?? adapter.today(displayTimezone),
@@ -284,6 +289,7 @@ export function DateTimePickerRoot({
       isReadOnly: readOnly,
       pickerId,
       labels: mergedDateLabels,
+      announce,
     }),
     [
       currentValue,
@@ -305,6 +311,7 @@ export function DateTimePickerRoot({
       readOnly,
       pickerId,
       mergedDateLabels,
+      announce,
     ],
   );
 
@@ -343,6 +350,9 @@ export function DateTimePickerRoot({
   return (
     <DatePickerContext.Provider value={dateContext}>
       <TimePickerContext.Provider value={timeContext}>{children}</TimePickerContext.Provider>
+      <div role="status" aria-live="polite" aria-atomic="true" style={SR_ONLY}>
+        {announcement}
+      </div>
     </DatePickerContext.Provider>
   );
 }

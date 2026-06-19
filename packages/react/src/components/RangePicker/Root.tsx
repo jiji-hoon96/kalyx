@@ -1,5 +1,5 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import {
   DEFAULT_RANGEPICKER_LABELS,
   civilMidnightFromUtcDay,
@@ -20,20 +20,9 @@ import type {
 } from '../../context/RangePickerContext.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
+import { SR_ONLY } from '../../internal/srOnly.js';
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
-
-const SR_ONLY: CSSProperties = {
-  position: 'absolute',
-  width: 1,
-  height: 1,
-  padding: 0,
-  margin: -1,
-  overflow: 'hidden',
-  clip: 'rect(0, 0, 0, 0)',
-  whiteSpace: 'nowrap',
-  border: 0,
-};
 
 /**
  * Props for the RangePicker Root component.

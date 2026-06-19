@@ -12,7 +12,7 @@
 [문서](https://kalyx-docs-site.vercel.app/ko) · [English](https://kalyx-docs-site.vercel.app) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.md](./README.md)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-15.78KB-brightgreen)](https://kalyx-docs-site.vercel.app/ko/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-15.99KB-brightgreen)](https://kalyx-docs-site.vercel.app/ko/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -21,7 +21,7 @@
 
 ---
 
-Kalyx는 **완결된 채로** 배포되는 Headless React DatePicker 라이브러리입니다. 단일 날짜 / 범위 / 시간 / 날짜+시간 / 월 / 연 / 주 7종 픽커를 하나의 조합형 API로 다룹니다 — gzip ~15 KB (≤ 16 KB), CSS 없음, SSR 안전.
+Kalyx는 **완결된 채로** 배포되는 Headless React DatePicker 라이브러리입니다. 단일 날짜 / 범위 / 시간 / 날짜+시간 / 월 / 연 / 주 7종 픽커를 하나의 조합형 API로 다룹니다 — gzip ~16 KB (≤ 17 KB), CSS 없음, SSR 안전.
 
 ```bash
 pnpm add @kalyx/react
@@ -87,7 +87,7 @@ API 레퍼런스, 레시피 (Tailwind / shadcn / React Hook Form), 마이그레�
 
 ## 번들
 
-`@kalyx/react` → **15.78 KB** gzip (ESM) / **15.88 KB** (CJS). CI 한계 ≤ 16 KB.
+`@kalyx/react` → **15.99 KB** gzip (ESM) / **16.12 KB** (CJS). CI 한계 ≤ 17 KB.
 
 ## 지원 환경
 
@@ -101,7 +101,7 @@ pnpm test            # 단위 + 컴포넌트
 pnpm typecheck
 pnpm lint
 pnpm build
-pnpm check-bundle    # ≤ 16 KB
+pnpm check-bundle    # ≤ 17 KB
 ```
 
 아키텍처 원칙은 [CLAUDE.md](./CLAUDE.md) 참고.

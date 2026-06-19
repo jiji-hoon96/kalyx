@@ -44,7 +44,7 @@
 - **React Aria**: 기능 완전하지만 복잡하고, `@internationalized/date` 의존 강제 (date-fns 비호환).
 - **Headless UI**: DatePicker 구현 거부 ("유지보수가 너무 큼").
 
-**우리가 채우는 공백:** Headless + Input·Calendar·TimePicker·RangePicker 통합 + date-fns 호환 + SSR 안전 + ≤ 16KB
+**우리가 채우는 공백:** Headless + Input·Calendar·TimePicker·RangePicker 통합 + date-fns 호환 + SSR 안전 + ≤ 17KB
 
 ### 포지셔닝
 
@@ -71,7 +71,7 @@ Ark UI가 포기한 TimePicker 통합
 | 스타일링 | Zero CSS (Headless) | CSS 충돌 원천 차단 |
 | 날짜 코어 | Adapter 패턴 + date-fns 기본 (v1.1에서 `@kalyx/adapter-date-fns`로 분리 예정 — [§14](#14-현재-이니셔티브-2026-04-기준)) | Temporal API 전환 대비, 사용자가 dayjs/luxon 선택 가능 |
 | 포지셔닝 | Floating UI | 3KB, SSR 안전, Popper.js 후계자 |
-| 번들 목표 | **≤ 16KB gzip** | react-datepicker 62KB 대비. RC 단계 12 → 13KB 상향(commit e93d082), v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향, v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향, v1.0-rc.8 TimePicker `filterTime` 프로그래밍 콜백 추가하면서 15 → 16KB 상향 |
+| 번들 목표 | **≤ 17KB gzip** | react-datepicker 62KB 대비. RC 단계 12 → 13KB 상향(commit e93d082), v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향, v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향, v1.0-rc.8 TimePicker `filterTime` 프로그래밍 콜백 추가하면서 15 → 16KB 상향, v1.1 B10 a11y announce() 패리티(A-G1 — DatePicker/DateTimePicker Root live-region) 추가하면서 16 → 17KB 상향 |
 | 테스트 | Vitest + Testing Library + jest-axe | |
 | 빌드 | tsup (ESM + CJS 이중 출력) | |
 | 모노레포 | pnpm workspaces | |
@@ -641,7 +641,7 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 | ~~B7~~ | ~~`weekStartsOn` locale 자동 추론 (명시 prop override)~~ → **완료** | audit T-G2 — `getWeekStartForLocale` (core) + DatePicker/RangePicker Root 가 `weekStartsOn` 미지정 시 locale 추론 (명시 prop 우선). +44 B CJS |
 | B8 | `/headless` adapter guide 한국어 번역 | 주 성장 오디언스 KO 부재 |
 | ~~B9~~ | ~~번들 margin 도구: `scripts/bundle-diff.mjs` + PR comment~~ → **완료** (PR #153) | audit B-D2 — `scripts/bundle-diff.mjs` 가 base 대비 byte-level delta + 남은 마진(**CJS 126 B / ESM 221 B**)을 PR 코멘트로 가시화. gzip 측정은 `check-bundle-size.js` 의 `getGzipBytes` 재사용(B-R1 단일 소스) |
-| B10 | a11y polish set: A-G1..A-G5 | DatePicker `announce()` 패리티, WeekPicker nav 결정, axe-when-open, Trigger focus-restore 테스트, week-mode aria-label. **부분 완료:** A-G3(axe-when-open, 이미 7픽커 충족) · A-G4(focus-restore 테스트 Month/Year/Week/DateTime 추가) · A-G2(WeekPicker day-granular focus + week-commit 설계 확정·테스트 락). **잔여(bundle-positive):** A-G1(announce 패리티) · A-G5(week-mode aria-label) |
+| B10 | a11y polish set: A-G1..A-G5 | DatePicker `announce()` 패리티, WeekPicker nav 결정, axe-when-open, Trigger focus-restore 테스트, week-mode aria-label. **부분 완료:** A-G3(axe-when-open, 이미 7픽커 충족) · A-G4(focus-restore 테스트 Month/Year/Week/DateTime 추가) · A-G2(WeekPicker day-granular focus + week-commit 설계 확정·테스트 락) · A-G1(announce() 패리티 — DatePicker/DateTimePicker Root live-region, 16→17KB 천장 상향). **드롭:** A-G5(week-mode aria-label — 같은 주 7일이 동일 부분 문자열 공유해 쿼리 모호성 유발, 이득 < 회귀 비용) |
 | ~~B11~~ | ~~docs-site comparison 랜딩 비교~~ → **드롭** (2026-06-18) | 홍보 접음. comparison 페이지 자체도 제거 (마케팅 모먼트 폐기) |
 
 ### Track C — v1.2 (다음 분기)

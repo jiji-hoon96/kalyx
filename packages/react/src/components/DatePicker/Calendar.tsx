@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { HTMLAttributes } from 'react';
 import {
   getCalendarDays,
@@ -57,19 +57,6 @@ function safeFormatFullDate(iso: string, locale: string): string {
   }
 }
 
-/** Visually-hidden style for screen-reader-only content */
-const srOnly: React.CSSProperties = {
-  position: 'absolute',
-  width: '1px',
-  height: '1px',
-  padding: 0,
-  margin: '-1px',
-  overflow: 'hidden',
-  clip: 'rect(0, 0, 0, 0)',
-  whiteSpace: 'nowrap',
-  border: 0,
-};
-
 export function DatePickerCalendar({
   classNames,
   onTitleClick,
@@ -79,7 +66,6 @@ export function DatePickerCalendar({
 }: DatePickerCalendarProps) {
   const ctx = useDatePickerContext('DatePicker.Calendar');
   const gridRef = useRef<HTMLTableElement>(null);
-  const [announcement, setAnnouncement] = useState('');
 
   const { adapter, viewMonth, focusedDate, weekStartsOn, disabled, locale, displayTimezone } = ctx;
   // Memoized — weekday header tuples only change when locale or week start changes.
@@ -135,7 +121,7 @@ export function DatePickerCalendar({
       ctx.setFocusedDate(adapter.startOfMonth(newMonth));
       const y = adapter.getYear(newMonth);
       const m = adapter.getMonth(newMonth);
-      setAnnouncement(formatMonthYear(y, m, locale));
+      ctx.announce(formatMonthYear(y, m, locale));
     },
     [adapter, viewMonth, ctx, locale],
   );
@@ -144,7 +130,7 @@ export function DatePickerCalendar({
     (day: CalendarDay) => {
       if (day.isDisabled) return;
       ctx.selectDate(day.isoString);
-      setAnnouncement(safeFormatFullDate(day.isoString, locale));
+      ctx.announce(safeFormatFullDate(day.isoString, locale));
     },
     [ctx, locale],
   );
@@ -364,10 +350,6 @@ export function DatePickerCalendar({
           ))}
         </tbody>
       </table>
-
-      <div role="status" aria-live="polite" aria-atomic="true" style={srOnly}>
-        {announcement}
-      </div>
     </div>
   );
 }

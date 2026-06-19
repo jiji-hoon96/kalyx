@@ -84,7 +84,7 @@ jobs:
           retention-days: 1
 
   bundle-size:
-    name: Bundle Size (≤16KB gzip)
+    name: Bundle Size (gzip ceiling)
     runs-on: ubuntu-latest
     needs: build
     permissions:
@@ -105,10 +105,9 @@ jobs:
           name: dist-${{ github.run_id }}
           path: packages/react/dist/
       # Single source of truth for gzip measurement: shell `gzip -c` and Node's
-      # zlib could drift apart inside the tight 16KB margin (~126 B CJS /
-      # ~221 B ESM as of v1.1.0), so we delegate to scripts/check-bundle-size.js
-      # — the same script tsup + local dev use. The script appends kb_esm and
-      # kb_cjs to $GITHUB_OUTPUT for the comment.
+      # zlib could drift apart inside the tight gzip margin, so we delegate
+      # to scripts/check-bundle-size.js — the same script tsup + local dev use.
+      # The script appends kb_esm and kb_cjs to $GITHUB_OUTPUT for the comment.
       - name: 크기 측정 및 판정
         id: check
         run: node scripts/check-bundle-size.js
