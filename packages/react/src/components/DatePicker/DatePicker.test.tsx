@@ -1389,3 +1389,42 @@ describe('DatePicker.Popover — style merging', () => {
     expect(['', 'visible']).toContain(dialog.style.visibility);
   });
 });
+
+describe('DatePicker — weekStartsOn locale inference (B7)', () => {
+  async function firstColumnHeader(locale: string, weekStartsOn?: 0 | 1) {
+    const user = userEvent.setup();
+    render(
+      <DatePicker
+        value="2026-01-15T00:00:00.000Z"
+        onChange={vi.fn()}
+        locale={locale}
+        weekStartsOn={weekStartsOn}
+      >
+        <DatePicker.Input aria-label="date" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    return screen.getAllByRole('columnheader')[0];
+  }
+
+  it('starts the week on Monday for en-GB (Monday-first locale)', async () => {
+    const header = await firstColumnHeader('en-GB');
+    // en-GB weekInfo.firstDay = 1 (Monday). First column header is Monday.
+    expect(header.getAttribute('aria-label') ?? header.textContent).toMatch(/Mon/i);
+  });
+
+  it('starts the week on Sunday for en-US (Sunday-first locale)', async () => {
+    const header = await firstColumnHeader('en-US');
+    // en-US weekInfo.firstDay = 7 (Sunday). First column header is Sunday.
+    expect(header.getAttribute('aria-label') ?? header.textContent).toMatch(/Sun/i);
+  });
+
+  it('an explicit weekStartsOn prop overrides locale inference', async () => {
+    // en-GB would infer Monday, but the explicit prop pins Sunday-first.
+    const header = await firstColumnHeader('en-GB', 0);
+    expect(header.getAttribute('aria-label') ?? header.textContent).toMatch(/Sun/i);
+  });
+});

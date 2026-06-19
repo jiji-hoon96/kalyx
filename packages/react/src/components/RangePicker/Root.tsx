@@ -1,6 +1,10 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import { DEFAULT_RANGEPICKER_LABELS, civilMidnightFromUtcDay } from '@kalyx/core';
+import {
+  DEFAULT_RANGEPICKER_LABELS,
+  civilMidnightFromUtcDay,
+  getWeekStartForLocale,
+} from '@kalyx/core';
 import type {
   DateAdapter,
   DateRange,
@@ -91,7 +95,7 @@ export function RangePickerRoot({
   onCalendarNavigate,
   disabled = false,
   readOnly = false,
-  weekStartsOn = 0,
+  weekStartsOn: weekStartsOnProp,
   displayFormat = 'yyyy-MM-dd',
   locale = 'en-US',
   displayTimezone,
@@ -139,6 +143,9 @@ export function RangePickerRoot({
     () => ({ ...DEFAULT_RANGEPICKER_LABELS, ...labelsProp }),
     [labelsProp],
   );
+
+  // Infer weekStartsOn from locale when not pinned by the consumer (explicit prop wins).
+  const weekStartsOn = weekStartsOnProp ?? getWeekStartForLocale(locale);
 
   const isDisabled = typeof disabled === 'boolean' ? disabled : false;
   const disabledRules: DisabledRule[] = useMemo(

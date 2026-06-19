@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { getMonthName, formatMonthYear, getWeekdayNames, formatFullDate } from '../utils/locale.js';
+import {
+  getMonthName,
+  formatMonthYear,
+  getWeekdayNames,
+  formatFullDate,
+  getWeekStartForLocale,
+} from '../utils/locale.js';
 
 describe('getMonthName', () => {
   it('returns English month names (en-US)', () => {
@@ -76,5 +82,40 @@ describe('formatFullDate', () => {
     expect(result).toContain('1월');
     expect(result).toContain('15');
     expect(result).toContain('목요일');
+  });
+});
+
+describe('getWeekStartForLocale', () => {
+  it('returns 1 (Monday) for Monday-first locales', () => {
+    expect(getWeekStartForLocale('en-GB')).toBe(1);
+    expect(getWeekStartForLocale('de-DE')).toBe(1);
+    expect(getWeekStartForLocale('fr-FR')).toBe(1);
+  });
+
+  it('returns 0 (Sunday) for Sunday-first locales', () => {
+    expect(getWeekStartForLocale('en-US')).toBe(0);
+    expect(getWeekStartForLocale('ja-JP')).toBe(0);
+    expect(getWeekStartForLocale('ko-KR')).toBe(0);
+  });
+
+  it('always returns a valid WeekStartsOn (0 or 1)', () => {
+    for (const loc of ['en-US', 'ko-KR', 'en-GB', 'de-DE', 'fr-FR', 'ar-EG', 'he-IL', 'zh-CN']) {
+      expect([0, 1]).toContain(getWeekStartForLocale(loc));
+    }
+  });
+
+  it('falls back to 0 for an unparseable locale tag', () => {
+    expect(getWeekStartForLocale('not-a-real-locale-!!!')).toBe(0);
+  });
+
+  it('defaults to en-US (Sunday) when no locale is given', () => {
+    expect(getWeekStartForLocale()).toBe(0);
+  });
+
+  it('caches repeated lookups (returns the same value)', () => {
+    const a = getWeekStartForLocale('en-GB');
+    const b = getWeekStartForLocale('en-GB');
+    expect(a).toBe(b);
+    expect(a).toBe(1);
   });
 });
