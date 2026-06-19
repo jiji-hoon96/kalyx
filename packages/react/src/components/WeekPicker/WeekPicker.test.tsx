@@ -339,6 +339,65 @@ describe('WeekPicker — accessibility', () => {
     });
     expect(results).toHaveNoViolations();
   });
+
+  it('restores focus to the start input after closing with Escape from inside the grid (A-G4)', async () => {
+    const user = userEvent.setup();
+    renderWeekPicker({
+      value: { start: '2026-01-11T00:00:00.000Z', end: '2026-01-17T00:00:00.000Z' },
+    });
+
+    const startInput = screen.getByLabelText('Start date');
+    await user.click(startInput);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    // Move focus off the input into the calendar grid, then Escape.
+    await user.keyboard('{ArrowRight}');
+    expect(startInput).not.toHaveFocus();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(startInput).toHaveFocus();
+  });
+});
+
+describe('WeekPicker — keyboard navigation design (A-G2)', () => {
+  // A-G2 design decision (locked here): WeekPicker reuses RangePicker.Calendar in
+  // selectionMode="week". Keyboard focus moves day-granular (ArrowLeft/Right = ±1 day,
+  // ArrowUp/Down = ±1 week), and Enter/Space on ANY focused day commits the WHOLE week
+  // containing it. We deliberately do NOT add a separate week-stride focus mode:
+  //   - ArrowUp/ArrowDown already move a full week (±7 days), covering week-stride needs.
+  //   - day-granular horizontal focus keeps the grid's WAI-ARIA semantics identical to
+  //     DatePicker/RangePicker (one roving tabIndex per gridcell), avoiding a bespoke
+  //     focus model and the bundle cost it would add.
+  // These tests lock that contract so the behavior can't drift silently.
+
+  it('ArrowUp / ArrowDown move focus by a full week', async () => {
+    const user = userEvent.setup();
+    renderWeekPicker({
+      value: { start: '2026-01-11T00:00:00.000Z', end: '2026-01-17T00:00:00.000Z' },
+    });
+    await user.click(screen.getByLabelText('Start date'));
+
+    // Focus starts on the selected week's start (Jan 11). ArrowDown → +7 days = Jan 18.
+    await user.keyboard('{ArrowDown}');
+    expect(screen.getByRole('button', { name: /January 18, 2026/ })).toHaveFocus();
+    // ArrowUp → back to Jan 11.
+    await user.keyboard('{ArrowUp}');
+    expect(screen.getByRole('button', { name: /January 11, 2026/ })).toHaveFocus();
+  });
+
+  it('Enter on any focused day commits the entire week containing it', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderWeekPicker({ value: JAN_ANCHOR, weekStartsOn: 0 });
+    await user.click(screen.getByLabelText('Start date'));
+
+    // Focus a mid-week day, then Enter — the whole week (Sun..Sat) must be committed.
+    await user.click(screen.getByRole('button', { name: /January 14, 2026/ }));
+    expect(onChange).toHaveBeenCalledWith({
+      start: expect.stringMatching(/^2026-01-11T/),
+      end: expect.stringMatching(/^2026-01-17T/),
+    });
+  });
 });
 
 describe('WeekPicker — SSR safety', () => {

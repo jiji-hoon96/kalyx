@@ -483,4 +483,21 @@ describe('MonthPicker — localization', () => {
     // ko-KR returns "1월", "2월" ...
     expect(cells[0]).toHaveTextContent('1월');
   });
+
+  it('restores focus to the input after closing with Escape from inside the grid (A-G4)', async () => {
+    const user = userEvent.setup();
+    renderMonthPicker({ value: '2026-01-15T00:00:00.000Z' });
+
+    const input = screen.getByRole('combobox');
+    await user.click(input);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    // Move focus off the input into the month grid, then Escape.
+    await user.keyboard('{ArrowRight}');
+    expect(input).not.toHaveFocus();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(input).toHaveFocus();
+  });
 });

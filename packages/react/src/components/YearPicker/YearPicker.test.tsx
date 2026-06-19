@@ -375,6 +375,22 @@ describe('YearPicker — accessibility', () => {
     });
     expect(results).toHaveNoViolations();
   });
+
+  it('restores focus to the input after closing with Escape from inside the grid (A-G4)', async () => {
+    const user = userEvent.setup();
+    renderYearPicker({ value: '2026-01-01T00:00:00.000Z' });
+
+    const input = screen.getByRole('combobox');
+    await user.click(input);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    await user.keyboard('{ArrowRight}');
+    expect(input).not.toHaveFocus();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(input).toHaveFocus();
+  });
 });
 
 describe('YearPicker — SSR safety', () => {
