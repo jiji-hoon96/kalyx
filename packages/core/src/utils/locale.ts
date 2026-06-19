@@ -95,3 +95,39 @@ export function formatFullDate(iso: string, locale = 'en-US'): string {
     timeZone: 'UTC',
   }).format(date);
 }
+
+const weekStartCache = new Map<string, WeekStartsOn>();
+
+/**
+ * Infers the locale's first day of the week as a {@link WeekStartsOn} (0 = Sunday, 1 = Monday).
+ *
+ * Reads `Intl.Locale(locale).weekInfo.firstDay` (1 = Monday … 7 = Sunday). Since the public
+ * `WeekStartsOn` surface is `0 | 1`, Sunday-first locales (firstDay 7, e.g. en-US, ja-JP) map to
+ * `0` and every other locale maps to `1` (e.g. ko-KR, en-GB, de-DE). Falls back to `0` when the
+ * runtime lacks `weekInfo` (older engines) or the locale tag is unparseable.
+ *
+ * @param locale BCP 47 locale string (e.g. "en-US", "ko-KR")
+ */
+export function getWeekStartForLocale(locale = 'en-US'): WeekStartsOn {
+  const cached = weekStartCache.get(locale);
+  if (cached !== undefined) return cached;
+
+  let result: WeekStartsOn = 0;
+  try {
+    // `weekInfo` is a getter on some engines and a property (`getWeekInfo()`) on others.
+    const loc = new Intl.Locale(locale) as Intl.Locale & {
+      weekInfo?: { firstDay?: number };
+      getWeekInfo?: () => { firstDay?: number };
+    };
+    const info = loc.getWeekInfo?.() ?? loc.weekInfo;
+    if (info?.firstDay != null) {
+      // firstDay: 1 = Monday … 7 = Sunday. Map Sunday → 0, everything else → 1.
+      result = info.firstDay === 7 ? 0 : 1;
+    }
+  } catch {
+    // Unparseable locale or no Intl.Locale — keep the Sunday-first default.
+  }
+
+  weekStartCache.set(locale, result);
+  return result;
+}

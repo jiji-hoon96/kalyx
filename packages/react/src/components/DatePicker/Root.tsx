@@ -1,6 +1,10 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { DEFAULT_DATEPICKER_LABELS, civilMidnightFromUtcDay } from '@kalyx/core';
+import {
+  DEFAULT_DATEPICKER_LABELS,
+  civilMidnightFromUtcDay,
+  getWeekStartForLocale,
+} from '@kalyx/core';
 import type {
   DateAdapter,
   DatePickerLabels,
@@ -79,7 +83,7 @@ export function DatePickerRoot({
   onCalendarNavigate,
   disabled = false,
   readOnly = false,
-  weekStartsOn = 0,
+  weekStartsOn: weekStartsOnProp,
   displayFormat = 'yyyy-MM-dd',
   locale = 'en-US',
   displayTimezone,
@@ -120,6 +124,10 @@ export function DatePickerRoot({
     () => ({ ...DEFAULT_DATEPICKER_LABELS, ...labelsProp }),
     [labelsProp],
   );
+
+  // When the consumer doesn't pin weekStartsOn, infer it from the locale
+  // (e.g. ko-KR / en-GB → Monday, en-US / ja-JP → Sunday). An explicit prop always wins.
+  const weekStartsOn = weekStartsOnProp ?? getWeekStartForLocale(locale);
 
   const isDisabled = typeof disabled === 'boolean' ? disabled : false;
   const disabledRules: DisabledRule[] = useMemo(

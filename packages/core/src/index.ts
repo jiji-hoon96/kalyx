@@ -40,7 +40,13 @@ export {
   isSameTime,
 } from './utils/time.js';
 export type { TimeValue } from './utils/time.js';
-export { getMonthName, formatMonthYear, getWeekdayNames, formatFullDate } from './utils/locale.js';
+export {
+  getMonthName,
+  formatMonthYear,
+  getWeekdayNames,
+  formatFullDate,
+  getWeekStartForLocale,
+} from './utils/locale.js';
 export type { WeekdayInfo } from './utils/locale.js';
 export {
   formatInTimezone,
