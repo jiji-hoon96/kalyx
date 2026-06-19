@@ -641,7 +641,7 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 | ~~B7~~ | ~~`weekStartsOn` locale 자동 추론 (명시 prop override)~~ → **완료** | audit T-G2 — `getWeekStartForLocale` (core) + DatePicker/RangePicker Root 가 `weekStartsOn` 미지정 시 locale 추론 (명시 prop 우선). +44 B CJS |
 | B8 | `/headless` adapter guide 한국어 번역 | 주 성장 오디언스 KO 부재 |
 | ~~B9~~ | ~~번들 margin 도구: `scripts/bundle-diff.mjs` + PR comment~~ → **완료** (PR #153) | audit B-D2 — `scripts/bundle-diff.mjs` 가 base 대비 byte-level delta + 남은 마진(**CJS 126 B / ESM 221 B**)을 PR 코멘트로 가시화. gzip 측정은 `check-bundle-size.js` 의 `getGzipBytes` 재사용(B-R1 단일 소스) |
-| B10 | a11y polish set: A-G1..A-G5 | DatePicker `announce()` 패리티, WeekPicker nav 결정, axe-when-open, Trigger focus-restore 테스트, week-mode aria-label |
+| B10 | a11y polish set: A-G1..A-G5 | DatePicker `announce()` 패리티, WeekPicker nav 결정, axe-when-open, Trigger focus-restore 테스트, week-mode aria-label. **부분 완료:** A-G3(axe-when-open, 이미 7픽커 충족) · A-G4(focus-restore 테스트 Month/Year/Week/DateTime 추가) · A-G2(WeekPicker day-granular focus + week-commit 설계 확정·테스트 락). **잔여(bundle-positive):** A-G1(announce 패리티) · A-G5(week-mode aria-label) |
 | ~~B11~~ | ~~docs-site comparison 랜딩 비교~~ → **드롭** (2026-06-18) | 홍보 접음. comparison 페이지 자체도 제거 (마케팅 모먼트 폐기) |
 
 ### Track C — v1.2 (다음 분기)
