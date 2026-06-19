@@ -28,7 +28,7 @@
 export { DatePicker } from './components/DatePicker/index.js';
 export { RangePicker } from './components/RangePicker/index.js';
 export { TimePicker } from './components/TimePicker/index.js';
-export { DateTimePicker } from './components/DateTimePicker/index.js';
+export { DateTimePicker } from './components/DateTimePicker/headless.js';
 export { MonthPicker } from './components/MonthPicker/index.js';
 export { YearPicker } from './components/YearPicker/index.js';
 export { WeekPicker } from './components/WeekPicker/index.js';
@@ -89,6 +89,11 @@ export type {
   DateTimePickerRootProps,
   DateTimePickerInputProps,
 } from './components/DateTimePicker/index.js';
+export type {
+  DateTimePickerPresetsProps,
+  DateTimePickerPresetsClassNames,
+  DateTimePickerPresetProps,
+} from './components/DateTimePicker/headless.js';
 
 export type {
   MonthPickerRootProps,

@@ -225,6 +225,23 @@ export function DateTimePickerRoot({
     [currentValue, updateValue, displayTimezone, adapter],
   );
 
+  /**
+   * Commit a full datetime (date + time) atomically. Used by DateTimePicker.Presets,
+   * where a preset carries both portions and must not race the time-preserving selectDate.
+   */
+  const selectDateTime = useCallback(
+    (iso: ISODateString | null) => {
+      if (iso === null) {
+        updateValue(null);
+        return;
+      }
+      // A preset ISO is already a UTC instant; when a display timezone is set the
+      // value is interpreted/displayed there, so no civil-midnight remapping is needed.
+      updateValue(iso);
+    },
+    [updateValue],
+  );
+
   const open = useCallback(() => {
     if (isDisabled || readOnly) return;
     setIsOpen(true);
@@ -248,6 +265,7 @@ export function DateTimePickerRoot({
       referenceRef,
       value: currentValue,
       selectDate,
+      selectDateTime,
       isOpen,
       open,
       close,
@@ -270,6 +288,7 @@ export function DateTimePickerRoot({
     [
       currentValue,
       selectDate,
+      selectDateTime,
       isOpen,
       open,
       close,
