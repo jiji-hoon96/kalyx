@@ -32,17 +32,24 @@ import { readFileSync, statSync, appendFileSync } from "fs";
 // blackout-slot use cases, closing the gap with react-datepicker's
 // `filterTime` and MUI X's `shouldDisableTime` (PR following this comment).
 // Still ~4× smaller than react-datepicker (~40KB).
-const TARGET_KB = 16;
+export const TARGET_KB = 16;
+export const TARGET_BYTES = TARGET_KB * 1024;
 
-const BUNDLES = [
+export const BUNDLES = [
 	{ label: "ESM", path: "packages/react/dist/index.js", outputKey: "kb_esm" },
 	{ label: "CJS", path: "packages/react/dist/index.cjs", outputKey: "kb_cjs" },
 ];
 
+// Single source of truth for the gzip primitive. bundle-diff.mjs imports this
+// so base-vs-head deltas are measured with the exact same zlib defaults as the
+// CI gate and tsup post-build hook — no shell-gzip drift inside the tight
+// 16KB margin (~126 B CJS / ~221 B ESM).
+export function getGzipBytes(filePath) {
+	return gzipSync(readFileSync(filePath)).length;
+}
+
 function getGzipKB(filePath) {
-	const content = readFileSync(filePath);
-	const compressed = gzipSync(content);
-	return (compressed.length / 1024).toFixed(2);
+	return (getGzipBytes(filePath) / 1024).toFixed(2);
 }
 
 function getRawKB(filePath) {
@@ -54,7 +61,7 @@ function emitGithubOutput(key, value) {
 	appendFileSync(process.env.GITHUB_OUTPUT, `${key}=${value}\n`);
 }
 
-try {
+function run() {
 	console.log("\n📦 Bundle Size Report");
 	console.log("─".repeat(48));
 
@@ -83,8 +90,16 @@ try {
 		);
 		process.exit(1);
 	}
-} catch (err) {
-	console.error("❌ 측정 실패:", err.message);
-	console.error("   먼저 빌드하세요: pnpm build");
-	process.exit(1);
+}
+
+// Only measure-and-gate when invoked directly (CLI / CI), not when imported
+// by bundle-diff.mjs for the shared getGzipBytes primitive.
+if (import.meta.url === `file://${process.argv[1]}`) {
+	try {
+		run();
+	} catch (err) {
+		console.error("❌ 측정 실패:", err.message);
+		console.error("   먼저 빌드하세요: pnpm build");
+		process.exit(1);
+	}
 }

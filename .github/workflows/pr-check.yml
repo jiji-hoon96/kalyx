@@ -92,46 +92,62 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
           node-version: 22
+          cache: pnpm
       - name: dist 다운로드
         uses: actions/download-artifact@v8
         with:
           name: dist-${{ github.run_id }}
           path: packages/react/dist/
       # Single source of truth for gzip measurement: shell `gzip -c` and Node's
-      # zlib could drift apart inside the ~380-byte 16KB margin, so we delegate
-      # to scripts/check-bundle-size.js — the same script tsup + local dev use.
-      # The script appends kb_esm and kb_cjs to $GITHUB_OUTPUT for the comment.
+      # zlib could drift apart inside the tight 16KB margin (~126 B CJS /
+      # ~221 B ESM as of v1.1.0), so we delegate to scripts/check-bundle-size.js
+      # — the same script tsup + local dev use. The script appends kb_esm and
+      # kb_cjs to $GITHUB_OUTPUT for the comment.
       - name: 크기 측정 및 판정
         id: check
         run: node scripts/check-bundle-size.js
+      # Bundle diff (B9): measure the base ref so the PR comment can show the
+      # byte-level delta + remaining margin, not just the absolute size. The
+      # working margin is small and CJS-bound — a few hundred bytes can break
+      # the gate, so per-PR delta visibility prevents silent ceiling breaks.
+      - name: base ref 번들 측정 (delta용)
+        id: base
+        if: github.event_name == 'pull_request'
+        run: |
+          set -e
+          git worktree add /tmp/base-ref "${{ github.event.pull_request.base.sha }}"
+          pnpm --dir /tmp/base-ref install --frozen-lockfile
+          pnpm --dir /tmp/base-ref build
+          ESM=$(node -e "import('${{ github.workspace }}/scripts/check-bundle-size.js').then(m => process.stdout.write(String(m.getGzipBytes('/tmp/base-ref/packages/react/dist/index.js'))))")
+          CJS=$(node -e "import('${{ github.workspace }}/scripts/check-bundle-size.js').then(m => process.stdout.write(String(m.getGzipBytes('/tmp/base-ref/packages/react/dist/index.cjs'))))")
+          echo "esm=$ESM" >> "$GITHUB_OUTPUT"
+          echo "cjs=$CJS" >> "$GITHUB_OUTPUT"
+          git worktree remove --force /tmp/base-ref
+      - name: 번들 diff 계산
+        id: diff
+        if: github.event_name == 'pull_request'
+        env:
+          BUNDLE_BASE_ESM: ${{ steps.base.outputs.esm }}
+          BUNDLE_BASE_CJS: ${{ steps.base.outputs.cjs }}
+        run: node scripts/bundle-diff.mjs
       - name: PR 코멘트
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v9
+        env:
+          COMMENT_BODY: ${{ steps.diff.outputs.comment }}
         with:
           script: |
-            const kbEsm = '${{ steps.check.outputs.kb_esm }}';
-            const kbCjs = '${{ steps.check.outputs.kb_cjs }}';
-            const ok = parseFloat(kbEsm) <= 16 && parseFloat(kbCjs) <= 16;
-            const body = [
-              '',
-              '| 번들 | gzip |',
-              '|---|---|',
-              `| **ESM** (\`dist/index.js\`) | **${kbEsm}KB** |`,
-              `| **CJS** (\`dist/index.cjs\`) | **${kbCjs}KB** |`,
-              `| 목표 | ≤ 16KB |`,
-              '',
-              ok
-                ? '번들 크기가 목표 이내입니다.'
-                : '⚠️ 번들 크기가 목표를 초과했습니다. `pnpm check-bundle` 로 확인하세요.',
-            ].join('\n');
             github.rest.issues.createComment({
               issue_number: context.payload.pull_request.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body,
+              body: process.env.COMMENT_BODY,
             });
 
   ssr-check:

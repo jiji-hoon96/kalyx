@@ -640,7 +640,7 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 | ~~B6~~ | ~~`@kalyx/adapter-temporal@0.x`~~ → **드롭** (2026-06-18) | 정확성 0 검증: 어댑터 인터페이스는 ISO-string in/out이라 Temporal 역량 운반 불가, core Intl로 재위임. 홍보 접어 optics 청중도 없음. Temporal **전략**은 core 레벨 Track D demand-gate로 보존 |
 | B7 | `weekStartsOn` locale 자동 추론 (명시 prop override) | audit T-G2 |
 | B8 | `/headless` adapter guide 한국어 번역 | 주 성장 오디언스 KO 부재 |
-| B9 | 번들 margin 도구: `scripts/bundle-diff.mjs` + PR comment | audit B-D2 — **CJS 126 B / ESM 221 B** 마진 가시화 (이전 "~380 B"는 stale; binding=CJS) |
+| ~~B9~~ | ~~번들 margin 도구: `scripts/bundle-diff.mjs` + PR comment~~ → **완료** (PR #153) | audit B-D2 — `scripts/bundle-diff.mjs` 가 base 대비 byte-level delta + 남은 마진(**CJS 126 B / ESM 221 B**)을 PR 코멘트로 가시화. gzip 측정은 `check-bundle-size.js` 의 `getGzipBytes` 재사용(B-R1 단일 소스) |
 | B10 | a11y polish set: A-G1..A-G5 | DatePicker `announce()` 패리티, WeekPicker nav 결정, axe-when-open, Trigger focus-restore 테스트, week-mode aria-label |
 | ~~B11~~ | ~~docs-site comparison 랜딩 비교~~ → **드롭** (2026-06-18) | 홍보 접음. comparison 페이지 자체도 제거 (마케팅 모먼트 폐기) |
 
