@@ -19,15 +19,8 @@ Kalyx is distributed as two packages. Most apps install only `@kalyx/react` — 
 
 ## Install
 
-```bash
-# pnpm (recommended)
-pnpm add @kalyx/react
-
-# npm
+```bash npm2yarn
 npm install @kalyx/react
-
-# yarn
-yarn add @kalyx/react
 ```
 
 `@kalyx/react` depends on:

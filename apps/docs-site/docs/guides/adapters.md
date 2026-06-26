@@ -16,8 +16,8 @@ because Kalyx is here.
 
 ## Default (date-fns)
 
-```bash
-pnpm add @kalyx/react
+```bash npm2yarn
+npm install @kalyx/react
 ```
 
 ```tsx

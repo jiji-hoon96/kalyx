@@ -97,25 +97,49 @@ This can happen if an element calls `event.stopPropagation()` before the click r
 
 ## Timezone
 
-### Selected date is off by one day
+### 선택한 날짜가 하루 어긋나요
 
-This is the most common timezone confusion. When you store a UTC ISO string like `"2026-04-15T00:00:00.000Z"` and display it in a timezone like `Asia/Seoul` (UTC+9), the displayed date is April 15 — but if the value was `"2026-04-15T15:00:00.000Z"`, that's April 16 in Seoul.
+이것은 **가장 많이 보고되는 datepicker 버그**입니다([react-datepicker #1018](https://github.com/Hacker0x01/react-datepicker/issues/1018)이 10년 된 사례). 거의 항상 두 가지 원인 중 하나입니다.
 
-**Fix:** Use `displayTimezone` to ensure correct display, and always let `onChange` handle the value — it emits civil midnight in the display timezone:
+**원인 1 — ISO 문자열 대신 네이티브 `Date`를 전달함.** `Date`는 *런타임의* 로컬 존으로 해석되며, 사용자 브라우저와 서버에서 다릅니다:
+
+```ts
+// ❌ off-by-one이 기다리고 있음
+const picked = new Date(2026, 3, 15); // 로컬 자정 → UTC+9에서 "2026-04-14T15:00:00.000Z"
+save(picked.toISOString());           // 서버는 4월 14일로 읽음
+```
+
+Kalyx는 `Date`를 받지 않습니다 — 값 계약이 ISO-8601 UTC 문자열이라 이 부류의 버그가 구조적으로 제거됩니다. 항상 `onChange`에서 값을 읽으세요:
+
+```tsx
+// ✅ value는 이미 올바른 UTC ISO 문자열
+<DatePicker value={value} onChange={setValue}>...</DatePicker>
+```
+
+**원인 2 — UTC 순간을 다른 civil 존에서 표시함.** `"2026-04-15T00:00:00.000Z"`는 UTC에서 4월 15일이고 서울에서도 4월 15일이지만, `"2026-04-15T15:00:00.000Z"`는 서울에서 4월 16일입니다. 캘린더가 특정 존의 *civil* 일자 기준으로 커밋·강조하길 원하면 `displayTimezone`을 설정하세요:
 
 ```tsx
 <DatePicker
   value={value}
   onChange={setValue}
-  displayTimezone="Asia/Seoul"
+  displayTimezone="Asia/Seoul"   // 서울 civil 일자 기준으로 커밋 + 강조
 >
   ...
 </DatePicker>
+// "4월 15일" 클릭 → onChange는 서울 4월 15일 00:00과 같은 UTC 순간을 방출
 ```
 
-### DST transition causes unexpected behavior
+**진단 체크리스트:**
 
-During DST transitions (e.g., US "spring forward"), 2:00 AM doesn't exist. Kalyx handles this internally with two-pass offset correction. If you're doing manual timezone math, use `@kalyx/core`'s `startOfDayInTimezone` instead of computing midnight yourself.
+1. `new Date(...)`를 만들어 `.toISOString()`을 `value`에 넣고 있나요? → 멈추고 `onChange`가 값을 소유하게 하세요.
+2. *저장된* 문자열은 맞는데 *표시된* 일자가 틀린가요? → 표시하려는 존으로 `displayTimezone`을 설정하세요.
+3. *저장된* 문자열 자체가 틀린가요? → 그것을 쓴 코드를 확인하세요(흔히 서버가 UTC 대신 로컬 `00:00`을 기본값으로 사용).
+
+전체 모델은 [타임존 개념 페이지](./concepts/timezone.md)를 참고하세요.
+
+### DST 전환 시 예기치 않은 동작
+
+DST 전환(예: 미국 "spring forward") 동안 새벽 2:00는 존재하지 않습니다. Kalyx는 two-pass 오프셋 보정으로 내부 처리합니다. 수동 타임존 계산을 한다면 자정을 직접 계산하지 말고 `@kalyx/core`의 `startOfDayInTimezone`을 쓰세요.
 
 ---
 

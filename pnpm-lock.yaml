@@ -170,6 +170,9 @@ importers:
       '@docusaurus/module-type-aliases':
         specifier: 3.10.1
         version: 3.10.1(@swc/core@1.15.41(@swc/helpers@0.5.15))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@docusaurus/remark-plugin-npm2yarn':
+        specifier: 3.10.1
+        version: 3.10.1
       '@docusaurus/tsconfig':
         specifier: 3.10.1
         version: 3.10.1
@@ -1689,6 +1692,10 @@ packages:
     resolution: {integrity: sha512-YMMxTUQV/QFSnbgrP3tjDzLHRg7vsbMn8e9HAa8o/1iXoiomo48b7sk/kkmWEuWNDPJVlKSJRB6Y2fHqdJk+SQ==}
     peerDependencies:
       react: '*'
+
+  '@docusaurus/remark-plugin-npm2yarn@3.10.1':
+    resolution: {integrity: sha512-HNxVv5Y9yx934/WLZBHJC7dYua7DVAHvhMl3hbQuzYGOghClP30Rt3hjZ0tqj/K7KqbSbVN0T4M1rBGk+e3t9A==}
+    engines: {node: '>=20.0'}
 
   '@docusaurus/theme-classic@3.10.1':
     resolution: {integrity: sha512-VU1RK0qb2pab0si4r7HFK37cYco8VzqLj3u1PspVipSr/z/GPVKHO4/HXbnePqHoWDk8urjyGSeatH0NIMBM1A==}
@@ -5864,6 +5871,10 @@ packages:
     resolution: {integrity: sha512-S48WzZW777zhNIrn7gxOlISNAqi9ZC/uQFnRdbeIHhZhCA6UqpkOT8T1G7BvfdgP4Er8gF4sUbaS0i7QvIfCWw==}
     engines: {node: '>=8'}
 
+  npm-to-yarn@3.0.1:
+    resolution: {integrity: sha512-tt6PvKu4WyzPwWUzy/hvPFqn+uwXO0K1ZHka8az3NnrhWJDmSqI8ncWq0fkL0k/lmmi5tAC11FXwXuh0rFbt1A==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
   nprogress@0.2.0:
     resolution: {integrity: sha512-I19aIingLgR1fmhftnbWWO3dXc0hSxqHQHQb3H8m+K3TnEn/iSeTZZOyvKXWqQESMwuUVnatlCnZdLBZZt2VSA==}
 
@@ -10006,6 +10017,16 @@ snapshots:
       '@types/react': 19.2.17
       react: 19.2.7
 
+  '@docusaurus/remark-plugin-npm2yarn@3.10.1':
+    dependencies:
+      mdast-util-mdx: 3.0.0
+      npm-to-yarn: 3.0.1
+      tslib: 2.8.1
+      unified: 11.0.5
+      unist-util-visit: 5.1.0
+    transitivePeerDependencies:
+      - supports-color
+
   '@docusaurus/theme-classic@3.10.1(@docusaurus/faster@3.10.1(@docusaurus/types@3.10.1(@swc/core@1.15.41(@swc/helpers@0.5.15))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@swc/helpers@0.5.15)(esbuild@0.28.1)(postcss@8.5.15))(@rspack/core@1.7.11(@swc/helpers@0.5.15))(@swc/core@1.15.41(@swc/helpers@0.5.15))(@types/react@19.2.17)(esbuild@0.28.1)(lightningcss@1.32.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)':
     dependencies:
       '@docusaurus/core': 3.10.1(@docusaurus/faster@3.10.1(@docusaurus/types@3.10.1(@swc/core@1.15.41(@swc/helpers@0.5.15))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@swc/helpers@0.5.15)(esbuild@0.28.1)(postcss@8.5.15))(@mdx-js/react@3.1.1(@types/react@19.2.17)(react@19.2.7))(@rspack/core@1.7.11(@swc/helpers@0.5.15))(@swc/core@1.15.41(@swc/helpers@0.5.15))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
@@ -10865,7 +10886,7 @@ snapshots:
 
   '@manypkg/find-root@1.1.0':
     dependencies:
-      '@babel/runtime': 7.29.2
+      '@babel/runtime': 7.29.7
       '@types/node': 12.20.55
       find-up: 4.1.0
       fs-extra: 8.1.0
@@ -14910,6 +14931,8 @@ snapshots:
   npm-run-path@4.0.1:
     dependencies:
       path-key: 3.1.1
+
+  npm-to-yarn@3.0.1: {}
 
   nprogress@0.2.0: {}
 

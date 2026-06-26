@@ -14,6 +14,20 @@ Month selector. The value is the first day of the selected month in UTC-ISO form
 import { MonthPicker } from '@kalyx/react';
 ```
 
+## Anatomy
+
+```tsx
+<MonthPicker>            {/* Root — value = first day of month, UTC */}
+  <MonthPicker.Input /> {/* combobox <input>, parses "YYYY-MM" */}
+  <MonthPicker.Trigger /> {/* button that toggles the popover */}
+  <MonthPicker.Popover> {/* Floating-UI portal, role="dialog" */}
+    <MonthPicker.Grid /> {/* 3×4 grid of months, role="grid" */}
+  </MonthPicker.Popover>
+</MonthPicker>
+```
+
+`Input` and `Trigger` are re-exported from `DatePicker` and read the `MonthPicker` context.
+
 ## Basic usage
 
 ```tsx
@@ -36,6 +50,8 @@ function Example() {
 The default `displayFormat` is `"yyyy-MM"`. Override it if you prefer a different representation (e.g., `"MMMM yyyy"` for `"April 2026"`).
 
 ### Try it live
+
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
 
 ```jsx live
 function BasicMonthPicker() {
@@ -217,6 +233,8 @@ For simple forms where you don't need React state:
   }}
 />
 ```
+
+Each month cell emits `data-selected`, `data-current`, and `data-focused` (active-only). See [Styling](../concepts/styling.md).
 
 ## Related
 

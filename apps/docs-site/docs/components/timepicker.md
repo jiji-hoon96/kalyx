@@ -14,6 +14,19 @@ Hour + minute (+ optional seconds) selection. 12- or 24-hour mode.
 import { TimePicker } from '@kalyx/react';
 ```
 
+## Anatomy
+
+```tsx
+<TimePicker>            {/* Root — holds the time value (ISO string) */}
+  <TimePicker.Input /> {/* combobox <input>, parses "HH:mm" */}
+  <TimePicker.HourList /> {/* role="listbox" of selectable hours */}
+  <TimePicker.MinuteList /> {/* role="listbox" of selectable minutes */}
+  <TimePicker.AmPmToggle /> {/* AM/PM switch (12-hour mode only) */}
+</TimePicker>
+```
+
+`AmPmToggle` is only meaningful when the Root runs in `format="12h"`. `HourList` / `MinuteList` can be rendered inline or inside your own popover.
+
 ## Basic usage
 
 ```tsx
@@ -35,6 +48,8 @@ function Example() {
 The value is still an ISO 8601 UTC string — the date part acts as a placeholder. Use `getTime(iso)` from `@kalyx/core` if you need just the hours/minutes.
 
 ### Try it live
+
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
 
 ```jsx live
 function Basic24h() {
@@ -112,6 +127,8 @@ Hour set:
 
 - `format="24h"` → `0–23`
 - `format="12h"` → `1–12` (AM/PM managed by `<AmPmToggle>`)
+
+Each option emits `data-selected` when it is the current hour. `MinuteList` and `AmPmToggle` options emit the same `data-selected` flag. See [Styling](../concepts/styling.md).
 
 ## `<TimePicker.MinuteList>`
 

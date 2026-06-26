@@ -14,6 +14,21 @@ Two-date selection — a start and an end — with optional presets.
 import { RangePicker } from '@kalyx/react';
 ```
 
+## Anatomy
+
+```tsx
+<RangePicker>            {/* Root — holds the { start, end } range */}
+  <RangePicker.Input part="start" /> {/* start-date combobox input */}
+  <RangePicker.Input part="end" />   {/* end-date combobox input */}
+  <RangePicker.Popover> {/* Floating-UI portal, role="dialog" */}
+    <RangePicker.Presets> {/* role="group" of quick-range buttons */}
+      <RangePicker.Preset /> {/* one quick-range toggle button */}
+    </RangePicker.Presets>
+    <RangePicker.Calendar /> {/* range-aware month grid */}
+  </RangePicker.Popover>
+</RangePicker>
+```
+
 ## Basic usage
 
 ```tsx
@@ -37,6 +52,8 @@ function Example() {
 **Selection flow:** first click sets `start`; second click sets `end`. If the second click is earlier than the first, the two swap automatically.
 
 ### Try it live
+
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
 
 ```jsx live
 function BasicRange() {
@@ -145,6 +162,19 @@ type RangePickerCalendarClassNames = {
   weekdayHeader?: string;
 };
 ```
+
+### `data-*` attributes
+
+Day buttons emit range-aware state attributes (active-only). See [Styling](../concepts/styling.md).
+
+| Attribute | Active when |
+| --- | --- |
+| `data-range-start` | Day is the range start. |
+| `data-range-end` | Day is the range end. |
+| `data-in-range` | Day is strictly between start and end. |
+| `data-today` | Day is today. |
+| `data-focused` | Day holds keyboard focus. |
+| `data-outside-month` | Day belongs to an adjacent month. |
 
 ## `<RangePicker.Presets>`
 

@@ -12,8 +12,8 @@ How to test Kalyx components in your application using Vitest (or Jest) + Testin
 
 Install the testing dependencies:
 
-```bash
-pnpm add -D vitest @testing-library/react @testing-library/user-event @testing-library/jest-dom jest-axe jsdom
+```bash npm2yarn
+npm install -D vitest @testing-library/react @testing-library/user-event @testing-library/jest-dom jest-axe jsdom
 ```
 
 Configure Vitest with jsdom:

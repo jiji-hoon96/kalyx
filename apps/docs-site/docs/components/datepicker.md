@@ -14,6 +14,27 @@ Single-date selection with an input, trigger, popover, and calendar grid.
 import { DatePicker } from '@kalyx/react';
 ```
 
+## Anatomy
+
+Compose the parts you need. Every part below is optional except `DatePicker` (Root) — drop in only what your UI requires.
+
+```tsx
+<DatePicker>            {/* Root — holds state, provides context */}
+  <DatePicker.Input /> {/* combobox <input>, parses typed dates */}
+  <DatePicker.Trigger /> {/* button that toggles the popover */}
+  <DatePicker.Popover> {/* Floating-UI portal, role="dialog" */}
+    <DatePicker.Presets> {/* role="group" of quick-select buttons */}
+      <DatePicker.Preset /> {/* one quick-select toggle button */}
+    </DatePicker.Presets>
+    <DatePicker.Calendar /> {/* month grid, role="grid" */}
+    <DatePicker.MonthGrid /> {/* 3×4 month jump grid (optional view) */}
+    <DatePicker.YearGrid /> {/* paginated year grid (optional view) */}
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+`Calendar`, `MonthGrid`, and `YearGrid` are alternative views of the same popover — swap between them with `onTitleClick` (see [Month / Year navigation](#month--year-navigation)).
+
 ## Basic usage
 
 ```tsx
@@ -35,6 +56,8 @@ function Example() {
 ```
 
 ### Try it live
+
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
 
 ```jsx live
 function BasicDatePicker() {
@@ -241,6 +264,19 @@ type DatePickerCalendarClassNames = {
 };
 ```
 
+### `data-*` attributes
+
+Each day button emits state attributes you can style by (e.g. `data-[selected]:` in Tailwind, or `[data-selected]` in CSS). They appear only when active. See [Styling](../concepts/styling.md) for the full contract.
+
+| Attribute | Active when |
+| --- | --- |
+| `data-selected` | Day is the selected date. |
+| `data-today` | Day is today. |
+| `data-focused` | Day holds keyboard focus. |
+| `data-outside-month` | Day belongs to an adjacent month. |
+
+Disabled days use the native `disabled` + `aria-disabled` attributes (style with `:disabled` or the `dayDisabled` slot).
+
 ## `<DatePicker.MonthGrid>` (optional)
 
 A 3×4 grid of months — drop in to let users jump directly to a month.
@@ -264,6 +300,8 @@ type DatePickerMonthGridClassNames = {
 };
 ```
 
+Each month button emits `data-selected` (selected month), `data-current` (current month), and `data-focused` (keyboard focus). See [Styling](../concepts/styling.md).
+
 ## `<DatePicker.YearGrid>` (optional)
 
 A paginated grid of years (12 per page).
@@ -285,6 +323,8 @@ type DatePickerYearGridClassNames = {
   yearCurrent?: string;
 };
 ```
+
+Each year button emits `data-selected`, `data-current`, and `data-focused` — same contract as `MonthGrid`.
 
 ## `<DatePicker.Presets>` / `<DatePicker.Preset>` (optional)
 

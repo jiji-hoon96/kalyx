@@ -12,6 +12,10 @@ Build a working DatePicker in five minutes.
 
 Edit the code below — changes update the preview instantly. Kalyx is headless, so what you see is raw HTML plus the `classNames` you provide.
 
+:::note Live editor imports
+The live editors on this site run with `React` and every Kalyx component / hook already in scope, so the examples omit `import` lines. When you copy a live snippet into your own project, add the imports — e.g. `import { useState } from 'react';` and `import { DatePicker } from '@kalyx/react';`. The non-live `tsx` blocks below always show the full imports.
+:::
+
 ```jsx live
 function LiveExample() {
   const [date, setDate] = React.useState(null);
@@ -48,13 +52,13 @@ function LiveExample() {
 
 ## 1. Install
 
-```bash
-pnpm add @kalyx/react
+```bash npm2yarn
+npm install @kalyx/react
 ```
 
 ## 2. Controlled DatePicker
 
-```tsx
+```tsx title="BirthdayPicker.tsx"
 import { useState } from 'react';
 import { DatePicker, type ISODateString } from '@kalyx/react';
 
@@ -62,6 +66,7 @@ export function BirthdayPicker() {
   const [date, setDate] = useState<ISODateString | null>(null);
 
   return (
+    // highlight-next-line
     <DatePicker value={date} onChange={setDate}>
       <DatePicker.Input placeholder="YYYY-MM-DD" />
       <DatePicker.Trigger />
@@ -122,7 +127,7 @@ See [ISO Strings →](../concepts/iso-string) for why.
 
 ## 5. Try a range
 
-```tsx
+```tsx title="VacationRange.tsx"
 import { useState } from 'react';
 import { RangePicker, type DateRange } from '@kalyx/react';
 

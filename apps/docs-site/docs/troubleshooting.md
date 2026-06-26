@@ -99,19 +99,43 @@ This can happen if an element calls `event.stopPropagation()` before the click r
 
 ### Selected date is off by one day
 
-This is the most common timezone confusion. When you store a UTC ISO string like `"2026-04-15T00:00:00.000Z"` and display it in a timezone like `Asia/Seoul` (UTC+9), the displayed date is April 15 — but if the value was `"2026-04-15T15:00:00.000Z"`, that's April 16 in Seoul.
+This is the **single most-reported datepicker bug** ([react-datepicker #1018](https://github.com/Hacker0x01/react-datepicker/issues/1018) is a decade-old example). It almost always comes from one of two causes.
 
-**Fix:** Use `displayTimezone` to ensure correct display, and always let `onChange` handle the value — it emits civil midnight in the display timezone:
+**Cause 1 — you passed a native `Date` instead of an ISO string.** A `Date` is interpreted in the *runtime's* local zone, which differs between the user's browser and your server:
+
+```ts
+// ❌ off-by-one waiting to happen
+const picked = new Date(2026, 3, 15); // local midnight → "2026-04-14T15:00:00.000Z" in UTC+9
+save(picked.toISOString());           // server reads April 14
+```
+
+Kalyx never takes a `Date` — its value contract is an ISO-8601 UTC string, so this class of bug is structurally removed. Always read the value from `onChange`:
+
+```tsx
+// ✅ value is already a correct UTC ISO string
+<DatePicker value={value} onChange={setValue}>...</DatePicker>
+```
+
+**Cause 2 — you display a UTC instant in a different civil zone.** `"2026-04-15T00:00:00.000Z"` is April 15 in UTC but still April 15 in Seoul; `"2026-04-15T15:00:00.000Z"` is April 16 in Seoul. If you want the calendar to commit and highlight by *civil* day in a specific zone, set `displayTimezone`:
 
 ```tsx
 <DatePicker
   value={value}
   onChange={setValue}
-  displayTimezone="Asia/Seoul"
+  displayTimezone="Asia/Seoul"   // commit + highlight by Seoul civil day
 >
   ...
 </DatePicker>
+// click "April 15" → onChange emits the UTC instant equal to Seoul April 15 00:00
 ```
+
+**Diagnosis checklist:**
+
+1. Are you ever constructing `new Date(...)` and passing `.toISOString()` into `value`? → stop; let `onChange` own the value.
+2. Is the *stored* string correct but the *displayed* day wrong? → set `displayTimezone` to the zone you want to display in.
+3. Is the *stored* string itself wrong? → check the code that wrote it (often a server default of `00:00` local instead of UTC).
+
+See the [Timezone concept page](./concepts/timezone.md) for the full model.
 
 ### DST transition causes unexpected behavior
 

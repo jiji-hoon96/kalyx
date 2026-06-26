@@ -149,6 +149,46 @@ export const ja: DatePickerLabels = {
 
 둘은 독립적입니다 — `locale="ko-KR"`과 영어 라벨을 함께 쓸 수도 있고, 그 반대도 가능합니다.
 
+## 오른쪽-왼쪽 (RTL)
+
+Kalyx는 의미론적 HTML을 렌더링하며 자체적으로 레이아웃 방향을 읽지 않으므로 RTL이 "그냥 동작"합니다 — 상위 요소(또는 `<html dir="rtl">`)에 `dir="rtl"`을 주면 캘린더 그리드·입력·popover가 문서와 함께 미러링됩니다. 아랍어 요일/월 이름을 위해 맞는 `locale`(예: `ar-EG`)을 사용하세요.
+
+아래에서 방향을 토글해 같은 picker가 미러링되는 것을 확인하세요:
+
+```jsx live
+function RtlToggle() {
+  const [date, setDate] = React.useState(null);
+  const [dir, setDir] = React.useState('rtl');
+  return (
+    <div>
+      <button
+        className="kx-live-trigger"
+        style={{ marginBottom: 12 }}
+        onClick={() => setDir((d) => (d === 'rtl' ? 'ltr' : 'rtl'))}>
+        dir = {dir} (토글)
+      </button>
+      <div dir={dir}>
+        <DatePicker value={date} onChange={setDate} locale={dir === 'rtl' ? 'ar-EG' : 'en-US'}>
+          <DatePicker.Input className="kx-live-input" placeholder="YYYY-MM-DD" />
+          <DatePicker.Popover className="kx-live-popover">
+            <DatePicker.Calendar
+              classNames={{
+                header: 'kx-live-header', title: 'kx-live-title', navButton: 'kx-live-nav',
+                grid: 'kx-live-grid', gridCell: 'kx-live-cell', weekdayHeader: 'kx-live-weekday',
+                day: 'live-day', daySelected: 'live-day-selected', dayToday: 'live-day-today',
+                dayOutsideMonth: 'kx-live-outside',
+              }}
+            />
+          </DatePicker.Popover>
+        </DatePicker>
+      </div>
+    </div>
+  );
+}
+```
+
+내비게이션 화살표는 그리드 전체가 `dir`과 함께 미러링되므로 "이전 / 다음"의 시각적 의미를 그대로 유지합니다 — 직접 바꿀 필요가 없습니다. 스크린 리더 안내가 언어와 맞도록 지역화된 `labels`(위 라벨 키 레퍼런스 참고)를 제공하세요.
+
 ## 다음
 
 - [접근성 →](./accessibility.md)
