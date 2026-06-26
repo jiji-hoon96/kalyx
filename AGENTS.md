@@ -587,6 +587,13 @@ pnpm changeset publish # npm 배포 (CI 자동)
 
 ## 14. 현재 이니셔티브 (2026-06-18 기준 — Track A 종료, "정확성 먼저" 방향 확정)
 
+> **🟢 2026-06-26 최근 작업 로그 (세션 메모리):**
+> - **1.2.0 정식 npm 배포 완료** — `@kalyx/core@1.2.0` + `@kalyx/react@1.2.0` publish (dist-tag `latest`). 내용: **B5**(DateTimePicker.Presets/.Preset on `/headless`) + **B7**(weekStartsOn locale 추론). GitHub Release 2건 자동 생성. (`@kalyx-example/*` 는 private 0.0.x, publish 안 됨.) Changesets action 정상 동작.
+> - **`release.yml` 번들 게이트 버그 수정 (PR #160)** — stale 인라인 `MAX=16` + shell `gzip -c` 가 ESM 16.02KB 를 17KB 천장(B10) 후에도 막아 1.2.0 release 가 #158/#159 푸시마다 실패하고 있었음. → 정식 `node scripts/check-bundle-size.js`(`TARGET_KB=17`) 호출로 교체. 이게 **release 가 막혀 있던 근본 원인**이었음. (§14 "v1.0 직후 처리 필요" 3번 부분 완료.)
+> - **docs-site 대규모 개선 (PR #159, D1~D12)** — 7개 경쟁 OSS 공식문서 리서치 기반. spec: [`docs/superpowers/specs/2026-06-25-docs-competitive-research-and-improvement-plan.md`](docs/superpowers/specs/2026-06-25-docs-competitive-research-and-improvement-plan.md). 추가물: `concepts/styling.md`(data-* 계약 표), 컴포넌트별 Anatomy 트리, a11y APG 인용+키보드 표, `recipes/use-cases.md`, `/headless` 훅 4종 페이지, timezone "하루 어긋남" 트러블슈팅, pm 탭(npm2yarn), 라인 하이라이트/파일명 헤더, `llms.txt`+페이지별 raw `.md`(postBuild 플러그인 `src/plugins/llms-txt.ts`), RTL 토글 데모. **전부 en+ko 작성.** 홍보 콘텐츠(comparison/blog)는 2026-06-18 결정대로 미진행.
+> - **보안 이슈 #136/#141 정리** — 2026-06-18 자동 생성된 stale 노이즈(security 워크플로우는 실패 시 issue 자동 생성하나 자동 닫기 안 함). 로컬 `osv-scanner` "No issues found" + CI OSV/License pass 확인 후 근거 코멘트와 함께 close. 실제 코드 취약점 없음. (남은 GHSA-h67p-54hq-rp68 js-yaml 은 `osv-scanner.toml` 에 의도적 필터, `ignoreUntil=2027-01-01`.)
+> - **주의:** docs-site `src/pages/index.tsx:9` 에 사전부터 존재하는 `JSX namespace` typecheck 에러 있음(CI Type Check 는 통과 — tsc 설정 차이). main 보호로 release PR 류는 `gh pr merge --admin` 필요(일반 머지 BLOCKED).
+
 > **🧭 2026-06-18 확정 방향 (single source of truth):** [`docs/superpowers/specs/2026-06-18-current-state-analysis-and-correctness-first-direction.md`](docs/superpowers/specs/2026-06-18-current-state-analysis-and-correctness-first-direction.md)
 > 10-에이전트 멀티에이전트 현 시점 분석(7차원 → 적대적 검증 → 종합, 1차 출처 검증)으로 선행 방향을 validate. 결론:
 > - **홍보는 접는다** (사용자 결정 — 외부 사용자 0, HN 신규계정 auto-dead). 라이브 홍보 콘텐츠(블로그·announcementBar·comparison) 제거. → 아래 Track 우선순위는 이 spec을 따른다.
@@ -628,7 +635,7 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 
 어댑터 패턴을 "약속"에서 "검증된 실력"으로. 두 번째 어댑터 출시 + conformance suite + 누락 hook이 척추.
 
-> **⚠️ 실행 순서는 2026-06-18 spec을 따른다** (위 §14 intro): ①fast-check 속성테스트(1.0.4, 아래 Track C에서 끌어올림) → ②B2 conformance → ③B4 hooks → ④(선택) B1 dayjs. **B6 temporal·B11 comparison 랜딩은 드롭됨** (아래 표 참조).
+> **⚠️ 실행 순서는 2026-06-18 spec을 따른다** (위 §14 intro): ①fast-check 속성테스트(1.0.4, 아래 Track C에서 끌어올림) → ②B2 conformance → ③B4 hooks → ④(선택) B1 dayjs. **B6 temporal·B11 comparison 랜딩은 드롭됨** (아래 표 참조). **B5+B7 은 `@kalyx/{core,react}@1.2.0` 으로 2026-06-26 npm 배포 완료.**
 
 | # | 항목 | 근거 |
 |---|---|---|
@@ -662,7 +669,7 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 
 1. `@kalyx/adapter-date-fns` npmjs.com Trusted Publisher 등록 — 1.0.0 publish는 토큰 수동이라 다음부터 OIDC + provenance 자동화.
 2. `@kalyx/adapter-date-fns@1.0.0` GitHub Release 수동 backfill (토큰 publish는 GH Release 미생성).
-3. `release.yml` 견고화 — ignored 패키지 changeset이 publish 차단 안 하도록 사전 검증 step.
+3. ~~`release.yml` 견고화 — ignored 패키지 changeset이 publish 차단 안 하도록 사전 검증 step.~~ → **부분 완료 (2026-06-26, PR #160):** `release.yml` 의 번들 게이트가 **stale 인라인 16KB(`MAX=16`, shell `gzip -c`)** 라 B10(A-G1)에서 천장이 17KB로 오른 뒤 1.2.0 release를 막고 있었음(ESM 16.02KB로 측정). 정식 `node scripts/check-bundle-size.js`(`TARGET_KB=17`) 호출로 교체 → 천장 단일 소스화 + gzip 측정 통일(B-R1). **남은 부분:** ignored(`@kalyx-example/*`) changeset이 publish 차단하는지 사전 검증 step 은 아직 미구현(이번 1.2.0 publish 는 정상 동작).
 4. `apps/docs/CHANGELOG.md`, vitest lockfile drift refresh. (~~`@floating-ui/react` 0.26→0.27 검토~~ → **완료**: package.json 이미 `^0.27.0`. docs-site `api/react.md` 의 0.26 표기만 정정 대상 — 2026-06-18 stale-fact 스윕)
 
 ### 카피 정정 (낮은 우선순위)
