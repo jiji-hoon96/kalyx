@@ -46,15 +46,11 @@ jobs:
         run: pnpm test:run
 
       - name: 번들 크기 확인
-        run: |
-          BYTES=$(gzip -c packages/react/dist/index.js | wc -c)
-          KB=$(echo "scale=2; $BYTES / 1024" | bc)
-          MAX=16
-          echo "📦 릴리즈 번들 크기: ${KB}KB (목표: ≤${MAX}KB)"
-          if (( $(echo "$KB > $MAX" | bc -l) )); then
-            echo "❌ 번들 크기 ${MAX}KB 초과 — 릴리즈 중단"
-            exit 1
-          fi
+        # Single source of truth for the gzip ceiling + measurement:
+        # scripts/check-bundle-size.js (TARGET_KB) — the same gate pr-check.yml
+        # and tsup use. Avoids the stale inline 16KB limit that blocked 1.2.0
+        # after the ceiling was raised to 17KB (B10 A-G1).
+        run: node scripts/check-bundle-size.js
 
       - name: Changesets 릴리즈
         id: changesets
