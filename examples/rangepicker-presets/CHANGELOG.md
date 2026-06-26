@@ -1,5 +1,14 @@
 # @kalyx-example/rangepicker-presets
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [51404de]
+- Updated dependencies [c5752d7]
+- Updated dependencies [24b09c7]
+  - @kalyx/react@1.2.0
+
 ## 0.0.3
 
 ### Patch Changes
