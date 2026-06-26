@@ -8,6 +8,17 @@ sidebar_position: 5
 
 모든 Kalyx 컴포넌트는 WAI-ARIA 역할, 풀 키보드 지원을 갖추고 테스트에서 axe 자동 검사를 통과합니다. 접근성을 *추가*하는 게 아니라 *제거*하려 애써야 사라집니다.
 
+## 표준 & 준수
+
+Kalyx는 관련 [W3C WAI-ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) 패턴을 구현합니다:
+
+- **Date Picker Dialog** — 캘린더 popover([APG 패턴](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/), `role="dialog"` + `role="grid"` 캘린더).
+- **Combobox** — popover를 여는 텍스트 입력([APG 패턴](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/)).
+- **Listbox** — TimePicker 시/분 리스트([APG 패턴](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/)).
+- **Radio Group** — AM/PM 토글([APG 패턴](https://www.w3.org/WAI/ARIA/apg/patterns/radio/)).
+
+**준수 목표:** 구조·역할·이름·키보드 조작은 **WCAG 2.1 레벨 AA**를 목표로 합니다. Kalyx는 색상을 전혀 제공하지 않으므로 색상 대비 기준(1.4.3, 1.4.11)은 *여러분의* CSS에 달려 있습니다 — 아래 [색상 대비](#색상-대비) 참고.
+
 ## ARIA 역할 한눈에
 
 | 요소 | 역할 / 속성 |
@@ -43,6 +54,23 @@ sidebar_position: 5
 | `↑` / `↓` | 옵션 간 이동 |
 | `Home` / `End` | 첫 / 마지막 옵션 |
 | `Enter` / `Space` | 옵션 선택 |
+
+## 키보드 — MonthGrid / YearGrid
+
+월 점프·연도 점프 그리드(`DatePicker.MonthGrid`, `DatePicker.YearGrid`, `MonthPicker.Grid`, `YearPicker.Grid`)는 하나의 roving-focus 모델을 공유합니다:
+
+| 키 | 동작 |
+| --- | --- |
+| `←` / `→` | 셀 한 칸 이동 |
+| `↑` / `↓` | 한 행(3칸) 이동 |
+| `Home` / `End` | 현재 행의 시작 / 끝 |
+| `PageUp` / `PageDown` | 이전 / 다음 프레임 (월 그리드는 연도, 연도 그리드는 10년) |
+| `Enter` / `Space` | 포커스된 월 / 연도 선택 |
+| `Escape` | popover 닫고 포커스 복원 |
+
+## 키보드 — RangePicker / WeekPicker 캘린더
+
+위 `DatePicker.Calendar`와 동일한 그리드 키를 사용합니다. RangePicker는 첫 `Enter`/클릭이 `start`, 두 번째가 `end`를 설정합니다(역순이면 자동 스왑). WeekPicker는 단일 `Enter`/클릭으로 포커스된 날이 속한 주 전체를 커밋합니다.
 
 ## 키보드 — Trigger / Input
 

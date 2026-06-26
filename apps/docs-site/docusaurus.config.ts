@@ -1,4 +1,6 @@
 import {themes as prismThemes} from 'prism-react-renderer';
+import npm2yarn from '@docusaurus/remark-plugin-npm2yarn';
+import llmsTxtPlugin from './src/plugins/llms-txt';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
@@ -56,6 +58,7 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           routeBasePath: 'docs',
+          remarkPlugins: [[npm2yarn, {sync: true, converters: ['yarn', 'pnpm', 'bun']}]],
           include: [
             'intro.{md,mdx}',
             'migration.{md,mdx}',
@@ -86,6 +89,8 @@ const config: Config = {
       } satisfies Preset.Options,
     ],
   ],
+
+  plugins: [llmsTxtPlugin],
 
   themeConfig: {
     image: 'img/og-hero.png',
@@ -160,6 +165,7 @@ const config: Config = {
             {label: '@kalyx/react on npm', href: 'https://www.npmjs.com/package/@kalyx/react'},
             {label: '@kalyx/core on npm', href: 'https://www.npmjs.com/package/@kalyx/core'},
             {label: 'Changelog', href: 'https://github.com/jiji-hoon96/kalyx/blob/main/packages/react/CHANGELOG.md'},
+            {label: 'llms.txt', href: 'pathname:///llms.txt'},
           ],
         },
       ],

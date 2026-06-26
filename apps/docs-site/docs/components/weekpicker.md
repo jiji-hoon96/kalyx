@@ -14,6 +14,20 @@ Week selector. A single click commits the entire week containing the clicked day
 import { WeekPicker, type DateRange } from '@kalyx/react';
 ```
 
+## Anatomy
+
+```tsx
+<WeekPicker>            {/* Root — value = { start, end } of the week */}
+  <WeekPicker.Input part="start" /> {/* week-start combobox input */}
+  <WeekPicker.Input part="end" />   {/* week-end combobox input */}
+  <WeekPicker.Popover> {/* Floating-UI portal, role="dialog" */}
+    <WeekPicker.Calendar /> {/* week-highlighting month grid */}
+  </WeekPicker.Popover>
+</WeekPicker>
+```
+
+`Input` and `Popover` are re-exported from `RangePicker`; a single click in `WeekPicker.Calendar` commits the whole week containing the clicked day (per `weekStartsOn`).
+
 ## Basic usage
 
 ```tsx
@@ -36,6 +50,8 @@ function Example() {
 ```
 
 ### Try it live
+
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
 
 ```jsx live
 function BasicWeekPicker() {
@@ -206,6 +222,8 @@ Same shape as `RangePicker.Calendar` classNames, with an extra `dayInWeek` modif
   }}
 />
 ```
+
+`WeekPicker.Calendar` wraps `RangePicker.Calendar`, so day cells emit the same `data-range-start` / `data-range-end` / `data-in-range` / `data-today` / `data-focused` / `data-outside-month` attributes — the whole committed week spans start→end. See [Styling](../concepts/styling.md).
 
 ## Related
 

@@ -24,6 +24,24 @@ describe('<StackBlitzEmbed>', () => {
     expect(link.getAttribute('rel')).toContain('noopener');
   });
 
+  it('renders a "View source" link to the example file on GitHub', () => {
+    render(<StackBlitzEmbed id="datepicker-basic" />);
+    const link = screen.getByRole('link', { name: /view source/i });
+    expect(link.getAttribute('href')).toBe(
+      'https://github.com/jiji-hoon96/kalyx/blob/main/examples/datepicker-basic/src/App.tsx'
+    );
+    expect(link.getAttribute('target')).toBe('_blank');
+    expect(link.getAttribute('rel')).toContain('noopener');
+  });
+
+  it('points View source at a custom file when provided', () => {
+    render(<StackBlitzEmbed id="datepicker-tailwind" file="src/index.css" />);
+    const link = screen.getByRole('link', { name: /view source/i });
+    expect(link.getAttribute('href')).toBe(
+      'https://github.com/jiji-hoon96/kalyx/blob/main/examples/datepicker-tailwind/src/index.css'
+    );
+  });
+
   it('passes axe', async () => {
     const { container } = render(<StackBlitzEmbed id="datepicker-basic" />);
     // iframes cannot be accessed in jsdom; skip iframe rules to avoid internal axe errors.

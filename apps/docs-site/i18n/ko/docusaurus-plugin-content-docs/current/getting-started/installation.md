@@ -19,15 +19,8 @@ Kalyx는 두 개의 패키지로 배포됩니다. 대부분의 앱은 `@kalyx/re
 
 ## 설치 명령
 
-```bash
-# pnpm (권장)
-pnpm add @kalyx/react
-
-# npm
+```bash npm2yarn
 npm install @kalyx/react
-
-# yarn
-yarn add @kalyx/react
 ```
 
 `@kalyx/react`는 다음에 의존합니다.

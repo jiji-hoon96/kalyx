@@ -14,6 +14,24 @@ Combined date + time, one popover, one ISO string.
 import { DateTimePicker } from '@kalyx/react';
 ```
 
+## Anatomy
+
+```tsx
+<DateTimePicker>            {/* Root — one ISO string for date + time */}
+  <DateTimePicker.Input /> {/* combobox <input>, parses date + time */}
+  <DateTimePicker.Popover> {/* Floating-UI portal, role="dialog" */}
+    <DateTimePicker.Calendar /> {/* month grid (reuses DatePicker.Calendar) */}
+    <DateTimePicker.MonthGrid /> {/* optional month jump view */}
+    <DateTimePicker.YearGrid /> {/* optional year jump view */}
+    <DateTimePicker.HourList /> {/* hour listbox (reuses TimePicker.HourList) */}
+    <DateTimePicker.MinuteList /> {/* minute listbox */}
+    <DateTimePicker.AmPmToggle /> {/* AM/PM switch (12-hour mode only) */}
+  </DateTimePicker.Popover>
+</DateTimePicker>
+```
+
+The Calendar/MonthGrid/YearGrid parts are re-exported from `DatePicker`, and HourList/MinuteList/AmPmToggle from `TimePicker` — they read the shared `DateTimePicker` context, so a single value drives both halves. `DateTimePicker.Presets` / `.Preset` are available from the [`@kalyx/react/headless`](../guides/adapters.md) entry.
+
 ## Basic usage
 
 ```tsx
@@ -38,6 +56,8 @@ function Example() {
 Selecting a day **does not close the popover** — time can be adjusted after. Use your own close button or outside-click to confirm.
 
 ### Try it live
+
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
 
 ```jsx live
 function BasicDateTime() {
@@ -125,6 +145,8 @@ DateTimePicker re-exports sub-components from both DatePicker and TimePicker und
 | `.AmPmToggle` | Same as TimePicker.AmPmToggle (12h mode only). |
 
 All `classNames` types are re-exported — see [DatePicker](./datepicker.md) and [TimePicker](./timepicker.md).
+
+Sub-components emit the same `data-*` state attributes as their source picker (`data-selected` / `data-today` / `data-focused` on calendar days, `data-selected` on time options). See [Styling](../concepts/styling.md).
 
 ## Patterns
 

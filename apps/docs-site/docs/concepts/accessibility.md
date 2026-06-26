@@ -8,6 +8,17 @@ sidebar_position: 5
 
 Every Kalyx component ships with WAI-ARIA roles, full keyboard support, and passes automated axe checks in our test suite. You don't *add* accessibility — you'd have to *remove* it.
 
+## Standards & conformance
+
+Kalyx implements the relevant [W3C WAI-ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) patterns:
+
+- **Date Picker Dialog** — [APG pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/) for the calendar popover (`role="dialog"` + a `role="grid"` calendar).
+- **Combobox** — [APG pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) for the text inputs that open a popover.
+- **Listbox** — [APG pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/) for the TimePicker hour / minute lists.
+- **Radio Group** — [APG pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/) for the AM/PM toggle.
+
+**Conformance target:** structure, roles, names, and keyboard operation aim for **WCAG 2.1 Level AA**. Because Kalyx ships zero colors, the color-contrast success criteria (1.4.3, 1.4.11) depend on *your* CSS — see [Color contrast](#color-contrast) below.
+
 ## ARIA roles at a glance
 
 | Element | Role / attributes |
@@ -43,6 +54,23 @@ Focused dates have `tabIndex=0`; all other days have `tabIndex=-1` — a single 
 | `↑` / `↓` | Move focus between options |
 | `Home` / `End` | First / last option |
 | `Enter` / `Space` | Select option |
+
+## Keyboard — MonthGrid / YearGrid
+
+The month-jump and year-jump grids (`DatePicker.MonthGrid`, `DatePicker.YearGrid`, `MonthPicker.Grid`, `YearPicker.Grid`) share one roving-focus model:
+
+| Key | Action |
+| --- | --- |
+| `←` / `→` | Move focus one cell |
+| `↑` / `↓` | Move focus one row (3 cells) |
+| `Home` / `End` | Start / end of the current row |
+| `PageUp` / `PageDown` | Previous / next frame (year for months, decade for years) |
+| `Enter` / `Space` | Select focused month / year |
+| `Escape` | Close popover, restore focus |
+
+## Keyboard — RangePicker / WeekPicker calendar
+
+Same grid keys as `DatePicker.Calendar` above. For RangePicker, the first `Enter` / click sets `start`, the second sets `end` (auto-swapping if reversed). For WeekPicker, a single `Enter` / click commits the entire week containing the focused day.
 
 ## Keyboard — Trigger and Input
 

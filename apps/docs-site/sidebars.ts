@@ -17,6 +17,7 @@ const sidebars: SidebarsConfig = {
       label: 'Concepts',
       items: [
         'concepts/composition',
+        'concepts/styling',
         'concepts/iso-string',
         'concepts/timezone',
         'concepts/ssr',
@@ -52,12 +53,17 @@ const sidebars: SidebarsConfig = {
         'hooks/use-date-picker',
         'hooks/use-range-picker',
         'hooks/use-time-picker',
+        'hooks/use-month-picker',
+        'hooks/use-year-picker',
+        'hooks/use-week-picker',
+        'hooks/use-date-time-picker',
       ],
     },
     {
       type: 'category',
       label: 'Recipes',
       items: [
+        'recipes/use-cases',
         'recipes/tailwind',
         'recipes/shadcn',
         'recipes/react-hook-form',

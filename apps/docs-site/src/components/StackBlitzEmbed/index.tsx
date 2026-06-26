@@ -12,6 +12,7 @@ export type StackBlitzEmbedProps = {
 };
 
 const REPO_PATH = 'jiji-hoon96/kalyx/tree/main/examples';
+const SOURCE_PATH = 'jiji-hoon96/kalyx/blob/main/examples';
 
 export default function StackBlitzEmbed({
   id,
@@ -21,6 +22,7 @@ export default function StackBlitzEmbed({
 }: StackBlitzEmbedProps) {
   const embedSrc = `https://stackblitz.com/github/${REPO_PATH}/${id}?embed=1&file=${file}&hideExplorer=1&theme=${theme}`;
   const fullHref = `https://stackblitz.com/github/${REPO_PATH}/${id}`;
+  const sourceHref = `https://github.com/${SOURCE_PATH}/${id}/${file}`;
 
   return (
     <div className={styles.wrapper}>
@@ -31,13 +33,22 @@ export default function StackBlitzEmbed({
         loading="lazy"
         height={height}
       />
-      <a
-        className={styles.openLink}
-        href={fullHref}
-        target="_blank"
-        rel="noopener noreferrer">
-        Open in StackBlitz ↗
-      </a>
+      <div className={styles.links}>
+        <a
+          className={styles.openLink}
+          href={sourceHref}
+          target="_blank"
+          rel="noopener noreferrer">
+          View source ↗
+        </a>
+        <a
+          className={styles.openLink}
+          href={fullHref}
+          target="_blank"
+          rel="noopener noreferrer">
+          Open in StackBlitz ↗
+        </a>
+      </div>
     </div>
   );
 }

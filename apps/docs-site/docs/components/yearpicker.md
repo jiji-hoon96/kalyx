@@ -14,6 +14,20 @@ Year selector. The value is January 1 of the selected year in UTC-ISO form — f
 import { YearPicker } from '@kalyx/react';
 ```
 
+## Anatomy
+
+```tsx
+<YearPicker>            {/* Root — value = Jan 1 of the year, UTC */}
+  <YearPicker.Input /> {/* combobox <input>, parses "YYYY" */}
+  <YearPicker.Trigger /> {/* button that toggles the popover */}
+  <YearPicker.Popover> {/* Floating-UI portal, role="dialog" */}
+    <YearPicker.Grid /> {/* paginated grid of years, role="grid" */}
+  </YearPicker.Popover>
+</YearPicker>
+```
+
+`Input` and `Trigger` are re-exported from `DatePicker` and read the `YearPicker` context.
+
 ## Basic usage
 
 ```tsx
@@ -36,6 +50,8 @@ function Example() {
 The default `displayFormat` is `"yyyy"`.
 
 ### Try it live
+
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
 
 ```jsx live
 function BasicYearPicker() {
@@ -202,6 +218,8 @@ function DisabledYearPicker() {
   }}
 />
 ```
+
+Each year cell emits `data-selected`, `data-current`, and `data-focused` (active-only). See [Styling](../concepts/styling.md).
 
 ## Related
 

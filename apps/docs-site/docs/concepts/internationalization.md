@@ -149,6 +149,46 @@ Weekday headers and month names use `Intl.DateTimeFormat` under the hood. Pass t
 
 Both are independent — you can use `locale="ko-KR"` with English labels, or vice versa.
 
+## Right-to-left (RTL)
+
+Kalyx renders semantic HTML and reads no layout direction of its own, so RTL "just works" — set `dir="rtl"` on any ancestor (or `<html dir="rtl">`) and the calendar grid, inputs, and popover mirror with the document. Use a matching `locale` (e.g. `ar-EG`) for Arabic weekday / month names.
+
+Toggle the direction below to see the same picker mirror:
+
+```jsx live
+function RtlToggle() {
+  const [date, setDate] = React.useState(null);
+  const [dir, setDir] = React.useState('rtl');
+  return (
+    <div>
+      <button
+        className="kx-live-trigger"
+        style={{ marginBottom: 12 }}
+        onClick={() => setDir((d) => (d === 'rtl' ? 'ltr' : 'rtl'))}>
+        dir = {dir} (toggle)
+      </button>
+      <div dir={dir}>
+        <DatePicker value={date} onChange={setDate} locale={dir === 'rtl' ? 'ar-EG' : 'en-US'}>
+          <DatePicker.Input className="kx-live-input" placeholder="YYYY-MM-DD" />
+          <DatePicker.Popover className="kx-live-popover">
+            <DatePicker.Calendar
+              classNames={{
+                header: 'kx-live-header', title: 'kx-live-title', navButton: 'kx-live-nav',
+                grid: 'kx-live-grid', gridCell: 'kx-live-cell', weekdayHeader: 'kx-live-weekday',
+                day: 'live-day', daySelected: 'live-day-selected', dayToday: 'live-day-today',
+                dayOutsideMonth: 'kx-live-outside',
+              }}
+            />
+          </DatePicker.Popover>
+        </DatePicker>
+      </div>
+    </div>
+  );
+}
+```
+
+The navigation chevrons keep their visual "previous / next" meaning because the whole grid mirrors with `dir` — you don't need to swap them yourself. Provide localized `labels` (see [above](#label-keys-reference)) so screen-reader announcements match the language.
+
 ## Next
 
 - [Accessibility →](./accessibility.md)
