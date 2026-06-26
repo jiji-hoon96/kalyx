@@ -1,5 +1,42 @@
 # @kalyx/react
 
+## 1.2.0
+
+### Minor Changes
+
+- 51404de: a11y: Root-level `announce()` live-region parity for DatePicker and DateTimePicker (B10 / audit A-G1).
+
+  `DatePickerContext` now exposes an `announce(message)` method backed by a polite `role="status"` live region mounted on the Root (not the Calendar). Previously DatePicker announced month navigation and date selection from a Calendar-local region that unmounted with the popover; moving it to Root matches `RangePickerContext` and keeps the announcement available across open/close. `DateTimePicker.Root` gains the same region, and `MonthPicker`/`YearPicker` inherit it via `DatePicker.Root`.
+
+  This adds a small amount of runtime code, so the gzip bundle ceiling moves **16 KB → 17 KB** (default `@kalyx/react` entry now 15.99 KB ESM / 16.12 KB CJS). Still ~3.5× smaller than react-datepicker.
+
+  No public API removal; the new `announce` context field is additive (the React layer fills it). The `selectionMode="week"` aria-label rework (A-G5) was intentionally dropped — labelling each day with its full week span made all seven days of a week share a substring and broke screen-reader/test name queries, so the per-day label is retained.
+
+- c5752d7: Add `DateTimePicker.Presets` / `DateTimePicker.Preset` to the `@kalyx/react/headless` entry (B5).
+
+  One-click presets that commit a **full datetime** (date + time) atomically — unlike `DateTimePicker.Calendar`, which preserves the existing time. Pass a complete ISO value:
+
+  ```tsx
+  import { DateTimePicker } from '@kalyx/react/headless';
+
+  <DateTimePicker.Presets>
+    <DateTimePicker.Preset value="2026-01-19T09:00:00.000Z">Mon 9 AM</DateTimePicker.Preset>
+  </DateTimePicker.Presets>;
+  ```
+
+  These ship on the `/headless` entry only. The default `@kalyx/react` bundle is at its 16KB ceiling, so adding the preset components there would break the budget; `/headless` is measured separately. The supporting `selectDateTime` Root method (a small atomic date+time setter, exposed via `DatePickerContext`) is present on both entries.
+
+- 24b09c7: Infer `weekStartsOn` from the active `locale` when the prop is not set (B7).
+
+  `@kalyx/core` now exports `getWeekStartForLocale(locale)`, which reads `Intl.Locale(locale).weekInfo.firstDay` and maps it to the `WeekStartsOn` surface (`0 | 1`) — Sunday-first locales (e.g. `en-US`, `ja-JP`, `ko-KR`) resolve to `0`, Monday-first locales (e.g. `en-GB`, `de-DE`, `fr-FR`) to `1`. It caches per-locale and falls back to `0` on engines without `weekInfo` or for unparseable tags.
+
+  `DatePicker` and `RangePicker` (and the `MonthPicker`/`YearPicker` wrappers built on `DatePicker.Root`) now default `weekStartsOn` to the locale's first day instead of always Sunday. An explicit `weekStartsOn` prop still wins, so existing pinned usage is unchanged. Consumers that relied on the implicit Sunday default while passing a Monday-first `locale` will now see Monday-first weeks — pass `weekStartsOn={0}` to restore the old behavior.
+
+### Patch Changes
+
+- Updated dependencies [24b09c7]
+  - @kalyx/core@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes
