@@ -14,6 +14,7 @@ import type {
 } from '@kalyx/core';
 import { DatePickerContext } from '../../context/DatePickerContext.js';
 import type { DatePickerContextValue } from '../../context/DatePickerContext.js';
+import type { Direction } from '../_shared/rtl.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
 import { SR_ONLY } from '../../internal/srOnly.js';
@@ -63,6 +64,14 @@ export interface DatePickerRootProps {
   /** BCP 47 locale (e.g., "en-US", "ko-KR", "ja-JP") */
   locale?: string;
   /**
+   * Layout direction: "ltr" (default) or "rtl". In "rtl" the calendar grid
+   * swaps ArrowLeft/ArrowRight so keyboard navigation follows the visual
+   * layout (WAI-ARIA grid pattern), and the grid element carries `dir="rtl"`.
+   * Pair with the corresponding writing-direction on your own container for a
+   * fully mirrored layout.
+   */
+  dir?: Direction;
+  /**
    * IANA timezone used for display and selection semantics (e.g., "Asia/Seoul").
    * When set, the Input formats the value in this zone, Calendar highlights the matching civil
    * day, and selecting a date emits the civil midnight of that day (UTC-ISO form).
@@ -87,6 +96,7 @@ export function DatePickerRoot({
   weekStartsOn: weekStartsOnProp,
   displayFormat = 'yyyy-MM-dd',
   locale = 'en-US',
+  dir = 'ltr',
   displayTimezone,
   adapter: adapterProp,
   labels: labelsProp,
@@ -199,6 +209,7 @@ export function DatePickerRoot({
       weekStartsOn,
       displayFormat,
       locale,
+      dir,
       displayTimezone,
       isDisabled,
       isReadOnly: readOnly,
@@ -220,6 +231,7 @@ export function DatePickerRoot({
       weekStartsOn,
       displayFormat,
       locale,
+      dir,
       displayTimezone,
       isDisabled,
       readOnly,

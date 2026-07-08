@@ -68,7 +68,12 @@ import { DatePicker, DateFnsAdapter } from '@kalyx/react';
 
 ## 커스텀 어댑터 작성
 
-`DateAdapter` 타입을 만족하는 객체면 됩니다. Day.js 기반 간단 예시:
+직접 만들기 전에, Kalyx가 이미 제공하는 어댑터가 있는지 확인하세요.
+`@kalyx/adapter-dayjs`(dayjs)와 `@kalyx/adapter-luxon`(luxon)은 공유
+conformance 스위트로 검증된 drop-in 어댑터라 직접 작성할 필요가 없습니다.
+자세한 사용법은 [어댑터 가이드](../guides/adapters.md) 참고.
+
+백엔드가 맞는 게 없다면, `DateAdapter` 타입을 만족하는 객체면 됩니다. Day.js 기반 간단 예시:
 
 ```ts
 import dayjs from 'dayjs';

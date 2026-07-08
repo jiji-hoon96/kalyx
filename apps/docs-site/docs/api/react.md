@@ -37,11 +37,24 @@ import {
 
 ## Adapters
 
-`DateFnsAdapter` — re-exported from `@kalyx/core`.
+`DateFnsAdapter` is re-exported from `@kalyx/react` for convenience (it's the
+default the main entry already installs):
 
 ```ts
 import { DateFnsAdapter } from '@kalyx/react';
 ```
+
+Two more prebuilt adapters ship as separate packages, for use with the
+`@kalyx/react/headless` entry:
+
+```ts
+import { DayjsAdapter } from '@kalyx/adapter-dayjs';
+import { LuxonAdapter } from '@kalyx/adapter-luxon';
+```
+
+All three implement the same `DateAdapter` contract, run in UTC, and are
+validated against `@kalyx/core/test-helpers`. See the
+[adapters guide](../guides/adapters.md).
 
 ## Types
 
@@ -180,6 +193,9 @@ import type {
 - `@floating-ui/react ^0.27.0`
 
 Peer dependencies: `react ^19.0.0`, `react-dom ^19.0.0`.
+
+Optional adapter packages (install only if you use the `/headless` entry with a
+non-default backend): `@kalyx/adapter-dayjs`, `@kalyx/adapter-luxon`.
 
 ## Bundle size
 

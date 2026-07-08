@@ -45,7 +45,7 @@ The default `displayFormat` is `"yyyy-MM"`. Override it if you prefer a differen
 
 | Part | Source | Purpose |
 |------|--------|---------|
-| `MonthPicker.Root` | wraps `DatePicker.Root` | controlled/uncontrolled state, `displayTimezone`, `disabled` rules |
+| `MonthPicker.Root` | wraps `DatePicker.Root` | controlled/uncontrolled state, `displayTimezone`, `disabled` rules, `dir` (RTL mirrors the month grid) |
 | `MonthPicker.Input` | = `DatePicker.Input` | text input (combobox role) |
 | `MonthPicker.Trigger` | = `DatePicker.Trigger` | icon button |
 | `MonthPicker.Popover` | = `DatePicker.Popover` | Floating UI positioning |

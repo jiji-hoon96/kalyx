@@ -501,3 +501,57 @@ describe('MonthPicker — localization', () => {
     expect(input).toHaveFocus();
   });
 });
+
+describe('MonthPicker — RTL (dir="rtl")', () => {
+  it('mirrors ArrowLeft/ArrowRight in the month grid', async () => {
+    const user = userEvent.setup();
+    render(
+      <MonthPicker value="2026-04-15T00:00:00.000Z" onChange={vi.fn()} dir="rtl">
+        <MonthPicker.Input aria-label="Select month" />
+        <MonthPicker.Popover>
+          <MonthPicker.Grid />
+        </MonthPicker.Popover>
+      </MonthPicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: 'April' }).focus();
+
+    // RTL: physically-left cell is the *next* (higher-index) month.
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('gridcell', { name: 'May' })).toHaveFocus();
+
+    await user.keyboard('{ArrowRight}{ArrowRight}');
+    expect(screen.getByRole('gridcell', { name: 'March' })).toHaveFocus();
+  });
+
+  it('keeps ArrowUp/ArrowDown vertical (±3) in RTL', async () => {
+    const user = userEvent.setup();
+    render(
+      <MonthPicker value="2026-04-15T00:00:00.000Z" onChange={vi.fn()} dir="rtl">
+        <MonthPicker.Input aria-label="Select month" />
+        <MonthPicker.Popover>
+          <MonthPicker.Grid />
+        </MonthPicker.Popover>
+      </MonthPicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    screen.getByRole('gridcell', { name: 'April' }).focus();
+
+    await user.keyboard('{ArrowDown}');
+    expect(screen.getByRole('gridcell', { name: 'July' })).toHaveFocus();
+  });
+
+  it('marks the month grid element with dir="rtl"', async () => {
+    const user = userEvent.setup();
+    render(
+      <MonthPicker value="2026-04-15T00:00:00.000Z" onChange={vi.fn()} dir="rtl">
+        <MonthPicker.Input aria-label="Select month" />
+        <MonthPicker.Popover>
+          <MonthPicker.Grid />
+        </MonthPicker.Popover>
+      </MonthPicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('grid')).toHaveAttribute('dir', 'rtl');
+  });
+});

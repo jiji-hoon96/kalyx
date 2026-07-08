@@ -123,6 +123,7 @@ export function MonthPickerGrid({ classNames, ...props }: MonthPickerGridProps) 
     onPageUp: () => navigateYear(-1),
     onPageDown: () => navigateYear(1),
     onEscape: ctx.close,
+    dir: ctx.dir,
   });
 
   return (
@@ -151,6 +152,7 @@ export function MonthPickerGrid({ classNames, ...props }: MonthPickerGridProps) 
         ref={gridRef}
         role="grid"
         aria-label={`${currentYear} months`}
+        dir={ctx.dir}
         className={classNames?.grid}
         onKeyDown={handleKeyDown}
       >

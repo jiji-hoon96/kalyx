@@ -425,3 +425,24 @@ describe('YearPicker — SSR safety', () => {
     expect(renderToString(tree)).toBe(renderToString(tree));
   });
 });
+
+describe('YearPicker — RTL (dir="rtl")', () => {
+  it('applies dir="rtl" to the year grid and mirrors index navigation', async () => {
+    const user = userEvent.setup();
+    render(
+      <YearPicker value="2026-01-01T00:00:00.000Z" onChange={vi.fn()} dir="rtl">
+        <YearPicker.Input aria-label="Select year" />
+        <YearPicker.Popover>
+          <YearPicker.Grid />
+        </YearPicker.Popover>
+      </YearPicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('grid')).toHaveAttribute('dir', 'rtl');
+
+    // 12-year block starts at 2016; focus 2026, RTL ArrowLeft → next year 2027.
+    screen.getByRole('gridcell', { name: '2026' }).focus();
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('gridcell', { name: '2027' })).toHaveFocus();
+  });
+});

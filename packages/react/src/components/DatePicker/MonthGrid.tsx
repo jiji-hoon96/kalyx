@@ -80,6 +80,7 @@ export function DatePickerMonthGrid({
     onPageUp: () => navigateYear(-1),
     onPageDown: () => navigateYear(1),
     onEscape: ctx.close,
+    dir: ctx.dir,
   });
 
   return (
@@ -114,6 +115,7 @@ export function DatePickerMonthGrid({
         ref={gridRef}
         role="grid"
         aria-label={`${currentYear} months`}
+        dir={ctx.dir}
         className={classNames?.grid}
         style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}
         onKeyDown={handleKeyDown}

@@ -19,6 +19,7 @@ import type {
 } from '@kalyx/core';
 import { DatePickerContext } from '../../context/DatePickerContext.js';
 import type { DatePickerContextValue } from '../../context/DatePickerContext.js';
+import type { Direction } from '../_shared/rtl.js';
 import { TimePickerContext } from '../../context/TimePickerContext.js';
 import type { TimePickerContextValue, TimePickerFormat } from '../../context/TimePickerContext.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
@@ -79,6 +80,11 @@ export interface DateTimePickerRootProps {
   /** BCP 47 locale */
   locale?: string;
   /**
+   * Layout direction: "ltr" (default) or "rtl". Forwarded to the calendar grid,
+   * which swaps ArrowLeft/ArrowRight for RTL keyboard navigation.
+   */
+  dir?: Direction;
+  /**
    * IANA timezone used for display (e.g., "Asia/Seoul"). When set, Calendar highlights match
    * civil days in this zone, TimePicker reads/writes the time in this zone, and the Input
    * formats the combined date+time in this zone.
@@ -119,6 +125,7 @@ export function DateTimePickerRoot({
   weekStartsOn = 0,
   displayFormat = 'yyyy-MM-dd HH:mm',
   locale = 'en-US',
+  dir = 'ltr',
   displayTimezone,
   adapter: adapterProp,
   labels: labelsProp,
@@ -284,6 +291,7 @@ export function DateTimePickerRoot({
       weekStartsOn,
       displayFormat,
       locale,
+      dir,
       displayTimezone,
       isDisabled,
       isReadOnly: readOnly,
@@ -306,6 +314,7 @@ export function DateTimePickerRoot({
       weekStartsOn,
       displayFormat,
       locale,
+      dir,
       displayTimezone,
       isDisabled,
       readOnly,

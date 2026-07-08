@@ -7,6 +7,7 @@ import type {
   ISODateString,
   WeekStartsOn,
 } from '@kalyx/core';
+import type { Direction } from '../components/_shared/rtl.js';
 
 export interface DatePickerContextValue {
   /** Floating UI reference element (set by Input/Trigger, read by Popover) */
@@ -48,6 +49,13 @@ export interface DatePickerContextValue {
   displayFormat: string;
   /** BCP 47 locale (e.g., "en-US", "ko-KR") */
   locale: string;
+  /**
+   * Layout direction ("ltr" | "rtl"). Defaults to "ltr". In "rtl" the calendar
+   * grid swaps ArrowLeft/ArrowRight so keyboard navigation follows the visual
+   * (physical) layout per the WAI-ARIA grid pattern, and the grid element
+   * carries `dir="rtl"` so consumers can style it.
+   */
+  dir: Direction;
   /**
    * IANA timezone for display (e.g., "Asia/Seoul"). When set, the Input formats the value in
    * this zone, Calendar highlights the matching civil day, and selecting a date emits the civil

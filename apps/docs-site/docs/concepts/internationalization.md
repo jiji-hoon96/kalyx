@@ -151,7 +151,12 @@ Both are independent — you can use `locale="ko-KR"` with English labels, or vi
 
 ## Right-to-left (RTL)
 
-Kalyx renders semantic HTML and reads no layout direction of its own, so RTL "just works" — set `dir="rtl"` on any ancestor (or `<html dir="rtl">`) and the calendar grid, inputs, and popover mirror with the document. Use a matching `locale` (e.g. `ar-EG`) for Arabic weekday / month names.
+RTL support has two layers, and you usually want both:
+
+1. **Visual mirroring** comes from the document. Set `dir="rtl"` on any ancestor (or `<html dir="rtl">`) and the calendar grid, inputs, and popover mirror with the page. Kalyx renders semantic HTML and adds no layout direction of its own, so this "just works".
+2. **Keyboard navigation** comes from the picker's own `dir` prop. Pass `dir="rtl"` to any picker Root (`DatePicker`, `RangePicker`, `DateTimePicker`, `MonthPicker`, `YearPicker`, `WeekPicker`) so ArrowLeft/ArrowRight are mirrored to follow the visual layout per the WAI-ARIA grid pattern: the visually-left cell is the *next* date, the visually-right cell the *previous*. ArrowUp/Down, PageUp/Down, and Home/End keep their logical direction. The Root also stamps `dir` onto the grid element, so setting it on the picker covers the visual layer for the calendar too.
+
+Use a matching `locale` (e.g. `ar-EG`) for Arabic weekday / month names.
 
 Toggle the direction below to see the same picker mirror:
 
@@ -168,7 +173,7 @@ function RtlToggle() {
         dir = {dir} (toggle)
       </button>
       <div dir={dir}>
-        <DatePicker value={date} onChange={setDate} locale={dir === 'rtl' ? 'ar-EG' : 'en-US'}>
+        <DatePicker dir={dir} value={date} onChange={setDate} locale={dir === 'rtl' ? 'ar-EG' : 'en-US'}>
           <DatePicker.Input className="kx-live-input" placeholder="YYYY-MM-DD" />
           <DatePicker.Popover className="kx-live-popover">
             <DatePicker.Calendar
@@ -188,6 +193,8 @@ function RtlToggle() {
 ```
 
 The navigation chevrons keep their visual "previous / next" meaning because the whole grid mirrors with `dir` — you don't need to swap them yourself. Provide localized `labels` (see [above](#label-keys-reference)) so screen-reader announcements match the language.
+
+> Passing `dir` on the ancestor `<div>` handles the CSS mirroring; passing it on the `<DatePicker>` Root is what mirrors the arrow-key navigation. Set both (as above) for a fully mirrored, keyboard-correct picker.
 
 ## Next
 

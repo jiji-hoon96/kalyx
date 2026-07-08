@@ -1,0 +1,69 @@
+{
+	"name": "@kalyx/adapter-luxon",
+	"version": "0.1.0",
+	"description": "luxon adapter for @kalyx/core — implements the DateAdapter contract using luxon (UTC mode). Timezone work is delegated to @kalyx/core's Intl-based utilities.",
+	"license": "MIT",
+	"author": "jiji-hoon96",
+	"homepage": "https://github.com/jiji-hoon96/kalyx#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jiji-hoon96/kalyx.git",
+		"directory": "packages/adapter-luxon"
+	},
+	"bugs": {
+		"url": "https://github.com/jiji-hoon96/kalyx/issues"
+	},
+	"keywords": [
+		"luxon",
+		"adapter",
+		"kalyx",
+		"datepicker"
+	],
+	"type": "module",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			}
+		}
+	},
+	"files": [
+		"dist",
+		"CHANGELOG.md",
+		"LICENSE"
+	],
+	"scripts": {
+		"build": "tsup src/index.ts --format esm,cjs --dts --clean",
+		"typecheck": "tsc --noEmit",
+		"clean": "rm -rf dist"
+	},
+	"dependencies": {
+		"@kalyx/core": "workspace:^",
+		"luxon": "^3.5.0"
+	},
+	"devDependencies": {
+		"@types/luxon": "^3.4.2"
+	},
+	"peerDependencies": {
+		"@kalyx/core": "workspace:^"
+	},
+	"peerDependenciesMeta": {
+		"@kalyx/core": {
+			"optional": false
+		}
+	},
+	"engines": {
+		"node": ">=20.0.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

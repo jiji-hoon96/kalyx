@@ -151,7 +151,12 @@ export const ja: DatePickerLabels = {
 
 ## 오른쪽-왼쪽 (RTL)
 
-Kalyx는 의미론적 HTML을 렌더링하며 자체적으로 레이아웃 방향을 읽지 않으므로 RTL이 "그냥 동작"합니다 — 상위 요소(또는 `<html dir="rtl">`)에 `dir="rtl"`을 주면 캘린더 그리드·입력·popover가 문서와 함께 미러링됩니다. 아랍어 요일/월 이름을 위해 맞는 `locale`(예: `ar-EG`)을 사용하세요.
+RTL 지원은 두 계층이며, 보통 둘 다 필요합니다:
+
+1. **시각적 미러링**은 문서에서 옵니다. 상위 요소(또는 `<html dir="rtl">`)에 `dir="rtl"`을 주면 캘린더 그리드·입력·popover가 페이지와 함께 미러링됩니다. Kalyx는 의미론적 HTML을 렌더링하며 자체적으로 레이아웃 방향을 더하지 않으므로 이 부분은 "그냥 동작"합니다.
+2. **키보드 내비게이션**은 picker 자신의 `dir` prop에서 옵니다. 어느 picker Root든(`DatePicker`, `RangePicker`, `DateTimePicker`, `MonthPicker`, `YearPicker`, `WeekPicker`) `dir="rtl"`을 넘기면 ArrowLeft/ArrowRight가 WAI-ARIA grid 패턴에 따라 시각적 레이아웃을 따르도록 반전됩니다. 즉 시각적으로 왼쪽 셀이 *다음* 날짜, 오른쪽 셀이 *이전* 날짜가 됩니다. ArrowUp/Down, PageUp/Down, Home/End는 논리적 방향을 유지합니다. Root는 그리드 요소에 `dir`도 찍어주므로, picker에 지정하면 캘린더의 시각 계층까지 함께 처리됩니다.
+
+아랍어 요일/월 이름을 위해 맞는 `locale`(예: `ar-EG`)을 사용하세요.
 
 아래에서 방향을 토글해 같은 picker가 미러링되는 것을 확인하세요:
 
@@ -168,7 +173,7 @@ function RtlToggle() {
         dir = {dir} (토글)
       </button>
       <div dir={dir}>
-        <DatePicker value={date} onChange={setDate} locale={dir === 'rtl' ? 'ar-EG' : 'en-US'}>
+        <DatePicker dir={dir} value={date} onChange={setDate} locale={dir === 'rtl' ? 'ar-EG' : 'en-US'}>
           <DatePicker.Input className="kx-live-input" placeholder="YYYY-MM-DD" />
           <DatePicker.Popover className="kx-live-popover">
             <DatePicker.Calendar
@@ -188,6 +193,8 @@ function RtlToggle() {
 ```
 
 내비게이션 화살표는 그리드 전체가 `dir`과 함께 미러링되므로 "이전 / 다음"의 시각적 의미를 그대로 유지합니다 — 직접 바꿀 필요가 없습니다. 스크린 리더 안내가 언어와 맞도록 지역화된 `labels`(위 라벨 키 레퍼런스 참고)를 제공하세요.
+
+> 상위 `<div>`에 `dir`을 주면 CSS 미러링이 처리되고, `<DatePicker>` Root에 `dir`을 주면 화살표 키 내비게이션이 미러링됩니다. 완전히 미러링되고 키보드까지 올바른 picker를 위해서는 위 예시처럼 둘 다 설정하세요.
 
 ## 다음
 

@@ -8,6 +8,7 @@ import type {
   RangePickerLabels,
   WeekStartsOn,
 } from '@kalyx/core';
+import type { Direction } from '../components/_shared/rtl.js';
 
 /** Which part to select next (start | end) */
 export type RangeSelectingTarget = 'start' | 'end';
@@ -47,6 +48,12 @@ export interface RangePickerContextValue {
   displayFormat: string;
   /** BCP 47 locale */
   locale: string;
+  /**
+   * Layout direction ("ltr" | "rtl"). Defaults to "ltr". In "rtl" the calendar
+   * grid swaps ArrowLeft/ArrowRight for keyboard navigation and the grid
+   * element carries `dir="rtl"`.
+   */
+  dir: Direction;
   /** IANA timezone for display (see DatePickerContext#displayTimezone) */
   displayTimezone?: string;
   /** Whether entire picker is disabled */

@@ -131,6 +131,7 @@ export type {
 } from './hooks/useMonthPicker.js';
 export type { UseYearPickerOptions, UseYearPickerReturn, YearCell } from './hooks/useYearPicker.js';
 export type { UseWeekPickerOptions, UseWeekPickerReturn } from './hooks/useWeekPicker.js';
+export type { Direction } from './components/_shared/rtl.js';
 export type {
   UseDateTimePickerOptions,
   UseDateTimePickerReturn,

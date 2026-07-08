@@ -10,6 +10,7 @@ import {
 } from '@kalyx/core';
 import type { CalendarDay } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
+import { horizontalDayStep, isBackwardKey } from '../_shared/rtl.js';
 
 export interface DatePickerCalendarClassNames {
   root?: string;
@@ -68,6 +69,7 @@ export function DatePickerCalendar({
   const gridRef = useRef<HTMLTableElement>(null);
 
   const { adapter, viewMonth, focusedDate, weekStartsOn, disabled, locale, displayTimezone } = ctx;
+  const dir = ctx.dir;
   // Memoized — weekday header tuples only change when locale or week start changes.
   const weekdays = useMemo(() => getWeekdayNames(locale, weekStartsOn), [locale, weekStartsOn]);
 
@@ -139,57 +141,59 @@ export function DatePickerCalendar({
     (e: React.KeyboardEvent) => {
       let newFocused: string | null = null;
 
-      switch (e.key) {
-        case 'ArrowLeft':
-          newFocused = adapter.addDays(focusedDate, -1);
-          break;
-        case 'ArrowRight':
-          newFocused = adapter.addDays(focusedDate, 1);
-          break;
-        case 'ArrowUp':
-          newFocused = adapter.addDays(focusedDate, -7);
-          break;
-        case 'ArrowDown':
-          newFocused = adapter.addDays(focusedDate, 7);
-          break;
-        case 'PageUp':
-          if (e.shiftKey) {
-            newFocused = adapter.addYears(focusedDate, -1);
-          } else {
-            newFocused = adapter.addMonths(focusedDate, -1);
-          }
-          break;
-        case 'PageDown':
-          if (e.shiftKey) {
-            newFocused = adapter.addYears(focusedDate, 1);
-          } else {
-            newFocused = adapter.addMonths(focusedDate, 1);
-          }
-          break;
-        case 'Home':
-          newFocused = adapter.startOfWeek(focusedDate, weekStartsOn);
-          break;
-        case 'End':
-          newFocused = adapter.endOfWeek(focusedDate, weekStartsOn);
-          // endOfWeek returns 23:59:59; normalize to start of day
-          newFocused = adapter.startOfDay(newFocused);
-          break;
-        case 'Enter':
-        case ' ':
-          e.preventDefault();
-          if (!isDateDisabled(focusedDate, disabled, adapter)) {
-            ctx.selectDate(focusedDate);
-          }
-          return;
-        case 'Escape':
-          // Stop the synthetic Escape from bubbling to a host modal/dialog
-          // whose own Escape handler would otherwise also close.
-          e.preventDefault();
-          e.stopPropagation();
-          ctx.close();
-          return;
-        default:
-          return;
+      // In RTL the physical ArrowLeft/ArrowRight are swapped (WAI-ARIA grid
+      // follows visual layout). horizontalDayStep resolves the correct ±1-day
+      // offset for the current direction; other keys fall through unchanged.
+      const hStep = horizontalDayStep(e.key, dir);
+      if (hStep !== null) {
+        newFocused = adapter.addDays(focusedDate, hStep);
+      } else {
+        switch (e.key) {
+          case 'ArrowUp':
+            newFocused = adapter.addDays(focusedDate, -7);
+            break;
+          case 'ArrowDown':
+            newFocused = adapter.addDays(focusedDate, 7);
+            break;
+          case 'PageUp':
+            if (e.shiftKey) {
+              newFocused = adapter.addYears(focusedDate, -1);
+            } else {
+              newFocused = adapter.addMonths(focusedDate, -1);
+            }
+            break;
+          case 'PageDown':
+            if (e.shiftKey) {
+              newFocused = adapter.addYears(focusedDate, 1);
+            } else {
+              newFocused = adapter.addMonths(focusedDate, 1);
+            }
+            break;
+          case 'Home':
+            newFocused = adapter.startOfWeek(focusedDate, weekStartsOn);
+            break;
+          case 'End':
+            newFocused = adapter.endOfWeek(focusedDate, weekStartsOn);
+            // endOfWeek returns 23:59:59; normalize to start of day
+            newFocused = adapter.startOfDay(newFocused);
+            break;
+          case 'Enter':
+          case ' ':
+            e.preventDefault();
+            if (!isDateDisabled(focusedDate, disabled, adapter)) {
+              ctx.selectDate(focusedDate);
+            }
+            return;
+          case 'Escape':
+            // Stop the synthetic Escape from bubbling to a host modal/dialog
+            // whose own Escape handler would otherwise also close.
+            e.preventDefault();
+            e.stopPropagation();
+            ctx.close();
+            return;
+          default:
+            return;
+        }
       }
 
       if (newFocused) {
@@ -198,11 +202,9 @@ export function DatePickerCalendar({
         // WAI-ARIA grid pattern: disabled cells should be skipped during keyboard
         // navigation. Keep stepping in the original direction until we land on an
         // enabled day, capped at 42 attempts (one full grid) to avoid infinite loops
-        // when every day in range is disabled.
-        const skipStep =
-          e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'Home'
-            ? -1
-            : 1;
+        // when every day in range is disabled. `isBackwardKey` is RTL-aware so the
+        // skip continues along the same *logical* direction the keypress moved.
+        const skipStep = isBackwardKey(e.key, dir) ? -1 : 1;
         let attempts = 0;
         while (isDateDisabled(newFocused, disabled, adapter) && attempts < 42) {
           newFocused = adapter.addDays(newFocused, skipStep);
@@ -221,7 +223,7 @@ export function DatePickerCalendar({
         }
       }
     },
-    [adapter, focusedDate, viewMonth, weekStartsOn, disabled, ctx],
+    [adapter, focusedDate, viewMonth, weekStartsOn, disabled, ctx, dir],
   );
 
   return (
@@ -265,6 +267,7 @@ export function DatePickerCalendar({
         aria-label={title}
         aria-rowcount={weeks.length + 1}
         aria-colcount={7}
+        dir={dir}
         className={classNames?.grid}
         onKeyDown={handleKeyDown}
       >

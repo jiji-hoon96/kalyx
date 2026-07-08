@@ -2,10 +2,10 @@
 // scripts/bundle-diff.mjs
 //
 // Surfaces the *byte-level* bundle delta and remaining ceiling margin so a PR
-// author sees, before merge, exactly how much of the tight 16KB budget a change
-// consumes. The working headroom is small and CJS-bound (~126 B CJS / ~221 B
-// ESM as of v1.1.0), so a feature that costs "only a few hundred bytes" can
-// silently break the CI gate — this script makes that cost visible per PR.
+// author sees, before merge, exactly how much of the 17KB budget a change
+// consumes. The working headroom is CJS-bound (~901 B CJS / ~1033 B
+// ESM as of v1.2.0, ceiling 17KB), so a feature that costs "only a few hundred
+// bytes" can silently break the CI gate — this script makes that cost visible per PR.
 //
 // Measurement reuses getGzipBytes() from check-bundle-size.js, so base-vs-head
 // numbers share the exact same zlib defaults as the CI gate and the tsup

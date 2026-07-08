@@ -52,6 +52,7 @@ function Example() {
 | `weekStartsOn` | `0 \| 1` | `0` | 주 시작. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | 포맷 문자열. |
 | `locale` | `string` | `'en-US'` | BCP 47 로케일. |
+| `dir` | `'ltr' \| 'rtl'` | `'ltr'` | 레이아웃 방향. `'rtl'`이면 캘린더 그리드에 `dir="rtl"`이 붙고 ArrowLeft/ArrowRight가 반전된다(WAI-ARIA grid 패턴). [국제화](../concepts/internationalization.md#오른쪽-왼쪽-rtl) 참고. |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | 커스텀 어댑터. |
 | `children` | `ReactNode` | — | 서브 컴포넌트. |
 

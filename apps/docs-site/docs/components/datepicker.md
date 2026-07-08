@@ -141,6 +141,7 @@ Holds state and provides context to sub-components. Controlled when `value` is p
 | `weekStartsOn` | `0 \| 1` | `0` | `0` = Sunday, `1` = Monday. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | date-fns format string. |
 | `locale` | `string` | `'en-US'` | BCP 47 locale tag. |
+| `dir` | `'ltr' \| 'rtl'` | `'ltr'` | Layout direction. In `'rtl'` the calendar grid carries `dir="rtl"` and ArrowLeft/ArrowRight are mirrored to follow the visual layout (WAI-ARIA grid pattern); ArrowUp/Down, PageUp/Down, and Home/End keep their logical direction. See [Internationalization](../concepts/internationalization.md#right-to-left-rtl). |
 | `displayTimezone` | `string` | — | IANA zone (e.g., `"Asia/Seoul"`). When set, Input formats in this zone, Calendar highlights match civil days, and `onChange` emits civil midnight in this zone. See [Timezone](../concepts/timezone.md). |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom date adapter. |
 | `labels` | `Partial<DatePickerLabels>` | — | Override ARIA labels (defaults to English). Keys: `triggerOpen`, `triggerClose`, `popoverLabel`, `prevMonth`, `nextMonth`, `prevYear`, `nextYear`, `prevDecade`, `nextDecade`. |
