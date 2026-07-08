@@ -124,6 +124,7 @@ export function YearPickerGrid({ classNames, ...props }: YearPickerGridProps) {
     onPageUp: () => navigateDecade(-1),
     onPageDown: () => navigateDecade(1),
     onEscape: ctx.close,
+    dir: ctx.dir,
   });
 
   const rangeLabel = `${decadeStart}–${decadeStart + 11}`;
@@ -154,6 +155,7 @@ export function YearPickerGrid({ classNames, ...props }: YearPickerGridProps) {
         ref={gridRef}
         role="grid"
         aria-label={rangeLabel}
+        dir={ctx.dir}
         className={classNames?.grid}
         onKeyDown={handleKeyDown}
       >

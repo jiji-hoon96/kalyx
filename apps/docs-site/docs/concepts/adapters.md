@@ -123,8 +123,10 @@ and is auto-installed by the main `@kalyx/react` entry, so installing
 
 If you already ship `dayjs`, `luxon`, or `Temporal`, you can swap the
 adapter out and drop `date-fns` from your bundle entirely by importing from
-`@kalyx/react/headless`. See the [adapters guide](../guides/adapters.md) for
-the full how-to.
+`@kalyx/react/headless`. Kalyx publishes drop-in adapters for two of these
+(`@kalyx/adapter-dayjs` and `@kalyx/adapter-luxon`), so you don't have to write
+one yourself. See the [adapters guide](../guides/adapters.md) for the full
+how-to.
 
 ## Next
 

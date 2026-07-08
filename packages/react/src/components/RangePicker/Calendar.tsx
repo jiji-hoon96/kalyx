@@ -10,6 +10,7 @@ import {
 } from '@kalyx/core';
 import type { CalendarDay, DateRange } from '@kalyx/core';
 import { useRangePickerContext } from '../../context/RangePickerContext.js';
+import { horizontalDayStep, isBackwardKey } from '../_shared/rtl.js';
 
 export interface RangePickerCalendarClassNames {
   root?: string;
@@ -89,6 +90,7 @@ export function RangePickerCalendar({
   } = ctx;
 
   const { locale } = ctx;
+  const dir = ctx.dir;
   // Memoized — see DatePicker/Calendar.tsx for the rationale.
   const weekdays = useMemo(() => getWeekdayNames(locale, weekStartsOn), [locale, weekStartsOn]);
 
@@ -208,50 +210,51 @@ export function RangePickerCalendar({
     (e: React.KeyboardEvent) => {
       let newFocused: string | null = null;
 
-      switch (e.key) {
-        case 'ArrowLeft':
-          newFocused = adapter.addDays(focusedDate, -1);
-          break;
-        case 'ArrowRight':
-          newFocused = adapter.addDays(focusedDate, 1);
-          break;
-        case 'ArrowUp':
-          newFocused = adapter.addDays(focusedDate, -7);
-          break;
-        case 'ArrowDown':
-          newFocused = adapter.addDays(focusedDate, 7);
-          break;
-        case 'PageUp':
-          newFocused = e.shiftKey
-            ? adapter.addYears(focusedDate, -1)
-            : adapter.addMonths(focusedDate, -1);
-          break;
-        case 'PageDown':
-          newFocused = e.shiftKey
-            ? adapter.addYears(focusedDate, 1)
-            : adapter.addMonths(focusedDate, 1);
-          break;
-        case 'Home':
-          newFocused = adapter.startOfWeek(focusedDate, weekStartsOn);
-          break;
-        case 'End':
-          newFocused = adapter.startOfDay(adapter.endOfWeek(focusedDate, weekStartsOn));
-          break;
-        case 'Enter':
-        case ' ':
-          e.preventDefault();
-          if (!isDateDisabled(focusedDate, disabled, adapter)) {
-            commitDay(focusedDate);
-          }
-          return;
-        case 'Escape':
-          // Stop the synthetic Escape from bubbling to a host modal/dialog.
-          e.preventDefault();
-          e.stopPropagation();
-          ctx.close();
-          return;
-        default:
-          return;
+      // RTL swaps the physical ArrowLeft/ArrowRight (WAI-ARIA grid follows visual
+      // layout). See _shared/rtl.ts.
+      const hStep = horizontalDayStep(e.key, dir);
+      if (hStep !== null) {
+        newFocused = adapter.addDays(focusedDate, hStep);
+      } else {
+        switch (e.key) {
+          case 'ArrowUp':
+            newFocused = adapter.addDays(focusedDate, -7);
+            break;
+          case 'ArrowDown':
+            newFocused = adapter.addDays(focusedDate, 7);
+            break;
+          case 'PageUp':
+            newFocused = e.shiftKey
+              ? adapter.addYears(focusedDate, -1)
+              : adapter.addMonths(focusedDate, -1);
+            break;
+          case 'PageDown':
+            newFocused = e.shiftKey
+              ? adapter.addYears(focusedDate, 1)
+              : adapter.addMonths(focusedDate, 1);
+            break;
+          case 'Home':
+            newFocused = adapter.startOfWeek(focusedDate, weekStartsOn);
+            break;
+          case 'End':
+            newFocused = adapter.startOfDay(adapter.endOfWeek(focusedDate, weekStartsOn));
+            break;
+          case 'Enter':
+          case ' ':
+            e.preventDefault();
+            if (!isDateDisabled(focusedDate, disabled, adapter)) {
+              commitDay(focusedDate);
+            }
+            return;
+          case 'Escape':
+            // Stop the synthetic Escape from bubbling to a host modal/dialog.
+            e.preventDefault();
+            e.stopPropagation();
+            ctx.close();
+            return;
+          default:
+            return;
+        }
       }
 
       if (newFocused) {
@@ -259,10 +262,7 @@ export function RangePickerCalendar({
 
         // WAI-ARIA grid pattern: skip disabled cells while keyboard-navigating.
         // Step in the original direction up to one full grid (42 cells) before giving up.
-        const skipStep =
-          e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'Home'
-            ? -1
-            : 1;
+        const skipStep = isBackwardKey(e.key, dir) ? -1 : 1;
         let attempts = 0;
         while (isDateDisabled(newFocused, disabled, adapter) && attempts < 42) {
           newFocused = adapter.addDays(newFocused, skipStep);
@@ -293,6 +293,7 @@ export function RangePickerCalendar({
       selectingTarget,
       value.start,
       commitDay,
+      dir,
     ],
   );
 
@@ -328,6 +329,7 @@ export function RangePickerCalendar({
         aria-label={title}
         aria-rowcount={weeks.length + 1}
         aria-colcount={7}
+        dir={dir}
         className={classNames?.grid}
         onKeyDown={handleKeyDown}
       >

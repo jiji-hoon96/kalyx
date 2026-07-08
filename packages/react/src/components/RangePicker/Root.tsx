@@ -18,6 +18,7 @@ import type {
   RangePickerContextValue,
   RangeSelectingTarget,
 } from '../../context/RangePickerContext.js';
+import type { Direction } from '../_shared/rtl.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
 import { SR_ONLY } from '../../internal/srOnly.js';
@@ -63,6 +64,11 @@ export interface RangePickerRootProps {
   /** BCP 47 locale */
   locale?: string;
   /**
+   * Layout direction: "ltr" (default) or "rtl". In "rtl" the calendar grid
+   * swaps ArrowLeft/ArrowRight for keyboard navigation and carries `dir="rtl"`.
+   */
+  dir?: Direction;
+  /**
    * IANA timezone for display (e.g., "Asia/Seoul"). When set, inputs format in this zone,
    * calendar highlighting uses civil-day comparison in this zone, and selected start/end are
    * emitted as civil midnight of the clicked day in this zone (UTC-ISO form).
@@ -87,6 +93,7 @@ export function RangePickerRoot({
   weekStartsOn: weekStartsOnProp,
   displayFormat = 'yyyy-MM-dd',
   locale = 'en-US',
+  dir = 'ltr',
   displayTimezone,
   adapter: adapterProp,
   labels: labelsProp,
@@ -240,6 +247,7 @@ export function RangePickerRoot({
       weekStartsOn,
       displayFormat,
       locale,
+      dir,
       displayTimezone,
       isDisabled,
       isReadOnly: readOnly,
@@ -264,6 +272,7 @@ export function RangePickerRoot({
       weekStartsOn,
       displayFormat,
       locale,
+      dir,
       displayTimezone,
       isDisabled,
       readOnly,

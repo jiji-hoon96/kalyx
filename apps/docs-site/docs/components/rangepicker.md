@@ -107,6 +107,7 @@ function BasicRange() {
 | `weekStartsOn` | `0 \| 1` | `0` | Week start. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | Format string. |
 | `locale` | `string` | `'en-US'` | BCP 47 locale. |
+| `dir` | `'ltr' \| 'rtl'` | `'ltr'` | Layout direction. In `'rtl'` the calendar grid carries `dir="rtl"` and ArrowLeft/ArrowRight are mirrored (WAI-ARIA grid pattern). See [Internationalization](../concepts/internationalization.md#right-to-left-rtl). |
 | `displayTimezone` | `string` | — | IANA zone. When set, `start`/`end` are civil midnight of the clicked day in this zone. See [Timezone](../concepts/timezone.md). |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom adapter. |
 | `labels` | `Partial<RangePickerLabels>` | — | Override ARIA labels. Adds `startInput`, `endInput`, `presetsGroup` on top of DatePicker's label keys. |

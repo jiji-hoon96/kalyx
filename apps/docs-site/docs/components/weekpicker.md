@@ -149,7 +149,7 @@ With `weekStartsOn={1}`, clicking any date in, for example, April 14 2026 (Tuesd
 
 | Part | Source | Purpose |
 |------|--------|---------|
-| `WeekPicker.Root` | wraps `RangePicker.Root` | controlled/uncontrolled `DateRange`, `displayTimezone`, `disabled` rules |
+| `WeekPicker.Root` | wraps `RangePicker.Root` | controlled/uncontrolled `DateRange`, `displayTimezone`, `disabled` rules, `dir` (RTL mirrors the calendar grid) |
 | `WeekPicker.Input` | = `RangePicker.Input` | start/end text inputs (`part="start" \| "end"`) |
 | `WeekPicker.Popover` | = `RangePicker.Popover` | Floating UI positioning |
 | **`WeekPicker.Calendar`** | wraps `RangePicker.Calendar` with `selectionMode="week"` | single-click selects the full week |

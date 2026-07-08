@@ -12,6 +12,39 @@ This guide is for the second case: you already ship `dayjs`, `luxon`, or
 `Temporal` in your app, and you'd rather not bundle a second date library just
 because Kalyx is here.
 
+## Prebuilt adapter packages
+
+Before writing your own, check whether Kalyx already ships one. Each is a thin,
+UTC-pinned `DateAdapter` validated against the shared conformance suite
+(`@kalyx/core/test-helpers`), so they behave identically to the default:
+
+| Package | Backend | When to use |
+| --- | --- | --- |
+| `@kalyx/adapter-date-fns` | date-fns | Default. Auto-installed by `@kalyx/react`. |
+| `@kalyx/adapter-dayjs` | dayjs | You already ship dayjs (Mantine and many app stacks). |
+| `@kalyx/adapter-luxon` | luxon | You already ship luxon (common in enterprise / timezone-heavy stacks). |
+
+```bash npm2yarn
+npm install @kalyx/adapter-luxon   # or @kalyx/adapter-dayjs
+```
+
+```tsx
+import { DatePicker } from '@kalyx/react/headless';
+import { LuxonAdapter } from '@kalyx/adapter-luxon';
+
+<DatePicker adapter={LuxonAdapter} value={iso} onChange={setIso}>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
+```
+
+All three run every operation in UTC for the same ISO 8601 (`...Z`) semantics,
+and delegate timezone-aware work to `@kalyx/core` (the correctness logic lives
+in core, not in each adapter). If none fits your backend, write your own with the
+[interface below](#writing-your-own-adapter).
+
 ---
 
 ## Default (date-fns)
@@ -65,8 +98,8 @@ surface is otherwise identical to `@kalyx/react`:
 ```tsx
 import { DatePicker } from '@kalyx/react/headless';
 import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
-// or your own:
-// import { DayjsAdapter } from './my-dayjs-adapter';
+// or a prebuilt one: import { LuxonAdapter } from '@kalyx/adapter-luxon';
+// or your own: import { MyAdapter } from './my-adapter';
 
 <DatePicker adapter={DateFnsAdapter} value={iso} onChange={setIso}>
   <DatePicker.Input />
@@ -105,7 +138,9 @@ only the default-adapter installation differs.
 
 ## Writing your own adapter
 
-The `DateAdapter` interface has **21 methods**. All of them take ISO 8601 UTC
+If your date library isn't in the [prebuilt list](#prebuilt-adapter-packages)
+(date-fns, dayjs, luxon), implement the `DateAdapter` interface yourself. It has
+**21 methods**. All of them take ISO 8601 UTC
 strings as input and return either ISO strings, booleans, or numbers. Native
 `Date` objects never cross the boundary.
 
@@ -264,10 +299,23 @@ import { DayjsAdapter } from './my-dayjs-adapter';
 
 The fastest sanity check is to render `<DatePicker.Calendar />` with the
 adapter and step through a month with arrow keys. If the dates align with
-what your library reports, the contract holds. For full confidence, copy the
-test cases from `packages/adapter-date-fns/src/__tests__/` and run them
-against your adapter — they cover leap years, DST transitions, and
-end-of-month rollover.
+what your library reports, the contract holds.
+
+For full confidence, run the shared conformance suite. `@kalyx/core/test-helpers`
+exports `runAdapterConformanceTests`, the exact suite the prebuilt adapters are
+validated against. It covers leap years, DST transitions, end-of-month
+rollover, and the weekday / month-index conventions:
+
+```ts
+import { describe, it, expect } from 'vitest';
+import { runAdapterConformanceTests } from '@kalyx/core/test-helpers';
+import { MyAdapter } from './my-adapter';
+
+runAdapterConformanceTests(MyAdapter, { describe, it, expect });
+```
+
+If every case passes, your adapter satisfies the same contract as
+`@kalyx/adapter-date-fns`, `@kalyx/adapter-dayjs`, and `@kalyx/adapter-luxon`.
 
 ---
 

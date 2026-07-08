@@ -1462,3 +1462,103 @@ describe('DatePicker — announce() live-region parity (B10 A-G1)', () => {
     expect(screen.getByRole('status')).toHaveTextContent(/January 20, 2026/i);
   });
 });
+
+describe('DatePicker — RTL (dir="rtl")', () => {
+  function renderRtl(onChange = vi.fn()) {
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={onChange} dir="rtl">
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    return { onChange };
+  }
+
+  it('marks the grid with dir="rtl"', async () => {
+    const user = userEvent.setup();
+    renderRtl();
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('grid')).toHaveAttribute('dir', 'rtl');
+  });
+
+  it('mirrors ArrowLeft/ArrowRight: ArrowLeft advances a day, ArrowRight goes back', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderRtl();
+    await user.click(screen.getByRole('combobox'));
+
+    // In RTL the physically-left cell is the *next* day.
+    await user.keyboard('{ArrowLeft}{Enter}');
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-16T/));
+
+    onChange.mockClear();
+    await user.click(screen.getByRole('combobox'));
+    // ArrowRight moves back a day.
+    await user.keyboard('{ArrowRight}{Enter}');
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-14T/));
+  });
+
+  it('keeps ArrowUp/ArrowDown vertical (unaffected by direction)', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderRtl();
+    await user.click(screen.getByRole('combobox'));
+
+    // ArrowDown = +7 days regardless of layout direction.
+    await user.keyboard('{ArrowDown}{Enter}');
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-22T/));
+  });
+
+  it('defaults to LTR when dir is not set', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DatePicker value="2026-01-15T00:00:00.000Z" onChange={onChange}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('grid')).toHaveAttribute('dir', 'ltr');
+
+    // LTR: ArrowLeft goes back a day.
+    await user.keyboard('{ArrowLeft}{Enter}');
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-14T/));
+  });
+
+  it('applies dir="rtl" to the MonthGrid element', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value="2026-04-15T00:00:00.000Z" onChange={vi.fn()} dir="rtl">
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.MonthGrid />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('grid')).toHaveAttribute('dir', 'rtl');
+  });
+
+  it('applies dir="rtl" to the YearGrid element and mirrors index navigation', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value="2026-04-15T00:00:00.000Z" onChange={vi.fn()} dir="rtl">
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.YearGrid />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('grid')).toHaveAttribute('dir', 'rtl');
+
+    // 12-year block starts at 2016 (2026 - 2026%12 = 2016). Focus is 2026 (index 10).
+    screen.getByRole('gridcell', { name: '2026' }).focus();
+    // RTL: physically-left cell is the *next* (higher-index) year → 2027.
+    await user.keyboard('{ArrowLeft}');
+    expect(screen.getByRole('gridcell', { name: '2027' })).toHaveFocus();
+  });
+});

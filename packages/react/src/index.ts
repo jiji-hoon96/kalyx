@@ -98,6 +98,9 @@ export type { UseDatePickerOptions, UseDatePickerReturn } from './hooks/useDateP
 export type { UseRangePickerOptions, UseRangePickerReturn } from './hooks/useRangePicker.js';
 export type { UseTimePickerOptions, UseTimePickerReturn } from './hooks/useTimePicker.js';
 
+// Layout direction shared across all picker Roots (`dir` prop).
+export type { Direction } from './components/_shared/rtl.js';
+
 // Re-export the default adapter so consumers can `import { DateFnsAdapter } from '@kalyx/react'`
 // without pulling in the adapter package directly. Source lives in @kalyx/adapter-date-fns now.
 export { DateFnsAdapter } from '@kalyx/adapter-date-fns';

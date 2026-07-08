@@ -887,3 +887,47 @@ describe('RangePicker.Popover — style merging', () => {
     expect(dialog.style.position).toBe('absolute');
   });
 });
+
+describe('RangePicker — RTL (dir="rtl")', () => {
+  it('marks the grid with dir="rtl" and mirrors horizontal navigation', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <RangePicker
+        value={{ start: '2026-01-15T00:00:00.000Z', end: null }}
+        onChange={onChange}
+        dir="rtl"
+      >
+        <RangePicker.Input part="start" />
+        <RangePicker.Input part="end" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+
+    await user.click(screen.getAllByRole('combobox')[0]);
+    expect(screen.getByRole('grid')).toHaveAttribute('dir', 'rtl');
+
+    // RTL: physically-left cell is the *next* day.
+    await user.keyboard('{ArrowLeft}{Enter}');
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({ start: expect.stringMatching(/^2026-01-16T/) }),
+    );
+  });
+
+  it('defaults the grid to dir="ltr"', async () => {
+    const user = userEvent.setup();
+    render(
+      <RangePicker value={{ start: '2026-01-15T00:00:00.000Z', end: null }} onChange={vi.fn()}>
+        <RangePicker.Input part="start" />
+        <RangePicker.Input part="end" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+    await user.click(screen.getAllByRole('combobox')[0]);
+    expect(screen.getByRole('grid')).toHaveAttribute('dir', 'ltr');
+  });
+});

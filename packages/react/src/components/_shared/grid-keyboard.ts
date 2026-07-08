@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import type { DateAdapter, DisabledRule, ISODateString } from '@kalyx/core';
+import type { Direction } from './rtl.js';
 
 /**
  * A range of dates `[start, end]` is "fully disabled" when every day in it is
@@ -40,6 +41,12 @@ export interface UseGridStateOptions {
   onPageDown: () => void;
   /** Escape — typically closes the popover. */
   onEscape: () => void;
+  /**
+   * Layout direction. In "rtl" the physical ArrowLeft/ArrowRight (and the
+   * disabled-cell skip step) are swapped so navigation follows visual layout.
+   * Defaults to "ltr".
+   */
+  dir?: Direction;
 }
 
 /**
@@ -58,20 +65,32 @@ export interface UseGridStateOptions {
  *   without an extra dependency.)
  */
 export function useGridState(opts: UseGridStateOptions) {
-  const { initialIndex, disabledFlags, onSelect, onPageUp, onPageDown, onEscape } = opts;
+  const {
+    initialIndex,
+    disabledFlags,
+    onSelect,
+    onPageUp,
+    onPageDown,
+    onEscape,
+    dir = 'ltr',
+  } = opts;
   const gridRef = useRef<HTMLDivElement>(null);
   const [focusedIndex, setFocusedIndex] = useState<number>(initialIndex);
+
+  const rtl = dir === 'rtl';
 
   const handleKeyDown = (e: KeyboardEvent) => {
     let next: number | null = null;
     let step = 1;
     switch (e.key) {
       case 'ArrowLeft':
-        next = Math.max(0, focusedIndex - 1);
-        step = -1;
+        // RTL: physically-left is the next (higher-index) cell.
+        next = rtl ? Math.min(11, focusedIndex + 1) : Math.max(0, focusedIndex - 1);
+        step = rtl ? 1 : -1;
         break;
       case 'ArrowRight':
-        next = Math.min(11, focusedIndex + 1);
+        next = rtl ? Math.max(0, focusedIndex - 1) : Math.min(11, focusedIndex + 1);
+        step = rtl ? -1 : 1;
         break;
       case 'ArrowUp':
         next = Math.max(0, focusedIndex - 3);

@@ -43,7 +43,7 @@ The default `displayFormat` is `"yyyy"`.
 
 | Part | Source | Purpose |
 |------|--------|---------|
-| `YearPicker.Root` | wraps `DatePicker.Root` | controlled/uncontrolled state, `displayTimezone`, `disabled` rules |
+| `YearPicker.Root` | wraps `DatePicker.Root` | controlled/uncontrolled state, `displayTimezone`, `disabled` rules, `dir` (RTL mirrors the year grid) |
 | `YearPicker.Input` | = `DatePicker.Input` | text input (combobox role) |
 | `YearPicker.Trigger` | = `DatePicker.Trigger` | icon button |
 | `YearPicker.Popover` | = `DatePicker.Popover` | Floating UI positioning |

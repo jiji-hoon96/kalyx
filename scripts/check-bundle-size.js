@@ -9,7 +9,7 @@
 // 3. CI (`.github/workflows/pr-check.yml` `bundle-size` job) invokes this
 //    script directly instead of running its own `gzip -c | wc -c` pipeline,
 //    so shell-gzip vs. Node-zlib defaults can't drift apart inside the
-//    tight 16KB margin (currently ~126 B on CJS / ~221 B on ESM — CJS binds).
+//    17KB margin (currently ~901 B on CJS / ~1033 B on ESM — CJS binds).
 //
 // When `$GITHUB_OUTPUT` is set, the script appends per-bundle gzip KB values
 // (kb_esm, kb_cjs) so the workflow can read them back for the PR comment
@@ -45,8 +45,8 @@ export const BUNDLES = [
 
 // Single source of truth for the gzip primitive. bundle-diff.mjs imports this
 // so base-vs-head deltas are measured with the exact same zlib defaults as the
-// CI gate and tsup post-build hook — no shell-gzip drift inside the tight
-// 16KB margin (~126 B CJS / ~221 B ESM).
+// CI gate and tsup post-build hook — no shell-gzip drift inside the
+// 17KB margin (~901 B CJS / ~1033 B ESM).
 export function getGzipBytes(filePath) {
 	return gzipSync(readFileSync(filePath)).length;
 }
