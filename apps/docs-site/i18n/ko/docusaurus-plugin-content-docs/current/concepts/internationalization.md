@@ -149,7 +149,7 @@ export const ja: DatePickerLabels = {
 
 둘은 독립적입니다 — `locale="ko-KR"`과 영어 라벨을 함께 쓸 수도 있고, 그 반대도 가능합니다.
 
-## 오른쪽-왼쪽 (RTL) {#right-to-left-rtl}
+## 오른쪽-왼쪽 (RTL)
 
 RTL 지원은 두 계층이며, 보통 둘 다 필요합니다:
 
