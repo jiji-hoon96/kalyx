@@ -1,6 +1,6 @@
 {
 	"name": "@kalyx/adapter-luxon",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "luxon adapter for @kalyx/core — implements the DateAdapter contract using luxon (UTC mode). Timezone work is delegated to @kalyx/core's Intl-based utilities.",
 	"license": "MIT",
 	"author": "jiji-hoon96",

@@ -1,5 +1,11 @@
 # @kalyx/react
 
+## 1.3.0
+
+### Minor Changes
+
+- 03f1037: Add RTL support via a `dir` prop (`"ltr"` | `"rtl"`, default `"ltr"`) on every picker Root (DatePicker, RangePicker, TimePicker via DateTimePicker, MonthPicker, YearPicker, WeekPicker). In `dir="rtl"` the calendar/month/year grid carries `dir="rtl"` for styling and mirrors the physical ArrowLeft/ArrowRight keys per the WAI-ARIA grid pattern — the visually-left cell is the _next_ date, the visually-right cell the _previous_ — while ArrowUp/ArrowDown, PageUp/PageDown, and Home/End keep their logical direction. The disabled-cell skip loop is direction-aware so it continues along the same logical path. Also exports the `Direction` type from the main and `/headless` entries.
+
 ## 1.2.0
 
 ### Minor Changes
