@@ -52,6 +52,13 @@ jobs:
         # after the ceiling was raised to 17KB (B10 A-G1).
         run: node scripts/check-bundle-size.js
 
+      - name: Changeset 검증 (ignored/publishable 혼합 차단)
+        # Fail early on the changesets footgun: a changeset that bumps both an
+        # `ignore`d package (docs / @kalyx-example/*) and a publishable one makes
+        # `changeset publish` fail mid-release. This turns that opaque failure
+        # into an actionable pre-flight error. (See AGENTS.md §14 cleanup #3.)
+        run: node scripts/verify-changesets.mjs
+
       - name: Changesets 릴리즈
         id: changesets
         uses: changesets/action@v1
