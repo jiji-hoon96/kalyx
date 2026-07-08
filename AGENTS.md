@@ -587,15 +587,25 @@ pnpm changeset publish # npm 배포 (CI 자동)
 
 ## 14. 현재 이니셔티브 (2026-06-18 기준 — Track A 종료, "정확성 먼저" 방향 확정)
 
-> **🟢 2026-07-08 최근 작업 로그 (세션 메모리):**
-> - **PR #162 머지 완료** — `@kalyx/adapter-luxon` + RTL 지원 + release changeset 가드를 한 PR 3커밋으로 묶어 `--squash --admin` 머지(승인 리뷰 부재 + main 1명 승인 보호라 admin 필요, 이 레포 관행). 머지 커밋 `03f1037`. **아직 npm publish 전** — changeset 2건(`@kalyx/adapter-luxon` minor 신규, `@kalyx/react` minor)이 main 에 있으니 다음 release.yml 실행 때 Version PR 생성될 것. dist-tag `latest` 는 여전히 1.2.0.
+> **🟢 2026-07-08 최근 작업 로그 #2 (오후 세션 — luxon/RTL publish 마무리 + fast-check 확장):**
+> - **`@kalyx/react@1.3.0` npm 배포 완료** — RTL `dir` prop(TC-M4). dist-tag `latest` = **1.3.0**. GitHub Release 자동 생성. Version PR #163 를 `--admin` 머지(봇 PR이라 필수 체크 PR Check/Security Audit가 `action_required`로 남아 정상 머지 불가 — approve API도 "fork PR 아님"이라며 403 거부. 이게 release PR류에 `--admin`이 필요한 구조적 이유). `@kalyx/core` 는 RTL이 react-only라 1.2.0 유지.
+> - **`@kalyx/adapter-luxon@0.1.0` npm 첫 배포 완료** — B3 패키지가 드디어 npm 등재(3번째 어댑터). Trusted Publisher(OIDC)도 사후 등록 완료(`jiji-hoon96/kalyx` / `release.yml` / environment 비움 / `npm publish`). → **남은 후속 (c) 완료.** dayjs 는 이미 등록돼 있었음(재확인). date-fns 만 미확인(세션 메모리 cleanup #1 — 다음에 점검).
+> - **⚠️ 함정 #1 (luxon 첫 배포 버전) — PR #165**: main의 luxon `package.json` version이 `0.1.0`으로 박혀 있어 minor changeset이 이를 **`0.2.0`으로 범프** → 첫 배포가 0.1.0을 건너뛸 뻔. dayjs 선례(초기값 `0.0.0`)에 맞춰 `0.0.0`으로 되돌림 → changeset이 `0.0.0→0.1.0`으로 정확히 범프(로컬 `changeset version`으로 검증). **교훈: 새 배포 패키지의 초기 `version`은 `0.0.0`으로 둘 것**(minor changeset이 첫 릴리즈를 0.1.0으로 만든다).
+> - **⚠️ 함정 #2 (신규 스코프 패키지 첫 배포)**: release.yml은 토큰 없이 **OIDC Trusted Publishing만** 씀. OIDC는 **이미 존재하는 패키지**에만 신뢰관계를 걸 수 있어, 신규 패키지(luxon)는 CI에서 **E404**로 실패(react는 기존 패키지라 성공 — release publish가 부분성공 `code 1`로 끝난 원인). **신규 패키지 첫 배포는 인증 사용자가 수동으로** 해야 함(date-fns/dayjs도 밟은 경로).
+> - **⚠️ 함정 #3 (수동 배포 도구) — 중요**: 신규 패키지 첫 배포에 **`npm publish`를 쓰면 안 됨** — `workspace:^`(pnpm 전용 프로토콜)를 치환하지 않고 그대로 올려 npm이 **400 Bad Request**로 거부. 반드시 **`pnpm publish`**(배포 직전 `workspace:^`→`^1.2.0` 실제 버전 치환. `pnpm pack`으로 tarball 열어 검증함). 명령: `cd packages/adapter-luxon && pnpm publish --no-git-checks`(publishConfig.access=public 있어 `--access public` 생략 가능).
+> - **⚠️ 함정 #4 (배포 후 전파 지연)**: `pnpm publish` 성공 직후 `npm view <pkg> version` 이 **E404**로 나와도 배포 실패가 아님 — 버전 엔드포인트(`https://registry.npmjs.org/@kalyx%2Fadapter-luxon/0.1.0`)는 이미 **200**이면 성공. 레지스트리 **루트 인덱스 CDN 전파 지연**(수 분)일 뿐. **이때 재배포 절대 금지** — "cannot publish over 0.1.0" **403**만 뜸(이건 "이미 올라갔다"는 증거). 확인은 버전 엔드포인트 200 여부로.
+> - **fast-check 속성테스트 (PR #166 머지 완료)** — Track C "fast-check 최우선"을 착수하려 보니 **calendar/timezone은 이미 #140/#143로 완료**돼 있었음(세션 메모리가 "최우선/미착수"로 오도). 남은 순수 모듈 **time·locale**로 확장: time(setTime/getTime round-trip, to12Hour↔to24Hour bijection over 0..23 + RangeError, parse↔format round-trip, generateMinutes step 구조, isSameTime 동치관계), locale(getWeekdayNames 7개+Sun→Mon 좌회전+permutation, getWeekStartForLocale 0|1 codomain, getMonthName non-empty). **test-only bundle-0**(CI diff ±0 B), 선례(#140/#143)대로 **changeset 없이** 머지. 763 tests pass. → **core property 스윕이 순수 모듈 전부 커버.** ⚠️ fast-check 콜백은 화살표 단문 `() => expect(...)` 금지(반환값 falsy 오인) — 반드시 중괄호 블록.
+> - **남은 후속 갱신**: (a)~(c) 완료. (b) dayjs 는 이미 npm 배포+Trusted Publisher 완료 확인. **남은 것**: `@kalyx/adapter-date-fns` Trusted Publisher 등록 점검(§14 cleanup #1,2), Track C 잔여(`DisabledRule` per-picker narrowing, e2e locale/mid-flight prop 확장 — fast-check 는 이제 완료).
+>
+> **🟢 2026-07-08 최근 작업 로그 #1 (오전 세션):**
+> - **PR #162 머지 완료** — `@kalyx/adapter-luxon` + RTL 지원 + release changeset 가드를 한 PR 3커밋으로 묶어 `--squash --admin` 머지(승인 리뷰 부재 + main 1명 승인 보호라 admin 필요, 이 레포 관행). 머지 커밋 `03f1037`. ~~아직 npm publish 전~~ → **오후 세션에서 publish 완료**(위 로그 #2 참고). dist-tag `latest` 는 ~~여전히 1.2.0~~ → **1.3.0(react)**.
 >   - **B3 완료 — `@kalyx/adapter-luxon@0.1.0`**: luxon 백엔드 `DateAdapter`(UTC 고정), timezone 은 `@kalyx/core` 위임, `@kalyx/core/test-helpers` conformance 21/21 통과(3번째 백엔드). date-fns/dayjs 와 동일한 8-토큰 `format` 제한 공유(시스템 공통, luxon 특유 결함 아님). `toISO` 의 `+00:00→Z` regex 는 luxon 3.x 에선 dead-code(무해, 안전망).
 >   - **TC-M4 완료 — RTL `dir` prop**: 6개 picker Root(DatePicker/RangePicker/DateTimePicker/MonthPicker/YearPicker/WeekPicker)에 `dir="ltr"|"rtl"`. RTL 시 grid 에 `dir` 스탬프 + ArrowLeft/Right 물리 스왑(WAI-ARIA grid; 세로/PageUp·Down/Home·End 는 논리방향 유지), disabled-skip 방향 인식. `_shared/rtl.ts`(horizontalDayStep·isBackwardKey) + grid-keyboard.ts 인덱스 스왑. `Direction` 타입 main+/headless export. **TimePicker 는 캘린더 grid 없어 의도적으로 `dir` 미지원.**
 >   - **리뷰 중 버그 발견·수정(MODERATE)**: MonthGrid/YearGrid/MonthPicker/YearPicker 의 `<div role="grid">` 4곳에 `dir` 속성 누락(키보드는 RTL 인데 DOM 엔 방향 선언 없어 AT 열순서·CSS 미러링 깨짐). day 캘린더 `<table>` 은 정상이었음. → 4곳 `dir={ctx.dir}` + 회귀 테스트 4건 추가.
 >   - **cleanup #3 완료 — `scripts/verify-changesets.mjs`**: ignored(`docs`/`@kalyx-example/*`)+publishable 혼합 changeset 을 release 전 차단(그대로 두면 `changeset publish` 가 중도 실패). `release.yml` 에 step 추가. `.changeset/config.json` ignore 에 `@kalyx-example/*` 추가. 순수 헬퍼 단위테스트 포함. → §14 "v1.0 직후 처리 필요" 3번의 **남은 부분(ignored changeset publish 차단 사전검증) 이제 완료**.
 >   - **문서(docs-site en+ko)**: `dir` prop 을 DatePicker/RangePicker/DateTimePicker props 표 + MonthPicker/YearPicker/WeekPicker 상속 명시. internationalization RTL 섹션을 "조상 `dir`=CSS 미러링 / Root `dir` prop=화살표키 미러링" 2계층으로 정정(기존 설명이 화살표 스왑을 조상 dir 로 오도). adapters 가이드/concepts/api 에 `@kalyx/adapter-luxon`·`-dayjs` 를 실제 패키지로 등재(기존엔 "가상 예시"였음) + `@kalyx/core/test-helpers` conformance 안내.
 >   - **CI 함정 기록(다음 세션 주의)**: ko `internationalization.md` 헤딩에 Docusaurus 커스텀 id `{#right-to-left-rtl}` 를 붙였더니 **MDX 가 `{...}` 를 JS 표현식으로 파싱하려다 acorn 에러 → ko Docusaurus build 실패**(en 은 커스텀 id 없어 무사). 커스텀 id 제거 + ko 컴포넌트 문서 앵커를 자동 slug `#오른쪽-왼쪽-rtl` 로 교체해 해결(PR 두번째 push `fix(docs)`). **교훈: 한글 헤딩 + `{#custom-id}` 조합 금지.** docs-site 변경 시 `pnpm --filter docs-site build` 로컬 검증 필수(en+ko 둘 다).
-> - **남은 후속(다음 세션 후보)**: (a) release.yml 다음 실행으로 luxon/RTL Version PR → publish 마무리. (b) B1 `@kalyx/adapter-dayjs` 는 이미 존재하나 npm 미배포 상태인지 재확인. (c) `@kalyx/adapter-luxon` npmjs Trusted Publisher(OIDC) 등록 — date-fns 와 동일 이슈(§14 cleanup #1,2). (d) 남은 Track C: fast-check 속성테스트(최우선), `DisabledRule` per-picker narrowing, e2e locale/mid-flight prop 확장.
+> - **남은 후속(오전 세션 기준, #2에서 대부분 해소)**: ~~(a) release.yml 다음 실행으로 luxon/RTL Version PR → publish 마무리~~ → **완료**. ~~(b) B1 `@kalyx/adapter-dayjs` npm 미배포 상태인지 재확인~~ → **이미 배포+Trusted Publisher 완료 확인**. ~~(c) `@kalyx/adapter-luxon` npmjs Trusted Publisher(OIDC) 등록~~ → **완료**. **남은 것**: `@kalyx/adapter-date-fns` Trusted Publisher 점검(cleanup #1,2), ~~fast-check~~(완료), `DisabledRule` per-picker narrowing, e2e locale/mid-flight prop 확장.
 
 > **🟢 2026-06-26 최근 작업 로그 (세션 메모리):**
 > - **1.2.0 정식 npm 배포 완료** — `@kalyx/core@1.2.0` + `@kalyx/react@1.2.0` publish (dist-tag `latest`). 내용: **B5**(DateTimePicker.Presets/.Preset on `/headless`) + **B7**(weekStartsOn locale 추론). GitHub Release 2건 자동 생성. (`@kalyx-example/*` 는 private 0.0.x, publish 안 됨.) Changesets action 정상 동작.
@@ -651,7 +661,7 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 |---|---|---|
 | B1 | `@kalyx/adapter-dayjs` 출시 (P0) | Mantine + ~50% dayjs 사용자에게 drop-in headless 옵션 |
 | B2 | `@kalyx/core/test-helpers` 어댑터 conformance test suite | B1/B3/B6 unblock — adapter 작성자 테스트 부담 제거 |
-| ~~B3~~ | ~~`@kalyx/adapter-luxon`~~ → **완료** (PR #162, 2026-07-08) | B2 후 비용 낮음. luxon 백엔드 `DateAdapter`, conformance 21/21 통과(3번째 백엔드). npm publish 는 다음 release PR 대기 |
+| ~~B3~~ | ~~`@kalyx/adapter-luxon`~~ → **완료 + npm 배포** (PR #162, `@kalyx/adapter-luxon@0.1.0` publish — 2026-07-08) | B2 후 비용 낮음. luxon 백엔드 `DateAdapter`, conformance 21/21 통과(3번째 백엔드). npm 등재 완료(수동 첫 배포 + Trusted Publisher 등록) |
 | B4 | `useMonthPicker` / `useYearPicker` / `useWeekPicker` / `useDateTimePicker` hooks (`/headless` 전용) | audit API-G1. 기본 entry 번들 압력 회피 |
 | ~~B5~~ | ~~`DateTimePicker.Presets` (`/headless`에서 RangePicker.Presets 패턴 재사용)~~ → **완료** | audit API-G2 — `DateTimePicker.Presets`/`.Preset` 가 datetime 전체(날짜+시간)를 원자적으로 커밋. `/headless` 전용 배치(기본 엔트리 천장 회피), `selectDateTime` Root 메서드는 양쪽 엔트리 공통 (+~40 B CJS) |
 | ~~B6~~ | ~~`@kalyx/adapter-temporal@0.x`~~ → **드롭** (2026-06-18) | 정확성 0 검증: 어댑터 인터페이스는 ISO-string in/out이라 Temporal 역량 운반 불가, core Intl로 재위임. 홍보 접어 optics 청중도 없음. Temporal **전략**은 core 레벨 Track D demand-gate로 보존 |
@@ -664,7 +674,7 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 ### Track C — v1.2 (다음 분기)
 
 - ~~RTL 지원 + 테스트 (audit TC-M4)~~ → **완료** (PR #162, 2026-07-08). 6개 picker Root `dir` prop, grid 화살표키 물리 스왑 + `dir` 스탬프, MonthGrid/YearGrid/MonthPicker/YearPicker grid 요소 `dir` 누락 버그 수정, en+ko 문서화. TimePicker 는 grid 없어 미지원.
-- ~~`fast-check` property test 도입 (audit TC-H2)~~ → **#1로 끌어올림** (2026-06-18, 1.0.4 patch — 해자 강화 최우선). 2026-06-18 spec 참조
+- ~~`fast-check` property test 도입 (audit TC-H2)~~ → **완료** (calendar/timezone PR #140/#143, time/locale PR #166 — 2026-07-08). core 순수 모듈(calendar·timezone·time·locale) 전부 property test 커버. 전부 test-only bundle-0, changeset 없이 머지.
 - `DisabledRule` 타입 narrowing per picker 또는 시맨틱 명시 (audit API-G3)
 - e2e 확장: mid-flight prop 변경, locale switch
 - per-dependency 번들 크기 리포트 (audit B-R2, 특히 `@floating-ui/react` 기여도)
