@@ -177,6 +177,18 @@
   border-collapse: collapse;
 }
 
+/* Infima also zebra-stripes table rows via
+ * `table tbody tr:nth-child(2n) { background: var(--ifm-table-stripe-background) }`
+ * (rgba(0,0,0,.03)), which bleeds into every-other week row of a Kalyx calendar
+ * grid. Neutralize the striped background on ARIA grid rows/cells so the
+ * calendar reads as a clean, uniform grid (prose tables stay untouched). */
+[data-theme] [role='grid'] tr,
+[data-theme] [role='grid'] tbody tr:nth-child(2n),
+[data-theme] [role='grid'] th,
+[data-theme] [role='grid'] td {
+  background-color: transparent;
+}
+
 /* Admonitions */
 .alert {
   border-radius: 10px;
