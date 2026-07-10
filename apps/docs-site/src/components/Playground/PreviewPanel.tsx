@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   DatePicker, RangePicker, TimePicker, DateTimePicker,
   MonthPicker, YearPicker, WeekPicker,
@@ -63,8 +63,11 @@ function RangePickerPreview({ classNames, locale, timezone }: SubProps) {
   const cn = classNames as { input?: string; calendar?: Record<string, string> };
   return (
     <RangePicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
-      <RangePicker.Input className={cn.input} part="start" />
-      <RangePicker.Input className={cn.input} part="end" />
+      <div className={styles.rangeInputRow}>
+        <RangePicker.Input className={cn.input} part="start" />
+        <span className={styles.rangeInputSep} aria-hidden="true">–</span>
+        <RangePicker.Input className={cn.input} part="end" />
+      </div>
       <RangePicker.Popover>
         <RangePicker.Calendar classNames={cn.calendar} />
       </RangePicker.Popover>
@@ -90,18 +93,40 @@ function TimePickerPreview({ classNames, timezone }: SubProps) {
 function DateTimePickerPreview({ classNames, locale, timezone }: SubProps) {
   const [v, setV] = useState<string | null>(FROZEN_DATE);
   const cn = classNames as { input?: string; calendar?: Record<string, string>; hourList?: ListCn; minuteList?: ListCn };
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // "Apply" confirms the current date+time selection and closes the popover.
+  // DateTimePicker keeps its popover open after a day click (so you can also
+  // pick a time); it commits/closes on Escape or outside click. We reuse that
+  // public Escape-to-close behavior by dispatching an Escape keydown into the
+  // open dialog — the library's own handler closes it.
+  const handleApply = useCallback(() => {
+    const dialog = popoverRef.current?.querySelector<HTMLElement>('[role="dialog"]');
+    const grid = dialog?.querySelector<HTMLElement>('[role="grid"]') ?? dialog;
+    grid?.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
+  }, []);
+
   return (
     <DateTimePicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
       <DateTimePicker.Input className={cn.input} />
-      <DateTimePicker.Popover>
-        <div className={styles.dateTimeRow}>
-          <DateTimePicker.Calendar classNames={cn.calendar} />
-          <div className={styles.timeRow}>
-            <DateTimePicker.HourList classNames={cn.hourList} />
-            <DateTimePicker.MinuteList classNames={cn.minuteList} />
+      <div ref={popoverRef}>
+        <DateTimePicker.Popover>
+          <div className={styles.dateTimeRow}>
+            <DateTimePicker.Calendar classNames={cn.calendar} />
+            <div className={styles.timeCol}>
+              <div className={styles.timeRow}>
+                <DateTimePicker.HourList classNames={cn.hourList} />
+                <DateTimePicker.MinuteList classNames={cn.minuteList} />
+              </div>
+              <button type="button" className={styles.applyButton} onClick={handleApply}>
+                Apply
+              </button>
+            </div>
           </div>
-        </div>
-      </DateTimePicker.Popover>
+        </DateTimePicker.Popover>
+      </div>
     </DateTimePicker>
   );
 }
@@ -137,8 +162,11 @@ function WeekPickerPreview({ classNames, locale, timezone }: SubProps) {
   const cn = classNames as { input?: string; calendar?: Record<string, string> };
   return (
     <WeekPicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
-      <WeekPicker.Input className={cn.input} part="start" />
-      <WeekPicker.Input className={cn.input} part="end" />
+      <div className={styles.rangeInputRow}>
+        <WeekPicker.Input className={cn.input} part="start" />
+        <span className={styles.rangeInputSep} aria-hidden="true">–</span>
+        <WeekPicker.Input className={cn.input} part="end" />
+      </div>
       <WeekPicker.Popover>
         <WeekPicker.Calendar classNames={cn.calendar} />
       </WeekPicker.Popover>

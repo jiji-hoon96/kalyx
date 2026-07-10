@@ -188,10 +188,13 @@
 }
 [data-testid='preview-panel'] [role='columnheader'] {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--kx-muted);
+  /* Use the primary foreground (near-black in light, near-white in dark) so the
+   * weekday row stays clearly legible on the calendar card instead of fading
+   * into the muted grey it used before. */
+  color: var(--kx-fg);
   padding: 4px 0 8px;
 }
 
@@ -212,10 +215,11 @@
   cursor: pointer;
   transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
 }
-/* Month/year grids have wider labels. */
+/* Month/year grids have wider labels — but keep the cells close to square so
+ * they don't read as long stretched rectangles (was 88px × 38px). */
 [data-testid='preview-panel'] button[role='gridcell'] {
-  min-width: 88px;
-  height: 38px;
+  min-width: 56px;
+  height: 48px;
 }
 [data-testid='preview-panel'] [role='gridcell'] > button:hover,
 [data-testid='preview-panel'] button[role='gridcell']:hover {
@@ -258,12 +262,14 @@
 /* State: in-range (RangePicker / WeekPicker).
  * Target the cell <button> explicitly so this out-specifies the base
  * `[role='gridcell'] > button { background: transparent }` rule above
- * (which otherwise wins on selector specificity and hides the range band). */
+ * (which otherwise wins on selector specificity and hides the range band).
+ * The grid has 4px cell spacing, so give each in-range day a full radius —
+ * the middle days read as soft chips matching the rounded endpoints. */
 [data-testid='preview-panel'] [role='gridcell'] > button[data-in-range],
 [data-testid='preview-panel'] button[role='gridcell'][data-in-range] {
   background: var(--kx-accent-soft);
   color: var(--kx-fg);
-  border-radius: 0;
+  border-radius: var(--kx-radius);
 }
 [data-testid='preview-panel'] [role='gridcell'] > button[data-range-start],
 [data-testid='preview-panel'] button[role='gridcell'][data-range-start] {
@@ -271,8 +277,7 @@
   color: var(--kx-accent-fg);
   font-weight: 600;
   box-shadow: var(--kx-glow);
-  border-top-left-radius: var(--kx-radius);
-  border-bottom-left-radius: var(--kx-radius);
+  border-radius: var(--kx-radius);
 }
 [data-testid='preview-panel'] [role='gridcell'] > button[data-range-end],
 [data-testid='preview-panel'] button[role='gridcell'][data-range-end] {
@@ -280,8 +285,7 @@
   color: var(--kx-accent-fg);
   font-weight: 600;
   box-shadow: var(--kx-glow);
-  border-top-right-radius: var(--kx-radius);
-  border-bottom-right-radius: var(--kx-radius);
+  border-radius: var(--kx-radius);
 }
 /* State: selected (highest priority visual) */
 [data-testid='preview-panel'] [data-selected] {

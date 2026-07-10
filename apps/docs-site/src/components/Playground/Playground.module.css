@@ -85,6 +85,45 @@
   align-items: flex-start;
 }
 
+/* DateTimePicker: stack the two time lists above an Apply button so the user
+ * can confirm date+time in one place. */
+.timeCol {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.applyButton {
+  padding: 0.45rem 0.75rem;
+  border: 0;
+  border-radius: 8px;
+  background: var(--ifm-color-primary, #5b4fe1);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: filter 0.12s ease;
+}
+
+.applyButton:hover {
+  filter: brightness(1.08);
+}
+
+/* Range / week picker: space the two (start / end) inputs apart with a small
+ * dash separator so they don't sit flush against each other. */
+.rangeInputRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rangeInputSep {
+  color: var(--kx-muted, var(--ifm-color-emphasis-500));
+  font-size: 1rem;
+  user-select: none;
+}
+
 .stackblitzButton {
   display: inline-flex;
   align-items: center;

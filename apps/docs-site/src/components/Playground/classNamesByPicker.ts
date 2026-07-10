@@ -43,24 +43,34 @@ const DAY_SELECTED = 'bg-primary text-white hover:!bg-primary';
 const DAY_TODAY = 'font-semibold text-primary ring-1 ring-inset ring-primary/50';
 const DAY_DISABLED = 'text-slate-300 line-through hover:bg-transparent cursor-not-allowed';
 const DAY_OUTSIDE = 'text-slate-300';
-const DAY_IN_RANGE = 'bg-primary/15 text-slate-800 rounded-none hover:!bg-primary/15';
+// Range endpoints — fully rounded (the grid uses 4px cell spacing, so each cell
+// reads as its own pill rather than a continuous bar).
+const DAY_RANGE_START = 'bg-primary text-white rounded-md hover:!bg-primary';
+const DAY_RANGE_END = 'bg-primary text-white rounded-md hover:!bg-primary';
+// In-range band — match the endpoints' rounded corners instead of a hard square
+// so the middle days (16/17/18) read as soft chips like the 15/19 endpoints.
+const DAY_IN_RANGE = 'bg-primary/15 text-slate-800 rounded-md hover:!bg-primary/15';
 
 const CAL_ROOT = 'rounded-xl border border-slate-200 bg-white p-3 shadow-lg';
-const CAL_HEADER = 'mb-2 flex items-center justify-between';
+const CAL_HEADER = 'mb-3 flex items-center justify-between';
 const CAL_NAVBTN =
   'flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-500 transition hover:bg-slate-100';
-const CAL_TITLE = 'text-sm font-semibold text-slate-800';
+const CAL_TITLE = 'text-sm font-semibold text-slate-900';
 const CAL_GRID = 'border-separate [border-spacing:4px]';
+// Weekday header row (Sun/Mon/…). Pinned to a dark slate so it stays legible on
+// the calendar's white card — without an explicit color it inherits the docs
+// site's dark-mode body text (near-white) and vanishes on the light card.
+const CAL_WEEKDAY = 'pb-2 text-xs font-semibold uppercase tracking-wide text-slate-700';
 
 const CELL_BTN =
-  'flex h-9 min-w-[3.5rem] items-center justify-center rounded-md px-2 text-sm text-slate-700 transition hover:bg-slate-100';
+  'flex h-12 w-14 items-center justify-center rounded-md text-sm text-slate-700 transition hover:bg-slate-100';
 const CELL_SELECTED = 'bg-primary text-white hover:!bg-primary';
 const CELL_DISABLED = 'text-slate-300 line-through cursor-not-allowed hover:bg-transparent';
 
 const LIST_ROOT =
-  'h-44 w-16 overflow-y-auto rounded-md border border-slate-200 bg-white p-1 shadow-sm';
+  'h-52 w-16 overflow-y-auto scroll-smooth snap-y rounded-md border border-slate-200 bg-white p-1 shadow-sm [scrollbar-width:thin]';
 const LIST_OPTION =
-  'flex cursor-pointer items-center justify-center rounded py-1.5 text-sm text-slate-700 transition hover:bg-slate-100';
+  'flex cursor-pointer snap-center items-center justify-center rounded py-1.5 text-sm text-slate-700 transition hover:bg-slate-100';
 const LIST_OPTION_SELECTED = 'bg-primary text-white hover:!bg-primary';
 
 const AMPM_ROOT = 'flex flex-col gap-1.5 p-1';
@@ -77,6 +87,7 @@ export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {
       navButton: CAL_NAVBTN,
       title: CAL_TITLE,
       grid: CAL_GRID,
+      weekdayHeader: CAL_WEEKDAY,
       day: DAY,
       daySelected: DAY_SELECTED,
       dayToday: DAY_TODAY,
@@ -89,11 +100,14 @@ export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {
     calendar: {
       root: CAL_ROOT,
       header: CAL_HEADER,
+      navButton: CAL_NAVBTN,
+      title: CAL_TITLE,
       grid: CAL_GRID,
+      weekdayHeader: CAL_WEEKDAY,
       day: DAY,
       daySelected: DAY_SELECTED,
-      dayRangeStart: DAY_SELECTED,
-      dayRangeEnd: DAY_SELECTED,
+      dayRangeStart: DAY_RANGE_START,
+      dayRangeEnd: DAY_RANGE_END,
       dayInRange: DAY_IN_RANGE,
       dayToday: DAY_TODAY,
       dayDisabled: DAY_DISABLED,
@@ -107,7 +121,17 @@ export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {
   },
   datetimepicker: {
     input: INPUT,
-    calendar: { root: CAL_ROOT, day: DAY, daySelected: DAY_SELECTED, dayToday: DAY_TODAY },
+    calendar: {
+      root: CAL_ROOT,
+      header: CAL_HEADER,
+      navButton: CAL_NAVBTN,
+      title: CAL_TITLE,
+      grid: CAL_GRID,
+      weekdayHeader: CAL_WEEKDAY,
+      day: DAY,
+      daySelected: DAY_SELECTED,
+      dayToday: DAY_TODAY,
+    },
     hourList: { root: LIST_ROOT, option: LIST_OPTION, optionSelected: LIST_OPTION_SELECTED },
     minuteList: { root: LIST_ROOT, option: LIST_OPTION, optionSelected: LIST_OPTION_SELECTED },
   },
@@ -124,10 +148,14 @@ export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {
     calendar: {
       root: CAL_ROOT,
       header: CAL_HEADER,
+      navButton: CAL_NAVBTN,
+      title: CAL_TITLE,
+      grid: CAL_GRID,
+      weekdayHeader: CAL_WEEKDAY,
       day: DAY,
       dayInRange: DAY_IN_RANGE,
-      dayRangeStart: DAY_SELECTED,
-      dayRangeEnd: DAY_SELECTED,
+      dayRangeStart: DAY_RANGE_START,
+      dayRangeEnd: DAY_RANGE_END,
     },
   },
 };
