@@ -6,6 +6,7 @@ import SameJsxBlock from '../components/SameJsxBlock';
 import PickerGrid from '../components/PickerGrid';
 import WhyKalyx from '../components/WhyKalyx';
 import GetStarted from '../components/GetStarted';
+import Reveal from '../components/Reveal';
 
 export default function Home(): JSX.Element {
   return (
@@ -15,11 +16,11 @@ export default function Home(): JSX.Element {
       <main>
         <Hero />
         <StatStrip />
-        <FeatureGrid />
-        <SameJsxBlock />
-        <PickerGrid />
-        <WhyKalyx />
-        <GetStarted />
+        <Reveal><FeatureGrid /></Reveal>
+        <Reveal><SameJsxBlock /></Reveal>
+        <Reveal><PickerGrid /></Reveal>
+        <Reveal><WhyKalyx /></Reveal>
+        <Reveal><GetStarted /></Reveal>
       </main>
     </Layout>
   );

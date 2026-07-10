@@ -4,16 +4,27 @@
   aspect-ratio: 16 / 9;
   display: grid;
   place-items: center;
-  background: var(--ifm-background-color, #fff);
-  border-radius: 16px;
+  background: var(--kalyx-surface-raised, #fff);
+  border: 1px solid var(--kx-hairline, rgba(91, 79, 225, 0.12));
+  border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--kx-elev-2, 0 12px 30px rgba(0, 0, 0, 0.08)), var(--kx-elev-accent, 0 8px 30px rgba(91, 79, 225, 0.12));
   color: var(--ifm-font-color-base, #1f1f1f);
+}
+
+/* Soft accent wash inside the demo panel for depth. */
+.root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--kx-radial, transparent);
+  pointer-events: none;
 }
 
 .frame {
   position: absolute;
   inset: 0;
+  z-index: 1;
   display: grid;
   place-items: center;
   opacity: 0;

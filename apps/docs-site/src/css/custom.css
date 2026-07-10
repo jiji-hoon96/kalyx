@@ -34,6 +34,18 @@
   --kalyx-border: rgba(17, 17, 17, 0.08);
   --kalyx-text-muted: #64748b;
   --kalyx-gradient: linear-gradient(135deg, #5b4fe1 0%, #2dd4bf 100%);
+
+  /* Landing visual pass — elevation, accent glow, background texture.
+   * Layered shadows (not a single flat 1px border) give cards depth;
+   * the accent glow is the one signature detail; the dot-grid + radial
+   * wash add texture to otherwise-flat canvases. Restrained, no neon. */
+  --kx-elev-1: 0 1px 2px rgba(15, 23, 42, 0.04), 0 2px 8px rgba(15, 23, 42, 0.05);
+  --kx-elev-2: 0 4px 12px rgba(15, 23, 42, 0.06), 0 12px 32px rgba(15, 23, 42, 0.08);
+  --kx-elev-accent: 0 8px 30px rgba(91, 79, 225, 0.18);
+  --kx-accent-tint: rgba(91, 79, 225, 0.06);
+  --kx-hairline: rgba(91, 79, 225, 0.12);
+  --kx-dot: rgba(15, 23, 42, 0.06);
+  --kx-radial: radial-gradient(60% 60% at 50% 0%, rgba(91, 79, 225, 0.10) 0%, rgba(91, 79, 225, 0) 70%);
 }
 
 [data-theme='dark'] {
@@ -54,6 +66,14 @@
   --kalyx-surface-raised: #111117;
   --kalyx-border: rgba(255, 255, 255, 0.08);
   --kalyx-text-muted: #94a3b8;
+
+  --kx-elev-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --kx-elev-2: 0 4px 12px rgba(0, 0, 0, 0.45), 0 16px 40px rgba(0, 0, 0, 0.5);
+  --kx-elev-accent: 0 8px 30px rgba(139, 128, 255, 0.22);
+  --kx-accent-tint: rgba(139, 128, 255, 0.10);
+  --kx-hairline: rgba(139, 128, 255, 0.18);
+  --kx-dot: rgba(255, 255, 255, 0.05);
+  --kx-radial: radial-gradient(60% 60% at 50% 0%, rgba(139, 128, 255, 0.14) 0%, rgba(139, 128, 255, 0) 70%);
 }
 
 /* Navbar refinement */

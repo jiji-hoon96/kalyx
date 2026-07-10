@@ -1,5 +1,5 @@
 .section {
-  padding: 5rem 0;
+  padding: 7rem 0;
   background: var(--ifm-background-color);
 }
 
@@ -7,15 +7,16 @@
   position: relative;
   background: var(--ifm-color-emphasis-100);
   border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: 16px;
-  padding: 2.5rem 2.5rem 2.5rem 3rem;
+  border-radius: 18px;
+  padding: 3rem 3rem 3rem 3.5rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: flex-start;
-  max-width: 52rem;
+  max-width: 56rem;
   margin: 0 auto;
   overflow: hidden;
+  box-shadow: var(--kx-elev-1);
 }
 
 /* One deliberate accent detail: a vertical rule, not a purple wash. */
@@ -25,8 +26,9 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 4px;
   background: var(--ifm-color-primary);
+  box-shadow: 0 0 24px 2px var(--kx-hairline);
 }
 
 .eyebrow {

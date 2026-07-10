@@ -1,5 +1,5 @@
 .section {
-  padding: 5rem 0;
+  padding: 7rem 0;
   background: var(--ifm-background-color);
 }
 
@@ -20,10 +20,10 @@
 }
 
 .heading {
-  font-size: 2rem;
+  font-size: clamp(2rem, 3.5vw, 2.6rem);
   margin: 0;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   color: var(--ifm-heading-color);
 }
 
@@ -88,7 +88,8 @@
   flex: 1;
   background: var(--ifm-color-emphasis-100);
   border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: 12px;
+  border-radius: 14px;
+  box-shadow: var(--kx-elev-1);
   font-family: var(--ifm-font-family-monospace);
   font-size: 0.85rem;
   line-height: 1.6;
@@ -97,16 +98,30 @@
 }
 
 .right {
+  position: relative;
   display: grid;
   place-items: center;
   padding: 1.5rem;
   background: var(--ifm-color-emphasis-100);
   border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: 12px;
-  min-height: 320px;
+  border-radius: 14px;
+  box-shadow: var(--kx-elev-1);
+  min-height: 340px;
+  overflow: hidden;
+}
+
+/* Soft accent wash behind the live picker for depth. */
+.right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--kx-radial);
+  pointer-events: none;
 }
 
 .previewInner {
+  position: relative;
+  z-index: 1;
   display: grid;
   place-items: center;
 }
