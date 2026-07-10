@@ -45,6 +45,8 @@ export type {
   RangeInputPart,
   RangePickerPopoverProps,
   RangePickerCalendarProps,
+  RangePickerCalendarSelectionMode,
+  RangePickerWeekAnchor,
   RangePickerPresetsProps,
   RangePickerPresetsClassNames,
   RangePickerPresetProps,

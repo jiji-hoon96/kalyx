@@ -73,6 +73,24 @@
   justify-content: center;
 }
 
+/* Tame the scrollbar on the time lists — the default dark-mode scrollbar renders
+ * as a heavy black track next to the white list, which looks broken. Make it a
+ * thin, subtle overlay-style bar on a light track. */
+.preview :global([role='listbox']) {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+.preview :global([role='listbox'])::-webkit-scrollbar {
+  width: 6px;
+}
+.preview :global([role='listbox'])::-webkit-scrollbar-track {
+  background: transparent;
+}
+.preview :global([role='listbox'])::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
 .timeRow {
   display: flex;
   gap: 6px;
@@ -101,13 +119,15 @@
 
 .applyButton {
   align-self: stretch;
-  padding: 0.5rem 0.75rem;
+  padding: 0.55rem 0.75rem;
   border: 0;
   border-radius: 8px;
-  background: var(--ifm-color-primary, #5b4fe1);
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.85rem;
+  /* !important: the preview panel's own button resets (custom.css / demo theme)
+   * otherwise flatten this to a transparent background. */
+  background: #5b4fe1 !important;
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: filter 0.12s ease;
 }

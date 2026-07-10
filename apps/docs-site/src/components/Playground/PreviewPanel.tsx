@@ -166,7 +166,7 @@ function WeekPickerPreview({ classNames, locale, timezone }: SubProps) {
         <WeekPicker.Input className={cn.input} part="end" />
       </div>
       <WeekPicker.Popover>
-        <WeekPicker.Calendar classNames={cn.calendar} />
+        <WeekPicker.Calendar classNames={cn.calendar} weekAnchor="clicked" />
       </WeekPicker.Popover>
     </WeekPicker>
   );

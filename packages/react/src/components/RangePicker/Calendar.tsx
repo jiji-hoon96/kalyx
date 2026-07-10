@@ -42,10 +42,24 @@ export interface RangePickerCalendarClassNames {
  */
 export type RangePickerCalendarSelectionMode = 'range' | 'week';
 
+/**
+ * How the selected week is anchored when `selectionMode="week"`.
+ * - `'calendar'` (default): the calendar week containing the clicked day, aligned
+ *   to `weekStartsOn` (e.g. Sunday–Saturday for en-US).
+ * - `'clicked'`: a rolling 7-day span that *starts* on the clicked day
+ *   (clicked day … clicked day + 6), regardless of `weekStartsOn`.
+ */
+export type RangePickerWeekAnchor = 'calendar' | 'clicked';
+
 export interface RangePickerCalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
   classNames?: RangePickerCalendarClassNames;
   /** @default 'range' */
   selectionMode?: RangePickerCalendarSelectionMode;
+  /**
+   * When `selectionMode="week"`, controls how the 7-day span is derived from the
+   * clicked day. @default 'calendar'
+   */
+  weekAnchor?: RangePickerWeekAnchor;
   /**
    * Render an ISO 8601 week-number column on the left of the grid (1–53).
    * The column is a `<th scope="row">`; it doesn't participate in the WAI-ARIA grid
@@ -70,6 +84,7 @@ function safeFormatFullDate(iso: string, locale: string): string {
 export function RangePickerCalendar({
   classNames,
   selectionMode = 'range',
+  weekAnchor = 'calendar',
   showWeekNumber = false,
   fixedWeeks = false,
   ...props
@@ -146,8 +161,16 @@ export function RangePickerCalendar({
   const commitDay = useCallback(
     (iso: string) => {
       if (selectionMode === 'week') {
-        const weekStart = adapter.startOfWeek(iso, weekStartsOn);
-        const weekEnd = adapter.startOfDay(adapter.endOfWeek(iso, weekStartsOn));
+        // 'calendar': the weekStartsOn-aligned week around the clicked day.
+        // 'clicked': a rolling 7-day span starting on the clicked day.
+        const weekStart =
+          weekAnchor === 'clicked'
+            ? adapter.startOfDay(iso)
+            : adapter.startOfWeek(iso, weekStartsOn);
+        const weekEnd =
+          weekAnchor === 'clicked'
+            ? adapter.startOfDay(adapter.addDays(weekStart, 6))
+            : adapter.startOfDay(adapter.endOfWeek(iso, weekStartsOn));
         const range: DateRange = { start: weekStart, end: weekEnd };
         ctx.setRange(range);
         ctx.close();
@@ -180,7 +203,7 @@ export function RangePickerCalendar({
         }
       }
     },
-    [selectionMode, adapter, weekStartsOn, ctx, locale, selectingTarget, value.start],
+    [selectionMode, weekAnchor, adapter, weekStartsOn, ctx, locale, selectingTarget, value.start],
   );
 
   const handleDayClick = useCallback(

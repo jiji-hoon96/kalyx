@@ -13,6 +13,7 @@ function renderWeekPicker(
     onChange?: (r: DateRange) => void;
     disabled?: boolean;
     weekStartsOn?: 0 | 1;
+    weekAnchor?: 'calendar' | 'clicked';
   } = {},
 ) {
   const onChange = props.onChange ?? vi.fn();
@@ -27,7 +28,7 @@ function renderWeekPicker(
       <WeekPicker.Input part="start" />
       <WeekPicker.Input part="end" />
       <WeekPicker.Popover>
-        <WeekPicker.Calendar />
+        <WeekPicker.Calendar weekAnchor={props.weekAnchor} />
       </WeekPicker.Popover>
     </WeekPicker>,
   );
@@ -66,6 +67,21 @@ describe('WeekPicker — single-click commits the full week', () => {
     expect(onChange).toHaveBeenCalledWith({
       start: expect.stringMatching(/^2026-01-12T/),
       end: expect.stringMatching(/^2026-01-18T/),
+    });
+  });
+
+  it('selects a rolling 7-day span starting on the clicked day when weekAnchor="clicked"', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderWeekPicker({ value: JAN_ANCHOR, weekAnchor: 'clicked' });
+
+    await user.click(screen.getByLabelText('Start date'));
+    // Click Jan 14, 2026 (Wed) — with weekAnchor="clicked" the span STARTS on the
+    // clicked day: Jan 14 – Jan 20 (7 days), regardless of weekStartsOn.
+    await user.click(screen.getByRole('button', { name: /January 14, 2026/ }));
+
+    expect(onChange).toHaveBeenCalledWith({
+      start: expect.stringMatching(/^2026-01-14T/),
+      end: expect.stringMatching(/^2026-01-20T/),
     });
   });
 

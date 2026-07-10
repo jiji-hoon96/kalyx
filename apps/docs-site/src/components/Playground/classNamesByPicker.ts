@@ -62,13 +62,14 @@ const CAL_GRID = 'border-separate [border-spacing:4px]';
 // site's dark-mode body text (near-white) and vanishes on the light card.
 const CAL_WEEKDAY = 'pb-2 text-xs font-semibold uppercase tracking-wide text-slate-700';
 
-// Month cells hold long labels ("September", "November") so they need width and
-// must never wrap/overflow — keep them wide with horizontal padding.
+// Month cells hold long labels ("September") so they can't be tiny, but keep
+// them close to square by growing the height and using a compact font instead
+// of a wide, stretched rectangle.
 const MONTH_CELL =
-  'flex h-11 w-full items-center justify-center whitespace-nowrap rounded-md px-3 text-sm text-slate-700 transition hover:bg-slate-100';
+  'flex h-16 w-full items-center justify-center whitespace-nowrap rounded-md px-1 text-xs font-medium text-slate-700 hover:bg-slate-100';
 // Year cells are short (4 digits) so they can be close to square.
 const YEAR_CELL =
-  'flex h-11 w-16 items-center justify-center rounded-md text-sm text-slate-700 transition hover:bg-slate-100';
+  'flex h-16 w-full items-center justify-center rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100';
 const CELL_SELECTED = 'bg-primary text-white hover:!bg-primary';
 const CELL_DISABLED = 'text-slate-300 line-through cursor-not-allowed hover:bg-transparent';
 
@@ -77,7 +78,7 @@ const LIST_ROOT =
 // DateTimePicker time lists live inside the shared popover card, so no border/
 // shadow of their own — just a scroll area matched to the calendar height.
 const DTP_LIST_ROOT =
-  'h-64 w-14 overflow-y-auto rounded-md bg-slate-50 p-1 [scrollbar-width:thin]';
+  'h-56 w-14 overflow-y-auto rounded-md bg-slate-50 p-1 [scrollbar-width:thin]';
 const LIST_OPTION =
   'flex cursor-pointer items-center justify-center rounded py-1.5 text-sm text-slate-700 transition hover:bg-slate-100';
 const LIST_OPTION_SELECTED = 'bg-primary text-white hover:!bg-primary';
@@ -150,7 +151,7 @@ export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {
   monthpicker: {
     input: INPUT,
     grid: {
-      root: `${CAL_ROOT} min-w-[20rem]`,
+      root: `${CAL_ROOT} w-72`,
       header: CAL_HEADER,
       navButton: CAL_NAVBTN,
       title: CAL_TITLE,
@@ -162,7 +163,7 @@ export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {
   yearpicker: {
     input: INPUT,
     grid: {
-      root: CAL_ROOT,
+      root: `${CAL_ROOT} w-72`,
       header: CAL_HEADER,
       navButton: CAL_NAVBTN,
       title: CAL_TITLE,

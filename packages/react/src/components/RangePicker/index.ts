@@ -7,7 +7,12 @@ import { RangePickerPresets, RangePickerPreset } from './Presets.js';
 import type { RangePickerRootProps } from './Root.js';
 import type { RangePickerInputProps, RangeInputPart } from './Input.js';
 import type { RangePickerPopoverProps } from './Popover.js';
-import type { RangePickerCalendarProps, RangePickerCalendarClassNames } from './Calendar.js';
+import type {
+  RangePickerCalendarProps,
+  RangePickerCalendarClassNames,
+  RangePickerCalendarSelectionMode,
+  RangePickerWeekAnchor,
+} from './Calendar.js';
 import type {
   RangePickerPresetsProps,
   RangePickerPresetsClassNames,
@@ -60,6 +65,8 @@ export type {
   RangePickerPopoverProps,
   RangePickerCalendarProps,
   RangePickerCalendarClassNames,
+  RangePickerCalendarSelectionMode,
+  RangePickerWeekAnchor,
   RangePickerPresetsProps,
   RangePickerPresetsClassNames,
   RangePickerPresetProps,
