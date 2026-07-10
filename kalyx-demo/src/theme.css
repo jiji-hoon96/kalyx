@@ -227,27 +227,35 @@
 }
 
 /* State: today */
-[data-testid='preview-panel'] [data-today]:not([data-selected]) {
+[data-testid='preview-panel'] [role='gridcell'] > button[data-today]:not([data-selected]),
+[data-testid='preview-panel'] button[role='gridcell'][data-today]:not([data-selected]) {
   border-color: var(--kx-accent);
   color: var(--kx-accent);
   font-weight: 600;
 }
 /* State: outside current month */
-[data-testid='preview-panel'] [data-outside-month] {
+[data-testid='preview-panel'] [role='gridcell'] > button[data-outside-month],
+[data-testid='preview-panel'] button[role='gridcell'][data-outside-month] {
   color: var(--kx-muted);
   opacity: 0.55;
 }
-/* State: in-range (RangePicker / WeekPicker) */
-[data-testid='preview-panel'] [data-in-range] {
+/* State: in-range (RangePicker / WeekPicker).
+ * Target the cell <button> explicitly so this out-specifies the base
+ * `[role='gridcell'] > button { background: transparent }` rule above
+ * (which otherwise wins on selector specificity and hides the range band). */
+[data-testid='preview-panel'] [role='gridcell'] > button[data-in-range],
+[data-testid='preview-panel'] button[role='gridcell'][data-in-range] {
   background: var(--kx-accent-soft);
   color: var(--kx-fg);
   border-radius: 0;
 }
-[data-testid='preview-panel'] [data-range-start] {
+[data-testid='preview-panel'] [role='gridcell'] > button[data-range-start],
+[data-testid='preview-panel'] button[role='gridcell'][data-range-start] {
   border-top-left-radius: var(--kx-radius);
   border-bottom-left-radius: var(--kx-radius);
 }
-[data-testid='preview-panel'] [data-range-end] {
+[data-testid='preview-panel'] [role='gridcell'] > button[data-range-end],
+[data-testid='preview-panel'] button[role='gridcell'][data-range-end] {
   border-top-right-radius: var(--kx-radius);
   border-bottom-right-radius: var(--kx-radius);
 }
