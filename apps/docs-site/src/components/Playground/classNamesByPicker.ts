@@ -92,6 +92,8 @@ export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {
       grid: CAL_GRID,
       day: DAY,
       daySelected: DAY_SELECTED,
+      dayRangeStart: DAY_SELECTED,
+      dayRangeEnd: DAY_SELECTED,
       dayInRange: DAY_IN_RANGE,
       dayToday: DAY_TODAY,
       dayDisabled: DAY_DISABLED,

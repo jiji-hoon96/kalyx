@@ -251,11 +251,19 @@
 }
 [data-testid='preview-panel'] [role='gridcell'] > button[data-range-start],
 [data-testid='preview-panel'] button[role='gridcell'][data-range-start] {
+  background: var(--kx-accent);
+  color: var(--kx-accent-fg);
+  font-weight: 600;
+  box-shadow: var(--kx-glow);
   border-top-left-radius: var(--kx-radius);
   border-bottom-left-radius: var(--kx-radius);
 }
 [data-testid='preview-panel'] [role='gridcell'] > button[data-range-end],
 [data-testid='preview-panel'] button[role='gridcell'][data-range-end] {
+  background: var(--kx-accent);
+  color: var(--kx-accent-fg);
+  font-weight: 600;
+  box-shadow: var(--kx-glow);
   border-top-right-radius: var(--kx-radius);
   border-bottom-right-radius: var(--kx-radius);
 }
