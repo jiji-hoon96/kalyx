@@ -38,10 +38,7 @@
 }
 
 .titleAccent {
-  background: linear-gradient(135deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-dark) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ifm-color-primary);
 }
 
 .subtitle {

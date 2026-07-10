@@ -4,16 +4,29 @@
 }
 
 .card {
-  background: linear-gradient(135deg, var(--ifm-color-primary-lightest) 0%, var(--ifm-color-emphasis-100) 100%);
-  border: 1px solid var(--ifm-color-primary-light);
+  position: relative;
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-200);
   border-radius: 16px;
-  padding: 2.5rem;
+  padding: 2.5rem 2.5rem 2.5rem 3rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: flex-start;
-  max-width: 48rem;
+  max-width: 52rem;
   margin: 0 auto;
+  overflow: hidden;
+}
+
+/* One deliberate accent detail: a vertical rule, not a purple wash. */
+.card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--ifm-color-primary);
 }
 
 .eyebrow {
@@ -28,14 +41,22 @@
   font-size: 1.75rem;
   font-weight: 700;
   margin: 0;
+  letter-spacing: -0.02em;
   color: var(--ifm-heading-color);
 }
 
 .body {
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 1.05rem;
+  line-height: 1.65;
   color: var(--ifm-color-emphasis-800);
   margin: 0;
+  max-width: 44rem;
+}
+
+/* Highlight the competitor names + Kalyx so the comparison reads at a glance. */
+.body strong {
+  color: var(--ifm-heading-color);
+  font-weight: 600;
 }
 
 .cta {
@@ -49,6 +70,7 @@
   font-size: 0.95rem;
   text-decoration: none;
   margin-top: 0.5rem;
+  transition: background 150ms ease;
 }
 
 .cta:hover {
