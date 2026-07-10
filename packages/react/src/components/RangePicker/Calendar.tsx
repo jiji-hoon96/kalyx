@@ -161,16 +161,25 @@ export function RangePickerCalendar({
   const commitDay = useCallback(
     (iso: string) => {
       if (selectionMode === 'week') {
-        // 'calendar': the weekStartsOn-aligned week around the clicked day.
-        // 'clicked': a rolling 7-day span starting on the clicked day.
-        const weekStart =
-          weekAnchor === 'clicked'
-            ? adapter.startOfDay(iso)
-            : adapter.startOfWeek(iso, weekStartsOn);
-        const weekEnd =
-          weekAnchor === 'clicked'
-            ? adapter.startOfDay(adapter.addDays(weekStart, 6))
-            : adapter.startOfDay(adapter.endOfWeek(iso, weekStartsOn));
+        let weekStart: string;
+        let weekEnd: string;
+        if (weekAnchor === 'clicked') {
+          // Rolling 7-day span anchored to the clicked day. The active input
+          // decides the direction: clicking while targeting 'end' makes the
+          // clicked day the END (span goes backward 6 days); otherwise it's the
+          // START (span goes forward 6 days).
+          if (selectingTarget === 'end') {
+            weekEnd = adapter.startOfDay(iso);
+            weekStart = adapter.startOfDay(adapter.addDays(weekEnd, -6));
+          } else {
+            weekStart = adapter.startOfDay(iso);
+            weekEnd = adapter.startOfDay(adapter.addDays(weekStart, 6));
+          }
+        } else {
+          // 'calendar': the weekStartsOn-aligned week around the clicked day.
+          weekStart = adapter.startOfWeek(iso, weekStartsOn);
+          weekEnd = adapter.startOfDay(adapter.endOfWeek(iso, weekStartsOn));
+        }
         const range: DateRange = { start: weekStart, end: weekEnd };
         ctx.setRange(range);
         ctx.close();

@@ -85,6 +85,21 @@ describe('WeekPicker — single-click commits the full week', () => {
     });
   });
 
+  it('anchors the span BACKWARD from the clicked day when the end input is active (weekAnchor="clicked")', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderWeekPicker({ value: JAN_ANCHOR, weekAnchor: 'clicked' });
+
+    // Open via the END input → the clicked day becomes the END, span goes back 6 days.
+    await user.click(screen.getByLabelText('End date'));
+    // Click Jan 14, 2026 (Wed) — expect span Jan 8 – Jan 14 (clicked day is the end).
+    await user.click(screen.getByRole('button', { name: /January 14, 2026/ }));
+
+    expect(onChange).toHaveBeenCalledWith({
+      start: expect.stringMatching(/^2026-01-08T/),
+      end: expect.stringMatching(/^2026-01-14T/),
+    });
+  });
+
   it('closes the popover after a week is selected', async () => {
     const user = userEvent.setup();
     renderWeekPicker({ value: JAN_ANCHOR });

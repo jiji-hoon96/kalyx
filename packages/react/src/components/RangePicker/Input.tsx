@@ -38,10 +38,18 @@ export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputPro
 
     const handleClick = useCallback(
       (e: React.MouseEvent<HTMLInputElement>) => {
-        if (!ctx.isOpen) ctx.open();
+        // Anchor the next selection to the clicked field: clicking the start
+        // input targets 'start', the end input targets 'end'. Week selection uses
+        // this to decide whether the clicked day anchors the span forward (start)
+        // or backward (end).
+        if (ctx.isOpen) {
+          ctx.setSelectingTarget(part);
+        } else {
+          ctx.open(part);
+        }
         onClick?.(e);
       },
-      [ctx, onClick],
+      [ctx, part, onClick],
     );
 
     const handleKeyDown = useCallback(

@@ -72,6 +72,10 @@ const YEAR_CELL =
   'flex h-16 w-full items-center justify-center rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100';
 const CELL_SELECTED = 'bg-primary text-white hover:!bg-primary';
 const CELL_DISABLED = 'text-slate-300 line-through cursor-not-allowed hover:bg-transparent';
+// Month/year grids: gap between the rows (vertical) and between cells in a row
+// (horizontal) so hover/selected fills don't butt right up against neighbours.
+const CELL_GRID = 'flex flex-col gap-2';
+const CELL_GRID_ROW = 'gap-2';
 
 // Time lists live inside the popover card (TimePicker / DateTimePicker), so no
 // border/shadow of their own — just a scroll area.
@@ -153,6 +157,8 @@ export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {
       header: CAL_HEADER,
       navButton: CAL_NAVBTN,
       title: CAL_TITLE,
+      grid: CELL_GRID,
+      gridRow: CELL_GRID_ROW,
       month: MONTH_CELL,
       monthSelected: CELL_SELECTED,
       monthDisabled: CELL_DISABLED,
@@ -165,6 +171,8 @@ export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {
       header: CAL_HEADER,
       navButton: CAL_NAVBTN,
       title: CAL_TITLE,
+      grid: CELL_GRID,
+      gridRow: CELL_GRID_ROW,
       year: YEAR_CELL,
       yearSelected: CELL_SELECTED,
       yearDisabled: CELL_DISABLED,
