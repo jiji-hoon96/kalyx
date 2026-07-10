@@ -10,6 +10,11 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 시작과 끝, 두 날짜를 선택합니다. 선택 사항으로 프리셋 제공.
 
+<figure>
+  <img src="/img/demos/rangepicker.avif" alt="RangePicker 데모: 시작일과 종료일 선택, hover 미리보기" width="640" loading="lazy" />
+  <figcaption><em>화면의 스타일은 데모용입니다 — Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
+</figure>
+
 ```tsx
 import { RangePicker } from '@kalyx/react';
 ```

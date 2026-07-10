@@ -1,0 +1,5 @@
+node_modules/
+recordings/
+out/
+*.log
+.DS_Store

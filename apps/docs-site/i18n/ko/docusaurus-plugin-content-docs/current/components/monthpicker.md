@@ -10,6 +10,11 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 Month selector. The value is the first day of the selected month in UTC-ISO form — for example, picking April 2026 yields `"2026-04-01T00:00:00.000Z"`.
 
+<figure>
+  <img src="/img/demos/monthpicker.avif" alt="MonthPicker 데모: 12개월 그리드에서 월 선택" width="640" loading="lazy" />
+  <figcaption><em>화면의 스타일은 데모용입니다 — Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
+</figure>
+
 ```tsx
 import { MonthPicker } from '@kalyx/react';
 ```

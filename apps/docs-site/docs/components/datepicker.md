@@ -10,6 +10,11 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 Single-date selection with an input, trigger, popover, and calendar grid.
 
+<figure>
+  <img src="/img/demos/datepicker.avif" alt="DatePicker demo: opening the popover and selecting a day" width="640" loading="lazy" />
+  <figcaption><em>Styling shown is demo-only — Kalyx ships zero CSS.</em></figcaption>
+</figure>
+
 ```tsx
 import { DatePicker } from '@kalyx/react';
 ```

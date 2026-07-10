@@ -1,0 +1,20 @@
+{
+  "name": "kalyx-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Automated Playwright demo recorder for Kalyx (@kalyx/react) pickers, with ffmpeg WebM + animated AVIF export.",
+  "scripts": {
+    "setup": "bash setup.sh",
+    "record": "tsx src/demo.ts",
+    "encode": "bash scripts/encode.sh",
+    "encode:one": "bash scripts/encode.sh",
+    "demo": "pnpm record && pnpm encode"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^26.1.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

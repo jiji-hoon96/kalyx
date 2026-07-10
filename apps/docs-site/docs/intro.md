@@ -21,6 +21,20 @@ import { DatePicker } from '@kalyx/react';
 </DatePicker>
 ```
 
+## See it in action
+
+All seven pickers, recorded from the [live playground](/playground). Styling is demo-only — Kalyx ships zero CSS.
+
+<div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', margin: '1.5rem 0'}}>
+  <figure style={{margin: 0}}><img src="/img/demos/datepicker.avif" alt="DatePicker demo" loading="lazy" style={{width: '100%', borderRadius: '10px', border: '1px solid var(--ifm-color-emphasis-200)'}} /><figcaption>DatePicker</figcaption></figure>
+  <figure style={{margin: 0}}><img src="/img/demos/rangepicker.avif" alt="RangePicker demo" loading="lazy" style={{width: '100%', borderRadius: '10px', border: '1px solid var(--ifm-color-emphasis-200)'}} /><figcaption>RangePicker</figcaption></figure>
+  <figure style={{margin: 0}}><img src="/img/demos/timepicker.avif" alt="TimePicker demo" loading="lazy" style={{width: '100%', borderRadius: '10px', border: '1px solid var(--ifm-color-emphasis-200)'}} /><figcaption>TimePicker</figcaption></figure>
+  <figure style={{margin: 0}}><img src="/img/demos/datetimepicker.avif" alt="DateTimePicker demo" loading="lazy" style={{width: '100%', borderRadius: '10px', border: '1px solid var(--ifm-color-emphasis-200)'}} /><figcaption>DateTimePicker</figcaption></figure>
+  <figure style={{margin: 0}}><img src="/img/demos/monthpicker.avif" alt="MonthPicker demo" loading="lazy" style={{width: '100%', borderRadius: '10px', border: '1px solid var(--ifm-color-emphasis-200)'}} /><figcaption>MonthPicker</figcaption></figure>
+  <figure style={{margin: 0}}><img src="/img/demos/yearpicker.avif" alt="YearPicker demo" loading="lazy" style={{width: '100%', borderRadius: '10px', border: '1px solid var(--ifm-color-emphasis-200)'}} /><figcaption>YearPicker</figcaption></figure>
+  <figure style={{margin: 0}}><img src="/img/demos/weekpicker.avif" alt="WeekPicker demo" loading="lazy" style={{width: '100%', borderRadius: '10px', border: '1px solid var(--ifm-color-emphasis-200)'}} /><figcaption>WeekPicker</figcaption></figure>
+</div>
+
 ## Why Kalyx exists
 
 The React ecosystem in 2026 has two extremes — and nothing in between:

@@ -13,17 +13,8 @@ const FROZEN_RANGE: DateRange = { start: '2026-06-15T00:00:00.000Z', end: '2026-
 const FROZEN_WEEK: DateRange = { start: '2026-06-14T00:00:00.000Z', end: '2026-06-20T00:00:00.000Z' };
 const FROZEN_TIME = '2026-06-15T14:30:00.000Z';
 
-const LIVE_LIST_CN = {
-  root: 'kx-live-list',
-  option: 'kx-live-option',
-  optionSelected: 'kx-live-option-selected',
-} as const;
-
-const LIVE_AMPM_CN = {
-  root: 'kx-live-ampm',
-  option: 'kx-live-ampm-btn',
-  optionSelected: 'kx-live-ampm-selected',
-} as const;
+type ListCn = { root?: string; option?: string; optionSelected?: string };
+type AmPmCn = { root?: string; option?: string; optionSelected?: string };
 
 export type PreviewPanelProps = {
   pickerId: PickerId;
@@ -37,7 +28,7 @@ export default function PreviewPanel({ pickerId, classNames, locale, timezone }:
     <div
       data-testid="preview-panel"
       data-picker={pickerId}
-      className={styles.preview}>
+      className={`tw-enable ${styles.preview}`}>
       {pickerId === 'datepicker' && <DatePickerPreview classNames={classNames} locale={locale} timezone={timezone} />}
       {pickerId === 'rangepicker' && <RangePickerPreview classNames={classNames} locale={locale} timezone={timezone} />}
       {pickerId === 'timepicker' && <TimePickerPreview classNames={classNames} locale={locale} timezone={timezone} />}
@@ -81,15 +72,16 @@ function RangePickerPreview({ classNames, locale, timezone }: SubProps) {
   );
 }
 
-function TimePickerPreview({ timezone }: SubProps) {
+function TimePickerPreview({ classNames, timezone }: SubProps) {
   const [v, setV] = useState<string | null>(FROZEN_TIME);
+  const cn = classNames as { input?: string; hourList?: ListCn; minuteList?: ListCn; ampmToggle?: AmPmCn };
   return (
     <TimePicker value={v} onChange={setV} format="12h" displayTimezone={timezone}>
-      <TimePicker.Input className="kx-live-input" />
+      <TimePicker.Input className={cn.input} />
       <div className={styles.timeRow}>
-        <TimePicker.HourList classNames={LIVE_LIST_CN} />
-        <TimePicker.MinuteList classNames={LIVE_LIST_CN} />
-        <TimePicker.AmPmToggle classNames={LIVE_AMPM_CN} />
+        <TimePicker.HourList classNames={cn.hourList} />
+        <TimePicker.MinuteList classNames={cn.minuteList} />
+        <TimePicker.AmPmToggle classNames={cn.ampmToggle} />
       </div>
     </TimePicker>
   );
@@ -97,7 +89,7 @@ function TimePickerPreview({ timezone }: SubProps) {
 
 function DateTimePickerPreview({ classNames, locale, timezone }: SubProps) {
   const [v, setV] = useState<string | null>(FROZEN_DATE);
-  const cn = classNames as { input?: string; calendar?: Record<string, string> };
+  const cn = classNames as { input?: string; calendar?: Record<string, string>; hourList?: ListCn; minuteList?: ListCn };
   return (
     <DateTimePicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
       <DateTimePicker.Input className={cn.input} />
@@ -105,8 +97,8 @@ function DateTimePickerPreview({ classNames, locale, timezone }: SubProps) {
         <div className={styles.dateTimeRow}>
           <DateTimePicker.Calendar classNames={cn.calendar} />
           <div className={styles.timeRow}>
-            <DateTimePicker.HourList classNames={LIVE_LIST_CN} />
-            <DateTimePicker.MinuteList classNames={LIVE_LIST_CN} />
+            <DateTimePicker.HourList classNames={cn.hourList} />
+            <DateTimePicker.MinuteList classNames={cn.minuteList} />
           </div>
         </div>
       </DateTimePicker.Popover>
@@ -114,38 +106,41 @@ function DateTimePickerPreview({ classNames, locale, timezone }: SubProps) {
   );
 }
 
-function MonthPickerPreview({ locale, timezone }: SubProps) {
+function MonthPickerPreview({ classNames, locale, timezone }: SubProps) {
   const [v, setV] = useState<string | null>(FROZEN_DATE);
+  const cn = classNames as { input?: string; grid?: Record<string, string> };
   return (
     <MonthPicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
-      <MonthPicker.Input />
+      <MonthPicker.Input className={cn.input} />
       <MonthPicker.Popover>
-        <MonthPicker.Grid />
+        <MonthPicker.Grid classNames={cn.grid} />
       </MonthPicker.Popover>
     </MonthPicker>
   );
 }
 
-function YearPickerPreview({ locale, timezone }: SubProps) {
+function YearPickerPreview({ classNames, locale, timezone }: SubProps) {
   const [v, setV] = useState<string | null>(FROZEN_DATE);
+  const cn = classNames as { input?: string; grid?: Record<string, string> };
   return (
     <YearPicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
-      <YearPicker.Input />
+      <YearPicker.Input className={cn.input} />
       <YearPicker.Popover>
-        <YearPicker.Grid />
+        <YearPicker.Grid classNames={cn.grid} />
       </YearPicker.Popover>
     </YearPicker>
   );
 }
 
-function WeekPickerPreview({ locale, timezone }: SubProps) {
+function WeekPickerPreview({ classNames, locale, timezone }: SubProps) {
   const [v, setV] = useState<DateRange>(FROZEN_WEEK);
+  const cn = classNames as { input?: string; calendar?: Record<string, string> };
   return (
     <WeekPicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
-      <WeekPicker.Input part="start" />
-      <WeekPicker.Input part="end" />
+      <WeekPicker.Input className={cn.input} part="start" />
+      <WeekPicker.Input className={cn.input} part="end" />
       <WeekPicker.Popover>
-        <WeekPicker.Calendar />
+        <WeekPicker.Calendar classNames={cn.calendar} />
       </WeekPicker.Popover>
     </WeekPicker>
   );

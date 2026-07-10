@@ -10,6 +10,11 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 Week selector. A single click commits the entire week containing the clicked day, based on `weekStartsOn`. The value is a `DateRange` spanning all seven days.
 
+<figure>
+  <img src="/img/demos/weekpicker.avif" alt="WeekPicker demo: single click selecting a whole week" width="640" loading="lazy" />
+  <figcaption><em>Styling shown is demo-only — Kalyx ships zero CSS.</em></figcaption>
+</figure>
+
 ```tsx
 import { WeekPicker, type DateRange } from '@kalyx/react';
 ```

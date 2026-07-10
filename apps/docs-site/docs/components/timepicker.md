@@ -10,6 +10,11 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 Hour + minute (+ optional seconds) selection. 12- or 24-hour mode.
 
+<figure>
+  <img src="/img/demos/timepicker.avif" alt="TimePicker demo: choosing hour, minute, and AM/PM" width="640" loading="lazy" />
+  <figcaption><em>Styling shown is demo-only — Kalyx ships zero CSS.</em></figcaption>
+</figure>
+
 ```tsx
 import { TimePicker } from '@kalyx/react';
 ```

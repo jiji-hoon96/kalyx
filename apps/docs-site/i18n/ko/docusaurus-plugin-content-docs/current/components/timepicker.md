@@ -10,6 +10,11 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 시 + 분 (+ 선택적으로 초) 선택. 12시간제 또는 24시간제.
 
+<figure>
+  <img src="/img/demos/timepicker.avif" alt="TimePicker 데모: 시, 분, AM/PM 선택" width="640" loading="lazy" />
+  <figcaption><em>화면의 스타일은 데모용입니다 — Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
+</figure>
+
 ```tsx
 import { TimePicker } from '@kalyx/react';
 ```

@@ -1,0 +1,280 @@
+/*
+ * kalyx-demo theme — injected into the page at record time so the headless
+ * pickers look polished on camera. This is DEMO-ONLY chrome; Kalyx ships zero
+ * CSS by design, so none of this lives in the library.
+ *
+ * It targets ONLY Kalyx's stable contract (ARIA roles + data-* state attrs),
+ * scoped under [data-testid="preview-panel"] so it never touches the docs
+ * site's own chrome. Verified against the live playground DOM:
+ *   - inputs         : role="combobox" (rendered as <input>)
+ *   - popover        : role="dialog"
+ *   - calendar       : table[role="grid"], th[role="columnheader"],
+ *                      td[role="gridcell"] > button
+ *   - month/year     : div[role="grid"], button[role="gridcell"]
+ *   - day/cell state : data-selected / data-today / data-outside-month /
+ *                      data-in-range / data-range-start / data-range-end
+ *   - time lists     : [role="listbox"] > [role="option"] (aria-selected)
+ *   - AM/PM          : [role="radiogroup"] > [role="radio"] (aria-checked)
+ *
+ * Palette: cool-neutral surface + indigo accent (shadcn-ish), light + dark.
+ */
+
+:root {
+  --kx-bg: #ffffff;
+  --kx-fg: #1e293b;
+  --kx-muted: #64748b;
+  --kx-border: #e2e8f0;
+  --kx-hover: #f1f5f9;
+  --kx-accent: #4f46e5;
+  --kx-accent-fg: #ffffff;
+  --kx-accent-soft: #e0e7ff;
+  --kx-radius: 8px;
+  --kx-shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.28), 0 2px 6px -2px rgba(15, 23, 42, 0.12);
+  --kx-focus: 0 0 0 3px rgba(79, 70, 229, 0.35);
+}
+
+[data-kx-theme='dark'] {
+  --kx-bg: #0f172a;
+  --kx-fg: #e2e8f0;
+  --kx-muted: #94a3b8;
+  --kx-border: #334155;
+  --kx-hover: #1e293b;
+  --kx-accent: #818cf8;
+  --kx-accent-fg: #0b1120;
+  --kx-accent-soft: #312e81;
+  --kx-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.6), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
+  --kx-focus: 0 0 0 3px rgba(129, 140, 248, 0.4);
+}
+
+/* Center the picker nicely inside the preview panel. */
+[data-testid='preview-panel'] {
+  display: flex !important;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 24px !important;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--kx-fg);
+}
+
+/* ---- Inputs (combobox) ------------------------------------------------- */
+[data-testid='preview-panel'] input {
+  appearance: none;
+  min-width: 200px;
+  padding: 9px 12px;
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--kx-fg);
+  background: var(--kx-bg);
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+[data-testid='preview-panel'] input:hover {
+  border-color: var(--kx-accent);
+}
+[data-testid='preview-panel'] input:focus,
+[data-testid='preview-panel'] input:focus-visible {
+  outline: none;
+  border-color: var(--kx-accent);
+  box-shadow: var(--kx-focus);
+}
+
+/* ---- Popover (dialog) -------------------------------------------------- */
+[role='dialog'][aria-label] {
+  margin-top: 8px;
+  padding: 14px;
+  background: var(--kx-bg);
+  border: 1px solid var(--kx-border);
+  border-radius: 14px;
+  box-shadow: var(--kx-shadow);
+}
+
+/* ---- Calendar header --------------------------------------------------- */
+[role='dialog'] [aria-live='polite'],
+[data-testid='preview-panel'] [aria-live='polite'] {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--kx-fg);
+  padding: 0 8px;
+}
+[role='dialog'] button[aria-label='Previous month'],
+[role='dialog'] button[aria-label='Next month'],
+[data-testid='preview-panel'] button[aria-label='Previous month'],
+[data-testid='preview-panel'] button[aria-label='Next month'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  font-size: 15px;
+  color: var(--kx-muted);
+  background: transparent;
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+[role='dialog'] button[aria-label='Previous month']:hover,
+[role='dialog'] button[aria-label='Next month']:hover {
+  background: var(--kx-hover);
+  color: var(--kx-fg);
+}
+/* Header row spacing (the div wrapping nav buttons + title). */
+[role='dialog'] > div > div:first-child,
+[role='dialog'] table + *,
+[role='dialog'] > div:first-child {
+  margin-bottom: 6px;
+}
+
+/* ---- Grid (calendar table + month/year div grids) --------------------- */
+[data-testid='preview-panel'] [role='grid'] {
+  border-collapse: separate;
+  border-spacing: 4px;
+  margin-top: 6px;
+}
+[data-testid='preview-panel'] [role='columnheader'] {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--kx-muted);
+  padding: 4px 0;
+}
+
+/* Day / month / year cell buttons. Covers both td>button and button[role=gridcell]. */
+[data-testid='preview-panel'] [role='gridcell'] > button,
+[data-testid='preview-panel'] button[role='gridcell'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  font-size: 13px;
+  color: var(--kx-fg);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--kx-radius);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+}
+/* Month/year grids have wider labels. */
+[data-testid='preview-panel'] button[role='gridcell'] {
+  min-width: 88px;
+  height: 38px;
+}
+[data-testid='preview-panel'] [role='gridcell'] > button:hover,
+[data-testid='preview-panel'] button[role='gridcell']:hover {
+  background: var(--kx-hover);
+}
+[data-testid='preview-panel'] [role='gridcell'] > button:focus-visible,
+[data-testid='preview-panel'] button[role='gridcell']:focus-visible {
+  outline: none;
+  box-shadow: var(--kx-focus);
+}
+
+/* State: today */
+[data-testid='preview-panel'] [data-today]:not([data-selected]) {
+  border-color: var(--kx-accent);
+  color: var(--kx-accent);
+  font-weight: 600;
+}
+/* State: outside current month */
+[data-testid='preview-panel'] [data-outside-month] {
+  color: var(--kx-muted);
+  opacity: 0.55;
+}
+/* State: in-range (RangePicker / WeekPicker) */
+[data-testid='preview-panel'] [data-in-range] {
+  background: var(--kx-accent-soft);
+  color: var(--kx-fg);
+  border-radius: 0;
+}
+[data-testid='preview-panel'] [data-range-start] {
+  border-top-left-radius: var(--kx-radius);
+  border-bottom-left-radius: var(--kx-radius);
+}
+[data-testid='preview-panel'] [data-range-end] {
+  border-top-right-radius: var(--kx-radius);
+  border-bottom-right-radius: var(--kx-radius);
+}
+/* State: selected (highest priority visual) */
+[data-testid='preview-panel'] [data-selected] {
+  background: var(--kx-accent) !important;
+  color: var(--kx-accent-fg) !important;
+  border-color: var(--kx-accent) !important;
+  font-weight: 600;
+}
+
+/* ---- TimePicker lists -------------------------------------------------- */
+[data-testid='preview-panel'] [role='listbox'] {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  max-height: 176px;
+  width: 66px;
+  overflow-y: auto;
+  background: var(--kx-bg);
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  scrollbar-width: thin;
+}
+[data-testid='preview-panel'] [role='option'] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 0;
+  margin: 2px 0;
+  font-size: 13px;
+  color: var(--kx-fg);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+[data-testid='preview-panel'] [role='option']:hover {
+  background: var(--kx-hover);
+}
+[data-testid='preview-panel'] [role='option'][aria-selected='true'],
+[data-testid='preview-panel'] [role='option'][data-selected] {
+  background: var(--kx-accent);
+  color: var(--kx-accent-fg);
+  font-weight: 600;
+}
+
+/* ---- AM/PM toggle ------------------------------------------------------ */
+[data-testid='preview-panel'] [role='radiogroup'] {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px;
+}
+[data-testid='preview-panel'] [role='radio'] {
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--kx-fg);
+  background: var(--kx-bg);
+  border: 1px solid var(--kx-border);
+  border-radius: var(--kx-radius);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+[data-testid='preview-panel'] [role='radio']:hover {
+  background: var(--kx-hover);
+}
+[data-testid='preview-panel'] [role='radio'][aria-checked='true'],
+[data-testid='preview-panel'] [role='radio'][data-selected] {
+  background: var(--kx-accent);
+  color: var(--kx-accent-fg);
+  border-color: var(--kx-accent);
+}
+
+/* Layout helpers for the composed time rows. */
+[data-testid='preview-panel'][data-picker='timepicker'] > div > div,
+[data-testid='preview-panel'][data-picker='datetimepicker'] [role='dialog'] > div {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}

@@ -78,6 +78,16 @@ import {
 
 API reference, recipes (Tailwind / shadcn / React Hook Form), and migration guides live in the **[full docs](https://kalyx-docs-site.vercel.app)**.
 
+### Demos
+
+Recorded from the [live playground](https://kalyx-docs-site.vercel.app/playground). Styling is demo-only — Kalyx ships zero CSS.
+
+| | | |
+|:---:|:---:|:---:|
+| **DatePicker**<br><img src="./img/demos/datepicker.avif" alt="DatePicker demo" width="260"> | **RangePicker**<br><img src="./img/demos/rangepicker.avif" alt="RangePicker demo" width="260"> | **TimePicker**<br><img src="./img/demos/timepicker.avif" alt="TimePicker demo" width="260"> |
+| **DateTimePicker**<br><img src="./img/demos/datetimepicker.avif" alt="DateTimePicker demo" width="260"> | **MonthPicker**<br><img src="./img/demos/monthpicker.avif" alt="MonthPicker demo" width="260"> | **YearPicker**<br><img src="./img/demos/yearpicker.avif" alt="YearPicker demo" width="260"> |
+| **WeekPicker**<br><img src="./img/demos/weekpicker.avif" alt="WeekPicker demo" width="260"> | | |
+
 ## Documentation
 
 - [Introduction](https://kalyx-docs-site.vercel.app/docs/intro) · [Quick Start](https://kalyx-docs-site.vercel.app/docs/getting-started/quick-start)

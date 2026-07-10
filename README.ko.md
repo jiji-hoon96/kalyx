@@ -78,6 +78,16 @@ import {
 
 API 레퍼런스, 레시피 (Tailwind / shadcn / React Hook Form), 마이그레이션 가이드는 모두 **[공식 문서](https://kalyx-docs-site.vercel.app/ko)** 에 있습니다.
 
+### 데모
+
+[라이브 플레이그라운드](https://kalyx-docs-site.vercel.app/playground)에서 녹화. 화면의 스타일은 데모용이며 Kalyx는 CSS를 전혀 포함하지 않습니다.
+
+| | | |
+|:---:|:---:|:---:|
+| **DatePicker**<br><img src="./img/demos/datepicker.avif" alt="DatePicker 데모" width="260"> | **RangePicker**<br><img src="./img/demos/rangepicker.avif" alt="RangePicker 데모" width="260"> | **TimePicker**<br><img src="./img/demos/timepicker.avif" alt="TimePicker 데모" width="260"> |
+| **DateTimePicker**<br><img src="./img/demos/datetimepicker.avif" alt="DateTimePicker 데모" width="260"> | **MonthPicker**<br><img src="./img/demos/monthpicker.avif" alt="MonthPicker 데모" width="260"> | **YearPicker**<br><img src="./img/demos/yearpicker.avif" alt="YearPicker 데모" width="260"> |
+| **WeekPicker**<br><img src="./img/demos/weekpicker.avif" alt="WeekPicker 데모" width="260"> | | |
+
 ## 문서
 
 - [소개](https://kalyx-docs-site.vercel.app/ko/docs/intro) · [빠른 시작](https://kalyx-docs-site.vercel.app/ko/docs/getting-started/quick-start)

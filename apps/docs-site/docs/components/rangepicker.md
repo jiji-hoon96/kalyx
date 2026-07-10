@@ -10,6 +10,11 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 Two-date selection — a start and an end — with optional presets.
 
+<figure>
+  <img src="/img/demos/rangepicker.avif" alt="RangePicker demo: selecting a start and end date with hover preview" width="640" loading="lazy" />
+  <figcaption><em>Styling shown is demo-only — Kalyx ships zero CSS.</em></figcaption>
+</figure>
+
 ```tsx
 import { RangePicker } from '@kalyx/react';
 ```
