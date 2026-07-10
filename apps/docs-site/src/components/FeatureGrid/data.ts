@@ -1,6 +1,8 @@
+import type { IconName } from './FeatureIcon';
+
 export type Feature = {
   id: string;
-  icon: string;
+  icon: IconName;
   titleId: string;
   titleDefault: string;
   bodyId: string;
@@ -10,7 +12,7 @@ export type Feature = {
 export const FEATURES: readonly Feature[] = [
   {
     id: 'zero-css',
-    icon: '🎨',
+    icon: 'palette',
     titleId: 'home.featureGrid.zeroCss.title',
     titleDefault: 'Zero CSS',
     bodyId: 'home.featureGrid.zeroCss.body',
@@ -18,7 +20,7 @@ export const FEATURES: readonly Feature[] = [
   },
   {
     id: 'ssr-safe',
-    icon: '⚡',
+    icon: 'bolt',
     titleId: 'home.featureGrid.ssr.title',
     titleDefault: 'SSR-safe',
     bodyId: 'home.featureGrid.ssr.body',
@@ -26,7 +28,7 @@ export const FEATURES: readonly Feature[] = [
   },
   {
     id: 'timezone',
-    icon: '🌍',
+    icon: 'globe',
     titleId: 'home.featureGrid.timezone.title',
     titleDefault: 'Timezone-aware',
     bodyId: 'home.featureGrid.timezone.body',
@@ -34,7 +36,7 @@ export const FEATURES: readonly Feature[] = [
   },
   {
     id: 'bundle',
-    icon: '📦',
+    icon: 'package',
     titleId: 'home.featureGrid.bundle.title',
     titleDefault: '≤16 KB gzipped',
     bodyId: 'home.featureGrid.bundle.body',
