@@ -17,8 +17,10 @@
  *   - AM/PM          : [role="radiogroup"] > [role="radio"] (aria-checked)
  *
  * Palette: cool-neutral (slate) surface + indigo #5b4fe1 accent, light + dark.
- * Unified with the docs-site + Playground tokens (see
- * docs/superpowers/specs/2026-07-10-kalyx-design-system.md).
+ * Unified with the docs-site + Playground tokens, and carries the same
+ * landing visual language (accent glow on selection, layered elevation,
+ * hairline accent borders, a radial-wash + dot-grid backdrop). See
+ * docs/superpowers/specs/2026-07-10-kalyx-design-system.md.
  */
 
 :root {
@@ -30,13 +32,20 @@
   --kx-accent: #5b4fe1;
   --kx-accent-fg: #ffffff;
   --kx-accent-soft: #e6e3fb;
-  --kx-radius: 8px;
-  --kx-shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.28), 0 2px 6px -2px rgba(15, 23, 42, 0.12);
-  --kx-focus: 0 0 0 3px rgba(91, 79, 225, 0.35);
+  --kx-radius: 10px;
+  --kx-radius-card: 16px;
+  --kx-shadow: 0 4px 12px rgba(15, 23, 42, 0.06), 0 12px 32px rgba(15, 23, 42, 0.10);
+  --kx-focus: 0 0 0 3px rgba(91, 79, 225, 0.30);
+  /* Signature detail — accent glow on the selected cell (matches the site). */
+  --kx-glow: 0 4px 14px rgba(91, 79, 225, 0.35);
+  --kx-hairline: rgba(91, 79, 225, 0.14);
+  --kx-tint: rgba(91, 79, 225, 0.06);
+  --kx-dot: rgba(15, 23, 42, 0.06);
+  --kx-radial: radial-gradient(70% 70% at 50% 0%, rgba(91, 79, 225, 0.09) 0%, rgba(91, 79, 225, 0) 70%);
 }
 
 [data-kx-theme='dark'] {
-  --kx-bg: #0f172a;
+  --kx-bg: #111117;
   --kx-fg: #e2e8f0;
   --kx-muted: #94a3b8;
   --kx-border: #334155;
@@ -44,18 +53,48 @@
   --kx-accent: #8b80ff;
   --kx-accent-fg: #0f172a;
   --kx-accent-soft: #312a6b;
-  --kx-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.6), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
-  --kx-focus: 0 0 0 3px rgba(139, 128, 255, 0.4);
+  --kx-shadow: 0 4px 12px rgba(0, 0, 0, 0.45), 0 16px 40px rgba(0, 0, 0, 0.5);
+  --kx-focus: 0 0 0 3px rgba(139, 128, 255, 0.35);
+  --kx-glow: 0 4px 16px rgba(139, 128, 255, 0.42);
+  --kx-hairline: rgba(139, 128, 255, 0.22);
+  --kx-tint: rgba(139, 128, 255, 0.10);
+  --kx-dot: rgba(255, 255, 255, 0.05);
+  --kx-radial: radial-gradient(70% 70% at 50% 0%, rgba(139, 128, 255, 0.14) 0%, rgba(139, 128, 255, 0) 70%);
 }
 
-/* Center the picker nicely inside the preview panel. */
+/* Center the picker nicely inside the preview panel + soft accent texture. */
 [data-testid='preview-panel'] {
+  position: relative;
   display: flex !important;
   align-items: flex-start;
   justify-content: center;
-  padding: 40px 24px !important;
+  padding: 48px 24px !important;
   font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color: var(--kx-fg);
+}
+/* Radial accent wash + faint dot grid behind the picker for depth. */
+[data-testid='preview-panel']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--kx-radial);
+  pointer-events: none;
+}
+[data-testid='preview-panel']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--kx-dot) 1px, transparent 1px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(75% 65% at 50% 30%, #000 0%, transparent 78%);
+  mask-image: radial-gradient(75% 65% at 50% 30%, #000 0%, transparent 78%);
+  pointer-events: none;
+  opacity: 0.7;
+}
+/* Keep the actual picker above the decorative layers. */
+[data-testid='preview-panel'] > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* ---- Inputs (combobox) ------------------------------------------------- */
@@ -85,10 +124,10 @@
 /* ---- Popover (dialog) -------------------------------------------------- */
 [role='dialog'][aria-label] {
   margin-top: 8px;
-  padding: 14px;
+  padding: 16px;
   background: var(--kx-bg);
-  border: 1px solid var(--kx-border);
-  border-radius: 14px;
+  border: 1px solid var(--kx-hairline);
+  border-radius: var(--kx-radius-card);
   box-shadow: var(--kx-shadow);
 }
 
@@ -207,6 +246,7 @@
   color: var(--kx-accent-fg) !important;
   border-color: var(--kx-accent) !important;
   font-weight: 600;
+  box-shadow: var(--kx-glow);
 }
 
 /* ---- TimePicker lists -------------------------------------------------- */
@@ -218,9 +258,9 @@
   width: 66px;
   overflow-y: auto;
   background: var(--kx-bg);
-  border: 1px solid var(--kx-border);
+  border: 1px solid var(--kx-hairline);
   border-radius: var(--kx-radius);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  box-shadow: var(--kx-shadow);
   scrollbar-width: thin;
 }
 [data-testid='preview-panel'] [role='option'] {
@@ -231,9 +271,9 @@
   margin: 2px 0;
   font-size: 13px;
   color: var(--kx-fg);
-  border-radius: 6px;
+  border-radius: 7px;
   cursor: pointer;
-  transition: background 0.12s ease, color 0.12s ease;
+  transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
 }
 [data-testid='preview-panel'] [role='option']:hover {
   background: var(--kx-hover);
@@ -243,6 +283,7 @@
   background: var(--kx-accent);
   color: var(--kx-accent-fg);
   font-weight: 600;
+  box-shadow: var(--kx-glow);
 }
 
 /* ---- AM/PM toggle ------------------------------------------------------ */
@@ -271,6 +312,7 @@
   background: var(--kx-accent);
   color: var(--kx-accent-fg);
   border-color: var(--kx-accent);
+  box-shadow: var(--kx-glow);
 }
 
 /* Layout helpers for the composed time rows. */
