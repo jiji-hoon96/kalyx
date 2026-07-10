@@ -10,6 +10,11 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 Year selector. The value is January 1 of the selected year in UTC-ISO form — for example, picking 2026 yields `"2026-01-01T00:00:00.000Z"`.
 
+<figure>
+  <img src="/img/demos/yearpicker.avif" alt="YearPicker demo: choosing a year from the decade grid" width="640" loading="lazy" />
+  <figcaption><em>Styling shown is demo-only — Kalyx ships zero CSS.</em></figcaption>
+</figure>
+
 ```tsx
 import { YearPicker } from '@kalyx/react';
 ```

@@ -10,6 +10,11 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 Combined date + time, one popover, one ISO string.
 
+<figure>
+  <img src="/img/demos/datetimepicker.avif" alt="DateTimePicker demo: picking a date then a time in one popover" width="640" loading="lazy" />
+  <figcaption><em>Styling shown is demo-only — Kalyx ships zero CSS.</em></figcaption>
+</figure>
+
 ```tsx
 import { DateTimePicker } from '@kalyx/react';
 ```

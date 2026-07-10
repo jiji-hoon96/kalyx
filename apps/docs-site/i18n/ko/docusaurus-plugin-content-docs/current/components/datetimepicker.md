@@ -10,6 +10,11 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 날짜 + 시간을 하나의 popover, 하나의 ISO 문자열로 결합합니다.
 
+<figure>
+  <img src="/img/demos/datetimepicker.avif" alt="DateTimePicker 데모: 한 popover에서 날짜와 시간을 차례로 선택" width="640" loading="lazy" />
+  <figcaption><em>화면의 스타일은 데모용입니다 — Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
+</figure>
+
 ```tsx
 import { DateTimePicker } from '@kalyx/react';
 ```
