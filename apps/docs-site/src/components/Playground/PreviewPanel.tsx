@@ -112,19 +112,17 @@ function DateTimePickerPreview({ classNames, locale, timezone }: SubProps) {
     <DateTimePicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
       <DateTimePicker.Input className={cn.input} />
       <div ref={popoverRef}>
-        <DateTimePicker.Popover>
+        <DateTimePicker.Popover className={styles.dateTimeCard}>
           <div className={styles.dateTimeRow}>
             <DateTimePicker.Calendar classNames={cn.calendar} />
-            <div className={styles.timeCol}>
-              <div className={styles.timeRow}>
-                <DateTimePicker.HourList classNames={cn.hourList} />
-                <DateTimePicker.MinuteList classNames={cn.minuteList} />
-              </div>
-              <button type="button" className={styles.applyButton} onClick={handleApply}>
-                Apply
-              </button>
+            <div className={styles.timeRow}>
+              <DateTimePicker.HourList classNames={cn.hourList} />
+              <DateTimePicker.MinuteList classNames={cn.minuteList} />
             </div>
           </div>
+          <button type="button" className={styles.applyButton} onClick={handleApply}>
+            Apply
+          </button>
         </DateTimePicker.Popover>
       </div>
     </DateTimePicker>

@@ -85,17 +85,23 @@
   align-items: flex-start;
 }
 
-/* DateTimePicker: stack the two time lists above an Apply button so the user
- * can confirm date+time in one place. */
-.timeCol {
+/* DateTimePicker: a single popover card wrapping the calendar + time lists +
+ * Apply button, so the whole thing reads as one surface (previously the time
+ * lists floated outside the calendar's card on a dark background). */
+.dateTimeCard {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  align-items: stretch;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--kx-border, #e2e8f0);
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
 }
 
 .applyButton {
-  padding: 0.45rem 0.75rem;
+  align-self: stretch;
+  padding: 0.5rem 0.75rem;
   border: 0;
   border-radius: 8px;
   background: var(--ifm-color-primary, #5b4fe1);

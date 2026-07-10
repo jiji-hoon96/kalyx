@@ -270,6 +270,9 @@
   background: var(--kx-accent-soft);
   color: var(--kx-fg);
   border-radius: var(--kx-radius);
+  /* No background transition: re-picking a range tears down and rebuilds the
+   * in-range band on every hover; a fade would read as a flicker. */
+  transition: none;
 }
 [data-testid='preview-panel'] [role='gridcell'] > button[data-range-start],
 [data-testid='preview-panel'] button[role='gridcell'][data-range-start] {
@@ -278,6 +281,7 @@
   font-weight: 600;
   box-shadow: var(--kx-glow);
   border-radius: var(--kx-radius);
+  transition: none;
 }
 [data-testid='preview-panel'] [role='gridcell'] > button[data-range-end],
 [data-testid='preview-panel'] button[role='gridcell'][data-range-end] {
@@ -286,6 +290,7 @@
   font-weight: 600;
   box-shadow: var(--kx-glow);
   border-radius: var(--kx-radius);
+  transition: none;
 }
 /* State: selected (highest priority visual) */
 [data-testid='preview-panel'] [data-selected] {

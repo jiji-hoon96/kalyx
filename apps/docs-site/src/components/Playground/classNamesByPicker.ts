@@ -38,17 +38,17 @@ const INPUT =
   'w-52 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30';
 
 const DAY =
-  'flex h-9 w-9 items-center justify-center rounded-md text-sm text-slate-700 transition hover:bg-slate-100';
+  'flex h-9 w-9 items-center justify-center rounded-md text-sm text-slate-700 hover:bg-slate-100';
 const DAY_SELECTED = 'bg-primary text-white hover:!bg-primary';
 const DAY_TODAY = 'font-semibold text-primary ring-1 ring-inset ring-primary/50';
 const DAY_DISABLED = 'text-slate-300 line-through hover:bg-transparent cursor-not-allowed';
 const DAY_OUTSIDE = 'text-slate-300';
 // Range endpoints — fully rounded (the grid uses 4px cell spacing, so each cell
-// reads as its own pill rather than a continuous bar).
+// reads as its own pill rather than a continuous bar). No background transition:
+// while re-picking a range, the in-range band is torn down and rebuilt on every
+// hover, and a 0.15s background fade turns that into a distracting flicker.
 const DAY_RANGE_START = 'bg-primary text-white rounded-md hover:!bg-primary';
 const DAY_RANGE_END = 'bg-primary text-white rounded-md hover:!bg-primary';
-// In-range band — match the endpoints' rounded corners instead of a hard square
-// so the middle days (16/17/18) read as soft chips like the 15/19 endpoints.
 const DAY_IN_RANGE = 'bg-primary/15 text-slate-800 rounded-md hover:!bg-primary/15';
 
 const CAL_ROOT = 'rounded-xl border border-slate-200 bg-white p-3 shadow-lg';
@@ -62,15 +62,24 @@ const CAL_GRID = 'border-separate [border-spacing:4px]';
 // site's dark-mode body text (near-white) and vanishes on the light card.
 const CAL_WEEKDAY = 'pb-2 text-xs font-semibold uppercase tracking-wide text-slate-700';
 
-const CELL_BTN =
-  'flex h-12 w-14 items-center justify-center rounded-md text-sm text-slate-700 transition hover:bg-slate-100';
+// Month cells hold long labels ("September", "November") so they need width and
+// must never wrap/overflow — keep them wide with horizontal padding.
+const MONTH_CELL =
+  'flex h-11 w-full items-center justify-center whitespace-nowrap rounded-md px-3 text-sm text-slate-700 transition hover:bg-slate-100';
+// Year cells are short (4 digits) so they can be close to square.
+const YEAR_CELL =
+  'flex h-11 w-16 items-center justify-center rounded-md text-sm text-slate-700 transition hover:bg-slate-100';
 const CELL_SELECTED = 'bg-primary text-white hover:!bg-primary';
 const CELL_DISABLED = 'text-slate-300 line-through cursor-not-allowed hover:bg-transparent';
 
 const LIST_ROOT =
-  'h-52 w-16 overflow-y-auto scroll-smooth snap-y rounded-md border border-slate-200 bg-white p-1 shadow-sm [scrollbar-width:thin]';
+  'h-40 w-16 overflow-y-auto rounded-md border border-slate-200 bg-white p-1 shadow-sm [scrollbar-width:thin]';
+// DateTimePicker time lists live inside the shared popover card, so no border/
+// shadow of their own — just a scroll area matched to the calendar height.
+const DTP_LIST_ROOT =
+  'h-64 w-14 overflow-y-auto rounded-md bg-slate-50 p-1 [scrollbar-width:thin]';
 const LIST_OPTION =
-  'flex cursor-pointer snap-center items-center justify-center rounded py-1.5 text-sm text-slate-700 transition hover:bg-slate-100';
+  'flex cursor-pointer items-center justify-center rounded py-1.5 text-sm text-slate-700 transition hover:bg-slate-100';
 const LIST_OPTION_SELECTED = 'bg-primary text-white hover:!bg-primary';
 
 const AMPM_ROOT = 'flex flex-col gap-1.5 p-1';
@@ -121,8 +130,10 @@ export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {
   },
   datetimepicker: {
     input: INPUT,
+    // Calendar sits inside a single popover card (styled in PreviewPanel), so it
+    // carries no card chrome of its own — just internal padding.
     calendar: {
-      root: CAL_ROOT,
+      root: 'p-1',
       header: CAL_HEADER,
       navButton: CAL_NAVBTN,
       title: CAL_TITLE,
@@ -132,16 +143,33 @@ export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {
       daySelected: DAY_SELECTED,
       dayToday: DAY_TODAY,
     },
-    hourList: { root: LIST_ROOT, option: LIST_OPTION, optionSelected: LIST_OPTION_SELECTED },
-    minuteList: { root: LIST_ROOT, option: LIST_OPTION, optionSelected: LIST_OPTION_SELECTED },
+    // Time lists sized to roughly match the calendar height, no outer card.
+    hourList: { root: DTP_LIST_ROOT, option: LIST_OPTION, optionSelected: LIST_OPTION_SELECTED },
+    minuteList: { root: DTP_LIST_ROOT, option: LIST_OPTION, optionSelected: LIST_OPTION_SELECTED },
   },
   monthpicker: {
     input: INPUT,
-    grid: { root: CAL_ROOT, month: CELL_BTN, monthSelected: CELL_SELECTED, monthDisabled: CELL_DISABLED },
+    grid: {
+      root: `${CAL_ROOT} min-w-[20rem]`,
+      header: CAL_HEADER,
+      navButton: CAL_NAVBTN,
+      title: CAL_TITLE,
+      month: MONTH_CELL,
+      monthSelected: CELL_SELECTED,
+      monthDisabled: CELL_DISABLED,
+    },
   },
   yearpicker: {
     input: INPUT,
-    grid: { root: CAL_ROOT, year: CELL_BTN, yearSelected: CELL_SELECTED, yearDisabled: CELL_DISABLED },
+    grid: {
+      root: CAL_ROOT,
+      header: CAL_HEADER,
+      navButton: CAL_NAVBTN,
+      title: CAL_TITLE,
+      year: YEAR_CELL,
+      yearSelected: CELL_SELECTED,
+      yearDisabled: CELL_DISABLED,
+    },
   },
   weekpicker: {
     input: INPUT,
