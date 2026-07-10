@@ -11,6 +11,8 @@ export interface TimePickerContextValue {
   setTime: (partial: Partial<TimeValue>) => void;
   /** 12-hour or 24-hour mode */
   format: TimePickerFormat;
+  /** BCP 47 locale used to localize the AM/PM (day period) labels. */
+  locale: string;
   /** Minute step (e.g., 15 -> 0, 15, 30, 45) */
   step: number;
   /** Whether to display seconds */

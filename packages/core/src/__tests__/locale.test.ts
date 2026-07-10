@@ -5,6 +5,7 @@ import {
   getWeekdayNames,
   formatFullDate,
   getWeekStartForLocale,
+  getDayPeriodName,
 } from '../utils/locale.js';
 
 describe('getMonthName', () => {
@@ -117,5 +118,27 @@ describe('getWeekStartForLocale', () => {
     const b = getWeekStartForLocale('en-GB');
     expect(a).toBe(b);
     expect(a).toBe(1);
+  });
+});
+
+describe('getDayPeriodName', () => {
+  it('returns English AM/PM for en-US', () => {
+    expect(getDayPeriodName('AM', 'en-US')).toBe('AM');
+    expect(getDayPeriodName('PM', 'en-US')).toBe('PM');
+  });
+
+  it('returns localized day periods for ko-KR', () => {
+    expect(getDayPeriodName('AM', 'ko-KR')).toBe('오전');
+    expect(getDayPeriodName('PM', 'ko-KR')).toBe('오후');
+  });
+
+  it('returns localized day periods for ja-JP', () => {
+    expect(getDayPeriodName('AM', 'ja-JP')).toBe('午前');
+    expect(getDayPeriodName('PM', 'ja-JP')).toBe('午後');
+  });
+
+  it('defaults to en-US when no locale is given', () => {
+    expect(getDayPeriodName('AM')).toBe('AM');
+    expect(getDayPeriodName('PM')).toBe('PM');
   });
 });

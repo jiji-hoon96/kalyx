@@ -40,6 +40,8 @@ export interface TimePickerRootProps {
   onOpenChange?: (isOpen: boolean) => void;
   /** 12-hour or 24-hour mode */
   format?: TimePickerFormat;
+  /** BCP 47 locale used to localize the AM/PM labels (e.g. "ko-KR" → 오전/오후). */
+  locale?: string;
   /** Minute step (e.g., 1, 5, 10, 15, 30) */
   step?: number;
   /** Whether to display seconds */
@@ -87,6 +89,7 @@ export function TimePickerRoot({
   filterTime,
   adapter: adapterProp,
   labels: labelsProp,
+  locale = 'en-US',
   children,
 }: TimePickerRootProps) {
   const adapter = resolveAdapter(adapterProp, getDefaultAdapter(), 'TimePicker');
@@ -147,6 +150,7 @@ export function TimePickerRoot({
       value: currentValue,
       setTime,
       format,
+      locale,
       step,
       withSeconds,
       displayTimezone,
@@ -165,6 +169,7 @@ export function TimePickerRoot({
       currentValue,
       setTime,
       format,
+      locale,
       step,
       withSeconds,
       displayTimezone,

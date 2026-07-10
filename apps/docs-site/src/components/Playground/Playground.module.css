@@ -93,7 +93,7 @@
 
 .timeRow {
   display: flex;
-  gap: 6px;
+  gap: 10px;
   align-items: flex-start;
 }
 
@@ -122,8 +122,8 @@
 .timeCard {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 12px;
+  gap: 14px;
+  padding: 16px;
   border-radius: 16px;
   border: 1px solid var(--kx-border, #e2e8f0);
   background: #fff;
@@ -132,15 +132,16 @@
 
 .applyButton {
   align-self: stretch;
-  padding: 0.55rem 0.75rem;
+  padding: 0.65rem 0.75rem;
   border: 0;
-  border-radius: 8px;
+  border-radius: 10px;
   /* !important: the preview panel's own button resets (custom.css / demo theme)
    * otherwise flatten this to a transparent background. */
   background: #5b4fe1 !important;
   color: #fff !important;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
   cursor: pointer;
   transition: filter 0.12s ease;
 }

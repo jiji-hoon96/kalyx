@@ -131,3 +131,31 @@ export function getWeekStartForLocale(locale = 'en-US'): WeekStartsOn {
   weekStartCache.set(locale, result);
   return result;
 }
+
+/**
+ * Returns the localized day-period ("AM"/"PM") label for a locale via
+ * Intl.DateTimeFormat's dayPeriod part.
+ *
+ * Examples: en-US → "AM"/"PM", ko-KR → "오전"/"오후", ja-JP → "午前"/"午後".
+ * Falls back to the plain "AM"/"PM" strings when the runtime doesn't expose a
+ * dayPeriod part (older engines).
+ *
+ * @param period 'AM' or 'PM'
+ * @param locale BCP 47 locale string (e.g. "en-US", "ko-KR", "ja-JP")
+ */
+export function getDayPeriodName(period: 'AM' | 'PM', locale = 'en-US'): string {
+  // Use a fixed hour that is unambiguously AM (09:00) or PM (21:00).
+  const date = new Date(Date.UTC(REFERENCE_YEAR, 0, 1, period === 'AM' ? 9 : 21, 0, 0));
+  try {
+    const parts = getCachedFormatter(locale, {
+      hour: 'numeric',
+      hour12: true,
+      timeZone: 'UTC',
+    }).formatToParts(date);
+    const dp = parts.find((p) => p.type === 'dayPeriod');
+    if (dp?.value) return dp.value;
+  } catch {
+    // Fall through to the ASCII default.
+  }
+  return period;
+}

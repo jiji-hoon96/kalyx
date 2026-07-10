@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 import type { HTMLAttributes, KeyboardEvent } from 'react';
-import { to12Hour, to24Hour } from '@kalyx/core';
+import { to12Hour, to24Hour, getDayPeriodName } from '@kalyx/core';
 import { useTimePickerContext } from '../../context/TimePickerContext.js';
 
 export interface TimePickerAmPmToggleClassNames {
@@ -87,12 +87,17 @@ export function TimePickerAmPmToggle({ classNames, ...props }: TimePickerAmPmTog
       [classNames?.option, isSelected && classNames?.optionSelected].filter(Boolean).join(' ') ||
       undefined;
 
+    // The value/logic stays ASCII ('AM'|'PM'); only the visible label is localized
+    // (e.g. ko-KR → 오전/오후, ja-JP → 午前/午後).
+    const label = getDayPeriodName(target, ctx.locale);
+
     return (
       <button
         ref={target === 'AM' ? amRef : pmRef}
         type="button"
         role="radio"
         aria-checked={isSelected}
+        aria-label={label}
         tabIndex={isSelected ? 0 : -1}
         data-selected={isSelected || undefined}
         disabled={ctx.isDisabled}
@@ -100,7 +105,7 @@ export function TimePickerAmPmToggle({ classNames, ...props }: TimePickerAmPmTog
         onClick={() => setPeriod(target)}
         onKeyDown={(e) => handleKeyDown(e, target)}
       >
-        {target}
+        {label}
       </button>
     );
   };

@@ -76,14 +76,14 @@ const CELL_DISABLED = 'text-slate-300 line-through cursor-not-allowed hover:bg-t
 // Time lists live inside the popover card (TimePicker / DateTimePicker), so no
 // border/shadow of their own — just a scroll area.
 const DTP_LIST_ROOT =
-  'h-56 w-14 overflow-y-auto rounded-md bg-slate-50 p-1 [scrollbar-width:thin]';
+  'h-52 w-16 overflow-y-auto rounded-lg bg-slate-50 p-1.5 [scrollbar-width:thin]';
 const LIST_OPTION =
-  'flex cursor-pointer items-center justify-center rounded py-1.5 text-sm text-slate-700 transition hover:bg-slate-100';
+  'flex h-9 cursor-pointer items-center justify-center rounded-md text-sm font-medium text-slate-700 transition hover:bg-slate-100';
 const LIST_OPTION_SELECTED = 'bg-primary text-white hover:!bg-primary';
 
-const AMPM_ROOT = 'flex flex-col gap-1.5 p-1';
+const AMPM_ROOT = 'flex flex-col justify-center gap-2 p-1.5';
 const AMPM_OPTION =
-  'cursor-pointer rounded-md border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100';
+  'min-w-[3.5rem] cursor-pointer rounded-md border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100';
 const AMPM_OPTION_SELECTED = 'border-primary bg-primary text-white hover:!bg-primary';
 
 export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {

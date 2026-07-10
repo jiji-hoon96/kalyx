@@ -16,6 +16,17 @@ const FROZEN_TIME = '2026-06-15T14:30:00.000Z';
 type ListCn = { root?: string; option?: string; optionSelected?: string };
 type AmPmCn = { root?: string; option?: string; optionSelected?: string };
 
+/** Localized label for the demo "Apply" button, keyed by Playground locale. */
+const APPLY_LABEL: Record<string, string> = {
+  'en-US': 'Apply',
+  'ko-KR': '적용',
+  'ja-JP': '適用',
+  'fr-FR': 'Appliquer',
+};
+function applyLabel(locale: string): string {
+  return APPLY_LABEL[locale] ?? APPLY_LABEL['en-US'];
+}
+
 export type PreviewPanelProps = {
   pickerId: PickerId;
   classNames: ClassNamesShape;
@@ -75,7 +86,7 @@ function RangePickerPreview({ classNames, locale, timezone }: SubProps) {
   );
 }
 
-function TimePickerPreview({ classNames, timezone }: SubProps) {
+function TimePickerPreview({ classNames, locale, timezone }: SubProps) {
   const [v, setV] = useState<string | null>(FROZEN_TIME);
   const cn = classNames as { input?: string; hourList?: ListCn; minuteList?: ListCn; ampmToggle?: AmPmCn };
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -89,7 +100,7 @@ function TimePickerPreview({ classNames, timezone }: SubProps) {
   }, []);
 
   return (
-    <TimePicker value={v} onChange={setV} format="12h" displayTimezone={timezone}>
+    <TimePicker value={v} onChange={setV} format="12h" locale={locale} displayTimezone={timezone}>
       <TimePicker.Input className={cn.input} />
       <div ref={popoverRef}>
         <TimePicker.Popover className={styles.timeCard}>
@@ -99,7 +110,7 @@ function TimePickerPreview({ classNames, timezone }: SubProps) {
             <TimePicker.AmPmToggle classNames={cn.ampmToggle} />
           </div>
           <button type="button" className={styles.applyButton} onClick={handleApply}>
-            Apply
+            {applyLabel(locale)}
           </button>
         </TimePicker.Popover>
       </div>
@@ -138,7 +149,7 @@ function DateTimePickerPreview({ classNames, locale, timezone }: SubProps) {
             </div>
           </div>
           <button type="button" className={styles.applyButton} onClick={handleApply}>
-            Apply
+            {applyLabel(locale)}
           </button>
         </DateTimePicker.Popover>
       </div>
