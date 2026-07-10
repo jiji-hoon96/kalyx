@@ -1020,3 +1020,19 @@ span.kx-live-title,
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Playground preview panel — soften the near-black dark background.
+ * The panel inherits --kx-bg (#111117), which reads as harsh pure black
+ * behind the white picker inputs. Nudge it to a slate-900 surface so the
+ * contrast is calmer while the picker chrome still pops. Light mode keeps
+ * the plain white surface. */
+[data-theme='dark'] [data-testid='preview-panel'] {
+  background: #0f172a;
+}
+
+/* Calendar header breathing room in the live Playground: push the weekday
+ * header row away from the month/nav title row so it doesn't feel cramped
+ * (mirrors the demo theme). */
+[data-testid='preview-panel'] [role='dialog'] [role='columnheader'] {
+  padding-bottom: 8px;
+}

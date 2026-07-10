@@ -161,11 +161,12 @@
   background: var(--kx-hover);
   color: var(--kx-fg);
 }
-/* Header row spacing (the div wrapping nav buttons + title). */
+/* Header row spacing (the div wrapping nav buttons + title). Give the
+ * month/nav header more breathing room above the weekday row + grid. */
 [role='dialog'] > div > div:first-child,
 [role='dialog'] table + *,
 [role='dialog'] > div:first-child {
-  margin-bottom: 6px;
+  margin-bottom: 14px;
 }
 
 /* ---- Grid (calendar table + month/year div grids) --------------------- */
@@ -191,7 +192,7 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--kx-muted);
-  padding: 4px 0;
+  padding: 4px 0 8px;
 }
 
 /* Day / month / year cell buttons. Covers both td>button and button[role=gridcell]. */
@@ -219,6 +220,21 @@
 [data-testid='preview-panel'] [role='gridcell'] > button:hover,
 [data-testid='preview-panel'] button[role='gridcell']:hover {
   background: var(--kx-hover);
+}
+/* Suppress the neutral hover fill on already-styled state cells (selected,
+ * range endpoints, in-range band) so hovering a chosen day doesn't flash a
+ * grey background over its accent — keeps the selection reading clean. */
+[data-testid='preview-panel'] [role='gridcell'] > button[data-selected]:hover,
+[data-testid='preview-panel'] button[role='gridcell'][data-selected]:hover,
+[data-testid='preview-panel'] [role='gridcell'] > button[data-range-start]:hover,
+[data-testid='preview-panel'] button[role='gridcell'][data-range-start]:hover,
+[data-testid='preview-panel'] [role='gridcell'] > button[data-range-end]:hover,
+[data-testid='preview-panel'] button[role='gridcell'][data-range-end]:hover {
+  background: var(--kx-accent);
+}
+[data-testid='preview-panel'] [role='gridcell'] > button[data-in-range]:hover,
+[data-testid='preview-panel'] button[role='gridcell'][data-in-range]:hover {
+  background: var(--kx-accent-soft);
 }
 [data-testid='preview-panel'] [role='gridcell'] > button:focus-visible,
 [data-testid='preview-panel'] button[role='gridcell']:focus-visible {
