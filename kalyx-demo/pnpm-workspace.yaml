@@ -1,0 +1,4 @@
+# Standalone project — intentionally NOT part of the parent Kalyx monorepo
+# workspace. This empty file makes pnpm treat kalyx-demo as its own workspace
+# root so `pnpm install` installs deps here instead of walking up to the repo.
+packages: []
