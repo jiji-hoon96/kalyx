@@ -1,56 +1,26 @@
+import { lazy, Suspense, useState } from 'react';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 import Translate from '@docusaurus/Translate';
+import { CODE, VARIANTS } from './SameJsxDemo';
 import styles from './SameJsxBlock.module.css';
 
-type Variant = {
-  id: 'tailwind' | 'shadcn' | 'plain';
-  label: string;
-  code: string;
-};
+const SameJsxDemo = lazy(() => import('./SameJsxDemo'));
 
-const VARIANTS: readonly Variant[] = [
-  {
-    id: 'tailwind',
-    label: 'Tailwind',
-    code: `<DatePicker value={iso} onChange={setIso}>
-  <DatePicker.Input
-    className="border rounded px-2 py-1" />
-  <DatePicker.Popover>
-    <DatePicker.Calendar classNames={{
-      day: 'rounded hover:bg-slate-100',
-      daySelected: 'bg-indigo-600 text-white',
-    }} />
-  </DatePicker.Popover>
-</DatePicker>`,
-  },
-  {
-    id: 'shadcn',
-    label: 'shadcn / cva',
-    code: `<DatePicker value={iso} onChange={setIso}>
-  <DatePicker.Input className={cn(inputBase)} />
-  <DatePicker.Popover>
-    <DatePicker.Calendar classNames={{
-      day: cn(dayBase),
-      daySelected: cn(dayBase, daySelected),
-    }} />
-  </DatePicker.Popover>
-</DatePicker>`,
-  },
-  {
-    id: 'plain',
-    label: 'Plain CSS',
-    code: `<DatePicker value={iso} onChange={setIso}>
-  <DatePicker.Input className="kx-input" />
-  <DatePicker.Popover>
-    <DatePicker.Calendar classNames={{
-      day: 'kx-day',
-      daySelected: 'kx-day-selected',
-    }} />
-  </DatePicker.Popover>
-</DatePicker>`,
-  },
-] as const;
+type VariantId = (typeof VARIANTS)[number]['id'];
 
+/**
+ * "Same JSX, your styles" — an interactive style-switcher. The left column is
+ * a tab bar + the code for the active variant; the right column renders ONE
+ * real <DatePicker> that actually re-skins as you switch tabs. Proves the
+ * claim by demonstration rather than three static snippets side by side.
+ *
+ * Asymmetric two-column layout (copy/code left, live surface right), the
+ * TanStack docs pattern. The live surface is BrowserOnly + lazy so SSG stays
+ * clean; a static code placeholder renders on the server.
+ */
 export default function SameJsxBlock() {
+  const [active, setActive] = useState<VariantId>('tailwind');
+
   return (
     <section className={styles.section}>
       <div className="container">
@@ -72,19 +42,37 @@ export default function SameJsxBlock() {
           </p>
         </div>
 
-        <div className={styles.grid}>
-          {VARIANTS.map(v => (
-            <div
-              key={v.id}
-              data-testid="jsx-variant"
-              data-variant={v.id}
-              className={styles.variant}>
-              <div className={styles.variantLabel}>{v.label}</div>
-              <pre className={styles.code}>
-                <code>{v.code}</code>
-              </pre>
+        <div className={styles.split}>
+          <div className={styles.left}>
+            <div className={styles.tabs} role="tablist" aria-label="Styling approach">
+              {VARIANTS.map(v => (
+                <button
+                  key={v.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={active === v.id}
+                  data-testid="jsx-tab"
+                  data-variant={v.id}
+                  className={`${styles.tab} ${active === v.id ? styles.tabActive : ''}`}
+                  onClick={() => setActive(v.id)}>
+                  {v.label}
+                </button>
+              ))}
             </div>
-          ))}
+            <pre className={styles.code}>
+              <code>{CODE[active]}</code>
+            </pre>
+          </div>
+
+          <div className={styles.right} data-testid="jsx-preview">
+            <BrowserOnly fallback={<div className={styles.previewFallback} aria-hidden="true" />}>
+              {() => (
+                <Suspense fallback={<div className={styles.previewFallback} aria-hidden="true" />}>
+                  <SameJsxDemo variant={active} />
+                </Suspense>
+              )}
+            </BrowserOnly>
+          </div>
         </div>
       </div>
     </section>

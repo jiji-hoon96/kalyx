@@ -1,5 +1,6 @@
 import Layout from '@theme/Layout';
 import Hero from '../components/Hero';
+import StatStrip from '../components/StatStrip';
 import FeatureGrid from '../components/FeatureGrid';
 import SameJsxBlock from '../components/SameJsxBlock';
 import PickerGrid from '../components/PickerGrid';
@@ -13,6 +14,7 @@ export default function Home(): JSX.Element {
       description="Headless React DatePicker + 6 sibling primitives. Zero CSS, SSR-safe, ≤16 KB gzipped.">
       <main>
         <Hero />
+        <StatStrip />
         <FeatureGrid />
         <SameJsxBlock />
         <PickerGrid />
