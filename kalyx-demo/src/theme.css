@@ -16,7 +16,9 @@
  *   - time lists     : [role="listbox"] > [role="option"] (aria-selected)
  *   - AM/PM          : [role="radiogroup"] > [role="radio"] (aria-checked)
  *
- * Palette: cool-neutral surface + indigo accent (shadcn-ish), light + dark.
+ * Palette: cool-neutral (slate) surface + indigo #5b4fe1 accent, light + dark.
+ * Unified with the docs-site + Playground tokens (see
+ * docs/superpowers/specs/2026-07-10-kalyx-design-system.md).
  */
 
 :root {
@@ -25,12 +27,12 @@
   --kx-muted: #64748b;
   --kx-border: #e2e8f0;
   --kx-hover: #f1f5f9;
-  --kx-accent: #4f46e5;
+  --kx-accent: #5b4fe1;
   --kx-accent-fg: #ffffff;
-  --kx-accent-soft: #e0e7ff;
+  --kx-accent-soft: #e6e3fb;
   --kx-radius: 8px;
   --kx-shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.28), 0 2px 6px -2px rgba(15, 23, 42, 0.12);
-  --kx-focus: 0 0 0 3px rgba(79, 70, 229, 0.35);
+  --kx-focus: 0 0 0 3px rgba(91, 79, 225, 0.35);
 }
 
 [data-kx-theme='dark'] {
@@ -39,11 +41,11 @@
   --kx-muted: #94a3b8;
   --kx-border: #334155;
   --kx-hover: #1e293b;
-  --kx-accent: #818cf8;
-  --kx-accent-fg: #0b1120;
-  --kx-accent-soft: #312e81;
+  --kx-accent: #8b80ff;
+  --kx-accent-fg: #0f172a;
+  --kx-accent-soft: #312a6b;
   --kx-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.6), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
-  --kx-focus: 0 0 0 3px rgba(129, 140, 248, 0.4);
+  --kx-focus: 0 0 0 3px rgba(139, 128, 255, 0.4);
 }
 
 /* Center the picker nicely inside the preview panel. */
