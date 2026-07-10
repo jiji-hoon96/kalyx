@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+import type { RefObject } from 'react';
 import type { ISODateString, TimePickerLabels, TimeValue } from '@kalyx/core';
 
 export type TimePickerFormat = '12h' | '24h';
@@ -37,6 +38,18 @@ export interface TimePickerContextValue {
    * predicate returns `true` for *every* step in that hour.
    */
   filterTime?: (hours: number, minutes: number) => boolean;
+  /**
+   * Whether the optional `TimePicker.Popover` is open. Always `true` when no
+   * popover is used (the Hour/Minute lists render inline), so inline usage is
+   * unaffected.
+   */
+  isOpen: boolean;
+  /** Open the popover. No-op for inline usage. */
+  open: () => void;
+  /** Close the popover. No-op for inline usage. */
+  close: () => void;
+  /** Reference element (the Input) that the popover positions against. */
+  referenceRef: RefObject<HTMLElement | null>;
 }
 
 export const TimePickerContext = createContext<TimePickerContextValue | null>(null);

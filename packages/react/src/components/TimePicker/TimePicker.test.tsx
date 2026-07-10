@@ -732,3 +732,58 @@ describe('TimePicker — SSR safety', () => {
     expect(renderToString(tree)).toBe(renderToString(tree));
   });
 });
+
+describe('TimePicker.Popover — optional floating container', () => {
+  function renderPopoverTimePicker() {
+    const onChange = vi.fn();
+    const result = render(
+      <TimePicker value="2026-01-15T14:30:00.000Z" format="12h" onChange={onChange}>
+        <TimePicker.Input />
+        <TimePicker.Popover>
+          <TimePicker.HourList />
+          <TimePicker.MinuteList />
+          <TimePicker.AmPmToggle />
+        </TimePicker.Popover>
+      </TimePicker>,
+    );
+    return { ...result, onChange };
+  }
+
+  it('keeps the controls hidden until the input is clicked', async () => {
+    const user = userEvent.setup();
+    renderPopoverTimePicker();
+
+    // Closed initially — no listboxes rendered.
+    expect(screen.queryByRole('listbox', { name: 'Hour' })).not.toBeInTheDocument();
+
+    await user.click(screen.getByLabelText('Time'));
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByRole('listbox', { name: 'Hour' })).toBeInTheDocument();
+    expect(screen.getByRole('listbox', { name: 'Minute' })).toBeInTheDocument();
+  });
+
+  it('opens on ArrowDown and closes on Escape', async () => {
+    const user = userEvent.setup();
+    renderPopoverTimePicker();
+
+    const input = screen.getByLabelText('Time');
+    input.focus();
+    await user.keyboard('{ArrowDown}');
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('reflects open state via aria-expanded', async () => {
+    const user = userEvent.setup();
+    renderPopoverTimePicker();
+
+    const input = screen.getByLabelText('Time');
+    expect(input).toHaveAttribute('aria-expanded', 'false');
+
+    await user.click(input);
+    expect(input).toHaveAttribute('aria-expanded', 'true');
+  });
+});

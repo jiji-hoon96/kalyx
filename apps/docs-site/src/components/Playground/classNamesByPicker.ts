@@ -73,10 +73,8 @@ const YEAR_CELL =
 const CELL_SELECTED = 'bg-primary text-white hover:!bg-primary';
 const CELL_DISABLED = 'text-slate-300 line-through cursor-not-allowed hover:bg-transparent';
 
-const LIST_ROOT =
-  'h-40 w-16 overflow-y-auto rounded-md border border-slate-200 bg-white p-1 shadow-sm [scrollbar-width:thin]';
-// DateTimePicker time lists live inside the shared popover card, so no border/
-// shadow of their own — just a scroll area matched to the calendar height.
+// Time lists live inside the popover card (TimePicker / DateTimePicker), so no
+// border/shadow of their own — just a scroll area.
 const DTP_LIST_ROOT =
   'h-56 w-14 overflow-y-auto rounded-md bg-slate-50 p-1 [scrollbar-width:thin]';
 const LIST_OPTION =
@@ -125,8 +123,8 @@ export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {
   },
   timepicker: {
     input: INPUT,
-    hourList: { root: LIST_ROOT, option: LIST_OPTION, optionSelected: LIST_OPTION_SELECTED },
-    minuteList: { root: LIST_ROOT, option: LIST_OPTION, optionSelected: LIST_OPTION_SELECTED },
+    hourList: { root: DTP_LIST_ROOT, option: LIST_OPTION, optionSelected: LIST_OPTION_SELECTED },
+    minuteList: { root: DTP_LIST_ROOT, option: LIST_OPTION, optionSelected: LIST_OPTION_SELECTED },
     ampmToggle: { root: AMPM_ROOT, option: AMPM_OPTION, optionSelected: AMPM_OPTION_SELECTED },
   },
   datetimepicker: {

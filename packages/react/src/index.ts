@@ -57,6 +57,7 @@ export type {
 export type {
   TimePickerRootProps,
   TimePickerInputProps,
+  TimePickerPopoverProps,
   TimePickerHourListProps,
   TimePickerHourListClassNames,
   TimePickerMinuteListProps,

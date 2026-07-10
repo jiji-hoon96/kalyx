@@ -78,13 +78,30 @@ function RangePickerPreview({ classNames, locale, timezone }: SubProps) {
 function TimePickerPreview({ classNames, timezone }: SubProps) {
   const [v, setV] = useState<string | null>(FROZEN_TIME);
   const cn = classNames as { input?: string; hourList?: ListCn; minuteList?: ListCn; ampmToggle?: AmPmCn };
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // "Apply" closes the popover via TimePicker's public Escape-to-close behavior.
+  const handleApply = useCallback(() => {
+    const dialog = popoverRef.current?.querySelector<HTMLElement>('[role="dialog"]');
+    (dialog ?? popoverRef.current)?.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
+  }, []);
+
   return (
     <TimePicker value={v} onChange={setV} format="12h" displayTimezone={timezone}>
       <TimePicker.Input className={cn.input} />
-      <div className={styles.timeRow}>
-        <TimePicker.HourList classNames={cn.hourList} />
-        <TimePicker.MinuteList classNames={cn.minuteList} />
-        <TimePicker.AmPmToggle classNames={cn.ampmToggle} />
+      <div ref={popoverRef}>
+        <TimePicker.Popover className={styles.timeCard}>
+          <div className={styles.timeRow}>
+            <TimePicker.HourList classNames={cn.hourList} />
+            <TimePicker.MinuteList classNames={cn.minuteList} />
+            <TimePicker.AmPmToggle classNames={cn.ampmToggle} />
+          </div>
+          <button type="button" className={styles.applyButton} onClick={handleApply}>
+            Apply
+          </button>
+        </TimePicker.Popover>
       </div>
     </TimePicker>
   );

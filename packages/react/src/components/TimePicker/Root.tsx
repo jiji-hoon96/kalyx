@@ -11,6 +11,7 @@ import type { DateAdapter, ISODateString, TimePickerLabels, TimeValue } from '@k
 import { TimePickerContext } from '../../context/TimePickerContext.js';
 import type { TimePickerContextValue, TimePickerFormat } from '../../context/TimePickerContext.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
+import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 
 /**
  * Props for the TimePicker Root component.
@@ -32,6 +33,11 @@ export interface TimePickerRootProps {
   defaultValue?: ISODateString;
   /** Callback fired when the time changes */
   onChange?: (value: ISODateString | null) => void;
+  /**
+   * Callback fired when the optional `TimePicker.Popover` open state changes.
+   * Only relevant when using `TimePicker.Popover`; inline usage never opens/closes.
+   */
+  onOpenChange?: (isOpen: boolean) => void;
   /** 12-hour or 24-hour mode */
   format?: TimePickerFormat;
   /** Minute step (e.g., 1, 5, 10, 15, 30) */
@@ -71,6 +77,7 @@ export function TimePickerRoot({
   value: controlledValue,
   defaultValue,
   onChange,
+  onOpenChange,
   format = '24h',
   step = 1,
   withSeconds = false,
@@ -93,6 +100,21 @@ export function TimePickerRoot({
   const [uncontrolledValue, setUncontrolledValue] = useState<ISODateString | null>(
     defaultValue ?? null,
   );
+
+  // Optional popover open state. When TimePicker is used inline (no Popover),
+  // nothing calls open()/close() so this stays false and is ignored.
+  const [isOpen, setIsOpen] = useState(false);
+  const referenceRef = useRef<HTMLElement | null>(null);
+  useChangeEffect(isOpen, onOpenChange);
+
+  const open = useCallback(() => {
+    if (disabled || readOnly) return;
+    setIsOpen(true);
+  }, [disabled, readOnly]);
+
+  const close = useCallback(() => {
+    setIsOpen(false);
+  }, []);
 
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
 
@@ -134,6 +156,10 @@ export function TimePickerRoot({
       pickerId,
       labels: mergedLabels,
       filterTime,
+      isOpen,
+      open,
+      close,
+      referenceRef,
     }),
     [
       currentValue,
@@ -148,6 +174,9 @@ export function TimePickerRoot({
       pickerId,
       mergedLabels,
       filterTime,
+      isOpen,
+      open,
+      close,
     ],
   );
 

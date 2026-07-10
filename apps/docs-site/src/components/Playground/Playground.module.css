@@ -117,6 +117,19 @@
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
 }
 
+/* TimePicker popover: the hour/minute/AM-PM controls + Apply grouped in one
+ * card that appears when the input is clicked. */
+.timeCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--kx-border, #e2e8f0);
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+}
+
 .applyButton {
   align-self: stretch;
   padding: 0.55rem 0.75rem;
