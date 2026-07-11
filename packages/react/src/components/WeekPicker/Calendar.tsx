@@ -8,6 +8,10 @@ import type {
  * WeekPicker.Calendar — renders the same calendar grid as `RangePicker.Calendar` but with
  * `selectionMode="week"` so a single click commits the full week containing the clicked day.
  *
+ * `weekAnchor` controls how that week is derived:
+ * - `'calendar'` (default): the `weekStartsOn`-aligned week (e.g. Sun–Sat for en-US).
+ * - `'clicked'`: a rolling 7-day span that starts on the clicked day.
+ *
  * This is a thin wrapper over `RangePicker.Calendar` — the two share all keyboard navigation,
  * ARIA semantics, and rendering logic.
  */

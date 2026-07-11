@@ -5,6 +5,7 @@ import {
   getWeekdayNames,
   formatFullDate,
   getWeekStartForLocale,
+  getDayPeriodName,
 } from '../utils/locale.js';
 
 describe('getMonthName', () => {
@@ -117,5 +118,34 @@ describe('getWeekStartForLocale', () => {
     const b = getWeekStartForLocale('en-GB');
     expect(a).toBe(b);
     expect(a).toBe(1);
+  });
+});
+
+describe('getDayPeriodName', () => {
+  it('returns English AM/PM for en-US', () => {
+    expect(getDayPeriodName('AM', 'en-US')).toBe('AM');
+    expect(getDayPeriodName('PM', 'en-US')).toBe('PM');
+  });
+
+  // NOTE: the exact localized strings (ko-KR → 오전/오후, ja-JP → 午前/午後)
+  // depend on the runtime's ICU data. CI runners often ship a trimmed ICU where
+  // non-English day periods fall back to "AM"/"PM", so we only assert the
+  // environment-independent contract here: a non-empty string is returned and
+  // AM/PM map to distinct values. The full localization is exercised in the
+  // browser (full ICU) — see the Playground.
+  it('returns non-empty, distinct labels for localized locales', () => {
+    for (const locale of ['ko-KR', 'ja-JP', 'fr-FR']) {
+      const am = getDayPeriodName('AM', locale);
+      const pm = getDayPeriodName('PM', locale);
+      expect(typeof am).toBe('string');
+      expect(am.length).toBeGreaterThan(0);
+      expect(pm.length).toBeGreaterThan(0);
+      expect(am).not.toBe(pm);
+    }
+  });
+
+  it('defaults to en-US when no locale is given', () => {
+    expect(getDayPeriodName('AM')).toBe('AM');
+    expect(getDayPeriodName('PM')).toBe('PM');
   });
 });

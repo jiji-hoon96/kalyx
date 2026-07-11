@@ -13,7 +13,7 @@ export interface TimePickerInputProps extends Omit<
  * Supports direct typing by the user.
  */
 export const TimePickerInput = forwardRef<HTMLInputElement, TimePickerInputProps>(
-  function TimePickerInput({ onBlur, onKeyDown, ...props }, ref) {
+  function TimePickerInput({ onBlur, onKeyDown, onClick, ...props }, ref) {
     const ctx = useTimePickerContext('TimePicker.Input');
     const [inputText, setInputText] = useState<string | null>(null);
 
@@ -49,29 +49,57 @@ export const TimePickerInput = forwardRef<HTMLInputElement, TimePickerInputProps
       [commitInput, onBlur],
     );
 
+    // Open the optional popover when the input is clicked. No-op for inline usage
+    // (no Popover mounted → isOpen stays false and nothing renders).
+    const handleClick = useCallback(
+      (e: React.MouseEvent<HTMLInputElement>) => {
+        if (!ctx.isOpen) ctx.open();
+        onClick?.(e);
+      },
+      [ctx, onClick],
+    );
+
     const handleKeyDown = useCallback(
       (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
           commitInput();
+        } else if (e.key === 'ArrowDown' && !ctx.isOpen) {
+          e.preventDefault();
+          ctx.open();
+        } else if (e.key === 'Escape' && ctx.isOpen) {
+          e.preventDefault();
+          e.stopPropagation();
+          ctx.close();
         }
         onKeyDown?.(e);
       },
-      [commitInput, onKeyDown],
+      [commitInput, ctx, onKeyDown],
     );
+
+    const listId = `${ctx.pickerId}-time`;
 
     return (
       <input
-        ref={ref}
+        ref={(node) => {
+          ctx.referenceRef.current = node;
+          if (typeof ref === 'function') ref(node);
+          else if (ref) ref.current = node;
+        }}
         type="text"
+        role="combobox"
         inputMode="numeric"
         autoComplete="off"
         aria-label={ctx.labels.timeInput}
+        aria-expanded={ctx.isOpen}
+        aria-haspopup="dialog"
+        aria-controls={ctx.isOpen ? listId : undefined}
         placeholder={ctx.withSeconds ? 'HH:MM:SS' : 'HH:MM'}
         value={displayValue}
         disabled={ctx.isDisabled || props.disabled}
         readOnly={ctx.isReadOnly}
         onChange={handleChange}
         onBlur={handleBlur}
+        onClick={handleClick}
         onKeyDown={handleKeyDown}
         {...props}
       />

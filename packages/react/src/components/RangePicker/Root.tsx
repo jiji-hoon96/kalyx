@@ -203,17 +203,23 @@ export function RangePickerRoot({
     [isDisabled, readOnly, selectingTarget, currentValue.start, adapter, setRange, displayTimezone],
   );
 
-  const open = useCallback(() => {
-    if (isDisabled || readOnly) return;
-    setIsOpen(true);
-    const target = currentValue.start ?? adapter.today(displayTimezone);
-    setViewMonth(target);
-    setFocusedDate(target);
-    // If the range is complete, restart; otherwise preserve current state
-    if (currentValue.start && currentValue.end) {
-      setSelectingTarget('start');
-    }
-  }, [isDisabled, readOnly, currentValue, adapter, displayTimezone]);
+  const open = useCallback(
+    (target?: RangeSelectingTarget) => {
+      if (isDisabled || readOnly) return;
+      setIsOpen(true);
+      const focus = currentValue.start ?? adapter.today(displayTimezone);
+      setViewMonth(focus);
+      setFocusedDate(focus);
+      // An explicit target (from clicking the start/end input) wins. Otherwise, if
+      // the range is complete, restart the two-click flow from 'start'.
+      if (target) {
+        setSelectingTarget(target);
+      } else if (currentValue.start && currentValue.end) {
+        setSelectingTarget('start');
+      }
+    },
+    [isDisabled, readOnly, currentValue, adapter, displayTimezone],
+  );
 
   const close = useCallback(() => {
     setIsOpen(false);
@@ -232,6 +238,7 @@ export function RangePickerRoot({
       setRange,
       selectDate,
       selectingTarget,
+      setSelectingTarget,
       hoverDate,
       setHoverDate,
       isOpen,

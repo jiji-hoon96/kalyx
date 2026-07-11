@@ -24,12 +24,20 @@ export interface RangePickerContextValue {
   selectDate: (iso: ISODateString) => void;
   /** Which part gets selected next (start first, then end) */
   selectingTarget: RangeSelectingTarget;
+  /**
+   * Set which part (`'start'` | `'end'`) the next calendar click targets. Used by
+   * the inputs so clicking the start vs. end field anchors selection accordingly
+   * (e.g. WeekPicker: clicking "start" anchors the 7-day span forward from the
+   * clicked day, clicking "end" anchors it backward).
+   */
+  setSelectingTarget: (target: RangeSelectingTarget) => void;
   /** Hovered date (for range preview) */
   hoverDate: ISODateString | null;
   setHoverDate: (iso: ISODateString | null) => void;
   /** Popover open state */
   isOpen: boolean;
-  open: () => void;
+  /** Open the popover. Pass a target to anchor the next selection to start/end. */
+  open: (target?: RangeSelectingTarget) => void;
   close: () => void;
   toggle: () => void;
   /** Currently displayed month */

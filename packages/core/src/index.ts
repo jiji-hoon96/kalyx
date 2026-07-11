@@ -46,6 +46,7 @@ export {
   getWeekdayNames,
   formatFullDate,
   getWeekStartForLocale,
+  getDayPeriodName,
 } from './utils/locale.js';
 export type { WeekdayInfo } from './utils/locale.js';
 export {

@@ -1,15 +1,14 @@
 .section {
-  padding: 5rem 0;
+  padding: 7rem 0;
   background: var(--ifm-background-color);
 }
 
 .header {
-  text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  align-items: center;
+  max-width: 40rem;
 }
 
 .eyebrow {
@@ -21,9 +20,10 @@
 }
 
 .heading {
-  font-size: 2rem;
+  font-size: clamp(2rem, 3.5vw, 2.6rem);
   margin: 0;
   font-weight: 700;
+  letter-spacing: -0.025em;
   color: var(--ifm-heading-color);
 }
 
@@ -32,47 +32,111 @@
   line-height: 1.6;
   color: var(--ifm-color-emphasis-700);
   margin: 0;
-  max-width: 36rem;
 }
 
-.grid {
+/* Asymmetric split: code column narrower than the live surface. */
+.split {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: stretch;
 }
 
-.variant {
-  background: var(--ifm-color-emphasis-100);
-  border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: 12px;
-  overflow: hidden;
+.left {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
-.variantLabel {
-  background: var(--ifm-color-emphasis-200);
-  color: var(--ifm-color-emphasis-800);
-  padding: 0.5rem 1rem;
-  font-size: 0.8rem;
+.tabs {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 10px;
+  width: fit-content;
+  margin-bottom: 1rem;
+}
+
+.tab {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.85rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  padding: 0.4rem 0.85rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.tab:hover {
+  color: var(--ifm-heading-color);
+}
+
+.tabActive {
+  background: var(--ifm-background-color);
+  color: var(--ifm-color-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .code {
   margin: 0;
-  padding: 1rem;
-  background: transparent;
+  padding: 1.25rem;
+  flex: 1;
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 14px;
+  box-shadow: var(--kx-elev-1);
   font-family: var(--ifm-font-family-monospace);
-  font-size: 0.82rem;
-  line-height: 1.55;
+  font-size: 0.85rem;
+  line-height: 1.6;
   color: var(--ifm-font-color-base);
   overflow-x: auto;
 }
 
-@media (max-width: 996px) {
-  .grid {
+.right {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 14px;
+  box-shadow: var(--kx-elev-1);
+  min-height: 340px;
+  overflow: hidden;
+}
+
+/* Soft accent wash behind the live picker for depth. */
+.right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--kx-radial);
+  pointer-events: none;
+}
+
+.previewInner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+}
+
+.previewFallback {
+  width: 260px;
+  height: 260px;
+  border-radius: 12px;
+  background: var(--ifm-color-emphasis-200);
+  opacity: 0.5;
+}
+
+@media (max-width: 900px) {
+  .split {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
 }

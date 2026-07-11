@@ -43,8 +43,15 @@ describe('<ClassNamesEditor>', () => {
   it('renders one input per leaf entry for the active picker', () => {
     render(<ClassNamesEditor pickerId="datepicker" value={CLASSNAMES_BY_PICKER.datepicker} onChange={() => {}} />);
     const inputs = screen.getAllByRole('textbox');
-    // datepicker has 1 (input) + 10 (calendar.*) = 11 leaf entries
-    expect(inputs.length).toBe(11);
+    // One text input per leaf classNames entry. Compute the expected leaf count
+    // from the map so this stays correct as the datepicker's classNames surface
+    // grows (e.g. adding calendar.weekdayHeader).
+    const dp = CLASSNAMES_BY_PICKER.datepicker;
+    const leafCount = Object.values(dp).reduce(
+      (n, v) => n + (typeof v === 'string' ? 1 : Object.keys(v).length),
+      0,
+    );
+    expect(inputs.length).toBe(leafCount);
   });
 
   it('calls onChange when a leaf input is edited', () => {

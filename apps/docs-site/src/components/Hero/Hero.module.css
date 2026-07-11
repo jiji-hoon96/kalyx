@@ -1,83 +1,113 @@
 .hero {
-  padding: 6rem 0 4rem;
+  position: relative;
+  padding: 7rem 0 5.5rem;
   background: var(--ifm-background-color);
+  overflow: hidden;
+}
+
+/* Texture: a soft accent wash from the top + a faint dot grid. Both are
+ * decorative and sit behind the content (pointer-events: none). */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--kx-radial);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--kx-dot) 1px, transparent 1px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(70% 60% at 50% 20%, #000 0%, transparent 75%);
+  mask-image: radial-gradient(70% 60% at 50% 20%, #000 0%, transparent 75%);
+  pointer-events: none;
+  opacity: 0.7;
 }
 
 .grid {
+  position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 4.5rem;
   align-items: center;
 }
 
 .copy {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .eyebrow {
   display: inline-flex;
   align-self: flex-start;
-  font-size: 0.85rem;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--ifm-color-primary);
-  padding: 0.25rem 0.6rem;
-  border: 1px solid var(--ifm-color-primary-light);
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--kx-hairline);
+  background: var(--kx-accent-tint);
   border-radius: 999px;
 }
 
 .title {
-  font-size: 3rem;
-  line-height: 1.1;
+  font-size: clamp(2.75rem, 5.5vw, 4.5rem);
+  line-height: 1.02;
   margin: 0;
   font-weight: 800;
+  letter-spacing: -0.03em;
   color: var(--ifm-heading-color);
 }
 
 .titleAccent {
-  background: linear-gradient(135deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-dark) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ifm-color-primary);
 }
 
 .subtitle {
-  font-size: 1.125rem;
+  font-size: 1.2rem;
   line-height: 1.6;
   color: var(--ifm-color-emphasis-700);
   margin: 0;
-  max-width: 36rem;
+  max-width: 34rem;
 }
 
 .ctas {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+  margin-top: 0.25rem;
 }
 
 .ctaPrimary,
 .ctaSecondary {
   display: inline-flex;
   align-items: center;
-  padding: 0.75rem 1.25rem;
-  border-radius: 8px;
+  padding: 0.8rem 1.4rem;
+  border-radius: 10px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1rem;
   text-decoration: none;
+  transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
 }
 
 .ctaPrimary {
   background: var(--ifm-color-primary);
   color: var(--ifm-color-primary-contrast-foreground);
+  box-shadow: var(--kx-elev-accent);
 }
 
 .ctaPrimary:hover {
   background: var(--ifm-color-primary-dark);
   color: var(--ifm-color-primary-contrast-foreground);
   text-decoration: none;
+  transform: translateY(-1px);
 }
 
 .ctaSecondary {
@@ -88,23 +118,25 @@
 .ctaSecondary:hover {
   background: var(--ifm-color-emphasis-100);
   text-decoration: none;
+  transform: translateY(-1px);
 }
 
 .installBar {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 0.9rem;
+  padding: 0.65rem 1rem;
   background: var(--ifm-color-emphasis-100);
   border: 1px solid var(--ifm-color-emphasis-200);
-  border-radius: 8px;
+  border-radius: 10px;
   font-family: var(--ifm-font-family-monospace);
   font-size: 0.9rem;
   width: fit-content;
 }
 
 .installPrefix {
-  color: var(--ifm-color-emphasis-600);
+  color: var(--ifm-color-primary);
+  font-weight: 700;
 }
 
 .installCmd {
@@ -113,6 +145,7 @@
 }
 
 .demoColumn {
+  position: relative;
   width: 100%;
 }
 
@@ -121,15 +154,29 @@
   height: auto;
   display: block;
   border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--kx-elev-2);
 }
 
 @media (max-width: 996px) {
+  .hero {
+    padding: 4rem 0 3.5rem;
+  }
   .grid {
     grid-template-columns: 1fr;
     gap: 2.5rem;
   }
   .title {
-    font-size: 2.25rem;
+    font-size: clamp(2.25rem, 9vw, 3rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctaPrimary,
+  .ctaSecondary {
+    transition: none;
+  }
+  .ctaPrimary:hover,
+  .ctaSecondary:hover {
+    transform: none;
   }
 }

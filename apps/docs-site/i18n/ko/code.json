@@ -155,6 +155,34 @@
     "message": "Playground 사용해보기",
     "description": "GetStarted: Playground CTA"
   },
+  "home.stats.primitives": {
+    "message": "날짜 프리미티브",
+    "description": "StatStrip: 프리미티브 개수 라벨"
+  },
+  "home.stats.bundle": {
+    "message": "gzip, 전체 피커 포함",
+    "description": "StatStrip: 번들 크기 라벨"
+  },
+  "home.stats.css": {
+    "message": "import할 CSS 파일",
+    "description": "StatStrip: CSS 파일 수 라벨"
+  },
+  "home.stats.a11y": {
+    "message": "기본 제공 접근성",
+    "description": "StatStrip: 접근성 라벨"
+  },
+  "home.stats.downloads": {
+    "message": "월간 npm 다운로드",
+    "description": "StatStrip: 다운로드 라벨"
+  },
+  "home.stats.stars": {
+    "message": "GitHub 스타",
+    "description": "StatStrip: 스타 라벨"
+  },
+  "home.stats.aria": {
+    "message": "프로젝트 지표",
+    "description": "StatStrip: 섹션 aria-label"
+  },
   "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
     "message": "← 메인 메뉴로",
     "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"

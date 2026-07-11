@@ -330,6 +330,7 @@ export function DateTimePickerRoot({
       value: currentValue,
       setTime,
       format,
+      locale,
       step,
       withSeconds,
       displayTimezone,
@@ -339,11 +340,19 @@ export function DateTimePickerRoot({
       pickerId,
       labels: mergedTimeLabels,
       filterTime,
+      // DateTimePicker renders the time lists inside its own (date) popover, so
+      // the TimePicker-level popover is effectively always "open". open/close
+      // reuse the shared popover controls; TimePicker.Popover isn't used here.
+      isOpen: true,
+      open,
+      close,
+      referenceRef,
     }),
     [
       currentValue,
       setTime,
       format,
+      locale,
       step,
       withSeconds,
       displayTimezone,
@@ -353,6 +362,8 @@ export function DateTimePickerRoot({
       pickerId,
       mergedTimeLabels,
       filterTime,
+      open,
+      close,
     ],
   );
 

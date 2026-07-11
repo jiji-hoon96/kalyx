@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   DatePicker, RangePicker, TimePicker, DateTimePicker,
   MonthPicker, YearPicker, WeekPicker,
@@ -15,6 +15,17 @@ const FROZEN_TIME = '2026-06-15T14:30:00.000Z';
 
 type ListCn = { root?: string; option?: string; optionSelected?: string };
 type AmPmCn = { root?: string; option?: string; optionSelected?: string };
+
+/** Localized label for the demo "Apply" button, keyed by Playground locale. */
+const APPLY_LABEL: Record<string, string> = {
+  'en-US': 'Apply',
+  'ko-KR': '적용',
+  'ja-JP': '適用',
+  'fr-FR': 'Appliquer',
+};
+function applyLabel(locale: string): string {
+  return APPLY_LABEL[locale] ?? APPLY_LABEL['en-US'];
+}
 
 export type PreviewPanelProps = {
   pickerId: PickerId;
@@ -63,8 +74,11 @@ function RangePickerPreview({ classNames, locale, timezone }: SubProps) {
   const cn = classNames as { input?: string; calendar?: Record<string, string> };
   return (
     <RangePicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
-      <RangePicker.Input className={cn.input} part="start" />
-      <RangePicker.Input className={cn.input} part="end" />
+      <div className={styles.rangeInputRow}>
+        <RangePicker.Input className={cn.input} part="start" />
+        <span className={styles.rangeInputSep} aria-hidden="true">–</span>
+        <RangePicker.Input className={cn.input} part="end" />
+      </div>
       <RangePicker.Popover>
         <RangePicker.Calendar classNames={cn.calendar} />
       </RangePicker.Popover>
@@ -72,16 +86,33 @@ function RangePickerPreview({ classNames, locale, timezone }: SubProps) {
   );
 }
 
-function TimePickerPreview({ classNames, timezone }: SubProps) {
+function TimePickerPreview({ classNames, locale, timezone }: SubProps) {
   const [v, setV] = useState<string | null>(FROZEN_TIME);
   const cn = classNames as { input?: string; hourList?: ListCn; minuteList?: ListCn; ampmToggle?: AmPmCn };
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // "Apply" closes the popover via TimePicker's public Escape-to-close behavior.
+  const handleApply = useCallback(() => {
+    const dialog = popoverRef.current?.querySelector<HTMLElement>('[role="dialog"]');
+    (dialog ?? popoverRef.current)?.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
+  }, []);
+
   return (
-    <TimePicker value={v} onChange={setV} format="12h" displayTimezone={timezone}>
+    <TimePicker value={v} onChange={setV} format="12h" locale={locale} displayTimezone={timezone}>
       <TimePicker.Input className={cn.input} />
-      <div className={styles.timeRow}>
-        <TimePicker.HourList classNames={cn.hourList} />
-        <TimePicker.MinuteList classNames={cn.minuteList} />
-        <TimePicker.AmPmToggle classNames={cn.ampmToggle} />
+      <div ref={popoverRef}>
+        <TimePicker.Popover className={styles.timeCard}>
+          <div className={styles.timeRow}>
+            <TimePicker.HourList classNames={cn.hourList} />
+            <TimePicker.MinuteList classNames={cn.minuteList} />
+            <TimePicker.AmPmToggle classNames={cn.ampmToggle} />
+          </div>
+          <button type="button" className={styles.applyButton} onClick={handleApply}>
+            {applyLabel(locale)}
+          </button>
+        </TimePicker.Popover>
       </div>
     </TimePicker>
   );
@@ -90,18 +121,38 @@ function TimePickerPreview({ classNames, timezone }: SubProps) {
 function DateTimePickerPreview({ classNames, locale, timezone }: SubProps) {
   const [v, setV] = useState<string | null>(FROZEN_DATE);
   const cn = classNames as { input?: string; calendar?: Record<string, string>; hourList?: ListCn; minuteList?: ListCn };
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // "Apply" confirms the current date+time selection and closes the popover.
+  // DateTimePicker keeps its popover open after a day click (so you can also
+  // pick a time); it commits/closes on Escape or outside click. We reuse that
+  // public Escape-to-close behavior by dispatching an Escape keydown into the
+  // open dialog — the library's own handler closes it.
+  const handleApply = useCallback(() => {
+    const dialog = popoverRef.current?.querySelector<HTMLElement>('[role="dialog"]');
+    const grid = dialog?.querySelector<HTMLElement>('[role="grid"]') ?? dialog;
+    grid?.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
+  }, []);
+
   return (
     <DateTimePicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
       <DateTimePicker.Input className={cn.input} />
-      <DateTimePicker.Popover>
-        <div className={styles.dateTimeRow}>
-          <DateTimePicker.Calendar classNames={cn.calendar} />
-          <div className={styles.timeRow}>
-            <DateTimePicker.HourList classNames={cn.hourList} />
-            <DateTimePicker.MinuteList classNames={cn.minuteList} />
+      <div ref={popoverRef}>
+        <DateTimePicker.Popover className={styles.dateTimeCard}>
+          <div className={styles.dateTimeRow}>
+            <DateTimePicker.Calendar classNames={cn.calendar} />
+            <div className={styles.timeRow}>
+              <DateTimePicker.HourList classNames={cn.hourList} />
+              <DateTimePicker.MinuteList classNames={cn.minuteList} />
+            </div>
           </div>
-        </div>
-      </DateTimePicker.Popover>
+          <button type="button" className={styles.applyButton} onClick={handleApply}>
+            {applyLabel(locale)}
+          </button>
+        </DateTimePicker.Popover>
+      </div>
     </DateTimePicker>
   );
 }
@@ -137,10 +188,13 @@ function WeekPickerPreview({ classNames, locale, timezone }: SubProps) {
   const cn = classNames as { input?: string; calendar?: Record<string, string> };
   return (
     <WeekPicker value={v} onChange={setV} locale={locale} displayTimezone={timezone}>
-      <WeekPicker.Input className={cn.input} part="start" />
-      <WeekPicker.Input className={cn.input} part="end" />
+      <div className={styles.rangeInputRow}>
+        <WeekPicker.Input className={cn.input} part="start" />
+        <span className={styles.rangeInputSep} aria-hidden="true">–</span>
+        <WeekPicker.Input className={cn.input} part="end" />
+      </div>
       <WeekPicker.Popover>
-        <WeekPicker.Calendar classNames={cn.calendar} />
+        <WeekPicker.Calendar classNames={cn.calendar} weekAnchor="clicked" />
       </WeekPicker.Popover>
     </WeekPicker>
   );

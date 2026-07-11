@@ -73,9 +73,27 @@
   justify-content: center;
 }
 
+/* Tame the scrollbar on the time lists — the default dark-mode scrollbar renders
+ * as a heavy black track next to the white list, which looks broken. Make it a
+ * thin, subtle overlay-style bar on a light track. */
+.preview :global([role='listbox']) {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+.preview :global([role='listbox'])::-webkit-scrollbar {
+  width: 6px;
+}
+.preview :global([role='listbox'])::-webkit-scrollbar-track {
+  background: transparent;
+}
+.preview :global([role='listbox'])::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
 .timeRow {
   display: flex;
-  gap: 6px;
+  gap: 10px;
   align-items: flex-start;
 }
 
@@ -83,6 +101,67 @@
   display: flex;
   gap: 12px;
   align-items: flex-start;
+}
+
+/* DateTimePicker: a single popover card wrapping the calendar + time lists +
+ * Apply button, so the whole thing reads as one surface (previously the time
+ * lists floated outside the calendar's card on a dark background). */
+.dateTimeCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--kx-border, #e2e8f0);
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+}
+
+/* TimePicker popover: the hour/minute/AM-PM controls + Apply grouped in one
+ * card that appears when the input is clicked. */
+.timeCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--kx-border, #e2e8f0);
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+}
+
+.applyButton {
+  align-self: stretch;
+  padding: 0.65rem 0.75rem;
+  border: 0;
+  border-radius: 10px;
+  /* !important: the preview panel's own button resets (custom.css / demo theme)
+   * otherwise flatten this to a transparent background. */
+  background: #5b4fe1 !important;
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: filter 0.12s ease;
+}
+
+.applyButton:hover {
+  filter: brightness(1.08);
+}
+
+/* Range / week picker: space the two (start / end) inputs apart with a small
+ * dash separator so they don't sit flush against each other. */
+.rangeInputRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rangeInputSep {
+  color: var(--kx-muted, var(--ifm-color-emphasis-500));
+  font-size: 1rem;
+  user-select: none;
 }
 
 .stackblitzButton {

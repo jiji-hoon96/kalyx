@@ -45,6 +45,8 @@ export type {
   RangeInputPart,
   RangePickerPopoverProps,
   RangePickerCalendarProps,
+  RangePickerCalendarSelectionMode,
+  RangePickerWeekAnchor,
   RangePickerPresetsProps,
   RangePickerPresetsClassNames,
   RangePickerPresetProps,
@@ -55,6 +57,7 @@ export type {
 export type {
   TimePickerRootProps,
   TimePickerInputProps,
+  TimePickerPopoverProps,
   TimePickerHourListProps,
   TimePickerHourListClassNames,
   TimePickerMinuteListProps,

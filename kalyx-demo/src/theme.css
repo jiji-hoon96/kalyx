@@ -16,7 +16,11 @@
  *   - time lists     : [role="listbox"] > [role="option"] (aria-selected)
  *   - AM/PM          : [role="radiogroup"] > [role="radio"] (aria-checked)
  *
- * Palette: cool-neutral surface + indigo accent (shadcn-ish), light + dark.
+ * Palette: cool-neutral (slate) surface + indigo #5b4fe1 accent, light + dark.
+ * Unified with the docs-site + Playground tokens, and carries the same
+ * landing visual language (accent glow on selection, layered elevation,
+ * hairline accent borders, a radial-wash + dot-grid backdrop). See
+ * docs/superpowers/specs/2026-07-10-kalyx-design-system.md.
  */
 
 :root {
@@ -25,35 +29,72 @@
   --kx-muted: #64748b;
   --kx-border: #e2e8f0;
   --kx-hover: #f1f5f9;
-  --kx-accent: #4f46e5;
+  --kx-accent: #5b4fe1;
   --kx-accent-fg: #ffffff;
-  --kx-accent-soft: #e0e7ff;
-  --kx-radius: 8px;
-  --kx-shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.28), 0 2px 6px -2px rgba(15, 23, 42, 0.12);
-  --kx-focus: 0 0 0 3px rgba(79, 70, 229, 0.35);
+  --kx-accent-soft: #e6e3fb;
+  --kx-radius: 10px;
+  --kx-radius-card: 16px;
+  --kx-shadow: 0 4px 12px rgba(15, 23, 42, 0.06), 0 12px 32px rgba(15, 23, 42, 0.10);
+  --kx-focus: 0 0 0 3px rgba(91, 79, 225, 0.30);
+  /* Signature detail — accent glow on the selected cell (matches the site). */
+  --kx-glow: 0 4px 14px rgba(91, 79, 225, 0.35);
+  --kx-hairline: rgba(91, 79, 225, 0.14);
+  --kx-tint: rgba(91, 79, 225, 0.06);
+  --kx-dot: rgba(15, 23, 42, 0.06);
+  --kx-radial: radial-gradient(70% 70% at 50% 0%, rgba(91, 79, 225, 0.09) 0%, rgba(91, 79, 225, 0) 70%);
 }
 
 [data-kx-theme='dark'] {
-  --kx-bg: #0f172a;
+  --kx-bg: #111117;
   --kx-fg: #e2e8f0;
   --kx-muted: #94a3b8;
   --kx-border: #334155;
   --kx-hover: #1e293b;
-  --kx-accent: #818cf8;
-  --kx-accent-fg: #0b1120;
-  --kx-accent-soft: #312e81;
-  --kx-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.6), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
-  --kx-focus: 0 0 0 3px rgba(129, 140, 248, 0.4);
+  --kx-accent: #8b80ff;
+  --kx-accent-fg: #0f172a;
+  --kx-accent-soft: #312a6b;
+  --kx-shadow: 0 4px 12px rgba(0, 0, 0, 0.45), 0 16px 40px rgba(0, 0, 0, 0.5);
+  --kx-focus: 0 0 0 3px rgba(139, 128, 255, 0.35);
+  --kx-glow: 0 4px 16px rgba(139, 128, 255, 0.42);
+  --kx-hairline: rgba(139, 128, 255, 0.22);
+  --kx-tint: rgba(139, 128, 255, 0.10);
+  --kx-dot: rgba(255, 255, 255, 0.05);
+  --kx-radial: radial-gradient(70% 70% at 50% 0%, rgba(139, 128, 255, 0.14) 0%, rgba(139, 128, 255, 0) 70%);
 }
 
-/* Center the picker nicely inside the preview panel. */
+/* Center the picker nicely inside the preview panel + soft accent texture. */
 [data-testid='preview-panel'] {
+  position: relative;
   display: flex !important;
   align-items: flex-start;
   justify-content: center;
-  padding: 40px 24px !important;
+  padding: 48px 24px !important;
   font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color: var(--kx-fg);
+}
+/* Radial accent wash + faint dot grid behind the picker for depth. */
+[data-testid='preview-panel']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--kx-radial);
+  pointer-events: none;
+}
+[data-testid='preview-panel']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--kx-dot) 1px, transparent 1px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(75% 65% at 50% 30%, #000 0%, transparent 78%);
+  mask-image: radial-gradient(75% 65% at 50% 30%, #000 0%, transparent 78%);
+  pointer-events: none;
+  opacity: 0.7;
+}
+/* Keep the actual picker above the decorative layers. */
+[data-testid='preview-panel'] > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* ---- Inputs (combobox) ------------------------------------------------- */
@@ -83,10 +124,10 @@
 /* ---- Popover (dialog) -------------------------------------------------- */
 [role='dialog'][aria-label] {
   margin-top: 8px;
-  padding: 14px;
+  padding: 16px;
   background: var(--kx-bg);
-  border: 1px solid var(--kx-border);
-  border-radius: 14px;
+  border: 1px solid var(--kx-hairline);
+  border-radius: var(--kx-radius-card);
   box-shadow: var(--kx-shadow);
 }
 
@@ -120,11 +161,12 @@
   background: var(--kx-hover);
   color: var(--kx-fg);
 }
-/* Header row spacing (the div wrapping nav buttons + title). */
+/* Header row spacing (the div wrapping nav buttons + title). Give the
+ * month/nav header more breathing room above the weekday row + grid. */
 [role='dialog'] > div > div:first-child,
 [role='dialog'] table + *,
 [role='dialog'] > div:first-child {
-  margin-bottom: 6px;
+  margin-bottom: 14px;
 }
 
 /* ---- Grid (calendar table + month/year div grids) --------------------- */
@@ -133,13 +175,27 @@
   border-spacing: 4px;
   margin-top: 6px;
 }
+/* Docusaurus/Infima zebra-stripes `table tbody tr:nth-child(2n)` with
+ * rgba(0,0,0,.03), which leaks into every-other week row of the calendar grid
+ * (the grid renders as a <table role="grid">). Reset row/cell backgrounds so
+ * the calendar reads as a clean, uniform grid on camera. */
+[data-testid='preview-panel'] [role='grid'] tr,
+[data-testid='preview-panel'] [role='grid'] tbody tr:nth-child(2n),
+[data-testid='preview-panel'] [role='grid'] td,
+[data-testid='preview-panel'] [role='grid'] th {
+  background-color: transparent;
+  border: 0;
+}
 [data-testid='preview-panel'] [role='columnheader'] {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--kx-muted);
-  padding: 4px 0;
+  /* Use the primary foreground (near-black in light, near-white in dark) so the
+   * weekday row stays clearly legible on the calendar card instead of fading
+   * into the muted grey it used before. */
+  color: var(--kx-fg);
+  padding: 4px 0 8px;
 }
 
 /* Day / month / year cell buttons. Covers both td>button and button[role=gridcell]. */
@@ -159,14 +215,30 @@
   cursor: pointer;
   transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
 }
-/* Month/year grids have wider labels. */
+/* Month/year grids have wider labels — but keep the cells close to square so
+ * they don't read as long stretched rectangles (was 88px × 38px). */
 [data-testid='preview-panel'] button[role='gridcell'] {
-  min-width: 88px;
-  height: 38px;
+  min-width: 56px;
+  height: 48px;
 }
 [data-testid='preview-panel'] [role='gridcell'] > button:hover,
 [data-testid='preview-panel'] button[role='gridcell']:hover {
   background: var(--kx-hover);
+}
+/* Suppress the neutral hover fill on already-styled state cells (selected,
+ * range endpoints, in-range band) so hovering a chosen day doesn't flash a
+ * grey background over its accent — keeps the selection reading clean. */
+[data-testid='preview-panel'] [role='gridcell'] > button[data-selected]:hover,
+[data-testid='preview-panel'] button[role='gridcell'][data-selected]:hover,
+[data-testid='preview-panel'] [role='gridcell'] > button[data-range-start]:hover,
+[data-testid='preview-panel'] button[role='gridcell'][data-range-start]:hover,
+[data-testid='preview-panel'] [role='gridcell'] > button[data-range-end]:hover,
+[data-testid='preview-panel'] button[role='gridcell'][data-range-end]:hover {
+  background: var(--kx-accent);
+}
+[data-testid='preview-panel'] [role='gridcell'] > button[data-in-range]:hover,
+[data-testid='preview-panel'] button[role='gridcell'][data-in-range]:hover {
+  background: var(--kx-accent-soft);
 }
 [data-testid='preview-panel'] [role='gridcell'] > button:focus-visible,
 [data-testid='preview-panel'] button[role='gridcell']:focus-visible {
@@ -175,29 +247,50 @@
 }
 
 /* State: today */
-[data-testid='preview-panel'] [data-today]:not([data-selected]) {
+[data-testid='preview-panel'] [role='gridcell'] > button[data-today]:not([data-selected]),
+[data-testid='preview-panel'] button[role='gridcell'][data-today]:not([data-selected]) {
   border-color: var(--kx-accent);
   color: var(--kx-accent);
   font-weight: 600;
 }
 /* State: outside current month */
-[data-testid='preview-panel'] [data-outside-month] {
+[data-testid='preview-panel'] [role='gridcell'] > button[data-outside-month],
+[data-testid='preview-panel'] button[role='gridcell'][data-outside-month] {
   color: var(--kx-muted);
   opacity: 0.55;
 }
-/* State: in-range (RangePicker / WeekPicker) */
-[data-testid='preview-panel'] [data-in-range] {
+/* State: in-range (RangePicker / WeekPicker).
+ * Target the cell <button> explicitly so this out-specifies the base
+ * `[role='gridcell'] > button { background: transparent }` rule above
+ * (which otherwise wins on selector specificity and hides the range band).
+ * The grid has 4px cell spacing, so give each in-range day a full radius —
+ * the middle days read as soft chips matching the rounded endpoints. */
+[data-testid='preview-panel'] [role='gridcell'] > button[data-in-range],
+[data-testid='preview-panel'] button[role='gridcell'][data-in-range] {
   background: var(--kx-accent-soft);
   color: var(--kx-fg);
-  border-radius: 0;
+  border-radius: var(--kx-radius);
+  /* No background transition: re-picking a range tears down and rebuilds the
+   * in-range band on every hover; a fade would read as a flicker. */
+  transition: none;
 }
-[data-testid='preview-panel'] [data-range-start] {
-  border-top-left-radius: var(--kx-radius);
-  border-bottom-left-radius: var(--kx-radius);
+[data-testid='preview-panel'] [role='gridcell'] > button[data-range-start],
+[data-testid='preview-panel'] button[role='gridcell'][data-range-start] {
+  background: var(--kx-accent);
+  color: var(--kx-accent-fg);
+  font-weight: 600;
+  box-shadow: var(--kx-glow);
+  border-radius: var(--kx-radius);
+  transition: none;
 }
-[data-testid='preview-panel'] [data-range-end] {
-  border-top-right-radius: var(--kx-radius);
-  border-bottom-right-radius: var(--kx-radius);
+[data-testid='preview-panel'] [role='gridcell'] > button[data-range-end],
+[data-testid='preview-panel'] button[role='gridcell'][data-range-end] {
+  background: var(--kx-accent);
+  color: var(--kx-accent-fg);
+  font-weight: 600;
+  box-shadow: var(--kx-glow);
+  border-radius: var(--kx-radius);
+  transition: none;
 }
 /* State: selected (highest priority visual) */
 [data-testid='preview-panel'] [data-selected] {
@@ -205,6 +298,7 @@
   color: var(--kx-accent-fg) !important;
   border-color: var(--kx-accent) !important;
   font-weight: 600;
+  box-shadow: var(--kx-glow);
 }
 
 /* ---- TimePicker lists -------------------------------------------------- */
@@ -216,9 +310,9 @@
   width: 66px;
   overflow-y: auto;
   background: var(--kx-bg);
-  border: 1px solid var(--kx-border);
+  border: 1px solid var(--kx-hairline);
   border-radius: var(--kx-radius);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  box-shadow: var(--kx-shadow);
   scrollbar-width: thin;
 }
 [data-testid='preview-panel'] [role='option'] {
@@ -229,9 +323,9 @@
   margin: 2px 0;
   font-size: 13px;
   color: var(--kx-fg);
-  border-radius: 6px;
+  border-radius: 7px;
   cursor: pointer;
-  transition: background 0.12s ease, color 0.12s ease;
+  transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
 }
 [data-testid='preview-panel'] [role='option']:hover {
   background: var(--kx-hover);
@@ -241,6 +335,7 @@
   background: var(--kx-accent);
   color: var(--kx-accent-fg);
   font-weight: 600;
+  box-shadow: var(--kx-glow);
 }
 
 /* ---- AM/PM toggle ------------------------------------------------------ */
@@ -269,6 +364,7 @@
   background: var(--kx-accent);
   color: var(--kx-accent-fg);
   border-color: var(--kx-accent);
+  box-shadow: var(--kx-glow);
 }
 
 /* Layout helpers for the composed time rows. */
