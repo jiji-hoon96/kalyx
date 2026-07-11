@@ -1,5 +1,68 @@
 # @kalyx/react
 
+## 1.4.0
+
+### Minor Changes
+
+- d40ae7e: feat(timepicker): localize AM/PM labels + add `locale` prop
+
+  - `@kalyx/core`: new `getDayPeriodName(period, locale)` util returning the
+    localized day-period label via `Intl.DateTimeFormat` (en-US → AM/PM,
+    ko-KR → 오전/오후, ja-JP → 午前/午後).
+  - `@kalyx/react`: `TimePicker` gains a `locale` prop, and `TimePicker.AmPmToggle`
+    now renders the localized day-period label (the underlying value/logic stays
+    ASCII `'AM' | 'PM'`; only the visible text + aria-label are localized).
+    `DateTimePicker` forwards its existing `locale` to the AM/PM toggle.
+
+  Backwards-compatible: defaults to `en-US` → "AM"/"PM" as before.
+
+- d40ae7e: feat(timepicker): add optional `TimePicker.Popover`
+
+  `TimePicker` can now be used in a popover instead of only inline. Wrap the
+  Hour/Minute/AmPm controls in `TimePicker.Popover` and they appear only after the
+  user opens the picker via `TimePicker.Input` (click or ArrowDown), then close on
+  Escape, outside click, or focus-out — mirroring `DatePicker.Popover` via the
+  shared `usePopover` hook.
+
+  - `TimePicker.Root` gains an `onOpenChange` callback and internal open state.
+  - `TimePicker.Input` becomes a `role="combobox"` with `aria-expanded` /
+    `aria-haspopup="dialog"`, opens on click / ArrowDown, closes on Escape.
+  - Inline usage (no `TimePicker.Popover`) is unchanged and fully backwards-compatible.
+
+- d40ae7e: feat(weekpicker): anchor the rolling week to the active start/end input
+
+  When `weekAnchor="clicked"`, WeekPicker now respects which input the user opened
+  from: clicking a day while the **start** input is active anchors the 7-day span
+  forward (clicked day … +6), while the **end** input anchors it backward
+  (clicked day − 6 … clicked day). Previously every click anchored from the start.
+
+  - `RangePicker.Input` sets the selecting target from its `part` on click
+    (`open(part)` / `setSelectingTarget(part)` when already open).
+  - `RangePicker.Root.open` accepts an optional target; `setSelectingTarget` is
+    now exposed on the context.
+
+  Backwards-compatible: `weekAnchor="calendar"` (default) and RangePicker's
+  two-click flow are unchanged.
+
+- d40ae7e: feat(weekpicker): add `weekAnchor` prop to control how the 7-day span is derived
+
+  `WeekPicker.Calendar` (and `RangePicker.Calendar` with `selectionMode="week"`)
+  now accepts a `weekAnchor` prop:
+
+  - `'calendar'` (default, unchanged): selects the `weekStartsOn`-aligned calendar
+    week containing the clicked day (e.g. Sunday–Saturday for en-US).
+  - `'clicked'`: selects a rolling 7-day span that **starts on the clicked day**
+    (clicked day … clicked day + 6), regardless of `weekStartsOn`.
+
+  This is additive and backwards-compatible — existing WeekPickers keep the
+  calendar-aligned behavior. Exposes the `RangePickerWeekAnchor` and
+  `RangePickerCalendarSelectionMode` types.
+
+### Patch Changes
+
+- Updated dependencies [d40ae7e]
+  - @kalyx/core@1.4.0
+
 ## 1.3.0
 
 ### Minor Changes
