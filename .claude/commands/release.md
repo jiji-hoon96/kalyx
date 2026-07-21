@@ -30,7 +30,7 @@ pnpm lint
 # 빌드 성공 확인
 pnpm build
 
-# 번들 크기 확인 (16KB 기준)
+# 번들 크기 확인 (17KB 기준)
 # /check-bundle 커맨드 실행
 ```
 
@@ -77,7 +77,7 @@ git tag -a "v$(node -p "require('./packages/react/package.json').version")" \
 ### 4. 릴리즈 체크리스트
 
 - [ ] 모든 테스트 통과
-- [ ] 번들 크기 16KB 미만
+- [ ] 번들 크기 17KB 이하
 - [ ] CHANGELOG.md 업데이트
 - [ ] package.json 버전 범프
 - [ ] 새 공개 API의 JSDoc 주석 있음

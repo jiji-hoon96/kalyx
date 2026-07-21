@@ -1,9 +1,9 @@
 # @kalyx/react
 
-> The headless React DatePicker, finally complete. Zero CSS · SSR-safe · ~15.99 KB gzip (≤ 17 KB ceiling).
+> The headless React DatePicker, finally complete. Zero CSS · SSR-safe · ~16.64 KB gzip (≤ 17 KB ceiling).
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-15.99KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-16.64KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/jiji-hoon96/kalyx/blob/main/LICENSE)
 
@@ -20,8 +20,6 @@ pnpm add @kalyx/react
 ```
 
 Requires React ≥ 19.
-
-> Comparing alternatives? See the [feature matrix](https://kalyx-docs-site.vercel.app/docs/comparison) — we hold every cell honestly, including where react-datepicker / react-aria / MUI win.
 
 ## Quick example
 
@@ -59,8 +57,13 @@ import {
   useDatePicker,     // hook for custom UIs
   useRangePicker,
   useTimePicker,
-  DateFnsAdapter,    // default adapter (re-exported from @kalyx/core)
+  DateFnsAdapter,    // default adapter (re-exported from @kalyx/adapter-date-fns)
 } from '@kalyx/react';
+
+// Four more hooks live on the /headless entry:
+import {
+  useMonthPicker, useYearPicker, useWeekPicker, useDateTimePicker,
+} from '@kalyx/react/headless';
 ```
 
 ## Features
@@ -91,18 +94,18 @@ Full recipes: [Tailwind](https://kalyx-docs-site.vercel.app/docs/recipes/tailwin
 
 ## Bring your own adapter
 
-Already shipping `dayjs`, `luxon`, or `Temporal`? Skip the bundled `date-fns` and import from `@kalyx/react/headless` instead — same component surface, no auto-installed adapter:
+Already shipping `dayjs` or `luxon`? Skip the bundled `date-fns` and import from `@kalyx/react/headless` instead — same component surface, no auto-installed adapter. Official adapters are published as [`@kalyx/adapter-dayjs`](https://www.npmjs.com/package/@kalyx/adapter-dayjs) and [`@kalyx/adapter-luxon`](https://www.npmjs.com/package/@kalyx/adapter-luxon):
 
 ```tsx
 import { DatePicker } from '@kalyx/react/headless';
-import { DayjsAdapter } from './my-dayjs-adapter'; // your DateAdapter
+import { DayjsAdapter } from '@kalyx/adapter-dayjs';
 
 <DatePicker adapter={DayjsAdapter} value={iso} onChange={setIso}>
   <DatePicker.Calendar />
 </DatePicker>
 ```
 
-If you forget the `adapter` prop, the Root throws a clear error telling you exactly what's missing. The full how-to (interface, dayjs reference implementation, edge cases) is in the [adapters guide](https://kalyx-docs-site.vercel.app/docs/guides/adapters).
+If you forget the `adapter` prop, the Root throws a clear error telling you exactly what's missing. Writing a custom adapter? The interface how-to and the `@kalyx/core/test-helpers` conformance suite are in the [adapters guide](https://kalyx-docs-site.vercel.app/docs/guides/adapters).
 
 ## Documentation
 

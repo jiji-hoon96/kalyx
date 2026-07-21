@@ -24,7 +24,7 @@ pnpm test          # watch mode
 pnpm test:run      # single run (CI)
 pnpm typecheck     # tsc -b
 pnpm lint          # eslint
-pnpm check-bundle  # gzip size check (≤ 16 KB)
+pnpm check-bundle  # gzip size check (≤ 17 KB)
 ```
 
 ### Branch Naming
@@ -41,8 +41,11 @@ pnpm check-bundle  # gzip size check (≤ 16 KB)
 
 ```
 packages/
-  core/    — Platform-independent date logic (adapters, calendar grid, utilities)
-  react/   — React components (DatePicker, RangePicker, TimePicker, DateTimePicker)
+  core/             — Platform-independent date logic (calendar grid, utilities, DateAdapter contract)
+  react/            — React components (DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker)
+  adapter-date-fns/ — date-fns DateAdapter (default)
+  adapter-dayjs/    — dayjs DateAdapter
+  adapter-luxon/    — luxon DateAdapter
 apps/
   docs/    — Next.js demo site
   docs-site/ — Docusaurus documentation
@@ -101,13 +104,13 @@ Before opening a PR, verify:
 - [ ] `pnpm lint` passes
 - [ ] `pnpm test:run` passes
 - [ ] `pnpm build` succeeds
-- [ ] `pnpm check-bundle` — bundle ≤ 16 KB gzip
+- [ ] `pnpm check-bundle` — bundle ≤ 17 KB gzip
 - [ ] Changeset added if public API changed (`pnpm changeset`)
 - [ ] New public APIs have JSDoc comments
 
 ## Bundle Size
 
-The gzip target is **≤ 16 KB** for `@kalyx/react`. Check with:
+The gzip target is **≤ 17 KB** for `@kalyx/react`. Check with:
 
 ```bash
 pnpm build && pnpm check-bundle

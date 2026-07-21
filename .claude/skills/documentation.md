@@ -187,7 +187,7 @@ function ReservationForm() {
 | Headless | ❌ CSS 강제 | ✅ | ✅ |
 | TimePicker | ✅ | ❌ | ✅ |
 | SSR 안전 | ❌ | ✅ | ✅ |
-| 번들 크기 | 62KB | 25KB | ~15KB |
+| 번들 크기 | 62KB | 25KB | ~16.6KB |
 
 ## 설치
 

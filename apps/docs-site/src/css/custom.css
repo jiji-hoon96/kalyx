@@ -1,6 +1,7 @@
 /**
  * Kalyx — minimal, Radix/Turbo-inspired theme
- * Palette derived from img/main.jpeg (teal/violet isometric gradient on off-white)
+ * Unified design tokens (docs/superpowers/specs/2026-07-10-kalyx-design-system.md):
+ * accent #5b4fe1 (dark #8b80ff) + Tailwind slate neutrals. No second accent.
  */
 
 :root {
@@ -11,8 +12,6 @@
   --ifm-color-primary-light: #6f64e6;
   --ifm-color-primary-lighter: #7b71e8;
   --ifm-color-primary-lightest: #9a92ee;
-
-  --ifm-color-secondary: #2dd4bf;
 
   --ifm-font-family-base:
     -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto,
@@ -33,7 +32,6 @@
   --kalyx-surface-raised: #ffffff;
   --kalyx-border: rgba(17, 17, 17, 0.08);
   --kalyx-text-muted: #64748b;
-  --kalyx-gradient: linear-gradient(135deg, #5b4fe1 0%, #2dd4bf 100%);
 
   /* Landing visual pass — elevation, accent glow, background texture.
    * Layered shadows (not a single flat 1px border) give cards depth;

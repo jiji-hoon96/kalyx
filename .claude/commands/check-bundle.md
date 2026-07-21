@@ -1,6 +1,6 @@
 ---
 name: check-bundle
-description: 현재 번들 크기를 분석하고 16KB 목표 달성 여부를 확인한다.
+description: 현재 번들 크기를 분석하고 17KB 목표 달성 여부를 확인한다.
 ---
 
 # /check-bundle
@@ -8,7 +8,7 @@ description: 현재 번들 크기를 분석하고 16KB 목표 달성 여부를 �
 ## 설명
 
 빌드 후 번들 크기를 분석한다.
-목표: `@kalyx/react` gzip 16KB 이하 (rc 단계에서 12 → 13KB 상향(commit e93d082); v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향; v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향; v1.0-rc.8 TimePicker `filterTime` 추가하면서 15 → 16KB 상향)
+목표: `@kalyx/react` gzip 17KB 이하 (rc 단계에서 12 → 13KB 상향(commit e93d082); v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향; v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향; v1.0-rc.8 TimePicker `filterTime` 추가하면서 15 → 16KB 상향; v1.1 B10 a11y announce() 패리티 추가하면서 16 → 17KB 상향)
 
 ## Claude가 수행할 작업
 
@@ -38,9 +38,9 @@ import('./packages/react/dist/index.js').then(m => {
 
 | 상태 | gzip 크기 | 조치 |
 |---|---|---|
-| ✅ OK | ≤ 15KB | 문제없음 |
-| ⚠️ 주의 | 15–16KB | 최적화 검토 |
-| ❌ 초과 | > 16KB | 반드시 축소 필요 |
+| ✅ OK | ≤ 16KB | 문제없음 |
+| ⚠️ 주의 | 16–17KB | 최적화 검토 |
+| ❌ 초과 | > 17KB | 반드시 축소 필요 |
 
 ## 크기 초과 시 점검 항목
 

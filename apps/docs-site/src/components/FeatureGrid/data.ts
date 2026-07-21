@@ -38,7 +38,7 @@ export const FEATURES: readonly Feature[] = [
     id: 'bundle',
     icon: 'package',
     titleId: 'home.featureGrid.bundle.title',
-    titleDefault: '≤16 KB gzipped',
+    titleDefault: '≤17 KB gzipped',
     bodyId: 'home.featureGrid.bundle.body',
     bodyDefault: 'All seven pickers + hooks + the date-fns adapter. A quarter of react-datepicker. Tree-shakable — pay only for what you import.',
   },

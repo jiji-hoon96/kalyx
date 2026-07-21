@@ -12,7 +12,7 @@
 [Docs](https://kalyx-docs-site.vercel.app) · [한국어](https://kalyx-docs-site.vercel.app/ko) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.ko](./README.ko.md)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-15.99KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-16.64KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -21,7 +21,7 @@
 
 ---
 
-Kalyx ships a **complete** set of date-related React primitives — single dates, date ranges, time, date+time, month, year, and week — under one composition API. ~16 KB gzip (≤17 KB ceiling), zero CSS, SSR-safe.
+Kalyx ships a **complete** set of date-related React primitives — single dates, date ranges, time, date+time, month, year, and week — under one composition API. ~16.6 KB gzip (≤17 KB ceiling), zero CSS, SSR-safe.
 
 ```bash
 pnpm add @kalyx/react
@@ -42,9 +42,9 @@ import { DatePicker } from '@kalyx/react';
 
 ## Why Kalyx
 
-In 2026, the React date-picker landscape forces a trade-off: integrated-but-heavy (react-datepicker ~62 KB, MUI ~58 KB) or headless-but-partial (react-day-picker, react-aria, ark-ui — calendar grid only). react-calendar covers single dates and ranges but stops short of time, RSC, and timezone-aware storage. react-native-calendars is mobile-first.
+In 2026, the React date-picker landscape forces a trade-off: integrated-but-heavy (react-datepicker ~62 KB, MUI ~58 KB) or headless-but-partial (react-day-picker — calendar grid only; Ark UI — no standalone TimePicker; React Aria — `@internationalized/date` lock-in). react-calendar covers single dates and ranges but stops short of time, RSC, and timezone-aware storage. react-native-calendars is mobile-first.
 
-Kalyx ships **seven primitives** — single date, range, time, date+time, month, year, week — under one composition API. Headless, ~15 KB gzip, SSR-safe, ISO strings in / ISO strings out, adapter pattern for date-fns / dayjs / luxon.
+Kalyx ships **seven primitives** — single date, range, time, date+time, month, year, week — under one composition API. Headless, ~16.6 KB gzip, SSR-safe, ISO strings in / ISO strings out, adapter pattern for date-fns / dayjs / luxon.
 
 ## Features
 
@@ -54,6 +54,7 @@ Kalyx ships **seven primitives** — single date, range, time, date+time, month,
 - **ISO 8601 UTC strings** — eliminates `Date`-object footguns.
 - **IANA timezone-aware** — opt-in `displayTimezone` handles DST without changing storage.
 - **Accessible** — WAI-ARIA + full keyboard, axe-clean.
+- **i18n-ready** — `locale` prop (Intl-based month/weekday/AM-PM names, locale-inferred week start) + RTL via the `dir` prop.
 - **Tree-shakable** — `sideEffects: false`. Use only what you import.
 - **TypeScript strict** — no `any`.
 
@@ -62,11 +63,14 @@ Kalyx ships **seven primitives** — single date, range, time, date+time, month,
 | Package | Purpose |
 |---|---|
 | [`@kalyx/react`](./packages/react) | Components, hooks, and types |
-| [`@kalyx/core`](./packages/core) | Platform-independent date logic + adapters |
+| [`@kalyx/core`](./packages/core) | Platform-independent date logic + the `DateAdapter` contract |
+| [`@kalyx/adapter-date-fns`](./packages/adapter-date-fns) | date-fns adapter (bundled default for `@kalyx/react`) |
+| [`@kalyx/adapter-dayjs`](./packages/adapter-dayjs) | dayjs adapter (for `@kalyx/react/headless`) |
+| [`@kalyx/adapter-luxon`](./packages/adapter-luxon) | luxon adapter (for `@kalyx/react/headless`) |
 
 ## Components
 
-7 composable pickers + 3 headless hooks:
+7 composable pickers + 7 headless hooks (3 on the main entry, 4 more on `@kalyx/react/headless`):
 
 ```tsx
 import {
@@ -74,6 +78,10 @@ import {
   MonthPicker, YearPicker, WeekPicker,
   useDatePicker, useRangePicker, useTimePicker,
 } from '@kalyx/react';
+
+import {
+  useMonthPicker, useYearPicker, useWeekPicker, useDateTimePicker,
+} from '@kalyx/react/headless';
 ```
 
 API reference, recipes (Tailwind / shadcn / React Hook Form), and migration guides live in the **[full docs](https://kalyx-docs-site.vercel.app)**.
@@ -97,7 +105,7 @@ Recorded from the [live playground](https://kalyx-docs-site.vercel.app/playgroun
 
 ## Bundle
 
-`@kalyx/react` → **15.99 KB** gzip (ESM) / **16.12 KB** (CJS). CI gate: ≤ 17 KB.
+`@kalyx/react` → **16.64 KB** gzip (ESM) / **16.89 KB** (CJS). CI gate: ≤ 17 KB.
 
 ## Browser support
 

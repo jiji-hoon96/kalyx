@@ -20,7 +20,7 @@ export default function WhyKalyx() {
               react-day-picker is headless but only ships Calendar.
               react-datepicker is integrated but forces its CSS on you.
               Kalyx is the one that's both — every primitive, no stylesheet,
-              ≤16 KB.
+              ≤17 KB.
             </Translate>
           </p>
           <Link className={styles.cta} to="/docs/intro">

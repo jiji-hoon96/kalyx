@@ -7,7 +7,7 @@
 
 1. **모든 날짜는 ISO 8601 UTC string** — native Date 객체 금지
 2. **UTC 기반 연산** — `getUTCFullYear()`, `getUTCMonth()` 등 UTC 메서드만 사용
-3. **DateAdapter 인터페이스** — 날짜 라이브러리를 추상화. 현재 date-fns 구현체 제공
+3. **DateAdapter 인터페이스** — 날짜 라이브러리를 추상화. 구현체는 별도 패키지(`@kalyx/adapter-date-fns`·`-dayjs`·`-luxon`)로 분리, core 는 계약(타입)과 conformance suite(`@kalyx/core/test-helpers`)만 제공
 4. **순수 함수** — 사이드이펙트 없음. 100% 테스트 커버리지 목표
 
 ## 파일 구조
@@ -15,17 +15,16 @@
 ```
 src/
 ├── types.ts              ← 타입 정의 (DateAdapter, CalendarDay, DisabledRule 등)
-├── adapters/
-│   └── date-fns.ts       ← DateFnsAdapter (UTC 기반, 17개 메서드)
+├── test-helpers/         ← 어댑터 conformance test suite (@kalyx/core/test-helpers — adapter 패키지들이 공유)
 ├── utils/
 │   ├── calendar.ts       ← getCalendarDays, isDateDisabled, minDate, maxDate
 │   ├── date.ts           ← normalizeISO, parseInputValue
 │   ├── time.ts           ← setTime, getTime, parseTimeString, 12h/24h 변환
-│   ├── locale.ts         ← Intl 기반 다국어 월/요일명 (EN, KO, JA 등)
+│   ├── locale.ts         ← Intl 기반 다국어 월/요일명 (EN, KO, JA 등) + getWeekStartForLocale
 │   ├── timezone.ts       ← DST-aware timezone 유틸 (8개 함수)
 │   └── labels.ts         ← 접근성 ARIA 라벨 기본값
-├── __tests__/            ← 단위 테스트 (코어 ~140 케이스, 워크스페이스 전체 374)
-└── index.ts              ← 공개 API
+├── __tests__/            ← 단위 테스트 (코어 197 케이스 — fast-check 속성테스트 포함, 워크스페이스 전체 776)
+└── index.ts              ← 공개 API (DateFnsAdapter 는 `@kalyx/adapter-date-fns` 로 분리됨)
 ```
 
 ## 코딩 규칙
