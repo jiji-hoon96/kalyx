@@ -199,7 +199,7 @@ non-default backend): `@kalyx/adapter-dayjs`, `@kalyx/adapter-luxon`.
 
 ## Bundle size
 
-Gzipped build of the full public surface: **~15.99 KB** (7 components, CI ceiling 17 KB). Tree-shakes per import — e.g., using only `TimePicker` drops DatePicker code. Verified in CI by `scripts/check-bundle-size.js`.
+Gzipped build of the full public surface: **~16.64 KB** (7 components, CI ceiling 17 KB). Tree-shakes per import — e.g., using only `TimePicker` drops DatePicker code. Verified in CI by `scripts/check-bundle-size.js`.
 
 ## See also
 

@@ -25,7 +25,7 @@ Push to PR branch
   ├── lint
   ├── test (커버리지 포함)
   ├── build
-  └── bundle-size (16KB 게이팅)
+  └── bundle-size (17KB 게이팅)
 
 PR merge to main
     ↓
@@ -132,11 +132,11 @@ jobs:
           retention-days: 1
 
   bundle-size:
-    name: Bundle Size Check (≤16KB)
+    name: Bundle Size (gzip ceiling)
     runs-on: ubuntu-latest
     needs: build   # build job이 끝나야 실행
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         with: { version: 9 }
       - uses: actions/setup-node@v4
@@ -145,31 +145,17 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: dist 다운로드
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
-          name: dist
+          name: dist-${{ github.run_id }}
           path: packages/react/dist/
-      - name: 번들 크기 측정 및 게이팅
-        run: |
-          # gzip 크기 계산
-          GZIP_SIZE=$(gzip -c packages/react/dist/index.js | wc -c)
-          GZIP_KB=$(echo "scale=2; $GZIP_SIZE / 1024" | bc)
-          MAX_KB=12
-
-          echo "📦 번들 크기: ${GZIP_KB}KB (gzip)"
-          echo "📏 목표: ${MAX_KB}KB 이하"
-
-          # PR 코멘트용 출력
-          echo "bundle_size=${GZIP_KB}" >> $GITHUB_OUTPUT
-          echo "max_size=${MAX_KB}" >> $GITHUB_OUTPUT
-
-          # 16KB 초과 시 실패
-          if (( $(echo "$GZIP_KB > $MAX_KB" | bc -l) )); then
-            echo "❌ 번들 크기 초과: ${GZIP_KB}KB > ${MAX_KB}KB"
-            exit 1
-          else
-            echo "✅ 번들 크기 OK: ${GZIP_KB}KB ≤ ${MAX_KB}KB"
-          fi
+      # 측정·게이팅은 scripts/check-bundle-size.js 단일 소스 (TARGET_KB=17, B-R1).
+      # 스크립트가 kb_esm/kb_cjs 를 $GITHUB_OUTPUT 에 기록하고, 17KB 초과 시 exit 1.
+      - name: 크기 측정 및 판정
+        id: check
+        run: node scripts/check-bundle-size.js
+      # B9: base ref 를 함께 측정해 PR 코멘트에 byte-level delta + 남은 마진 표시
+      # (scripts/bundle-diff.mjs — 실제 단계는 .github/workflows/pr-check.yml 참조)
 
       - name: PR에 번들 크기 코멘트
         uses: actions/github-script@v7
@@ -451,7 +437,7 @@ Branch name pattern: main
    - lint
    - test (Node 22)
    - build
-   - Bundle Size Check (≤16KB)
+   - Bundle Size Check (≤17KB)
    - All Checks Pass
 
 ✅ Require branches to be up to date before merging

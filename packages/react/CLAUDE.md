@@ -18,11 +18,12 @@ src/
 ├── components/
 │   ├── DatePicker/           ← 날짜 선택 (Root, Input, Trigger, Popover, Calendar, MonthGrid, YearGrid, Presets, Preset)
 │   ├── RangePicker/          ← 날짜 범위 선택 (Root, Input, Popover, Calendar, Presets, Preset)
-│   ├── TimePicker/           ← 시간 선택 (Root, Input, HourList, MinuteList, AmPmToggle)
-│   ├── DateTimePicker/       ← 날짜+시간 복합 (Root, Input + DatePicker/TimePicker 재사용)
+│   ├── TimePicker/           ← 시간 선택 (Root, Input, Popover, HourList, MinuteList, AmPmToggle)
+│   ├── DateTimePicker/       ← 날짜+시간 복합 (Root, Input + DatePicker/TimePicker 재사용, Presets/Preset 은 /headless 전용)
 │   ├── MonthPicker/          ← 월 단위 선택 (Root, Input, Trigger, Popover, Grid)
 │   ├── YearPicker/           ← 연도 단위 선택 (Root, Input, Trigger, Popover, Grid)
-│   └── WeekPicker/           ← 주 단위 선택 (Root, Input, Popover, Calendar)
+│   ├── WeekPicker/           ← 주 단위 선택 (Root, Input, Popover, Calendar)
+│   └── _shared/              ← grid-keyboard.ts (grid 키보드 내비), rtl.ts (RTL `dir` prop 지원 — Direction, horizontalDayStep)
 ├── context/
 │   ├── DatePickerContext.ts  ← createContext + useDatePickerContext
 │   ├── RangePickerContext.ts ← createContext + useRangePickerContext
@@ -31,10 +32,15 @@ src/
 │   ├── useDatePicker.ts      ← 커스텀 DatePicker UI용 Hook
 │   ├── useRangePicker.ts     ← 커스텀 RangePicker UI용 Hook
 │   ├── useTimePicker.ts      ← 커스텀 TimePicker UI용 Hook
+│   ├── useMonthPicker.ts     ← 커스텀 MonthPicker UI용 Hook (/headless 전용)
+│   ├── useYearPicker.ts      ← 커스텀 YearPicker UI용 Hook (/headless 전용)
+│   ├── useWeekPicker.ts      ← 커스텀 WeekPicker UI용 Hook (/headless 전용)
+│   ├── useDateTimePicker.ts  ← 커스텀 DateTimePicker UI용 Hook (/headless 전용)
 │   ├── usePopover.ts         ← Floating UI 공통 로직 (내부)
 │   ├── useChangeEffect.ts    ← 값 변경 시에만 콜백 실행 (내부)
 │   └── useListboxNavigation.ts ← 리스트박스 키보드 내비게이션 (내부)
-└── index.ts                   ← 공개 API (7 컴포넌트 + 3 hooks + 타입)
+├── index.ts                   ← 공개 API (7 컴포넌트 + 3 hooks + 타입)
+└── headless.ts                ← /headless 엔트리 (어댑터 자동주입 없음 — 7 hooks + DateTimePicker.Presets 포함 전체 API)
 ```
 
 ## 컴포넌트 추가 시 체크리스트
@@ -50,6 +56,6 @@ src/
 ## 빌드
 
 ```bash
-pnpm --filter @kalyx/react build     # tsup: ESM + CJS + DTS (번들 목표 ≤16KB)
+pnpm --filter @kalyx/react build     # tsup: ESM + CJS + DTS (번들 목표 ≤17KB — scripts/check-bundle-size.js TARGET_KB 단일 소스)
 pnpm --filter @kalyx/react typecheck
 ```

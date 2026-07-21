@@ -12,7 +12,7 @@ export default function Home(): JSX.Element {
   return (
     <Layout
       title="Kalyx — seven date primitives, one API"
-      description="Headless React DatePicker + 6 sibling primitives. Zero CSS, SSR-safe, ≤16 KB gzipped.">
+      description="Headless React DatePicker + 6 sibling primitives. Zero CSS, SSR-safe, ≤17 KB gzipped.">
       <main>
         <Hero />
         <StatStrip />

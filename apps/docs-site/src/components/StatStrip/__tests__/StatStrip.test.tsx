@@ -23,7 +23,7 @@ describe('<StatStrip>', () => {
   it('renders the four static fact stats', () => {
     render(<StatStrip />);
     expect(screen.getByText('7')).toBeInTheDocument();
-    expect(screen.getByText('≤16 KB')).toBeInTheDocument();
+    expect(screen.getByText('≤17 KB')).toBeInTheDocument();
     expect(screen.getByText('WCAG AA')).toBeInTheDocument();
     // 6 stats total: 4 static + 2 live (live start as "—" before fetch resolves)
     expect(screen.getAllByTestId('stat').length).toBeGreaterThanOrEqual(4);

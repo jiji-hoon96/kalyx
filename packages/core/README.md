@@ -42,7 +42,7 @@ import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 // UTC-safe adapter built on date-fns v4.
 ```
 
-Bring your own adapter by implementing the `DateAdapter` interface from `@kalyx/core` against any date library (dayjs, luxon, Temporal, etc.).
+Official adapters exist for dayjs and luxon as well — [`@kalyx/adapter-dayjs`](https://www.npmjs.com/package/@kalyx/adapter-dayjs) and [`@kalyx/adapter-luxon`](https://www.npmjs.com/package/@kalyx/adapter-luxon). For any other date library, implement the `DateAdapter` interface from `@kalyx/core` and validate it with the `@kalyx/core/test-helpers` conformance suite.
 
 ### Calendar utilities
 

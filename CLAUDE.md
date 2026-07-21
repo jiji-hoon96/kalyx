@@ -67,7 +67,7 @@ Ark UI가 포기한 TimePicker 통합
 | 프레임워크 | React 19+ 전용 | RSC 최적화, 가장 큰 시장 |
 | 언어 | TypeScript strict | `any` 전면 금지 |
 | 스타일링 | Zero CSS (Headless) | CSS 충돌 원천 차단 |
-| 날짜 코어 | Adapter 패턴 + date-fns 기본 (v1.1에서 `@kalyx/adapter-date-fns`로 분리 예정 — [§14](#14-현재-이니셔티브-2026-04-기준)) | Temporal API 전환 대비, 사용자가 dayjs/luxon 선택 가능 |
+| 날짜 코어 | Adapter 패턴 — `@kalyx/adapter-date-fns` 기본 (분리 완료), `@kalyx/adapter-dayjs`·`@kalyx/adapter-luxon` 공식 어댑터 npm 배포됨 | Temporal API 전환 대비, 사용자가 dayjs/luxon 선택 가능 |
 | 포지셔닝 | Floating UI | 3KB, SSR 안전, Popper.js 후계자 |
 | 번들 목표 | **≤ 17KB gzip** | react-datepicker 62KB 대비. RC 단계 12 → 13KB 상향(commit e93d082), v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향, v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향, v1.0-rc.8 TimePicker `filterTime` 프로그래밍 콜백 추가하면서 15 → 16KB 상향, v1.1 B10 a11y announce() 패리티(A-G1 — DatePicker/DateTimePicker Root live-region) 추가하면서 16 → 17KB 상향 |
 | 테스트 | Vitest + Testing Library + jest-axe | |
@@ -213,8 +213,7 @@ kalyx/
 │   │   ├── CLAUDE.md                 ← 패키지별 컨텍스트
 │   │   └── src/
 │   │       ├── types.ts             ← 타입 정의 (DateAdapter, CalendarDay 등)
-│   │       ├── adapters/
-│   │       │   └── date-fns.ts      ← UTC 기반 DateFnsAdapter
+│   │       ├── test-helpers/        ← 어댑터 conformance suite (@kalyx/core/test-helpers)
 │   │       ├── utils/
 │   │       │   ├── calendar.ts      ← getCalendarDays, isDateDisabled
 │   │       │   ├── date.ts          ← normalizeISO, parseInputValue
@@ -222,8 +221,11 @@ kalyx/
 │   │       │   ├── locale.ts        ← Intl 기반 다국어 월/요일명
 │   │       │   ├── timezone.ts      ← DST-aware timezone 유틸
 │   │       │   └── labels.ts        ← 접근성 ARIA 라벨 기본값
-│   │       ├── __tests__/           ← 단위 테스트 (~149 케이스, 462 전체 vitest)
+│   │       ├── __tests__/           ← 단위 테스트 (코어 197 케이스, 전체 776 vitest)
 │   │       └── index.ts             ← 공개 API
+│   ├── adapter-date-fns/             ← date-fns DateAdapter (기본, @kalyx/react 가 내장)
+│   ├── adapter-dayjs/                ← dayjs DateAdapter (/headless 용)
+│   ├── adapter-luxon/                ← luxon DateAdapter (/headless 용)
 │   └── react/                        ← React 컴포넌트 레이어
 │       ├── CLAUDE.md                 ← 패키지별 컨텍스트
 │       └── src/
@@ -238,17 +240,19 @@ kalyx/
 │           ├── hooks/
 │           │   ├── useDatePicker.ts  ← 커스텀 DatePicker UI용 Hook
 │           │   ├── useRangePicker.ts ← 커스텀 RangePicker UI용 Hook
-│           │   └── useTimePicker.ts  ← 커스텀 TimePicker UI용 Hook
+│           │   ├── useTimePicker.ts  ← 커스텀 TimePicker UI용 Hook
+│           │   └── useMonthPicker.ts / useYearPicker.ts / useWeekPicker.ts / useDateTimePicker.ts ← /headless 전용 4종
 │           ├── context/
 │           │   ├── DatePickerContext.ts
 │           │   ├── RangePickerContext.ts
 │           │   └── TimePickerContext.ts
-│           └── index.ts              ← 패키지 공개 API
+│           ├── index.ts              ← 패키지 공개 API (date-fns 어댑터 자동 주입)
+│           └── headless.ts           ← /headless 엔트리 (어댑터 미주입 — 훅 7종 + DateTimePicker.Presets 포함)
 ├── apps/
 │   ├── docs/                         ← 데모 사이트 (Next.js, 정적 빌드)
 │   └── docs-site/                    ← 문서 사이트 (Docusaurus, i18n)
 ├── scripts/
-│   ├── check-bundle-size.js          ← 번들 크기 측정 (16KB 제한)
+│   ├── check-bundle-size.js          ← 번들 크기 측정 (17KB 제한, TARGET_KB 단일 소스)
 │   └── check-tree-shaking.js         ← tree-shaking 검증
 ├── test/
 │   └── setup.ts                      ← Vitest 전역 설정
@@ -271,19 +275,23 @@ kalyx/
 | `YearPicker` | Root, Input, Trigger, Popover, Grid | 연도 단위 선택 |
 | `WeekPicker` | Root, Input, Popover, Calendar | 주 단위 선택 |
 
-### Headless Hooks (3종 — 모두 구현 완료 ✅)
+### Headless Hooks (7종 — 모두 구현 완료 ✅)
 
 | Hook | 용도 |
 |------|------|
-| `useDatePicker(options)` | 완전 커스텀 DatePicker UI |
-| `useRangePicker(options)` | 완전 커스텀 RangePicker UI |
-| `useTimePicker(options)` | 완전 커스텀 TimePicker UI |
+| `useDatePicker(options)` | 완전 커스텀 DatePicker UI (메인 엔트리) |
+| `useRangePicker(options)` | 완전 커스텀 RangePicker UI (메인 엔트리) |
+| `useTimePicker(options)` | 완전 커스텀 TimePicker UI (메인 엔트리) |
+| `useMonthPicker(options)` | 완전 커스텀 MonthPicker UI (`/headless` 전용 — B4) |
+| `useYearPicker(options)` | 완전 커스텀 YearPicker UI (`/headless` 전용 — B4) |
+| `useWeekPicker(options)` | 완전 커스텀 WeekPicker UI (`/headless` 전용 — B4) |
+| `useDateTimePicker(options)` | 완전 커스텀 DateTimePicker UI (`/headless` 전용 — B4) |
 
 ### 코어 유틸 (6개 모듈 — 모두 구현 완료 ✅)
 
 | 모듈 | 주요 함수 |
 |------|----------|
-| `adapters/date-fns` | DateFnsAdapter (17개 DateAdapter 메서드) |
+| `@kalyx/adapter-date-fns` (별도 패키지) | DateFnsAdapter (17개 DateAdapter 메서드) — dayjs/luxon 어댑터도 동일 계약 |
 | `utils/calendar` | getCalendarDays, isDateDisabled, minDate, maxDate |
 | `utils/date` | normalizeISO, parseInputValue |
 | `utils/time` | setTime, getTime, parseTimeString, to12Hour, to24Hour, generateHours/Minutes |
@@ -373,8 +381,8 @@ export { useTimePicker } from './hooks/useTimePicker';
 export type { UseDatePickerOptions, UseDatePickerReturn } from './hooks/useDatePicker';
 export type { UseRangePickerOptions, UseRangePickerReturn } from './hooks/useRangePicker';
 export type { UseTimePickerOptions, UseTimePickerReturn } from './hooks/useTimePicker';
-// 어댑터 + 코어 타입/유틸 (re-export from @kalyx/core)
-export { DateFnsAdapter } from '@kalyx/core';
+// 어댑터 re-export (실제 소스는 @kalyx/adapter-date-fns) + 코어 타입/유틸 (re-export from @kalyx/core)
+export { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 export type {
   ISODateString, DateRange, DisabledRule, DateAdapter,
   CalendarDay, CalendarWeek, CalendarGrid, CalendarOptions, WeekStartsOn,
@@ -584,9 +592,16 @@ pnpm changeset publish # npm 배포 (CI 자동)
 
 ## 14. 현재 이니셔티브 (2026-06-18 기준 — Track A 종료, "정확성 먼저" 방향 확정)
 
+> **🟢 2026-07-21 최근 작업 로그 (스테일 문서 전수 스윕 — PR #170 후속 정합화):**
+> - **상태 갱신**: ~~PR #170 아직 OPEN~~ → **PR #170 머지 완료**(`d40ae7e`, 2026-07-11). #170 에는 디자인 작업 외에 **기능 3종도 포함**(TimePicker `locale` AM/PM 지역화 + `TimePicker.Popover` + WeekPicker `weekAnchor` start/end 인식) → Version PR #171 로 **`@kalyx/core@1.4.0` + `@kalyx/react@1.4.0` npm 배포 완료**. dist-tag `latest` = 1.4.0.
+> - **⚠️ 번들 실측 갱신 (1.4.0)**: ESM **16.64KB** / CJS **16.89KB** gzip (기존 문서들의 15.99/16.12 는 1.3.0 수치). 17KB 천장까지 남은 마진 ESM ~370B / CJS ~110B — 런타임 기능 추가는 여전히 CI 게이트 위험.
+> - **스테일 문서 전수 스윕 (3-agent 병렬 감사 후 일괄 정정)**: ① 16KB→17KB 게이트 표기 잔재 정리(CONTRIBUTING·check-bundle/release 커맨드·ci-cd/oss-references 스킬·react AGENTS — `scripts/check-bundle-size.js TARGET_KB=17` 이 단일 소스). ② 번들 수치 15.99→16.64 (README en/ko 배지·본문, packages/react README, docs-site api/react.md en+ko, config meta). ③ 랜딩 "≤16 KB" 문구를 ceiling 기준 "≤17 KB" 로(Hero·StatStrip·WhyKalyx·FeatureGrid·index.tsx + ko code.json + 테스트 2건 — **16.64KB 실측이 16 을 넘겨 기존 문구가 허위가 됐기 때문**). ④ README en/ko: 어댑터 3종 패키지 표 등재, 훅 3→7종(+/headless import 예시), RTL/locale 기능 추가, Ark UI 문구 정정("standalone TimePicker 없음"). ⑤ packages/{core,react} AGENTS.md·README 구조 현행화(core adapters/ 디렉토리 없음, test-helpers, /headless 훅 4종, rtl.ts, DIY 어댑터 안내→배포된 dayjs/luxon 패키지 안내, 죽은 `/docs/comparison` 링크 제거). ⑥ RELEASING.md 전면 재작성(1.1.0-wave 프레이밍 폐기 — 5패키지 전부 OIDC 완료, verify-changesets pre-flight, 신규 패키지 첫 배포 플레이북: 0.0.0 초기버전·`pnpm publish`·CDN 전파 지연 함정). ⑦ docs-site custom.css 의 은퇴한 teal 잔재 제거(`--ifm-color-secondary #2dd4bf`·미사용 `--kalyx-gradient`·main.jpeg 팔레트 코멘트 — 전부 미참조 확인 후). ⑧ 이 파일 §2/§4/§5/§6 구조 정정(어댑터 분리 완료, 훅 7종, 테스트 197/776).
+> - **깨끗함 확인(정정 불필요)**: Playground·kalyx-demo theme.css·데모 AVIF 7종 두 위치 동기화·en/ko 문서 패리티(35 파일)·RTL/luxon 문서화·floating-ui 0.27 표기·announcementBar/comparison 잔재 없음·og-hero.png 온브랜드. `apps/docs` 는 deprecated e2e 픽스처(의도적 스코프 밖, blue-600 팔레트 유지). 코드예제의 `indigo-600` 은 의도된 scope boundary 라 유지.
+> - ~~**잔여 후보(미처리)**~~ → **같은 세션에서 둘 다 처리 완료**: ① adapter 3종(date-fns/dayjs/luxon)에 README.md 신설 — 배지·install·`/headless` 사용 예시·UTC 계약·conformance 안내. dayjs `extend(utc)` 내부 적용/luxon `zone:'utc'` 고정은 소스로 검증 후 기술. **npm 페이지 반영은 다음 publish 시점**(changeset 미추가 — README-only patch 릴리즈 여부는 사용자 결정). ② docs-site static/img 고아 에셋 6종 삭제(git rm — npm 게시 README·레포 전체 무참조 확인, 잔존 = demos/·kalyx-logo.svg·og-hero.png). 삭제 후 docs-site en+ko 빌드 재검증 green.
+>
 > **🟢 2026-07-10 최근 작업 로그 #3 (저녁 세션 — 랜딩 재디자인 + 비주얼 패스 + 데모 정렬, PR #170 계속):**
 > - **핸드오프(다음 세션 필독)**: [`docs/superpowers/specs/2026-07-10-ui-demo-refinement-handoff.md`](docs/superpowers/specs/2026-07-10-ui-demo-refinement-handoff.md). **다음 세션 시작점 = 데모 클립 7종을 하나씩 이미지로 보여주고 디테일 수정 요청 수렴.**
-> - **⚠️ PR #170 아직 OPEN(미머지)·MERGEABLE·CI 전부 통과**. 브랜치 `feat/unify-design-system`. 오후 토큰 단일화 3커밋 + 저녁 4커밋이 **한 PR에 누적** 중. changeset 불필요, `--admin` 불필요(1명 승인 대기).
+> - ~~**⚠️ PR #170 아직 OPEN(미머지)**~~ → **2026-07-11 머지 완료 + #171 로 1.4.0 배포** (위 2026-07-21 로그 참조). 브랜치 `feat/unify-design-system`. 오후 토큰 단일화 3커밋 + 저녁 4커밋이 **한 PR에 누적**이었음.
 > - **랜딩 재디자인** (사용자 "식상/올드" 피드백 → TanStack 벤치마크): (a) slop 제거 — WhyKalyx 보라 그라디언트 카드→accent rule, Hero titleAccent 그라디언트→solid indigo; (b) 로고 흐린 mascot PNG→`static/img/kalyx-logo.svg` 캘린더 마크(logo+favicon); (c) **StatStrip** 신설(정적 사실 4 + 라이브 fetch npm/stars, 실패시 `—`, **실제 수치** 과장 안 함); (d) **SameJsxBlock**을 정적 코드 3개→**인터랙티브 비대칭 스타일 스위처**(탭 전환 시 실제 DatePicker 리스킨, BrowserOnly+lazy).
 > - **비주얼 패스** (커밋 e306537): custom.css에 비주얼 토큰(`--kx-elev-1/2`, `--kx-elev-accent`, `--kx-accent-tint`, `--kx-hairline`, `--kx-dot`, `--kx-radial` light+dark). Hero 타이포 clamp 4.5rem + 배경 radial wash+dot-grid + CTA glow, HeroDemo elevation+glow border, 전 카드 flat→layered shadow+hover glow, 섹션 5→7rem, `<Reveal>` 래퍼로 scroll-in(IntersectionObserver, SSR-safe, reduced-motion 비활성). anti-slop 준수(그라디언트 남발·네온 금지, accent는 tint/glow로만).
 > - **데모 테마 정렬** (커밋 f9c0eb2): `kalyx-demo/src/theme.css`에 랜딩 언어 이식 — 선택 셀/시간옵션/AM-PM **accent glow**, popover/list **layered shadow+hairline border+큰 radius**(input 10/card 16), preview 배경 **radial wash+dot-grid**. 7종 AVIF/WebM 재생성 + `img/demos/`·`apps/docs-site/static/img/demos/` 두 위치 반영. 검증 프레임에서 선택 항목 `#5b4fe1`+glow, popover depth 확인.
