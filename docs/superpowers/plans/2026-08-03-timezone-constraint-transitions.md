@@ -81,15 +81,17 @@ Run focused core tests and core build.
 
 Commit: `fix(core): align calendar flags with display timezone`
 
-### Task 3: Normalize DatePicker and DateTimePicker state transitions
+### Task 3: Normalize DatePicker, TimePicker, and DateTimePicker state transitions
 
 **Files:**
 
 - Modify: `packages/react/src/components/DatePicker/Root.tsx`
 - Modify: `packages/react/src/components/DatePicker/Calendar.tsx`
 - Modify: `packages/react/src/components/DatePicker/Presets.tsx`
+- Modify: `packages/react/src/components/TimePicker/Root.tsx`
 - Modify: `packages/react/src/components/DateTimePicker/Root.tsx`
 - Test: `packages/react/src/components/DatePicker/DatePicker.test.tsx`
+- Test: `packages/react/src/components/TimePicker/TimePicker.test.tsx`
 - Test: `packages/react/src/components/DateTimePicker/DateTimePicker.test.tsx`
 
 **Step 1: Write failing transition tests**
@@ -101,6 +103,7 @@ Add component tests proving:
 - DatePicker `today` and direct-date presets emit exactly one timezone conversion.
 - Typed input matching a `{ date }`, `before`, `after`, `dayOfWeek`, or `filter` rule does not call `onChange`.
 - Calendar keyboard Enter and disabled-date focus checks use the same timezone-aware predicate.
+- TimePicker rejects typed and context-driven time mutations rejected by `filterTime` at the Root boundary.
 - DateTimePicker rejects date commits whose merged datetime has a disabled civil date.
 - DateTimePicker rejects full presets and time mutations rejected by `filterTime`.
 
@@ -114,6 +117,8 @@ In both roots, convert `currentValue`/timezone-aware today to `calendarDayFromIn
 
 In DatePicker `selectDate`, convert the coordinate once, then call `isDateDisabled(normalized, rules, adapter, displayTimezone)` before state/callback/close.
 
+In TimePicker `setTime`, derive the final displayed hours/minutes from the merged value and reject it through `filterTime` before state/callback. This keeps typed input, lists, and direct context calls on the same policy.
+
 In DateTimePicker, validate the final merged value in `updateValue`: date rules first, then `filterTime` using the final displayed hours/minutes. Permit `null`. This makes calendar, typed input, presets, and time controls share one gate.
 
 **Step 4: Fix preset and keyboard boundary inputs**
@@ -122,7 +127,7 @@ Resolve DatePicker presets in coordinate space by converting timezone-aware toda
 
 **Step 5: Verify and commit**
 
-Run focused component tests, React typecheck/build, and commit.
+Run all three focused component test files, React typecheck/build, and commit.
 
 Commit: `fix(react): normalize date picker transitions`
 
