@@ -342,3 +342,23 @@ describe('getCalendarDays — range handling', () => {
     expect(day15?.isInRange).toBe(false);
   });
 });
+
+describe('isDateDisabled — {date} rule honors displayTimezone (M-4)', () => {
+  it('matches a {date} rule by civil day in the given timezone', () => {
+    // Grid cells iterate in UTC midnight; the picker emits civil-midnight-in-tz for
+    // selections. A {date} rule supplied in that same civil form must still disable the
+    // matching grid cell when a timezone is active.
+    const gridCell = '2026-01-15T00:00:00.000Z'; // Asia/Seoul: Jan 15 09:00
+    const rule = { date: '2026-01-14T15:00:00.000Z' }; // Asia/Seoul: Jan 15 00:00 (same civil day)
+    expect(isDateDisabled(gridCell, [rule], adapter, 'Asia/Seoul')).toBe(true);
+  });
+
+  it('still compares by UTC day when no timezone is given (unchanged)', () => {
+    const gridCell = '2026-01-15T00:00:00.000Z';
+    const rule = { date: '2026-01-14T15:00:00.000Z' };
+    expect(isDateDisabled(gridCell, [rule], adapter)).toBe(false);
+    expect(
+      isDateDisabled('2026-01-15T00:00:00.000Z', [{ date: '2026-01-15T00:00:00.000Z' }], adapter),
+    ).toBe(true);
+  });
+});

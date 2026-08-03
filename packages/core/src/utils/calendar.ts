@@ -66,7 +66,7 @@ export function getCalendarDays(
       const isTodayDate = adapter.isSameDay(current, todayISO, timezone);
       const isSelected_ = selected ? adapter.isSameDay(current, selected, timezone) : false;
       const isFocused_ = focusedDate ? adapter.isSameDay(current, focusedDate, timezone) : false;
-      const isDisabled_ = isDateDisabled(current, disabled, adapter);
+      const isDisabled_ = isDateDisabled(current, disabled, adapter, timezone);
 
       const rangeFlags = computeRangeFlags(current, normalizedRange, adapter, timezone);
 
@@ -187,11 +187,20 @@ function computeRangeFlags(
 
 /**
  * Checks whether the given date matches any disable rule.
+ *
+ * @param timezone - Optional IANA timezone. When set, `{ date }` rules compare by civil day
+ *   in that zone (matching how `selected`/`today`/`range` flags are computed), so a rule
+ *   supplied in the civil-midnight-in-tz form the picker emits still disables the right cell.
  */
-export function isDateDisabled(iso: string, rules: DisabledRule[], adapter: DateAdapter): boolean {
+export function isDateDisabled(
+  iso: string,
+  rules: DisabledRule[],
+  adapter: DateAdapter,
+  timezone?: string,
+): boolean {
   for (const rule of rules) {
     if ('date' in rule) {
-      if (adapter.isSameDay(iso, rule.date)) return true;
+      if (adapter.isSameDay(iso, rule.date, timezone)) return true;
     } else if ('before' in rule) {
       if (adapter.isBefore(iso, rule.before)) return true;
     } else if ('after' in rule) {

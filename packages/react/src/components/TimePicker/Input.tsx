@@ -31,7 +31,10 @@ export const TimePickerInput = forwardRef<HTMLInputElement, TimePickerInputProps
     const commitInput = useCallback(() => {
       if (inputText === null) return;
       const parsed = parseTimeString(inputText);
-      if (parsed) {
+      // Honor filterTime on the typed path too. The HourList/MinuteList gate clicks, but a
+      // fully-typed time (h+m at once) commits here — without this a blacked-out slot could be
+      // entered by typing. `filterTime` returns true to *disable* a slot (inverse of react-datepicker).
+      if (parsed && !(ctx.filterTime && ctx.filterTime(parsed.hours, parsed.minutes))) {
         ctx.setTime(parsed);
       }
       setInputText(null);

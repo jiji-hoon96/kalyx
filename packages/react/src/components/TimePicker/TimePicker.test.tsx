@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { TimePicker } from './index.js';
@@ -785,5 +785,44 @@ describe('TimePicker.Popover — optional floating container', () => {
 
     await user.click(input);
     expect(input).toHaveAttribute('aria-expanded', 'true');
+  });
+});
+
+describe('TimePicker — typed input honors filterTime (M-3 regression)', () => {
+  // filterTime returns true to *disable* a slot (inverse of react-datepicker). The
+  // HourList/MinuteList gate clicks, but the text Input committed on blur without checking
+  // filterTime — a typed blacked-out time slipped through.
+  it('does not commit a typed time rejected by filterTime', () => {
+    const onChange = vi.fn();
+    render(
+      <TimePicker
+        value="2026-01-15T10:00:00.000Z"
+        onChange={onChange}
+        filterTime={(_h, m) => m === 30}
+      >
+        <TimePicker.Input />
+      </TimePicker>,
+    );
+    const input = screen.getByRole('combobox');
+    fireEvent.change(input, { target: { value: '10:30' } }); // minute 30 → filtered
+    fireEvent.blur(input);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('still commits a typed time allowed by filterTime', () => {
+    const onChange = vi.fn();
+    render(
+      <TimePicker
+        value="2026-01-15T10:00:00.000Z"
+        onChange={onChange}
+        filterTime={(_h, m) => m === 30}
+      >
+        <TimePicker.Input />
+      </TimePicker>,
+    );
+    const input = screen.getByRole('combobox');
+    fireEvent.change(input, { target: { value: '10:15' } });
+    fireEvent.blur(input);
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/T10:15/));
   });
 });
