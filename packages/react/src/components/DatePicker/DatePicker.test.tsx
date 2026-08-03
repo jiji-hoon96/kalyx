@@ -1,8 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
 import { useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
+import type { DisabledRule } from '@kalyx/core';
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 import { DatePicker } from './index.js';
 
 function renderDatePicker(
@@ -274,6 +276,52 @@ describe('DatePicker — calendar navigation', () => {
   });
 });
 
+describe('DatePicker — timezone calendar coordinates', () => {
+  it('opens January and selects/focuses Seoul January 1 from its stored instant', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker value="2025-12-31T15:00:00.000Z" displayTimezone="Asia/Seoul" onChange={vi.fn()}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', 'January 2026');
+    const january1 = screen.getByRole('button', { name: /January 1, 2026/ });
+    expect(january1).toHaveAttribute('data-selected', 'true');
+    expect(january1).toHaveFocus();
+  });
+
+  it('opens, selects, and focuses New York January 15 rather than January 16', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker
+        value="2026-01-15T05:00:00.000Z"
+        displayTimezone="America/New_York"
+        onChange={vi.fn()}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', 'January 2026');
+    const january15 = screen.getByRole('button', { name: /January 15, 2026/ });
+    const january16 = screen.getByRole('button', { name: /January 16, 2026/ });
+    expect(january15).toHaveAttribute('data-selected', 'true');
+    expect(january15).toHaveFocus();
+    expect(january16).not.toHaveAttribute('data-selected');
+  });
+});
+
 describe('DatePicker — keyboard navigation', () => {
   it('opens the calendar with ArrowDown', async () => {
     const user = userEvent.setup();
@@ -309,6 +357,54 @@ describe('DatePicker — keyboard navigation', () => {
     await user.keyboard('{Enter}');
 
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-16T/));
+  });
+
+  it('uses the civil instant for timezone-aware Enter disabled checks', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const filter = vi.fn((iso: string) => iso === '2026-01-15T05:00:00.000Z');
+    render(
+      <DatePicker
+        value="2026-01-15T05:00:00.000Z"
+        displayTimezone="America/New_York"
+        disabled={[{ filter }]}
+        onChange={onChange}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    filter.mockClear();
+    fireEvent.keyDown(screen.getByRole('grid'), { key: 'Enter' });
+
+    expect(filter.mock.calls).toEqual([['2026-01-15T05:00:00.000Z']]);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('skips dates whose timezone civil instant is disabled during keyboard focus movement', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker
+        value="2026-01-15T05:00:00.000Z"
+        displayTimezone="America/New_York"
+        disabled={[{ filter: (iso) => iso === '2026-01-16T05:00:00.000Z' }]}
+        onChange={vi.fn()}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    fireEvent.keyDown(screen.getByRole('grid'), { key: 'ArrowRight' });
+
+    expect(screen.getByRole('button', { name: /January 17, 2026/ })).toHaveFocus();
   });
 });
 
@@ -964,6 +1060,44 @@ describe('DatePicker — Presets', () => {
     expect(onChange).toHaveBeenCalledWith('2026-12-25T00:00:00.000Z');
   });
 
+  it('converts a timezone-aware today preset exactly once', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const adapter = {
+      ...DateFnsAdapter,
+      today: () => '2026-01-14T15:00:00.000Z',
+    };
+    render(
+      <DatePicker adapter={adapter} displayTimezone="Asia/Seoul" onChange={onChange}>
+        <DatePicker.Presets>
+          <DatePicker.Preset value="today">Today</DatePicker.Preset>
+        </DatePicker.Presets>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Today' }));
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith('2026-01-14T15:00:00.000Z');
+  });
+
+  it('converts a timezone-aware direct-date preset exactly once', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DatePicker displayTimezone="Asia/Seoul" onChange={onChange}>
+        <DatePicker.Presets>
+          <DatePicker.Preset date="2026-12-24T15:00:00.000Z">Christmas</DatePicker.Preset>
+        </DatePicker.Presets>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Christmas' }));
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith('2026-12-24T15:00:00.000Z');
+  });
+
   it('marks the matching preset as aria-pressed', () => {
     render(
       <DatePicker value="2026-12-25T00:00:00.000Z" onChange={vi.fn()}>
@@ -1018,6 +1152,67 @@ describe('DatePicker — Presets', () => {
 });
 
 describe('DatePicker — date rules and edge cases (CLAUDE.md §7)', () => {
+  const typedRuleCases: Array<{
+    name: string;
+    text: string;
+    rules: DisabledRule[];
+  }> = [
+    {
+      name: 'exact date',
+      text: '2026-01-15',
+      rules: [{ date: '2026-01-14T15:00:00.000Z' }],
+    },
+    {
+      name: 'before',
+      text: '2026-01-15',
+      rules: [{ before: '2026-01-15T00:00:00.000Z' }],
+    },
+    {
+      name: 'after',
+      text: '2026-01-15',
+      rules: [{ after: '2026-01-14T00:00:00.000Z' }],
+    },
+    {
+      name: 'dayOfWeek',
+      text: '2026-01-17',
+      rules: [{ dayOfWeek: [6] }],
+    },
+    {
+      name: 'filter',
+      text: '2026-01-15',
+      rules: [{ filter: (iso) => iso === '2026-01-14T15:00:00.000Z' }],
+    },
+  ];
+
+  it.each(typedRuleCases)(
+    'rejects a typed date matching the $name rule without changing or closing',
+    async ({ text, rules }) => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      render(
+        <DatePicker
+          defaultValue="2026-01-09T15:00:00.000Z"
+          displayTimezone="Asia/Seoul"
+          disabled={rules}
+          onChange={onChange}
+        >
+          <DatePicker.Input aria-label="날짜 선택" />
+          <DatePicker.Popover>
+            <DatePicker.Calendar />
+          </DatePicker.Popover>
+        </DatePicker>,
+      );
+
+      const input = screen.getByRole('combobox');
+      await user.click(input);
+      fireEvent.change(input, { target: { value: text } });
+
+      expect(onChange).not.toHaveBeenCalled();
+      expect(input).toHaveValue('2026-01-10');
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+    },
+  );
+
   it('emits an ISO string when a leap-year day (Feb 29 2024) is clicked', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
@@ -1070,10 +1265,10 @@ describe('DatePicker — date rules and edge cases (CLAUDE.md §7)', () => {
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-12T/));
   });
 
-  it('before/after bounds (minDate/maxDate) compare UTC instants and are unaffected by displayTimezone (T-G1)', async () => {
-    // The grid emits UTC-midnight ISO cells and isDateDisabled compares pure UTC
-    // instants, so a displayTimezone must NOT shift which day a UTC bound gates —
-    // even a +9:00 zone where the bound sits near the civil-midnight boundary.
+  it('before/after bounds preserve raw instant comparisons after timezone cell normalization (T-G1)', async () => {
+    // Calendar cells are normalized to their civil-midnight instants before the
+    // raw before/after comparison. In Seoul, June 17 civil midnight is June 16
+    // 15:00 UTC, so it is correctly before a June 17 00:00 UTC lower bound.
     const renderWith = (displayTimezone?: string) =>
       render(
         <DatePicker
@@ -1090,18 +1285,17 @@ describe('DatePicker — date rules and edge cases (CLAUDE.md §7)', () => {
 
     const user = userEvent.setup();
 
-    // Asia/Seoul (+9): the boundary days are gated by the UTC instant, not the
-    // Seoul civil day. Equal-to-bound is enabled; strictly outside is disabled.
+    // Asia/Seoul (+9): the calendar cell's civil-midnight instant is compared
+    // directly to the bounds.
     const seoul = renderWith('Asia/Seoul');
     await user.click(screen.getByRole('combobox'));
     expect(screen.getByRole('button', { name: /June 16, 2026/ })).toBeDisabled();
-    expect(screen.getByRole('button', { name: /June 17, 2026/ })).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: /June 17, 2026/ })).toBeDisabled();
     expect(screen.getByRole('button', { name: /June 20, 2026/ })).not.toBeDisabled();
     expect(screen.getByRole('button', { name: /June 21, 2026/ })).toBeDisabled();
     seoul.unmount();
 
-    // Identical disabled set without displayTimezone — proves the zone is inert
-    // for the bound comparison (locks the UTC-only semantics at the React boundary).
+    // Without a display timezone, grid coordinates are already the compared instants.
     renderWith(undefined);
     await user.click(screen.getByRole('combobox'));
     expect(screen.getByRole('button', { name: /June 16, 2026/ })).toBeDisabled();

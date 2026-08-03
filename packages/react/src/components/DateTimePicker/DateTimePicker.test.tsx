@@ -4,8 +4,20 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { DateTimePicker } from './index.js';
+import { DateTimePickerPreset, DateTimePickerPresets } from './Presets.js';
 import { useTimePickerContext } from '../../context/TimePickerContext.js';
+import { useDatePickerContext } from '../../context/DatePickerContext.js';
 import { formatInTimezone } from '@kalyx/core';
+
+function DateMutationProbe({ date }: { date: string }) {
+  const ctx = useDatePickerContext('DateMutationProbe');
+  return <button onClick={() => ctx.selectDate(date)}>set-context-date</button>;
+}
+
+function TimeMutationProbe({ hours }: { hours: number }) {
+  const ctx = useTimePickerContext('TimeMutationProbe');
+  return <button onClick={() => ctx.setTime({ hours })}>set-context-hour-{hours}</button>;
+}
 
 function renderDateTimePicker(
   props: {
@@ -105,6 +117,31 @@ describe('DateTimePicker — basic rendering', () => {
   it('renders an empty input when value is null', () => {
     renderDateTimePicker({ value: null });
     expect(screen.getByLabelText('Date and time')).toHaveValue('');
+  });
+});
+
+describe('DateTimePicker — timezone calendar coordinates', () => {
+  it('opens January and selects/focuses Seoul January 1 from its stored instant', async () => {
+    const user = userEvent.setup();
+    render(
+      <DateTimePicker
+        value="2025-12-31T15:00:00.000Z"
+        displayTimezone="Asia/Seoul"
+        onChange={vi.fn()}
+      >
+        <DateTimePicker.Input />
+        <DateTimePicker.Popover>
+          <DateTimePicker.Calendar />
+        </DateTimePicker.Popover>
+      </DateTimePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', 'January 2026');
+    const january1 = screen.getByRole('button', { name: /January 1, 2026/ });
+    expect(january1).toHaveAttribute('data-selected', 'true');
+    expect(january1).toHaveFocus();
   });
 });
 
@@ -472,6 +509,25 @@ describe('DateTimePicker — event callbacks', () => {
 });
 
 describe('DateTimePicker — date rules and edge cases (CLAUDE.md §7)', () => {
+  it('rejects a context date commit whose final merged datetime has a disabled civil date', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DateTimePicker
+        value="2026-01-15T01:30:00.000Z"
+        displayTimezone="Asia/Seoul"
+        disabled={[{ dayOfWeek: [6] }]}
+        onChange={onChange}
+      >
+        <DateMutationProbe date="2026-01-17T00:00:00.000Z" />
+      </DateTimePicker>,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'set-context-date' }));
+
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
   it('emits an ISO string when a leap-year day (Feb 29 2024) is clicked', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
@@ -677,6 +733,55 @@ describe('DateTimePicker — composition API forwarding to TimePickerContext', (
     await user.click(screen.getByRole('combobox'));
     await user.click(screen.getByRole('option', { name: '12 hours' }));
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('rejects a context time mutation using the final merged time', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <DateTimePicker
+        value="2026-01-15T10:30:00.000Z"
+        onChange={onChange}
+        filterTime={(hours, minutes) => hours === 12 && minutes === 30}
+      >
+        <TimeMutationProbe hours={12} />
+      </DateTimePicker>,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'set-context-hour-12' }));
+
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});
+
+describe('DateTimePicker — preset policy boundary', () => {
+  it('rejects a filtered full preset without closing and still invokes the click callback', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const onClick = vi.fn();
+    render(
+      <DateTimePicker
+        value="2026-01-15T10:30:00.000Z"
+        onChange={onChange}
+        filterTime={(hours, minutes) => hours === 12 && minutes === 30}
+      >
+        <DateTimePicker.Input />
+        <DateTimePicker.Popover>
+          <DateTimePickerPresets>
+            <DateTimePickerPreset value="2026-01-15T12:30:00.000Z" onClick={onClick}>
+              Blocked lunch
+            </DateTimePickerPreset>
+          </DateTimePickerPresets>
+        </DateTimePicker.Popover>
+      </DateTimePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    await user.click(screen.getByRole('button', { name: 'Blocked lunch' }));
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 });
 

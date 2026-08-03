@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { HTMLAttributes } from 'react';
 import {
+  civilMidnightFromUtcDay,
   getCalendarDays,
   getISOWeekNumber,
   isDateDisabled,
@@ -81,7 +82,10 @@ export function DatePickerCalendar({
       getCalendarDays(viewMonth, adapter, {
         weekStartsOn,
         selected: ctx.value,
-        focusedDate,
+        focusedDate:
+          displayTimezone && focusedDate
+            ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
+            : focusedDate,
         disabled,
         timezone: displayTimezone,
         fixedWeeks,
@@ -180,7 +184,16 @@ export function DatePickerCalendar({
           case 'Enter':
           case ' ':
             e.preventDefault();
-            if (!isDateDisabled(focusedDate, disabled, adapter)) {
+            if (
+              !isDateDisabled(
+                displayTimezone
+                  ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
+                  : focusedDate,
+                disabled,
+                adapter,
+                displayTimezone,
+              )
+            ) {
               ctx.selectDate(focusedDate);
             }
             return;
@@ -206,7 +219,15 @@ export function DatePickerCalendar({
         // skip continues along the same *logical* direction the keypress moved.
         const skipStep = isBackwardKey(e.key, dir) ? -1 : 1;
         let attempts = 0;
-        while (isDateDisabled(newFocused, disabled, adapter) && attempts < 42) {
+        while (
+          isDateDisabled(
+            displayTimezone ? civilMidnightFromUtcDay(newFocused, displayTimezone) : newFocused,
+            disabled,
+            adapter,
+            displayTimezone,
+          ) &&
+          attempts < 42
+        ) {
           newFocused = adapter.addDays(newFocused, skipStep);
           attempts++;
         }
@@ -223,7 +244,7 @@ export function DatePickerCalendar({
         }
       }
     },
-    [adapter, focusedDate, viewMonth, weekStartsOn, disabled, ctx, dir],
+    [adapter, focusedDate, viewMonth, weekStartsOn, disabled, ctx, dir, displayTimezone],
   );
 
   return (

@@ -1,9 +1,11 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import {
+  calendarDayFromInstant,
   DEFAULT_DATEPICKER_LABELS,
   civilMidnightFromUtcDay,
   getWeekStartForLocale,
+  isDateDisabled,
 } from '@kalyx/core';
 import type {
   DateAdapter,
@@ -119,13 +121,15 @@ export function DatePickerRoot({
   // Lazy initializers: today() is only computed once per mount instead of on every
   // render. Avoids redundant Date allocations and makes the SSR/hydration contract
   // explicit — neither server nor client re-evaluates the fallback after first render.
-  const [viewMonth, setViewMonth] = useState<ISODateString>(
-    () => currentValue ?? adapter.today(displayTimezone),
-  );
+  const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
+    const target = currentValue ?? adapter.today(displayTimezone);
+    return displayTimezone ? calendarDayFromInstant(target, displayTimezone) : target;
+  });
 
-  const [focusedDate, setFocusedDate] = useState<ISODateString>(
-    () => currentValue ?? adapter.today(displayTimezone),
-  );
+  const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
+    const target = currentValue ?? adapter.today(displayTimezone);
+    return displayTimezone ? calendarDayFromInstant(target, displayTimezone) : target;
+  });
 
   useChangeEffect(isOpen, onOpenChange);
   const viewMonthStart = useMemo(() => adapter.startOfMonth(viewMonth), [viewMonth, adapter]);
@@ -159,6 +163,10 @@ export function DatePickerRoot({
       const normalized =
         iso && displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
 
+      if (normalized && isDateDisabled(normalized, disabledRules, adapter, displayTimezone)) {
+        return;
+      }
+
       if (!isControlled) {
         setUncontrolledValue(normalized);
       }
@@ -167,7 +175,7 @@ export function DatePickerRoot({
       // Close the popover after selection
       setIsOpen(false);
     },
-    [isControlled, isDisabled, readOnly, onChange, displayTimezone],
+    [isControlled, isDisabled, readOnly, onChange, displayTimezone, disabledRules, adapter],
   );
 
   const open = useCallback(() => {
@@ -175,8 +183,11 @@ export function DatePickerRoot({
     setIsOpen(true);
     // Reset the view to the current value or today when opening
     const target = currentValue ?? adapter.today(displayTimezone);
-    setViewMonth(target);
-    setFocusedDate(target);
+    const calendarTarget = displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : target;
+    setViewMonth(calendarTarget);
+    setFocusedDate(calendarTarget);
   }, [isDisabled, readOnly, currentValue, adapter, displayTimezone]);
 
   const close = useCallback(() => {

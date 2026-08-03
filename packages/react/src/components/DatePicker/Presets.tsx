@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
+import { calendarDayFromInstant } from '@kalyx/core';
 import type { ISODateString } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
 
@@ -110,11 +111,14 @@ export function DatePickerPreset({
 
       let resolved: ISODateString;
       if (directDate) {
-        resolved = directDate;
+        resolved = ctx.displayTimezone
+          ? calendarDayFromInstant(directDate, ctx.displayTimezone)
+          : directDate;
       } else if (presetKey) {
+        const today = ctx.adapter.today(ctx.displayTimezone);
         resolved = resolveDatePreset(
           presetKey,
-          ctx.adapter.today(ctx.displayTimezone),
+          ctx.displayTimezone ? calendarDayFromInstant(today, ctx.displayTimezone) : today,
           ctx.adapter,
         );
       } else {
