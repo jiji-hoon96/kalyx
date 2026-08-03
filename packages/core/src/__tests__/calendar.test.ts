@@ -126,6 +126,28 @@ describe('getCalendarDays — basic month grid', () => {
     }
   });
 
+  it('disables the Seoul visual Sunday rather than its preceding UTC Saturday', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      disabled: [{ dayOfWeek: [0] }],
+      timezone: 'Asia/Seoul',
+    });
+    const days = weeks.flat();
+
+    expect(days.find((day) => day.dayNumber === 4 && day.isCurrentMonth)?.isDisabled).toBe(true);
+    expect(days.find((day) => day.dayNumber === 3 && day.isCurrentMonth)?.isDisabled).toBe(false);
+  });
+
+  it('disables the New York visual Sunday using its civil weekday', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      disabled: [{ dayOfWeek: [0] }],
+      timezone: 'America/New_York',
+    });
+    const days = weeks.flat();
+
+    expect(days.find((day) => day.dayNumber === 4 && day.isCurrentMonth)?.isDisabled).toBe(true);
+    expect(days.find((day) => day.dayNumber === 5 && day.isCurrentMonth)?.isDisabled).toBe(false);
+  });
+
   it('includes leading and trailing days from adjacent months', () => {
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter);
     const outsideDays = weeks.flat().filter((d) => !d.isCurrentMonth);

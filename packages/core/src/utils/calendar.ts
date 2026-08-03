@@ -7,7 +7,7 @@ import type {
   DisabledRule,
   ISODateString,
 } from '../types.js';
-import { civilMidnightFromUtcDay } from './timezone.js';
+import { calendarDayFromInstant, civilMidnightFromUtcDay } from './timezone.js';
 
 /**
  * Builds the calendar grid for the given month.
@@ -210,7 +210,8 @@ export function isDateDisabled(
     } else if ('after' in rule) {
       if (adapter.isAfter(iso, rule.after)) return true;
     } else if ('dayOfWeek' in rule) {
-      if (rule.dayOfWeek.includes(adapter.getDay(iso))) return true;
+      const dayOfWeekCoordinate = timezone ? calendarDayFromInstant(iso, timezone) : iso;
+      if (rule.dayOfWeek.includes(adapter.getDay(dayOfWeekCoordinate))) return true;
     } else if ('filter' in rule) {
       if (rule.filter(iso)) return true;
     }
