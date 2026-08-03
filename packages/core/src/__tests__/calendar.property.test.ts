@@ -98,6 +98,24 @@ describe('getCalendarDays invariants (property-based)', () => {
       RUNS,
     );
   });
+
+  it('marks the grid coordinate matching a stored New York civil midnight', () => {
+    fc.assert(
+      fc.property(fc.integer({ min: 1, max: 28 }), (day) => {
+        const dayText = String(day).padStart(2, '0');
+        const selected = `2026-01-${dayText}T05:00:00.000Z`;
+        const days = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+          selected,
+          timezone: 'America/New_York',
+        }).flat();
+        const selectedDays = days.filter((calendarDay) => calendarDay.isSelected);
+
+        expect(selectedDays).toHaveLength(1);
+        expect(selectedDays[0]!.dayNumber).toBe(day);
+      }),
+      RUNS,
+    );
+  });
 });
 
 describe('getISOWeekNumber invariants (property-based)', () => {
