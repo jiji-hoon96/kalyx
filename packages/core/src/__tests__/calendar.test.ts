@@ -342,3 +342,43 @@ describe('getCalendarDays — range handling', () => {
     expect(day15?.isInRange).toBe(false);
   });
 });
+
+describe('getCalendarDays — focus retargets off disabled days (HIGH-2)', () => {
+  // 2026-01-01 is a Thursday, so 2026-01-17 is a Saturday.
+  it('moves isFocused to the first enabled day when the requested focus is disabled', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      weekStartsOn: 0,
+      focusedDate: '2026-01-17T00:00:00.000Z', // Saturday → disabled
+      disabled: [{ dayOfWeek: [0, 6] }],
+    });
+    const flat = weeks.flat();
+    const focused = flat.filter((d) => d.isFocused);
+    // Exactly one focus anchor, and it must be enabled (a disabled <button> can't take focus).
+    expect(focused).toHaveLength(1);
+    expect(focused[0]!.isDisabled).toBe(false);
+    // The requested (disabled) day must not remain the focus anchor.
+    const requested = flat.find((d) => d.isoString.startsWith('2026-01-17'));
+    expect(requested?.isFocused).toBe(false);
+    // Prefers the current month: first enabled current-month day is Thu Jan 1.
+    expect(focused[0]!.isoString).toMatch(/^2026-01-01/);
+    expect(focused[0]!.isCurrentMonth).toBe(true);
+  });
+
+  it('leaves isFocused on the requested day when it is enabled', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      weekStartsOn: 0,
+      focusedDate: '2026-01-15T00:00:00.000Z', // Thursday → enabled
+      disabled: [{ dayOfWeek: [0, 6] }],
+    });
+    const focused = weeks.flat().filter((d) => d.isFocused);
+    expect(focused).toHaveLength(1);
+    expect(focused[0]!.isoString).toMatch(/^2026-01-15/);
+  });
+
+  it('does not add a focus anchor when no focusedDate is requested', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      disabled: [{ dayOfWeek: [0, 6] }],
+    });
+    expect(weeks.flat().some((d) => d.isFocused)).toBe(false);
+  });
+});

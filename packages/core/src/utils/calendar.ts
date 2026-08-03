@@ -93,6 +93,23 @@ export function getCalendarDays(
     }
   }
 
+  // If the requested focus landed on a disabled day, its <button> can't take DOM focus —
+  // leaving it as the grid's only tabbable cell would strand keyboard navigation. Retarget
+  // the focused flag to the first enabled day (preferring the current month) so the grid
+  // always opens with a focusable anchor.
+  if (focusedDate) {
+    const flat = weeks.flat();
+    const focusedCell = flat.find((d) => d.isFocused);
+    if (focusedCell?.isDisabled) {
+      const fallback =
+        flat.find((d) => !d.isDisabled && d.isCurrentMonth) ?? flat.find((d) => !d.isDisabled);
+      if (fallback) {
+        focusedCell.isFocused = false;
+        fallback.isFocused = true;
+      }
+    }
+  }
+
   return weeks;
 }
 

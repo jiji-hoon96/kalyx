@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { DatePicker } from './index.js';
@@ -1560,5 +1560,60 @@ describe('DatePicker — RTL (dir="rtl")', () => {
     // RTL: physically-left cell is the *next* (higher-index) year → 2027.
     await user.keyboard('{ArrowLeft}');
     expect(screen.getByRole('gridcell', { name: '2027' })).toHaveFocus();
+  });
+});
+
+describe('DatePicker — keyboard focus survives opening on a disabled day (HIGH-2 regression)', () => {
+  // 2026-01-17 is a Saturday; with weekends disabled it can't be the focus anchor
+  // (a disabled <button> can't take DOM focus). getCalendarDays must retarget the
+  // focused flag to an enabled day so the grid opens navigable.
+  it('lands focus on an enabled day when the value/today is disabled', async () => {
+    const user = userEvent.setup();
+    render(
+      // @ts-expect-error — DisabledRule[] via test literal
+      <DatePicker
+        value="2026-01-17T00:00:00.000Z"
+        disabled={[{ dayOfWeek: [0, 6] }]}
+        onChange={vi.fn()}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    await waitFor(() => {
+      const active = document.activeElement;
+      expect(active).toBeInstanceOf(HTMLButtonElement);
+      expect(active).toHaveAttribute('data-focused', 'true');
+      expect(active).not.toBeDisabled();
+    });
+  });
+
+  it('keeps the grid keyboard-navigable after opening on a disabled day', async () => {
+    const user = userEvent.setup();
+    render(
+      // @ts-expect-error — DisabledRule[] via test literal
+      <DatePicker
+        value="2026-01-17T00:00:00.000Z"
+        disabled={[{ dayOfWeek: [0, 6] }]}
+        onChange={vi.fn()}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    await user.click(screen.getByRole('combobox'));
+    // A focusable day cell exists → arrow keys move focus to another enabled day
+    // (not stranded on a disabled, unfocusable cell).
+    await user.keyboard('{ArrowRight}');
+    await waitFor(() => {
+      const active = document.activeElement;
+      expect(active).toHaveAttribute('data-focused', 'true');
+      expect(active).not.toBeDisabled();
+    });
   });
 });

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { RangePicker } from './index.js';
@@ -929,5 +929,32 @@ describe('RangePicker — RTL (dir="rtl")', () => {
     );
     await user.click(screen.getAllByRole('combobox')[0]);
     expect(screen.getByRole('grid')).toHaveAttribute('dir', 'ltr');
+  });
+});
+
+describe('RangePicker — keyboard focus survives opening on a disabled day (HIGH-2 regression)', () => {
+  it('lands focus on an enabled day when the range start is disabled', async () => {
+    const user = userEvent.setup();
+    const disabled: DisabledRule[] = [{ dayOfWeek: [0, 6] }];
+    render(
+      <RangePicker
+        value={{ start: '2026-01-17T00:00:00.000Z', end: null }} // Saturday → disabled
+        onChange={vi.fn()}
+        disabled={disabled}
+      >
+        <RangePicker.Input part="start" />
+        <RangePicker.Input part="end" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+    await user.click(screen.getAllByRole('combobox')[0]!);
+    await waitFor(() => {
+      const active = document.activeElement;
+      expect(active).toBeInstanceOf(HTMLButtonElement);
+      expect(active).toHaveAttribute('data-focused', 'true');
+      expect(active).not.toBeDisabled();
+    });
   });
 });
