@@ -1,9 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
 import { useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { DatePicker } from './index.js';
+import type { DatePickerRootProps } from './Root.js';
 
 function renderDatePicker(
   props: {
@@ -1560,5 +1561,55 @@ describe('DatePicker — RTL (dir="rtl")', () => {
     // RTL: physically-left cell is the *next* (higher-index) year → 2027.
     await user.keyboard('{ArrowLeft}');
     expect(screen.getByRole('gridcell', { name: '2027' })).toHaveFocus();
+  });
+});
+
+describe('DatePicker — typed input honors disable/min-max rules (HIGH-1 regression)', () => {
+  // 2026-01-01 is a Thursday, so 2026-01-17 is a Saturday and 2026-01-18 a Sunday.
+  // The Input commits on change (per-keystroke), so fireEvent.change with the full
+  // string exercises the exact commit path the calendar grid guards but the input did not.
+  function renderWithRules(disabled: DatePickerRootProps['disabled'], onChange = vi.fn()) {
+    render(
+      <DatePicker onChange={onChange} disabled={disabled}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+    return onChange;
+  }
+
+  it('does not commit a typed date that violates a dayOfWeek rule', () => {
+    const onChange = renderWithRules([{ dayOfWeek: [0, 6] }]);
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: '2026-01-17' } }); // Saturday
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('does not commit a typed date before a {before} (min) rule', () => {
+    const onChange = renderWithRules([{ before: '2026-01-10T00:00:00.000Z' }]);
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: '2026-01-05' } });
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('does not commit a typed date after an {after} (max) rule', () => {
+    const onChange = renderWithRules([{ after: '2026-01-20T00:00:00.000Z' }]);
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: '2026-01-25' } });
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('still commits a typed date that passes all rules', () => {
+    const onChange = renderWithRules([{ dayOfWeek: [0, 6] }]);
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: '2026-01-15' } }); // Thursday
+    expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-15T/));
+  });
+
+  it('still clears the value (null) when typed empty — the guard never blocks clearing', () => {
+    const onChange = renderWithRules([{ dayOfWeek: [0, 6] }]);
+    const input = screen.getByRole('combobox');
+    fireEvent.change(input, { target: { value: '2026-01-15' } }); // seed an enabled value
+    onChange.mockClear();
+    fireEvent.change(input, { target: { value: '' } });
+    expect(onChange).toHaveBeenCalledWith(null);
   });
 });

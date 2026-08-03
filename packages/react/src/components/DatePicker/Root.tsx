@@ -4,6 +4,7 @@ import {
   DEFAULT_DATEPICKER_LABELS,
   civilMidnightFromUtcDay,
   getWeekStartForLocale,
+  isDateDisabled,
 } from '@kalyx/core';
 import type {
   DateAdapter,
@@ -153,6 +154,13 @@ export function DatePickerRoot({
     (iso: ISODateString | null) => {
       if (isDisabled || readOnly) return;
 
+      // Enforce per-day disable/min-max rules on every commit path, not just grid
+      // clicks. The calendar grid already blocks disabled days, but the text Input
+      // (and MonthPicker/YearPicker, which reuse it) commit through here directly —
+      // without this guard a typed weekend/out-of-range date bypasses `disabled`
+      // entirely. Uses the same 3-arg check the grid uses, so the two stay consistent.
+      if (iso && isDateDisabled(iso, disabledRules, adapter)) return;
+
       // The grid emits UTC-midnight ISO strings. When displayTimezone is set, map those to the
       // civil midnight of the same calendar day in that zone — otherwise "picking Jan 15 in KST"
       // would save Jan 14 15:00 UTC shifted incorrectly.
@@ -167,7 +175,7 @@ export function DatePickerRoot({
       // Close the popover after selection
       setIsOpen(false);
     },
-    [isControlled, isDisabled, readOnly, onChange, displayTimezone],
+    [isControlled, isDisabled, readOnly, onChange, displayTimezone, disabledRules, adapter],
   );
 
   const open = useCallback(() => {
