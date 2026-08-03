@@ -166,6 +166,22 @@ export function civilMidnightFromUtcDay(
 }
 
 /**
+ * Converts a UTC instant to the UTC-midnight calendar coordinate for its civil date in `timeZone`.
+ *
+ * Calendar grids iterate using UTC-midnight coordinates, while stored values are real instants at
+ * civil midnight in the display timezone. This helper bridges the two representations without
+ * parsing localized display strings.
+ *
+ * @example
+ * calendarDayFromInstant('2025-12-31T15:00:00.000Z', 'Asia/Seoul');
+ * // → '2026-01-01T00:00:00.000Z'
+ */
+export function calendarDayFromInstant(iso: ISODateString, timeZone: string): ISODateString {
+  const p = partsInTimezone(new Date(iso), timeZone);
+  return new Date(Date.UTC(p.year, p.month - 1, p.day)).toISOString();
+}
+
+/**
  * Extracts the time-of-day (hours / minutes / seconds) of a UTC instant as observed in
  * `timeZone`. The result differs from reading UTC hours when the zone has a non-zero offset.
  *

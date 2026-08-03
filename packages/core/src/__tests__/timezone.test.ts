@@ -5,6 +5,7 @@ import {
   isSameDayInTimezone,
   getTimezoneOffsetMinutes,
   civilMidnightFromUtcDay,
+  calendarDayFromInstant,
   getTimeInTimezone,
   setTimeInTimezone,
 } from '../utils/timezone.js';
@@ -213,6 +214,20 @@ describe('civilMidnightFromUtcDay — calendar-grid cell bridge', () => {
   it('keeps the same day on UTC-midnight → UTC', () => {
     expect(civilMidnightFromUtcDay('2026-06-15T00:00:00.000Z', 'UTC')).toBe(
       '2026-06-15T00:00:00.000Z',
+    );
+  });
+});
+
+describe('calendarDayFromInstant — civil-date calendar coordinate', () => {
+  it('returns the New York civil date as a UTC-midnight coordinate', () => {
+    expect(calendarDayFromInstant('2026-01-15T05:00:00.000Z', 'America/New_York')).toBe(
+      '2026-01-15T00:00:00.000Z',
+    );
+  });
+
+  it('returns the next UTC calendar day when Seoul observes New Year', () => {
+    expect(calendarDayFromInstant('2025-12-31T15:00:00.000Z', 'Asia/Seoul')).toBe(
+      '2026-01-01T00:00:00.000Z',
     );
   });
 });
