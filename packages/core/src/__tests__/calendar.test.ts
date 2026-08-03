@@ -79,6 +79,17 @@ describe('getCalendarDays — basic month grid', () => {
     expect(selectedDays[0]!.dayNumber).toBe(1);
   });
 
+  it('marks the New York civil day of a focused midnight, not the following UTC grid cell', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      focusedDate: '2026-01-15T05:00:00.000Z',
+      timezone: 'America/New_York',
+    });
+
+    const focusedDays = weeks.flat().filter((day) => day.isFocused);
+    expect(focusedDays).toHaveLength(1);
+    expect(focusedDays[0]!.dayNumber).toBe(15);
+  });
+
   it('flags today correctly', () => {
     const today = '2026-01-20T00:00:00.000Z';
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {

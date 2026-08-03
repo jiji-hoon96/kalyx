@@ -71,7 +71,9 @@ export function getCalendarDays(
       const isSelected_ = selected
         ? adapter.isSameDay(candidateInstant, selected, timezone)
         : false;
-      const isFocused_ = focusedDate ? adapter.isSameDay(current, focusedDate, timezone) : false;
+      const isFocused_ = focusedDate
+        ? adapter.isSameDay(candidateInstant, focusedDate, timezone)
+        : false;
       const isDisabled_ = isDateDisabled(candidateInstant, disabled, adapter, timezone);
 
       const rangeFlags = computeRangeFlags(candidateInstant, normalizedRange, adapter, timezone);
