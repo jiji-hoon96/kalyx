@@ -94,7 +94,7 @@ const grid = getCalendarDays(
 
 Returns `CalendarGrid` (6×7 `CalendarDay`s). Leading and trailing days belong to neighboring months (`isCurrentMonth: false`).
 
-### `isDateDisabled(iso, rules, adapter)`
+### `isDateDisabled(iso, rules, adapter, timezone?)`
 
 ```ts
 import { isDateDisabled, DateFnsAdapter } from '@kalyx/core';
@@ -104,7 +104,24 @@ isDateDisabled(
   [{ dayOfWeek: [0, 6] }],
   DateFnsAdapter,
 ); // → true (Saturday)
+
+// With `timezone`, `{ date }` / `{ dayOfWeek }` rules match by the civil day in
+// that zone. Pass the civil-midnight-in-timezone instant the pickers emit — the
+// same value `onChange` gives you — not a raw `…T00:00:00Z` grid coordinate:
+isDateDisabled(
+  '2026-01-15T05:00:00.000Z',            // civil Jan 15 in America/New_York
+  [{ date: '2026-01-15T05:00:00.000Z' }],
+  DateFnsAdapter,
+  'America/New_York',
+); // → true
 ```
+
+`iso` is the point-in-time value being tested, not a hand-built UTC-midnight grid
+coordinate: under a negative UTC offset, `2026-01-15T00:00:00.000Z` is still the
+14th locally. `{ before }` / `{ after }` are instant comparisons and ignore
+`timezone`. When you just need per-cell disabled state for a calendar, read the
+precomputed `isDisabled` flag from `getCalendarDays(...)` instead — it normalizes
+each cell for you.
 
 ### `minDate(dates)` / `maxDate(dates)`
 
