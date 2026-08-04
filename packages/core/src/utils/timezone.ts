@@ -158,11 +158,18 @@ export function civilMidnightFromUtcDay(
   gridUtcIso: ISODateString,
   timeZone: string,
 ): ISODateString {
-  const utc = new Date(gridUtcIso);
-  const probe = new Date(
-    Date.UTC(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate(), 12, 0, 0),
-  ).toISOString();
-  return startOfDayInTimezone(probe, timeZone);
+  const coordinate = new Date(gridUtcIso);
+  return resolveCivilDateTime(
+    {
+      year: coordinate.getUTCFullYear(),
+      month: coordinate.getUTCMonth() + 1,
+      day: coordinate.getUTCDate(),
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+    },
+    timeZone,
+  );
 }
 
 /**
@@ -197,6 +204,56 @@ export function getTimeInTimezone(
   return { hours: p.hour, minutes: p.minute, seconds: p.second };
 }
 
+type CivilDateTime = {
+  year: number;
+  month: number;
+  day: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
+
+function resolveCivilDateTime(target: CivilDateTime, timeZone: string): ISODateString {
+  const civilEpoch = Date.UTC(
+    target.year,
+    target.month - 1,
+    target.day,
+    target.hours,
+    target.minutes,
+    target.seconds,
+  );
+
+  // Two-pass offset resolution: probe at civil-as-UTC, then re-probe at the
+  // first-pass result so the second probe sees the offset that actually applies
+  // at the resolved instant. The two candidate UTC instants are then classified
+  // by whether their civil round-trip in the target zone matches the request.
+  const probe1 = new Date(civilEpoch).toISOString();
+  const offset1 = getTimezoneOffsetMinutes(probe1, timeZone);
+  const realEpoch1 = civilEpoch - offset1 * 60_000;
+  const probe2 = new Date(realEpoch1).toISOString();
+  const offset2 = getTimezoneOffsetMinutes(probe2, timeZone);
+  const realEpoch2 = civilEpoch - offset2 * 60_000;
+
+  const civilMatches = (epoch: number) => {
+    const actual = partsInTimezone(new Date(epoch), timeZone);
+    return (
+      actual.year === target.year &&
+      actual.month === target.month &&
+      actual.day === target.day &&
+      actual.hour === target.hours &&
+      actual.minute === target.minutes &&
+      actual.second === target.seconds
+    );
+  };
+  const match1 = civilMatches(realEpoch1);
+  const match2 = civilMatches(realEpoch2);
+
+  if (match1 && match2) return new Date(Math.min(realEpoch1, realEpoch2)).toISOString();
+  if (match1) return new Date(realEpoch1).toISOString();
+  if (match2) return new Date(realEpoch2).toISOString();
+  return new Date(Math.max(realEpoch1, realEpoch2)).toISOString();
+}
+
 /**
  * Returns a new ISO UTC string where the civil date in `timeZone` is preserved and the time
  * portion is replaced according to `partial` (as observed in that same timezone). Undefined
@@ -228,58 +285,15 @@ export function setTimeInTimezone(
   timeZone: string,
 ): ISODateString {
   const p = partsInTimezone(new Date(iso), timeZone);
-  const targetHours = partial.hours ?? p.hour;
-  const targetMinutes = partial.minutes ?? p.minute;
-  const targetSeconds = partial.seconds ?? p.second;
-  const civilEpoch = Date.UTC(
-    p.year,
-    p.month - 1,
-    p.day,
-    targetHours,
-    targetMinutes,
-    targetSeconds,
+  return resolveCivilDateTime(
+    {
+      year: p.year,
+      month: p.month,
+      day: p.day,
+      hours: partial.hours ?? p.hour,
+      minutes: partial.minutes ?? p.minute,
+      seconds: partial.seconds ?? p.second,
+    },
+    timeZone,
   );
-
-  // Two-pass offset resolution: probe at civil-as-UTC, then re-probe at the
-  // first-pass result so the second probe sees the offset that actually applies
-  // at the resolved instant. The two candidate UTC instants are then classified
-  // by whether their civil round-trip in the target zone matches the requested
-  // civil time:
-  //
-  //   match1 && match2  → fall-back ambiguity, both are valid wall-clock
-  //                       interpretations → pick the earlier instant (matches
-  //                       @internationalized/date and TC39 Temporal default).
-  //   match1 ^ match2   → the matching candidate is the correct one. (This is
-  //                       the common case near a DST boundary where one of the
-  //                       two probes picked the wrong-side offset.)
-  //   neither match     → spring-forward gap: the requested civil time does not
-  //                       exist → snap forward to the later instant.
-  const probe1 = new Date(civilEpoch).toISOString();
-  const offset1 = getTimezoneOffsetMinutes(probe1, timeZone);
-  const realEpoch1 = civilEpoch - offset1 * 60_000;
-  const probe2 = new Date(realEpoch1).toISOString();
-  const offset2 = getTimezoneOffsetMinutes(probe2, timeZone);
-  const realEpoch2 = civilEpoch - offset2 * 60_000;
-
-  const civilMatches = (epoch: number) => {
-    const rt = partsInTimezone(new Date(epoch), timeZone);
-    return (
-      rt.year === p.year &&
-      rt.month === p.month &&
-      rt.day === p.day &&
-      rt.hour === targetHours &&
-      rt.minute === targetMinutes &&
-      rt.second === targetSeconds
-    );
-  };
-  const match1 = civilMatches(realEpoch1);
-  const match2 = civilMatches(realEpoch2);
-
-  let chosen: number;
-  if (match1 && match2) chosen = Math.min(realEpoch1, realEpoch2);
-  else if (match1) chosen = realEpoch1;
-  else if (match2) chosen = realEpoch2;
-  else chosen = Math.max(realEpoch1, realEpoch2);
-
-  return new Date(chosen).toISOString();
 }

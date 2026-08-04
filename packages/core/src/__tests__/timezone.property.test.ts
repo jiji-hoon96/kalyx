@@ -33,6 +33,8 @@ const ZONES = [
   'Asia/Kolkata', // +5:30
   'Asia/Kathmandu', // +5:45
   'Australia/Eucla', // +8:45
+  'Pacific/Auckland', // +12/+13 DST
+  'Pacific/Chatham', // +12:45/+13:45 DST
   'Pacific/Niue', // -11
   'Pacific/Kiritimati', // +14
 ] as const;
@@ -48,6 +50,19 @@ const isoInstant = () =>
     })
     .map((d) => d.toISOString());
 
+const utcCalendarCoordinate = () =>
+  fc
+    .date({
+      min: new Date('2020-01-01T00:00:00.000Z'),
+      max: new Date('2045-01-01T00:00:00.000Z'),
+      noInvalidDate: true,
+    })
+    .map((date) =>
+      new Date(
+        Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()),
+      ).toISOString(),
+    );
+
 const timeOfDay = () =>
   fc.record({
     hours: fc.integer({ min: 0, max: 23 }),
@@ -58,6 +73,16 @@ const timeOfDay = () =>
 const RUNS = { numRuns: 300 };
 
 describe('timezone invariants (property-based)', () => {
+  it('round-trips every UTC calendar coordinate through civil midnight', () => {
+    fc.assert(
+      fc.property(utcCalendarCoordinate(), zone(), (coordinate, timeZone) => {
+        const instant = civilMidnightFromUtcDay(coordinate, timeZone);
+        expect(calendarDayFromInstant(instant, timeZone)).toBe(coordinate);
+      }),
+      RUNS,
+    );
+  });
+
   it('startOfDayInTimezone is idempotent', () => {
     fc.assert(
       fc.property(isoInstant(), zone(), (iso, tz) => {
