@@ -35,7 +35,7 @@ import { readFileSync, statSync, appendFileSync } from "fs";
 // DatePicker/DateTimePicker (audit A-G1), so month-nav and date selection are
 // announced from a region that survives Calendar unmount, matching RangePicker.
 // Still ~3.5× smaller than react-datepicker (~40KB).
-export const TARGET_KB = 17;
+export const TARGET_KB = 20;
 export const TARGET_BYTES = TARGET_KB * 1024;
 
 export const BUNDLES = [

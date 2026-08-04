@@ -21,7 +21,7 @@
 
 ---
 
-Kalyx는 **완결된 채로** 배포되는 Headless React DatePicker 라이브러리입니다. 단일 날짜 / 범위 / 시간 / 날짜+시간 / 월 / 연 / 주 7종 픽커를 하나의 조합형 API로 다룹니다 — gzip ~16.6 KB (≤ 17 KB), CSS 없음, SSR 안전.
+Kalyx는 **완결된 채로** 배포되는 Headless React DatePicker 라이브러리입니다. 단일 날짜 / 범위 / 시간 / 날짜+시간 / 월 / 연 / 주 7종 픽커를 하나의 조합형 API로 다룹니다 — gzip ~16.6 KB (≤ 20 KB), CSS 없음, SSR 안전.
 
 ```bash
 pnpm add @kalyx/react
@@ -105,7 +105,7 @@ API 레퍼런스, 레시피 (Tailwind / shadcn / React Hook Form), 마이그레�
 
 ## 번들
 
-`@kalyx/react` → **16.64 KB** gzip (ESM) / **16.89 KB** (CJS). CI 한계 ≤ 17 KB.
+`@kalyx/react` → **16.64 KB** gzip (ESM) / **16.89 KB** (CJS). CI 한계 ≤ 20 KB.
 
 ## 지원 환경
 
@@ -119,7 +119,7 @@ pnpm test            # 단위 + 컴포넌트
 pnpm typecheck
 pnpm lint
 pnpm build
-pnpm check-bundle    # ≤ 17 KB
+pnpm check-bundle    # ≤ 20 KB
 ```
 
 아키텍처 원칙은 [CLAUDE.md](./CLAUDE.md) 참고.

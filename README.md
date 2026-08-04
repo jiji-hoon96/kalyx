@@ -21,7 +21,7 @@
 
 ---
 
-Kalyx ships a **complete** set of date-related React primitives — single dates, date ranges, time, date+time, month, year, and week — under one composition API. ~16.6 KB gzip (≤17 KB ceiling), zero CSS, SSR-safe.
+Kalyx ships a **complete** set of date-related React primitives — single dates, date ranges, time, date+time, month, year, and week — under one composition API. ~16.6 KB gzip (≤20 KB ceiling), zero CSS, SSR-safe.
 
 ```bash
 pnpm add @kalyx/react
@@ -105,7 +105,7 @@ Recorded from the [live playground](https://kalyx-docs-site.vercel.app/playgroun
 
 ## Bundle
 
-`@kalyx/react` → **16.64 KB** gzip (ESM) / **16.89 KB** (CJS). CI gate: ≤ 17 KB.
+`@kalyx/react` → **16.64 KB** gzip (ESM) / **16.89 KB** (CJS). CI gate: ≤ 20 KB.
 
 ## Browser support
 
@@ -119,7 +119,7 @@ pnpm test            # unit + component
 pnpm typecheck
 pnpm lint
 pnpm build
-pnpm check-bundle    # ≤ 17 KB
+pnpm check-bundle    # ≤ 20 KB
 ```
 
 See [CLAUDE.md](./CLAUDE.md) for architecture principles.

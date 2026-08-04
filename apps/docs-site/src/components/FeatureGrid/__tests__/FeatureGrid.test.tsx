@@ -17,7 +17,7 @@ describe('<FeatureGrid>', () => {
     expect(screen.getAllByTestId('feature-card')).toHaveLength(FEATURES.length);
   });
 
-  it('has exactly 4 features (Zero CSS, SSR-safe, Timezone-aware, ≤17 KB)', () => {
+  it('has exactly 4 features (Zero CSS, SSR-safe, Timezone-aware, ≤20 KB)', () => {
     expect(FEATURES).toHaveLength(4);
     expect(FEATURES.map(f => f.id)).toEqual([
       'zero-css',

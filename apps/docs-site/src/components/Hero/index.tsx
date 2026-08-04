@@ -10,7 +10,7 @@ export default function Hero() {
         <div className={styles.grid}>
           <div className={styles.copy}>
             <span className={styles.eyebrow}>
-              <Translate id="home.hero.eyebrow">Headless · SSR-safe · ≤17 KB</Translate>
+              <Translate id="home.hero.eyebrow">Headless · SSR-safe · ≤20 KB</Translate>
             </span>
 
             <h1 className={styles.title}>

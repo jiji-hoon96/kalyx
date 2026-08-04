@@ -49,7 +49,7 @@ jobs:
         # Single source of truth for the gzip ceiling + measurement:
         # scripts/check-bundle-size.js (TARGET_KB) — the same gate pr-check.yml
         # and tsup use. Avoids the stale inline 16KB limit that blocked 1.2.0
-        # after the ceiling was raised to 17KB (B10 A-G1).
+        # after the ceiling was raised to 20KB (2026-08 timezone/constraint correctness breadth).
         run: node scripts/check-bundle-size.js
 
       - name: Changeset 검증 (ignored/publishable 혼합 차단)

@@ -9,7 +9,7 @@ live on npm and publish hands-off via **npm Trusted Publishing (OIDC)**.
 1. PRs land on `main` with a `.changeset/*.md` entry.
 2. `release.yml` (on every `main` push) first runs the pre-flight gates:
    build → full test run → bundle-size gate (`scripts/check-bundle-size.js`,
-   ceiling 17 KB gzip) → **`scripts/verify-changesets.mjs`**, which fails fast
+   ceiling 20 KB gzip) → **`scripts/verify-changesets.mjs`**, which fails fast
    if any changeset mixes ignored packages (`docs`, `@kalyx-example/*`) with
    publishable ones (that mix would abort `changeset publish` midway).
 3. It then runs `changeset version`, opening/updating the

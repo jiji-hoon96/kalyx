@@ -25,7 +25,7 @@ Push to PR branch
   ├── lint
   ├── test (커버리지 포함)
   ├── build
-  └── bundle-size (17KB 게이팅)
+  └── bundle-size (20KB 게이팅)
 
 PR merge to main
     ↓
@@ -150,7 +150,7 @@ jobs:
           name: dist-${{ github.run_id }}
           path: packages/react/dist/
       # 측정·게이팅은 scripts/check-bundle-size.js 단일 소스 (TARGET_KB=17, B-R1).
-      # 스크립트가 kb_esm/kb_cjs 를 $GITHUB_OUTPUT 에 기록하고, 17KB 초과 시 exit 1.
+      # 스크립트가 kb_esm/kb_cjs 를 $GITHUB_OUTPUT 에 기록하고, 20KB 초과 시 exit 1.
       - name: 크기 측정 및 판정
         id: check
         run: node scripts/check-bundle-size.js
@@ -437,7 +437,7 @@ Branch name pattern: main
    - lint
    - test (Node 22)
    - build
-   - Bundle Size Check (≤17KB)
+   - Bundle Size Check (≤20KB)
    - All Checks Pass
 
 ✅ Require branches to be up to date before merging

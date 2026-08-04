@@ -18,7 +18,7 @@ type Stat = { value: string; label: string };
 
 const STATIC_STATS: Stat[] = [
   { value: '7', label: translate({ id: 'home.stats.primitives', message: 'date primitives' }) },
-  { value: '≤17 KB', label: translate({ id: 'home.stats.bundle', message: 'gzipped, all pickers' }) },
+  { value: '≤20 KB', label: translate({ id: 'home.stats.bundle', message: 'gzipped, all pickers' }) },
   { value: '0', label: translate({ id: 'home.stats.css', message: 'CSS files to import' }) },
   { value: 'WCAG AA', label: translate({ id: 'home.stats.a11y', message: 'accessible by default' }) },
 ];

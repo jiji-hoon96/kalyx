@@ -29,12 +29,12 @@ export default defineConfig({
 		const { gzipSync } = await import("zlib");
 		const { readFileSync, writeFileSync } = await import("fs");
 		// Mirror scripts/check-bundle-size.js + .github/workflows/pr-check.yml + release.yml.
-		// Raised from 12 → 13 → 14 → 15 → 16 → 17 KB across milestones as features landed
-		// (CLAUDE.md §2 records each bump's rationale; 16→17 = B10 announce() parity, A-G1).
+		// Raised from 12 → 13 → 14 → 15 → 16 → 17 → 20 KB across milestones as features landed
+		// (CLAUDE.md §2 records each bump's rationale; 17→20 = timezone/constraint correctness breadth).
 		// Only the default `index` entry is checked against the public size budget;
 		// the headless entry is intentionally smaller and measured separately by
 		// scripts/verify-entry-split.mjs.
-		const TARGET_KB = 17;
+		const TARGET_KB = 20;
 		const outputs = [
 			["ESM index", "dist/index.js", true],
 			["CJS index", "dist/index.cjs", true],

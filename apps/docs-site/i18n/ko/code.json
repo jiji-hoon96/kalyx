@@ -1,6 +1,6 @@
 {
   "home.hero.eyebrow": {
-    "message": "Headless · SSR-safe · 17 KB 이하",
+    "message": "Headless · SSR-safe · 20 KB 이하",
     "description": "히어로 상단 뱃지"
   },
   "home.hero.title.line1": {
@@ -56,7 +56,7 @@
     "description": "FeatureGrid: Timezone 카드 본문"
   },
   "home.featureGrid.bundle.title": {
-    "message": "17 KB gzip 이하",
+    "message": "20 KB gzip 이하",
     "description": "FeatureGrid: 번들 카드 제목"
   },
   "home.featureGrid.bundle.body": {
@@ -124,7 +124,7 @@
     "description": "WhyKalyx 섹션 제목"
   },
   "home.whyKalyx.body": {
-    "message": "react-day-picker는 headless지만 Calendar뿐. react-datepicker는 통합이지만 CSS를 강제합니다. Kalyx는 둘 다 — 모든 프리미티브, 스타일시트 없음, 17 KB 이하.",
+    "message": "react-day-picker는 headless지만 Calendar뿐. react-datepicker는 통합이지만 CSS를 강제합니다. Kalyx는 둘 다 — 모든 프리미티브, 스타일시트 없음, 20 KB 이하.",
     "description": "WhyKalyx 섹션 본문"
   },
   "home.whyKalyx.cta": {
