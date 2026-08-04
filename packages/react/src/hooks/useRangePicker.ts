@@ -43,7 +43,7 @@ export interface UseRangePickerReturn {
   /** Handler for clicking a single date */
   selectDate: (iso: ISODateString) => void;
   /** Set the range directly */
-  setRange: (range: DateRange) => boolean;
+  setRange: (range: DateRange) => void;
   /** Whether the popover is open */
   isOpen: boolean;
   open: () => void;

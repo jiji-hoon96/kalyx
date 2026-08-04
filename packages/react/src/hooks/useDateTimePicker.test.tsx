@@ -88,4 +88,18 @@ describe('useDateTimePicker — timezone and constraint parity', () => {
     expect(result.current.value).toBe(initial);
     expect(onChange).not.toHaveBeenCalled();
   });
+
+  it('recenters zoned view and focus when toggle opens after navigation and a controlled value change', () => {
+    const { result, rerender } = renderHook(
+      ({ value }) => useDateTimePicker({ value, displayTimezone: 'Asia/Seoul' }),
+      { initialProps: { value: '2025-12-31T15:30:00.000Z' } },
+    );
+
+    act(() => result.current.nextMonth());
+    rerender({ value: '2026-03-15T15:30:00.000Z' });
+    act(() => result.current.toggle());
+
+    expect(result.current.viewMonth).toBe('2026-03-16T00:00:00.000Z');
+    expect(result.current.focusedDate).toBe('2026-03-16T00:00:00.000Z');
+  });
 });

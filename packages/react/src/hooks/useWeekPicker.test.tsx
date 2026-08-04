@@ -112,4 +112,37 @@ describe('useWeekPicker — timezone and constraint parity', () => {
     expect(result.current.isOpen).toBe(true);
     expect(onChange).not.toHaveBeenCalled();
   });
+
+  it('recenters zoned view and focus when toggle opens after navigation and a controlled value change', () => {
+    const { result, rerender } = renderHook(
+      ({ value }) => useWeekPicker({ value, displayTimezone: 'America/New_York' }),
+      {
+        initialProps: {
+          value: { start: '2026-01-15T05:00:00.000Z', end: '2026-01-17T05:00:00.000Z' },
+        },
+      },
+    );
+
+    act(() => result.current.nextMonth());
+    rerender({ value: { start: '2026-03-15T05:00:00.000Z', end: '2026-03-21T04:00:00.000Z' } });
+    act(() => result.current.toggle());
+
+    expect(result.current.viewMonth).toBe('2026-03-15T00:00:00.000Z');
+    expect(result.current.focusedDate).toBe('2026-03-15T00:00:00.000Z');
+  });
+
+  it('moves focusedDate into the month reached by navigation', () => {
+    const { result } = renderHook(() =>
+      useWeekPicker({
+        defaultValue: { start: '2026-01-15T05:00:00.000Z', end: '2026-01-17T05:00:00.000Z' },
+        displayTimezone: 'America/New_York',
+      }),
+    );
+
+    act(() => result.current.nextMonth());
+
+    expect(
+      result.current.adapter.isSameMonth(result.current.focusedDate, result.current.viewMonth),
+    ).toBe(true);
+  });
 });

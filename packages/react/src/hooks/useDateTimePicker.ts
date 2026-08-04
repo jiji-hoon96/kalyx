@@ -174,7 +174,10 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
     setFocusedDate(coordinate);
   }, [currentValue, adapter, displayTimezone]);
   const close = useCallback(() => setIsOpen(false), []);
-  const toggle = useCallback(() => setIsOpen((o) => !o), []);
+  const toggle = useCallback(() => {
+    if (isOpen) close();
+    else open();
+  }, [isOpen, open, close]);
 
   const previousMonth = useCallback(() => {
     setViewMonth((m) => {

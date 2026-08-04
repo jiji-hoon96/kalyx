@@ -156,10 +156,25 @@ export function useWeekPicker(options: UseWeekPickerOptions = {}): UseWeekPicker
     setFocusedDate(coordinate);
   }, [currentValue.start, adapter, displayTimezone]);
   const close = useCallback(() => setIsOpen(false), []);
-  const toggle = useCallback(() => setIsOpen((o) => !o), []);
+  const toggle = useCallback(() => {
+    if (isOpen) close();
+    else open();
+  }, [isOpen, open, close]);
 
-  const previousMonth = useCallback(() => setViewMonth((m) => adapter.addMonths(m, -1)), [adapter]);
-  const nextMonth = useCallback(() => setViewMonth((m) => adapter.addMonths(m, 1)), [adapter]);
+  const previousMonth = useCallback(() => {
+    setViewMonth((month) => {
+      const previous = adapter.addMonths(month, -1);
+      setFocusedDate(adapter.startOfMonth(previous));
+      return previous;
+    });
+  }, [adapter]);
+  const nextMonth = useCallback(() => {
+    setViewMonth((month) => {
+      const next = adapter.addMonths(month, 1);
+      setFocusedDate(adapter.startOfMonth(next));
+      return next;
+    });
+  }, [adapter]);
 
   const calendar = getCalendarDays(viewMonth, adapter, {
     weekStartsOn,
