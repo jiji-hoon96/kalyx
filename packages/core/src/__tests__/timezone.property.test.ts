@@ -6,6 +6,7 @@ import {
   getTimeInTimezone,
   setTimeInTimezone,
   civilMidnightFromUtcDay,
+  calendarDayFromInstant,
   formatInTimezone,
   todayInTimezone,
 } from '../utils/timezone.js';
@@ -170,6 +171,30 @@ describe('Feb 29 round-trip where the civil date differs from the UTC date (T-R2
       'Asia/Seoul',
     );
     expect(formatInTimezone(at0930, 'yyyy-MM-dd HH:mm', 'Asia/Seoul')).toBe('2024-02-29 09:30');
+  });
+});
+
+describe('calendarDayFromInstant around DST boundaries', () => {
+  const boundaryInstants = [
+    ['2026-03-08T06:59:59.000Z', 'America/New_York'],
+    ['2026-03-08T07:00:00.000Z', 'America/New_York'],
+    ['2026-11-01T05:59:59.000Z', 'America/New_York'],
+    ['2026-11-01T06:00:00.000Z', 'America/New_York'],
+    ['2026-03-29T00:59:59.000Z', 'Europe/London'],
+    ['2026-03-29T01:00:00.000Z', 'Europe/London'],
+    ['2026-10-25T00:59:59.000Z', 'Europe/London'],
+    ['2026-10-25T01:00:00.000Z', 'Europe/London'],
+  ] as const;
+
+  it('round-trips each instant through its UTC calendar-day coordinate without changing civil day', () => {
+    fc.assert(
+      fc.property(fc.constantFrom(...boundaryInstants), ([iso, tz]) => {
+        const calendarDay = calendarDayFromInstant(iso, tz);
+        const civilMidnight = civilMidnightFromUtcDay(calendarDay, tz);
+        expect(isSameDayInTimezone(civilMidnight, iso, tz)).toBe(true);
+      }),
+      RUNS,
+    );
   });
 });
 

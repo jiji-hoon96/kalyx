@@ -56,6 +56,7 @@ export {
   todayInTimezone,
   getTimezoneOffsetMinutes,
   civilMidnightFromUtcDay,
+  calendarDayFromInstant,
   getTimeInTimezone,
   setTimeInTimezone,
 } from './utils/timezone.js';

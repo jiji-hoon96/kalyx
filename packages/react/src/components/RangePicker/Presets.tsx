@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
+import { calendarDayFromInstant, civilMidnightFromUtcDay } from '@kalyx/core';
 import type { DateRange, ISODateString } from '@kalyx/core';
 import { useRangePickerContext } from '../../context/RangePickerContext.js';
 
@@ -144,8 +145,23 @@ export function RangePickerPreset({
   // row into 10 today() allocations per render.
   const resolved = useMemo<DateRange | null>(() => {
     if (directRange) return directRange;
-    if (presetKey)
-      return resolvePreset(presetKey, ctx.adapter.today(ctx.displayTimezone), ctx.adapter);
+    if (presetKey) {
+      const today = ctx.adapter.today(ctx.displayTimezone);
+      const coordinateToday = ctx.displayTimezone
+        ? calendarDayFromInstant(today, ctx.displayTimezone)
+        : ctx.adapter.startOfDay(today);
+      const coordinateRange = resolvePreset(presetKey, coordinateToday, ctx.adapter);
+      return {
+        start:
+          coordinateRange.start && ctx.displayTimezone
+            ? civilMidnightFromUtcDay(coordinateRange.start, ctx.displayTimezone)
+            : coordinateRange.start,
+        end:
+          coordinateRange.end && ctx.displayTimezone
+            ? civilMidnightFromUtcDay(coordinateRange.end, ctx.displayTimezone)
+            : coordinateRange.end,
+      };
+    }
     return null;
   }, [directRange, presetKey, ctx.adapter, ctx.displayTimezone]);
 
@@ -154,8 +170,9 @@ export function RangePickerPreset({
       if (ctx.isDisabled || ctx.isReadOnly) return;
       if (!resolved) return;
 
-      ctx.setRange(resolved);
-      ctx.close();
+      if (ctx.setRange(resolved)) {
+        ctx.close();
+      }
       onClick?.(e);
     },
     [ctx, resolved, onClick],
@@ -167,10 +184,10 @@ export function RangePickerPreset({
       return false;
     }
     return (
-      ctx.adapter.isSameDay(ctx.value.start, resolved.start) &&
-      ctx.adapter.isSameDay(ctx.value.end, resolved.end)
+      ctx.adapter.isSameDay(ctx.value.start, resolved.start, ctx.displayTimezone) &&
+      ctx.adapter.isSameDay(ctx.value.end, resolved.end, ctx.displayTimezone)
     );
-  }, [ctx.value.start, ctx.value.end, ctx.adapter, resolved]);
+  }, [ctx.value.start, ctx.value.end, ctx.adapter, ctx.displayTimezone, resolved]);
 
   // role="option" is invalid outside role="listbox"/role="combobox"; parent is
   // role="group". Use a regular toggle button with aria-pressed.

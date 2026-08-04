@@ -19,9 +19,9 @@ export interface RangePickerContextValue {
   /** Currently selected range */
   value: DateRange;
   /** Update the entire range object */
-  setRange: (range: DateRange) => void;
+  setRange: (range: DateRange) => boolean;
   /** Single-date click; automatically decides start/end */
-  selectDate: (iso: ISODateString) => void;
+  selectDate: (iso: ISODateString) => boolean;
   /** Which part gets selected next (start first, then end) */
   selectingTarget: RangeSelectingTarget;
   /**

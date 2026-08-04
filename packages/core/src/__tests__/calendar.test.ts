@@ -57,6 +57,39 @@ describe('getCalendarDays — basic month grid', () => {
     expect(selectedDays[0]!.dayNumber).toBe(15);
   });
 
+  it('marks the New York civil day of a selected midnight, not the following UTC grid cell', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      selected: '2026-01-15T05:00:00.000Z',
+      timezone: 'America/New_York',
+    });
+
+    const selectedDays = weeks.flat().filter((day) => day.isSelected);
+    expect(selectedDays).toHaveLength(1);
+    expect(selectedDays[0]!.dayNumber).toBe(15);
+  });
+
+  it('marks January 1 for a Seoul selected civil midnight stored on the prior UTC day', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      selected: '2025-12-31T15:00:00.000Z',
+      timezone: 'Asia/Seoul',
+    });
+
+    const selectedDays = weeks.flat().filter((day) => day.isSelected);
+    expect(selectedDays).toHaveLength(1);
+    expect(selectedDays[0]!.dayNumber).toBe(1);
+  });
+
+  it('marks the New York civil day of a focused midnight, not the following UTC grid cell', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      focusedDate: '2026-01-15T05:00:00.000Z',
+      timezone: 'America/New_York',
+    });
+
+    const focusedDays = weeks.flat().filter((day) => day.isFocused);
+    expect(focusedDays).toHaveLength(1);
+    expect(focusedDays[0]!.dayNumber).toBe(15);
+  });
+
   it('flags today correctly', () => {
     const today = '2026-01-20T00:00:00.000Z';
     const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
@@ -65,6 +98,20 @@ describe('getCalendarDays — basic month grid', () => {
     const todayDays = weeks.flat().filter((d) => d.isToday);
     expect(todayDays).toHaveLength(1);
     expect(todayDays[0]!.dayNumber).toBe(20);
+  });
+
+  it('uses the displayed New York civil day for today and exact-date disabled flags', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      today: '2026-01-20T05:00:00.000Z',
+      disabled: [{ date: '2026-01-15T05:00:00.000Z' }],
+      timezone: 'America/New_York',
+    });
+    const days = weeks.flat();
+
+    expect(days.find((day) => day.dayNumber === 20 && day.isCurrentMonth)?.isToday).toBe(true);
+    expect(days.find((day) => day.dayNumber === 21 && day.isCurrentMonth)?.isToday).toBe(false);
+    expect(days.find((day) => day.dayNumber === 15 && day.isCurrentMonth)?.isDisabled).toBe(true);
+    expect(days.find((day) => day.dayNumber === 16 && day.isCurrentMonth)?.isDisabled).toBe(false);
   });
 
   it('flags disabled dates correctly', () => {
@@ -77,6 +124,28 @@ describe('getCalendarDays — basic month grid', () => {
       const dayOfWeek = adapter.getDay(d.isoString);
       expect([0, 6]).toContain(dayOfWeek);
     }
+  });
+
+  it('disables the Seoul visual Sunday rather than its preceding UTC Saturday', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      disabled: [{ dayOfWeek: [0] }],
+      timezone: 'Asia/Seoul',
+    });
+    const days = weeks.flat();
+
+    expect(days.find((day) => day.dayNumber === 4 && day.isCurrentMonth)?.isDisabled).toBe(true);
+    expect(days.find((day) => day.dayNumber === 3 && day.isCurrentMonth)?.isDisabled).toBe(false);
+  });
+
+  it('disables the New York visual Sunday using its civil weekday', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      disabled: [{ dayOfWeek: [0] }],
+      timezone: 'America/New_York',
+    });
+    const days = weeks.flat();
+
+    expect(days.find((day) => day.dayNumber === 4 && day.isCurrentMonth)?.isDisabled).toBe(true);
+    expect(days.find((day) => day.dayNumber === 5 && day.isCurrentMonth)?.isDisabled).toBe(false);
   });
 
   it('includes leading and trailing days from adjacent months', () => {
@@ -203,6 +272,24 @@ describe('isDateDisabled — combined rules', () => {
     expect(isDateDisabled('2026-06-16T23:00:00.000Z', after, adapter)).toBe(false);
   });
 
+  it('keeps before/after rules as instant comparisons when a display timezone is supplied', () => {
+    const before = [{ before: '2026-06-17T00:00:00.000Z' as const }];
+    const after = [{ after: '2026-06-17T00:00:00.000Z' as const }];
+
+    expect(isDateDisabled('2026-06-16T23:00:00.000Z', before, adapter, 'America/New_York')).toBe(
+      true,
+    );
+    expect(isDateDisabled('2026-06-17T01:00:00.000Z', before, adapter, 'America/New_York')).toBe(
+      false,
+    );
+    expect(isDateDisabled('2026-06-17T01:00:00.000Z', after, adapter, 'America/New_York')).toBe(
+      true,
+    );
+    expect(isDateDisabled('2026-06-16T23:00:00.000Z', after, adapter, 'America/New_York')).toBe(
+      false,
+    );
+  });
+
   it('honors a programmatic filter rule', () => {
     const holidays = new Set(['2026-01-01T00:00:00.000Z', '2026-12-25T00:00:00.000Z']);
     const rules = [{ filter: (iso: string) => holidays.has(iso) }];
@@ -291,6 +378,35 @@ describe('getCalendarDays — range handling', () => {
     expect(outside?.isRangeStart).toBe(false);
     expect(outside?.isRangeEnd).toBe(false);
     expect(outside?.isInRange).toBe(false);
+  });
+
+  it('uses New York civil-midnight instants for range boundaries and interior cells', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      range: {
+        start: '2026-01-10T05:00:00.000Z',
+        end: '2026-01-15T05:00:00.000Z',
+      },
+      timezone: 'America/New_York',
+    });
+    const days = weeks.flat();
+
+    expect(days.find((day) => day.dayNumber === 10 && day.isCurrentMonth)?.isRangeStart).toBe(true);
+    expect(days.find((day) => day.dayNumber === 12 && day.isCurrentMonth)?.isInRange).toBe(true);
+    expect(days.find((day) => day.dayNumber === 15 && day.isCurrentMonth)?.isRangeEnd).toBe(true);
+    expect(days.find((day) => day.dayNumber === 16 && day.isCurrentMonth)?.isRangeEnd).toBe(false);
+  });
+
+  it('converts a New York grid-coordinate hover to a civil-midnight preview endpoint', () => {
+    const weeks = getCalendarDays('2026-01-01T00:00:00.000Z', adapter, {
+      range: { start: '2026-01-10T05:00:00.000Z', end: null },
+      rangeHover: '2026-01-15T00:00:00.000Z',
+      timezone: 'America/New_York',
+    });
+    const days = weeks.flat();
+
+    expect(days.find((day) => day.dayNumber === 10 && day.isCurrentMonth)?.isRangeStart).toBe(true);
+    expect(days.find((day) => day.dayNumber === 12 && day.isCurrentMonth)?.isInRange).toBe(true);
+    expect(days.find((day) => day.dayNumber === 15 && day.isCurrentMonth)?.isRangeEnd).toBe(true);
   });
 
   it('auto-sorts when start comes after end', () => {

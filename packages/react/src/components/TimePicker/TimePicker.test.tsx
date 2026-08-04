@@ -4,6 +4,12 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { TimePicker } from './index.js';
+import { useTimePickerContext } from '../../context/TimePickerContext.js';
+
+function TimeMutationProbe({ hours }: { hours: number }) {
+  const ctx = useTimePickerContext('TimeMutationProbe');
+  return <button onClick={() => ctx.setTime({ hours })}>set-context-hour-{hours}</button>;
+}
 
 function renderTimePicker(
   props: {
@@ -528,6 +534,48 @@ describe('TimePicker — disabled state', () => {
 });
 
 describe('TimePicker — filterTime', () => {
+  it('rejects a filtered time typed into the input at the Root boundary', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <TimePicker
+        value="2026-01-15T10:30:00.000Z"
+        onChange={onChange}
+        filterTime={(hours, minutes) => hours === 15 && minutes === 45}
+      >
+        <TimePicker.Input />
+      </TimePicker>,
+    );
+
+    const input = screen.getByLabelText('Time');
+    await user.clear(input);
+    await user.type(input, '15:45');
+    await user.tab();
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(input).toHaveValue('10:30');
+  });
+
+  it('rejects a filtered context mutation using the final merged time', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <TimePicker
+        value="2026-01-15T10:30:00.000Z"
+        onChange={onChange}
+        filterTime={(hours, minutes) => hours === 12 && minutes === 30}
+      >
+        <TimePicker.Input />
+        <TimeMutationProbe hours={12} />
+      </TimePicker>,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'set-context-hour-12' }));
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByLabelText('Time')).toHaveValue('10:30');
+  });
+
   it('marks aria-disabled on minutes rejected by filterTime', () => {
     // Disable minute 30 only — visible per-minute disable
     render(

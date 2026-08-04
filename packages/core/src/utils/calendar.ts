@@ -7,6 +7,7 @@ import type {
   DisabledRule,
   ISODateString,
 } from '../types.js';
+import { calendarDayFromInstant, civilMidnightFromUtcDay } from './timezone.js';
 
 /**
  * Builds the calendar grid for the given month.
@@ -52,7 +53,9 @@ export function getCalendarDays(
   const gridStart = adapter.startOfWeek(monthStart, weekStartsOn);
 
   // Normalize for range computation (ensures start <= end)
-  const normalizedRange = normalizeRangeForDisplay(range, rangeHover, adapter, timezone);
+  const candidateRangeHover =
+    timezone && rangeHover ? civilMidnightFromUtcDay(rangeHover, timezone) : rangeHover;
+  const normalizedRange = normalizeRangeForDisplay(range, candidateRangeHover, adapter, timezone);
 
   const weeks: CalendarGrid = [];
   let current = gridStart;
@@ -62,13 +65,18 @@ export function getCalendarDays(
     const days: CalendarDay[] = [];
 
     for (let day = 0; day < 7; day++) {
+      const candidateInstant = timezone ? civilMidnightFromUtcDay(current, timezone) : current;
       const isCurrentMonth = adapter.isSameMonth(current, monthISO);
-      const isTodayDate = adapter.isSameDay(current, todayISO, timezone);
-      const isSelected_ = selected ? adapter.isSameDay(current, selected, timezone) : false;
-      const isFocused_ = focusedDate ? adapter.isSameDay(current, focusedDate, timezone) : false;
-      const isDisabled_ = isDateDisabled(current, disabled, adapter);
+      const isTodayDate = adapter.isSameDay(candidateInstant, todayISO, timezone);
+      const isSelected_ = selected
+        ? adapter.isSameDay(candidateInstant, selected, timezone)
+        : false;
+      const isFocused_ = focusedDate
+        ? adapter.isSameDay(candidateInstant, focusedDate, timezone)
+        : false;
+      const isDisabled_ = isDateDisabled(candidateInstant, disabled, adapter, timezone);
 
-      const rangeFlags = computeRangeFlags(current, normalizedRange, adapter, timezone);
+      const rangeFlags = computeRangeFlags(candidateInstant, normalizedRange, adapter, timezone);
 
       days.push({
         isoString: current,
@@ -188,16 +196,22 @@ function computeRangeFlags(
 /**
  * Checks whether the given date matches any disable rule.
  */
-export function isDateDisabled(iso: string, rules: DisabledRule[], adapter: DateAdapter): boolean {
+export function isDateDisabled(
+  iso: string,
+  rules: DisabledRule[],
+  adapter: DateAdapter,
+  timezone?: string,
+): boolean {
   for (const rule of rules) {
     if ('date' in rule) {
-      if (adapter.isSameDay(iso, rule.date)) return true;
+      if (adapter.isSameDay(iso, rule.date, timezone)) return true;
     } else if ('before' in rule) {
       if (adapter.isBefore(iso, rule.before)) return true;
     } else if ('after' in rule) {
       if (adapter.isAfter(iso, rule.after)) return true;
     } else if ('dayOfWeek' in rule) {
-      if (rule.dayOfWeek.includes(adapter.getDay(iso))) return true;
+      const dayOfWeekCoordinate = timezone ? calendarDayFromInstant(iso, timezone) : iso;
+      if (rule.dayOfWeek.includes(adapter.getDay(dayOfWeekCoordinate))) return true;
     } else if ('filter' in rule) {
       if (rule.filter(iso)) return true;
     }

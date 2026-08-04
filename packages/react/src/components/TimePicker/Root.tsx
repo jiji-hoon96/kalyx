@@ -137,12 +137,25 @@ export function TimePickerRoot({
       const newIso = displayTimezone
         ? setTimeInTimezone(base, partial, displayTimezone)
         : setTimeOnIso(base, partial);
+      const finalTime = displayTimezone
+        ? getTimeInTimezone(newIso, displayTimezone)
+        : getTime(newIso);
+      if (filterTime?.(finalTime.hours, finalTime.minutes)) return;
       if (!isControlled) {
         setUncontrolledValue(newIso);
       }
       onChange?.(newIso);
     },
-    [disabled, readOnly, currentValue, displayTimezone, isControlled, onChange, adapter],
+    [
+      disabled,
+      readOnly,
+      currentValue,
+      displayTimezone,
+      filterTime,
+      isControlled,
+      onChange,
+      adapter,
+    ],
   );
 
   const contextValue: TimePickerContextValue = useMemo(

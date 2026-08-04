@@ -1,11 +1,13 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import {
   civilMidnightFromUtcDay,
+  calendarDayFromInstant,
   getCalendarDays,
   getTime,
   getTimeInTimezone,
   setTime as setTimeOnIso,
   setTimeInTimezone,
+  isDateDisabled,
 } from '@kalyx/core';
 import type {
   CalendarGrid,
@@ -16,6 +18,7 @@ import type {
   WeekStartsOn,
 } from '@kalyx/core';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
+import { resolveEnabledCalendarFocus } from '../internal/calendarFocus.js';
 
 export interface UseDateTimePickerOptions {
   /** Selected datetime (controlled, ISO 8601 UTC — date and time) */
@@ -32,6 +35,8 @@ export interface UseDateTimePickerOptions {
   adapter?: DateAdapter;
   /** IANA timezone for display (see DateTimePickerRoot#displayTimezone) */
   displayTimezone?: string;
+  /** Returns true when the final displayed time should be rejected. */
+  filterTime?: (hours: number, minutes: number) => boolean;
 }
 
 export interface UseDateTimePickerReturn {
@@ -79,6 +84,7 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
     weekStartsOn = 0,
     adapter: adapterProp,
     displayTimezone,
+    filterTime,
   } = options;
 
   const adapter = resolveAdapter(adapterProp, getDefaultAdapter(), 'useDateTimePicker');
@@ -91,12 +97,18 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [viewMonth, setViewMonth] = useState<ISODateString>(
-    () => currentValue ?? adapter.today(displayTimezone),
-  );
-  const [focusedDate, setFocusedDate] = useState<ISODateString>(
-    () => currentValue ?? adapter.today(displayTimezone),
-  );
+  const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
+    const target = currentValue ?? adapter.today(displayTimezone);
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+  });
+  const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
+    const target = currentValue ?? adapter.today(displayTimezone);
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+  });
 
   // Stable {0,0,0} fallback when null keeps SSR/hydration output deterministic.
   const currentTime: TimeValue = useMemo(() => {
@@ -108,10 +120,18 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
 
   const updateValue = useCallback(
     (next: ISODateString | null) => {
+      if (next && isDateDisabled(next, disabled, adapter, displayTimezone)) return false;
+      if (next) {
+        const finalTime = displayTimezone
+          ? getTimeInTimezone(next, displayTimezone)
+          : getTime(next);
+        if (filterTime?.(finalTime.hours, finalTime.minutes)) return false;
+      }
       if (!isControlled) setUncontrolledValue(next);
       onChange?.(next);
+      return true;
     },
-    [isControlled, onChange],
+    [isControlled, onChange, disabled, adapter, displayTimezone, filterTime],
   );
 
   const selectDate = useCallback(
@@ -148,11 +168,18 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
   const open = useCallback(() => {
     setIsOpen(true);
     const target = currentValue ?? adapter.today(displayTimezone);
-    setViewMonth(target);
-    setFocusedDate(target);
-  }, [currentValue, adapter, displayTimezone]);
+    const coordinate = displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+    const focus = resolveEnabledCalendarFocus(coordinate, disabled, adapter, displayTimezone);
+    setViewMonth(focus);
+    setFocusedDate(focus);
+  }, [currentValue, adapter, displayTimezone, disabled]);
   const close = useCallback(() => setIsOpen(false), []);
-  const toggle = useCallback(() => setIsOpen((o) => !o), []);
+  const toggle = useCallback(() => {
+    if (isOpen) close();
+    else open();
+  }, [isOpen, open, close]);
 
   const previousMonth = useCallback(() => {
     setViewMonth((m) => {
@@ -172,7 +199,9 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
   const calendar = getCalendarDays(viewMonth, adapter, {
     weekStartsOn,
     selected: currentValue,
-    focusedDate,
+    focusedDate: displayTimezone
+      ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
+      : focusedDate,
     disabled,
     timezone: displayTimezone,
   });

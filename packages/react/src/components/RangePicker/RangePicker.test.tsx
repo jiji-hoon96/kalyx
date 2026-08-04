@@ -1,9 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
 import { useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 import { RangePicker } from './index.js';
+import { useRangePickerContext } from '../../context/RangePickerContext.js';
 import type { DateRange, DisabledRule } from '@kalyx/core';
 
 const EMPTY: DateRange = { start: null, end: null };
@@ -39,7 +41,8 @@ function renderRangePicker(
     value?: DateRange;
     defaultValue?: DateRange;
     onChange?: (r: DateRange) => void;
-    disabled?: boolean;
+    disabled?: DisabledRule[] | boolean;
+    displayTimezone?: string;
   } = {},
 ) {
   const onChange = props.onChange ?? vi.fn();
@@ -49,6 +52,7 @@ function renderRangePicker(
       defaultValue={props.defaultValue}
       onChange={onChange}
       disabled={props.disabled}
+      displayTimezone={props.displayTimezone}
     >
       <RangePicker.Input part="start" />
       <RangePicker.Input part="end" />
@@ -287,6 +291,80 @@ describe('RangePicker — basic interactions', () => {
   });
 });
 
+describe('RangePicker — timezone calendar coordinates', () => {
+  it.each([
+    {
+      name: 'a positive-offset range',
+      timezone: 'Asia/Seoul',
+      value: { start: '2025-12-31T15:00:00.000Z', end: '2026-01-02T15:00:00.000Z' },
+      startDay: 1,
+      endDay: 3,
+    },
+    {
+      name: 'a negative-offset range',
+      timezone: 'America/New_York',
+      value: { start: '2026-01-15T05:00:00.000Z', end: '2026-01-17T05:00:00.000Z' },
+      startDay: 15,
+      endDay: 17,
+    },
+  ])(
+    'opens and highlights $name on its displayed civil days',
+    async ({ timezone, value, startDay, endDay }) => {
+      const user = userEvent.setup();
+      renderRangePicker({ value, displayTimezone: timezone });
+
+      await user.click(screen.getByLabelText('Start date'));
+
+      expect(screen.getByRole('grid')).toHaveAttribute('aria-label', 'January 2026');
+      const start = screen.getByRole('button', { name: new RegExp(`January ${startDay}, 2026`) });
+      const end = screen.getByRole('button', { name: new RegExp(`January ${endDay}, 2026`) });
+      expect(start).toHaveAttribute('data-range-start', 'true');
+      expect(start).toHaveFocus();
+      expect(end).toHaveAttribute('data-range-end', 'true');
+    },
+  );
+});
+
+function DirectRangeCommit() {
+  const { setRange } = useRangePickerContext('DirectRangeCommit');
+  return (
+    <button
+      type="button"
+      onClick={() =>
+        setRange({
+          start: '2026-01-14T15:00:00.000Z',
+          end: '2026-01-15T15:00:00.000Z',
+        })
+      }
+    >
+      Commit disabled range
+    </button>
+  );
+}
+
+describe('RangePicker — shared range constraints', () => {
+  it('rejects a direct context range with a disabled endpoint', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <RangePicker
+        defaultValue={{ start: '2026-01-09T15:00:00.000Z', end: '2026-01-09T15:00:00.000Z' }}
+        displayTimezone="Asia/Seoul"
+        disabled={[{ date: '2026-01-14T15:00:00.000Z' }]}
+        onChange={onChange}
+      >
+        <RangePicker.Input part="start" />
+        <DirectRangeCommit />
+      </RangePicker>,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Commit disabled range' }));
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByLabelText('Start date')).toHaveValue('2026-01-10');
+  });
+});
+
 describe('RangePicker — controlled / uncontrolled modes', () => {
   it('reflects the value prop in controlled mode', () => {
     renderRangePicker({
@@ -337,6 +415,46 @@ describe('RangePicker — keyboard navigation', () => {
       start: expect.stringMatching(/^2026-01-16T/),
       end: null,
     });
+  });
+
+  it('skips a timezone-disabled civil day when navigating', async () => {
+    const user = userEvent.setup();
+    renderRangePicker({
+      value: { start: '2026-01-15T05:00:00.000Z', end: null },
+      displayTimezone: 'America/New_York',
+      disabled: [{ date: '2026-01-16T05:00:00.000Z' }],
+    });
+
+    await user.click(screen.getByLabelText('Start date'));
+    await user.keyboard('{ArrowRight}');
+
+    expect(screen.getByRole('button', { name: /January 17, 2026/ })).toHaveFocus();
+  });
+
+  it.each(['Enter', ' '])('uses the timezone civil instant for %s disabled checks', async (key) => {
+    const onChange = vi.fn();
+    let reject = false;
+    const filter = vi.fn((iso: string) => reject && iso === '2026-01-15T05:00:00.000Z');
+    render(
+      <RangePicker
+        value={{ start: '2026-01-15T05:00:00.000Z', end: null }}
+        displayTimezone="America/New_York"
+        disabled={[{ filter }]}
+        onChange={onChange}
+      >
+        <RangePicker.Input part="start" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+    await userEvent.click(screen.getByLabelText('Start date'));
+    reject = true;
+    filter.mockClear();
+    fireEvent.keyDown(screen.getByRole('grid'), { key });
+
+    expect(filter.mock.calls).toEqual([['2026-01-15T05:00:00.000Z']]);
+    expect(onChange).not.toHaveBeenCalled();
   });
 });
 
@@ -616,6 +734,29 @@ describe('RangePicker — date rules and edge cases (CLAUDE.md §7)', () => {
     await user.keyboard('{ArrowLeft}');
     expect(screen.getByRole('button', { name: /January 9, 2026/ })).toHaveFocus();
   });
+
+  it('moves the first Arrow from the enabled DOM fallback when the controlled start is disabled', async () => {
+    const user = userEvent.setup();
+    render(
+      <RangePicker
+        value={{ start: '2026-01-17T00:00:00.000Z', end: null }}
+        disabled={[{ dayOfWeek: [0, 6] }]}
+        onChange={vi.fn()}
+      >
+        <RangePicker.Input part="start" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    expect(screen.getByRole('button', { name: /January 1, 2026/ })).toHaveFocus();
+
+    await user.keyboard('{ArrowRight}');
+
+    expect(screen.getByRole('button', { name: /January 2, 2026/ })).toHaveFocus();
+  });
 });
 
 describe('RangePicker — Presets', () => {
@@ -708,6 +849,29 @@ describe('RangePicker — Presets', () => {
     expect(todayOption).toHaveAttribute('aria-pressed', 'true');
   });
 
+  it('recomputes direct-range active state when displayTimezone changes', () => {
+    const value = {
+      start: '2026-01-15T00:00:00.000Z',
+      end: '2026-01-15T00:00:00.000Z',
+    };
+    const directRange = {
+      start: '2026-01-15T05:00:00.000Z',
+      end: '2026-01-15T05:00:00.000Z',
+    };
+    const renderPicker = (displayTimezone?: string) => (
+      <RangePicker value={value} displayTimezone={displayTimezone} onChange={vi.fn()}>
+        <RangePicker.Preset range={directRange}>Direct range</RangePicker.Preset>
+      </RangePicker>
+    );
+    const { rerender } = render(renderPicker());
+    const preset = screen.getByRole('button', { name: 'Direct range' });
+    expect(preset).toHaveAttribute('aria-pressed', 'true');
+
+    rerender(renderPicker('America/New_York'));
+
+    expect(preset).toHaveAttribute('aria-pressed', 'false');
+  });
+
   it('sets the correct range for "Last 30 days"', async () => {
     const user = userEvent.setup();
     const { onChange } = renderWithPresets();
@@ -738,6 +902,41 @@ describe('RangePicker — Presets', () => {
     expect(call.start).toMatch(/-01T/);
   });
 
+  it.each([
+    {
+      label: 'This week',
+      expected: { start: '2026-03-28T15:00:00.000Z', end: '2026-04-03T15:00:00.000Z' },
+    },
+    {
+      label: 'This month',
+      expected: { start: '2026-03-31T15:00:00.000Z', end: '2026-04-29T15:00:00.000Z' },
+    },
+    {
+      label: 'This year',
+      expected: { start: '2025-12-31T15:00:00.000Z', end: '2026-03-31T15:00:00.000Z' },
+    },
+  ])(
+    'computes $label in the display timezone at UTC date boundaries',
+    async ({ label, expected }) => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      const adapter = { ...DateFnsAdapter, today: () => '2026-03-31T15:00:00.000Z' };
+      render(
+        <RangePicker adapter={adapter} displayTimezone="Asia/Seoul" onChange={onChange}>
+          <RangePicker.Presets>
+            <RangePicker.Preset value="thisWeek">This week</RangePicker.Preset>
+            <RangePicker.Preset value="thisMonth">This month</RangePicker.Preset>
+            <RangePicker.Preset value="thisYear">This year</RangePicker.Preset>
+          </RangePicker.Presets>
+        </RangePicker>,
+      );
+
+      await user.click(screen.getByRole('button', { name: label }));
+
+      expect(onChange).toHaveBeenLastCalledWith(expected);
+    },
+  );
+
   it('supports explicit ranges via the custom range prop', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
@@ -762,6 +961,36 @@ describe('RangePicker — Presets', () => {
       start: '2026-01-01T00:00:00.000Z',
       end: '2026-03-31T00:00:00.000Z',
     });
+  });
+
+  it('rejects a direct preset whose endpoint is disabled without closing', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <RangePicker
+        defaultValue={{ start: '2026-01-09T15:00:00.000Z', end: '2026-01-09T15:00:00.000Z' }}
+        displayTimezone="Asia/Seoul"
+        disabled={[{ date: '2026-01-14T15:00:00.000Z' }]}
+        onChange={onChange}
+      >
+        <RangePicker.Input part="start" />
+        <RangePicker.Popover>
+          <RangePicker.Presets>
+            <RangePicker.Preset
+              range={{ start: '2026-01-14T15:00:00.000Z', end: '2026-01-15T15:00:00.000Z' }}
+            >
+              Disabled range
+            </RangePicker.Preset>
+          </RangePicker.Presets>
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    await user.click(screen.getByRole('button', { name: 'Disabled range' }));
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 });
 

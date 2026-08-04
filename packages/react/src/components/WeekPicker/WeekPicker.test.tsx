@@ -14,6 +14,7 @@ function renderWeekPicker(
     disabled?: boolean;
     weekStartsOn?: 0 | 1;
     weekAnchor?: 'calendar' | 'clicked';
+    displayTimezone?: string;
   } = {},
 ) {
   const onChange = props.onChange ?? vi.fn();
@@ -24,6 +25,7 @@ function renderWeekPicker(
       onChange={onChange}
       disabled={props.disabled}
       weekStartsOn={props.weekStartsOn}
+      displayTimezone={props.displayTimezone}
     >
       <WeekPicker.Input part="start" />
       <WeekPicker.Input part="end" />
@@ -42,6 +44,49 @@ const JAN_ANCHOR: DateRange = {
 };
 
 describe('WeekPicker — single-click commits the full week', () => {
+  it('emits calendar-week endpoints as civil-midnight instants in the display timezone', async () => {
+    const user = userEvent.setup();
+    const { onChange } = renderWeekPicker({
+      value: { start: '2026-01-15T05:00:00.000Z', end: '2026-01-15T05:00:00.000Z' },
+      displayTimezone: 'America/New_York',
+      weekStartsOn: 0,
+    });
+
+    await user.click(screen.getByLabelText('Start date'));
+    await user.click(screen.getByRole('button', { name: /January 14, 2026/ }));
+
+    expect(onChange).toHaveBeenCalledWith({
+      start: '2026-01-11T05:00:00.000Z',
+      end: '2026-01-17T05:00:00.000Z',
+    });
+  });
+
+  it.each([
+    {
+      target: 'Start date',
+      expected: { start: '2026-01-14T05:00:00.000Z', end: '2026-01-20T05:00:00.000Z' },
+    },
+    {
+      target: 'End date',
+      expected: { start: '2026-01-08T05:00:00.000Z', end: '2026-01-14T05:00:00.000Z' },
+    },
+  ])(
+    'keeps a clicked anchor directional when opened from the $target',
+    async ({ target, expected }) => {
+      const user = userEvent.setup();
+      const { onChange } = renderWeekPicker({
+        value: { start: '2026-01-15T05:00:00.000Z', end: '2026-01-15T05:00:00.000Z' },
+        displayTimezone: 'America/New_York',
+        weekAnchor: 'clicked',
+      });
+
+      await user.click(screen.getByLabelText(target));
+      await user.click(screen.getByRole('button', { name: /January 14, 2026/ }));
+
+      expect(onChange).toHaveBeenCalledWith(expected);
+    },
+  );
+
   it('selects Sunday–Saturday when weekStartsOn=0', async () => {
     const user = userEvent.setup();
     const { onChange } = renderWeekPicker({ value: JAN_ANCHOR, weekStartsOn: 0 });
@@ -320,12 +365,11 @@ describe('WeekPicker — date rules and edge cases (CLAUDE.md §7)', () => {
     await user.click(sat);
     expect(onChange).not.toHaveBeenCalled();
 
-    // Sanity check: an enabled weekday IS selectable. Wed Jan 14 → week Sun
-    // Jan 11 – Sat Jan 17, but Sun and Sat are themselves disabled days.
-    // The week-mode commits regardless of weekday filtering on endpoints, so
-    // verify the call still fires for the chosen day.
+    // Wed Jan 14 itself is enabled, but its calendar-week endpoints (Sun Jan 11
+    // and Sat Jan 17) are disabled. The shared range commit gate rejects the
+    // entire week, so week mode cannot bypass endpoint constraints.
     await user.click(screen.getByRole('button', { name: /January 14, 2026/ }));
-    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   it('keyboard ArrowLeft skips disabled days', async () => {

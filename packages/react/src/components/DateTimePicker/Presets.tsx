@@ -73,8 +73,10 @@ export function DateTimePickerPreset({
       if (ctx.isDisabled || ctx.isReadOnly) return;
       // selectDateTime is only present on DateTimePicker.Root; fall back to selectDate
       // (date-only) if a Preset is somehow mounted under a plain DatePicker.
-      (ctx.selectDateTime ?? ctx.selectDate)(value);
-      ctx.close();
+      const accepted = ctx.selectDateTime
+        ? ctx.selectDateTime(value)
+        : (ctx.selectDate(value), true);
+      if (accepted) ctx.close();
       onClick?.(e);
     },
     [ctx, value, onClick],

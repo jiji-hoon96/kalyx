@@ -1,6 +1,7 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import {
+  calendarDayFromInstant,
   DEFAULT_DATEPICKER_LABELS,
   DEFAULT_TIMEPICKER_LABELS,
   getTime,
@@ -8,6 +9,7 @@ import {
   getTimeInTimezone,
   setTimeInTimezone,
   civilMidnightFromUtcDay,
+  isDateDisabled,
 } from '@kalyx/core';
 import type {
   DateAdapter,
@@ -23,6 +25,7 @@ import type { Direction } from '../_shared/rtl.js';
 import { TimePickerContext } from '../../context/TimePickerContext.js';
 import type { TimePickerContextValue, TimePickerFormat } from '../../context/TimePickerContext.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
+import { resolveEnabledCalendarFocus } from '../../internal/calendarFocus.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
 import { SR_ONLY } from '../../internal/srOnly.js';
 
@@ -156,12 +159,18 @@ export function DateTimePickerRoot({
   const [announcement, setAnnouncement] = useState('');
   const announce = useCallback((message: string) => setAnnouncement(message), []);
   // Lazy initializers — see DatePicker/Root.tsx for the SSR/hydration rationale.
-  const [viewMonth, setViewMonth] = useState<ISODateString>(
-    () => currentValue ?? adapter.today(displayTimezone),
-  );
-  const [focusedDate, setFocusedDate] = useState<ISODateString>(
-    () => currentValue ?? adapter.today(displayTimezone),
-  );
+  const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
+    const target = currentValue ?? adapter.today(displayTimezone);
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+  });
+  const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
+    const target = currentValue ?? adapter.today(displayTimezone);
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+  });
 
   useChangeEffect(isOpen, onOpenChange);
   const viewMonthStart = useMemo(() => adapter.startOfMonth(viewMonth), [viewMonth, adapter]);
@@ -183,14 +192,31 @@ export function DateTimePickerRoot({
   }, [currentValue, displayTimezone]);
 
   const updateValue = useCallback(
-    (next: ISODateString | null) => {
-      if (isDisabled || readOnly) return;
+    (next: ISODateString | null): boolean => {
+      if (isDisabled || readOnly) return false;
+      if (next) {
+        if (isDateDisabled(next, disabledRules, adapter, displayTimezone)) return false;
+        const finalTime = displayTimezone
+          ? getTimeInTimezone(next, displayTimezone)
+          : getTime(next);
+        if (filterTime?.(finalTime.hours, finalTime.minutes)) return false;
+      }
       if (!isControlled) {
         setUncontrolledValue(next);
       }
       onChange?.(next);
+      return true;
     },
-    [isControlled, isDisabled, readOnly, onChange],
+    [
+      isControlled,
+      isDisabled,
+      readOnly,
+      disabledRules,
+      adapter,
+      displayTimezone,
+      filterTime,
+      onChange,
+    ],
   );
 
   /**
@@ -208,17 +234,12 @@ export function DateTimePickerRoot({
         ? civilMidnightFromUtcDay(newDateIso, displayTimezone)
         : newDateIso;
       // Preserve the current time portion (tz-aware when applicable)
-      const time = currentValue
-        ? displayTimezone
-          ? getTimeInTimezone(currentValue, displayTimezone)
-          : getTime(currentValue)
-        : currentTime;
       const merged = displayTimezone
-        ? setTimeInTimezone(normalizedDate, time, displayTimezone)
-        : setTimeOnIso(normalizedDate, time);
+        ? setTimeInTimezone(normalizedDate, currentTime, displayTimezone)
+        : setTimeOnIso(normalizedDate, currentTime);
       updateValue(merged);
     },
-    [currentValue, currentTime, updateValue, displayTimezone],
+    [currentTime, updateValue, displayTimezone],
   );
 
   /**
@@ -242,14 +263,10 @@ export function DateTimePickerRoot({
    * where a preset carries both portions and must not race the time-preserving selectDate.
    */
   const selectDateTime = useCallback(
-    (iso: ISODateString | null) => {
-      if (iso === null) {
-        updateValue(null);
-        return;
-      }
+    (iso: ISODateString | null): boolean => {
       // A preset ISO is already a UTC instant; when a display timezone is set the
       // value is interpreted/displayed there, so no civil-midnight remapping is needed.
-      updateValue(iso);
+      return updateValue(iso);
     },
     [updateValue],
   );
@@ -258,9 +275,18 @@ export function DateTimePickerRoot({
     if (isDisabled || readOnly) return;
     setIsOpen(true);
     const target = currentValue ?? adapter.today(displayTimezone);
-    setViewMonth(target);
-    setFocusedDate(target);
-  }, [isDisabled, readOnly, currentValue, adapter, displayTimezone]);
+    const calendarTarget = displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+    const focus = resolveEnabledCalendarFocus(
+      calendarTarget,
+      disabledRules,
+      adapter,
+      displayTimezone,
+    );
+    setViewMonth(focus);
+    setFocusedDate(focus);
+  }, [isDisabled, readOnly, currentValue, adapter, displayTimezone, disabledRules]);
 
   const close = useCallback(() => {
     setIsOpen(false);

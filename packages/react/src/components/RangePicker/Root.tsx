@@ -1,9 +1,11 @@
 import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import {
+  calendarDayFromInstant,
   DEFAULT_RANGEPICKER_LABELS,
   civilMidnightFromUtcDay,
   getWeekStartForLocale,
+  isDateDisabled,
 } from '@kalyx/core';
 import type {
   DateAdapter,
@@ -20,6 +22,7 @@ import type {
 } from '../../context/RangePickerContext.js';
 import type { Direction } from '../_shared/rtl.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
+import { resolveEnabledCalendarFocus } from '../../internal/calendarFocus.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
 import { SR_ONLY } from '../../internal/srOnly.js';
 
@@ -123,13 +126,19 @@ export function RangePickerRoot({
   const announce = useCallback((message: string) => setAnnouncement(message), []);
 
   // Lazy initializers — see DatePicker/Root.tsx for the SSR/hydration rationale.
-  const [viewMonth, setViewMonth] = useState<ISODateString>(
-    () => currentValue.start ?? adapter.today(displayTimezone),
-  );
+  const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
+    const target = currentValue.start ?? adapter.today(displayTimezone);
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+  });
 
-  const [focusedDate, setFocusedDate] = useState<ISODateString>(
-    () => currentValue.start ?? adapter.today(displayTimezone),
-  );
+  const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
+    const target = currentValue.start ?? adapter.today(displayTimezone);
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+  });
 
   useChangeEffect(isOpen, onOpenChange);
   const viewMonthStart = useMemo(() => adapter.startOfMonth(viewMonth), [viewMonth, adapter]);
@@ -151,13 +160,20 @@ export function RangePickerRoot({
 
   const setRange = useCallback(
     (range: DateRange) => {
-      if (isDisabled || readOnly) return;
+      if (isDisabled || readOnly) return false;
+      if (
+        (range.start && isDateDisabled(range.start, disabledRules, adapter, displayTimezone)) ||
+        (range.end && isDateDisabled(range.end, disabledRules, adapter, displayTimezone))
+      ) {
+        return false;
+      }
       if (!isControlled) {
         setUncontrolledValue(range);
       }
       onChange?.(range);
+      return true;
     },
-    [isControlled, isDisabled, readOnly, onChange],
+    [isControlled, isDisabled, readOnly, onChange, disabledRules, adapter, displayTimezone],
   );
 
   /**
@@ -167,23 +183,24 @@ export function RangePickerRoot({
    */
   const selectDate = useCallback(
     (iso: ISODateString) => {
-      if (isDisabled || readOnly) return;
+      if (isDisabled || readOnly) return false;
 
       // Normalize UTC-grid ISOs to civil-midnight-in-tz before storing (see DatePicker.Root).
       const normalized = displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
 
       if (selectingTarget === 'start') {
         const newRange: DateRange = { start: normalized, end: null };
-        setRange(newRange);
+        if (!setRange(newRange)) return false;
         setSelectingTarget('end');
         setHoverDate(null);
+        return true;
       } else {
         const start = currentValue.start;
         if (!start) {
           // Safety: if start is missing, treat this click as start
-          setRange({ start: normalized, end: null });
+          if (!setRange({ start: normalized, end: null })) return false;
           setSelectingTarget('end');
-          return;
+          return true;
         }
 
         let newRange: DateRange;
@@ -194,10 +211,11 @@ export function RangePickerRoot({
           newRange = { start, end: normalized };
         }
 
-        setRange(newRange);
+        if (!setRange(newRange)) return false;
         setSelectingTarget('start');
         setHoverDate(null);
         setIsOpen(false);
+        return true;
       }
     },
     [isDisabled, readOnly, selectingTarget, currentValue.start, adapter, setRange, displayTimezone],
@@ -207,9 +225,18 @@ export function RangePickerRoot({
     (target?: RangeSelectingTarget) => {
       if (isDisabled || readOnly) return;
       setIsOpen(true);
-      const focus = currentValue.start ?? adapter.today(displayTimezone);
-      setViewMonth(focus);
-      setFocusedDate(focus);
+      const targetValue = currentValue.start ?? adapter.today(displayTimezone);
+      const focus = displayTimezone
+        ? calendarDayFromInstant(targetValue, displayTimezone)
+        : adapter.startOfDay(targetValue);
+      const enabledFocus = resolveEnabledCalendarFocus(
+        focus,
+        disabledRules,
+        adapter,
+        displayTimezone,
+      );
+      setViewMonth(enabledFocus);
+      setFocusedDate(enabledFocus);
       // An explicit target (from clicking the start/end input) wins. Otherwise, if
       // the range is complete, restart the two-click flow from 'start'.
       if (target) {
@@ -218,7 +245,7 @@ export function RangePickerRoot({
         setSelectingTarget('start');
       }
     },
-    [isDisabled, readOnly, currentValue, adapter, displayTimezone],
+    [isDisabled, readOnly, currentValue, adapter, displayTimezone, disabledRules],
   );
 
   const close = useCallback(() => {

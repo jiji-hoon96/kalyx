@@ -28,6 +28,8 @@ export interface UseTimePickerOptions {
   withSeconds?: boolean;
   /** IANA timezone for time interpretation (see TimePickerRoot#displayTimezone) */
   displayTimezone?: string;
+  /** Returns true when the final displayed time should be rejected. */
+  filterTime?: (hours: number, minutes: number) => boolean;
   /**
    * Date adapter. Only used when the controlled `value` is `null` to derive
    * "today" as the base for the first time edit. The main `@kalyx/react` entry
@@ -90,6 +92,7 @@ export function useTimePicker(options: UseTimePickerOptions = {}): UseTimePicker
     format = '24h',
     step = 1,
     displayTimezone,
+    filterTime,
     adapter: adapterProp,
   } = options;
 
@@ -102,7 +105,7 @@ export function useTimePicker(options: UseTimePickerOptions = {}): UseTimePicker
   );
 
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
-  const baseIso = currentValue ?? adapter.today();
+  const baseIso = currentValue ?? adapter.today(displayTimezone);
   const currentTime = useMemo(
     () => (displayTimezone ? getTimeInTimezone(baseIso, displayTimezone) : getTime(baseIso)),
     [baseIso, displayTimezone],
@@ -113,12 +116,16 @@ export function useTimePicker(options: UseTimePickerOptions = {}): UseTimePicker
       const newIso = displayTimezone
         ? setTimeInTimezone(baseIso, partial, displayTimezone)
         : setTimeOnIso(baseIso, partial);
+      const finalTime = displayTimezone
+        ? getTimeInTimezone(newIso, displayTimezone)
+        : getTime(newIso);
+      if (filterTime?.(finalTime.hours, finalTime.minutes)) return;
       if (!isControlled) {
         setUncontrolledValue(newIso);
       }
       onChange?.(newIso);
     },
-    [baseIso, isControlled, onChange, displayTimezone],
+    [baseIso, isControlled, onChange, displayTimezone, filterTime],
   );
 
   const period = format === '12h' ? to12Hour(currentTime.hours).period : null;
