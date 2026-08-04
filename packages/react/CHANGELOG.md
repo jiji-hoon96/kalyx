@@ -1,5 +1,13 @@
 # @kalyx/react
 
+## 1.4.1
+
+### Patch Changes
+
+- 0f7b368: Correct calendar civil-day identity in display timezones and enforce disabled date and time constraints consistently across picker components, presets, keyboard interactions, context mutations, and headless hooks.
+- Updated dependencies [0f7b368]
+  - @kalyx/core@1.4.1
+
 ## 1.4.0
 
 ### Minor Changes
