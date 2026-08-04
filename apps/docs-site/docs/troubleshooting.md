@@ -210,7 +210,7 @@ const DISABLED = [{ dayOfWeek: [0, 6] }] as const;
 
 ### Bundle size seems larger than expected
 
-Kalyx's `@kalyx/react` is ~16.6 KB gzipped (CI ceiling 17 KB). If your bundle is larger:
+Kalyx's `@kalyx/react` is ~16.6 KB gzipped (CI ceiling 20 KB). If your bundle is larger:
 
 1. Check that tree-shaking is working — only import what you use
 2. `date-fns` is a dependency and adds ~5KB for the functions Kalyx uses. If you already use date-fns in your app, the cost is shared.

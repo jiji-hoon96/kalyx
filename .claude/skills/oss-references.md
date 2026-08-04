@@ -19,7 +19,7 @@ triggers:
 |---|---|
 | `engineering/monorepo-navigator` | pnpm workspace 설정, 패키지 의존성 그래프, Turborepo 없이 모노레포 관리 |
 | `engineering/dependency-auditor` | `date-fns`, `@floating-ui` 등 의존성 감사, 라이선스 확인 |
-| `engineering/performance-profiler` | 번들 크기 분석, tree-shaking 검증, 17KB 목표 달성 확인 |
+| `engineering/performance-profiler` | 번들 크기 분석, tree-shaking 검증, 20KB 목표 달성 확인 |
 | `engineering/release-manager` | semantic version 결정, npm publish 워크플로우 |
 | `engineering/changelog-generator` | Conventional Commits → CHANGELOG 자동 생성 |
 
@@ -72,7 +72,7 @@ cp -r claude-skills/engineering/api-design-reviewer ~/.claude/skills/
 
 ## 주요 스킬 활용 시나리오
 
-### 시나리오 1: 번들 크기가 17KB를 초과했다
+### 시나리오 1: 번들 크기가 20KB를 초과했다
 
 ```
 1. performance-profiler 스킬 활용

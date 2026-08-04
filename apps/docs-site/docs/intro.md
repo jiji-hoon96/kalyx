@@ -50,7 +50,7 @@ Kalyx fills the gap:
 - **Headless philosophy** — no stylesheets, no classes you must override.
 - **Integrated primitives** — 7 pickers (DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker) share one context model.
 - **Composition first** — Radix-style dot notation. No 100-prop monoliths.
-- **~16.6 KB gzip (≤ 17 KB ceiling)** — measured, enforced in CI.
+- **~16.6 KB gzip (≤ 20 KB ceiling)** — measured, enforced in CI.
 - **SSR-safe** — tested with Next.js App Router.
 - **ISO 8601 UTC strings** as the value contract — no Date-object footguns.
 - **Timezone-aware** — opt-in `displayTimezone` prop handles DST and civil-day semantics without changing the UTC storage contract. See the [Timezone concept page](./concepts/timezone).
