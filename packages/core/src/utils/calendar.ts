@@ -195,6 +195,19 @@ function computeRangeFlags(
 
 /**
  * Checks whether the given date matches any disable rule.
+ *
+ * `iso` is a point-in-time value (the date being tested) — not a hand-built
+ * UTC-midnight grid coordinate. When `timezone` is set, the day-granular rules
+ * (`{ date }` and `{ dayOfWeek }`) are evaluated by the *civil day in that zone*,
+ * so pass the same civil-midnight-in-timezone instants the pickers emit (via
+ * `onChange` / {@link civilMidnightFromUtcDay}) rather than a raw `…T00:00:00Z`
+ * coordinate — under a negative UTC offset the latter resolves to the previous
+ * civil day. `{ before }` / `{ after }` are plain instant comparisons and are
+ * timezone-independent. For rendering a calendar, prefer the precomputed
+ * {@link getCalendarDays} `isDisabled` flag, which already normalizes each cell.
+ *
+ * @param timezone - Optional IANA timezone governing the civil-day evaluation of
+ *   `{ date }` / `{ dayOfWeek }` rules. Omit for UTC-day semantics.
  */
 export function isDateDisabled(
   iso: string,
