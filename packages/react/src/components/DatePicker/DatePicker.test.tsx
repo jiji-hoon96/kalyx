@@ -382,12 +382,13 @@ describe('DatePicker — keyboard navigation', () => {
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-16T/));
   });
 
-  it('focuses an enabled day after navigating to a month whose first day is disabled', async () => {
+  it('focuses a rendered enabled day after timezone-aware month navigation', async () => {
     const user = userEvent.setup();
     render(
       <DatePicker
-        value="2026-06-15T00:00:00.000Z"
-        disabled={[{ dayOfWeek: [3] }]}
+        value="2026-01-14T10:00:00.000Z"
+        displayTimezone="Pacific/Kiritimati"
+        disabled={[{ dayOfWeek: [0, 1] }]}
         onChange={vi.fn()}
       >
         <DatePicker.Input aria-label="날짜 선택" />
@@ -400,9 +401,9 @@ describe('DatePicker — keyboard navigation', () => {
     await user.click(screen.getByRole('combobox'));
     await user.click(screen.getByRole('button', { name: 'Next month' }));
 
-    expect(screen.getByRole('button', { name: /July 2, 2026/ })).toHaveFocus();
+    expect(screen.getByRole('button', { name: /February 3, 2026/ })).toHaveFocus();
     await user.keyboard('{ArrowRight}');
-    expect(screen.getByRole('button', { name: /July 3, 2026/ })).toHaveFocus();
+    expect(screen.getByRole('button', { name: /February 4, 2026/ })).toHaveFocus();
   });
 
   it('uses the civil instant for timezone-aware Enter disabled checks', async () => {

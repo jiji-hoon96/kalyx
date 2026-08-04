@@ -125,12 +125,17 @@ export function DatePickerCalendar({
     (direction: number) => {
       const newMonth = adapter.addMonths(viewMonth, direction);
       const monthStart = adapter.startOfMonth(newMonth);
-      ctx.setViewMonth(newMonth);
-      ctx.setFocusedDate(
-        resolveEnabledCalendarFocus(monthStart, disabled, adapter, displayTimezone),
+      const focus = resolveEnabledCalendarFocus(
+        monthStart,
+        disabled,
+        adapter,
+        displayTimezone,
+        'forward',
       );
-      const y = adapter.getYear(newMonth);
-      const m = adapter.getMonth(newMonth);
+      ctx.setViewMonth(adapter.startOfMonth(focus));
+      ctx.setFocusedDate(focus);
+      const y = adapter.getYear(focus);
+      const m = adapter.getMonth(focus);
       ctx.announce(formatMonthYear(y, m, locale));
     },
     [adapter, viewMonth, ctx, locale, disabled, displayTimezone],

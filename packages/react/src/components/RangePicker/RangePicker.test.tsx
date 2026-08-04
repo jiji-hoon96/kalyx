@@ -417,19 +417,19 @@ describe('RangePicker — keyboard navigation', () => {
     });
   });
 
-  it('focuses an enabled day after navigating to a month whose first day is disabled', async () => {
+  it('focuses a rendered enabled day when multiple leading days are disabled', async () => {
     const user = userEvent.setup();
     renderRangePicker({
-      value: { start: '2026-06-15T00:00:00.000Z', end: null },
-      disabled: [{ dayOfWeek: [3] }],
+      value: { start: '2026-01-15T00:00:00.000Z', end: null },
+      disabled: [{ dayOfWeek: [0, 1] }],
     });
 
     await user.click(screen.getByLabelText('Start date'));
     await user.click(screen.getByRole('button', { name: 'Next month' }));
 
-    expect(screen.getByRole('button', { name: /July 2, 2026/ })).toHaveFocus();
+    expect(screen.getByRole('button', { name: /February 3, 2026/ })).toHaveFocus();
     await user.keyboard('{ArrowRight}');
-    expect(screen.getByRole('button', { name: /July 3, 2026/ })).toHaveFocus();
+    expect(screen.getByRole('button', { name: /February 4, 2026/ })).toHaveFocus();
   });
 
   it('skips a timezone-disabled civil day when navigating', async () => {

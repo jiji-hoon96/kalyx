@@ -148,7 +148,8 @@ export function todayInTimezone(timeZone: string): ISODateString {
  * This is the bridge used by DatePicker/RangePicker when `displayTimezone` is set: the grid
  * iterates in UTC, so a cell's `isoString` is `YYYY-MM-DDT00:00:00.000Z`. When the user clicks
  * that cell we want to emit an ISO representing the same civil day's midnight in the display
- * timezone. A probe at noon UTC is used so the target civil day is unambiguous across any zone.
+ * timezone. The coordinate's UTC date fields are resolved directly as midnight in the target
+ * timezone, preserving the date even in UTC+12 through UTC+14 zones.
  *
  * @example
  * civilMidnightFromUtcDay('2026-01-15T00:00:00.000Z', 'Asia/Seoul');

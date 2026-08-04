@@ -6,6 +6,7 @@ export function resolveEnabledCalendarFocus(
   disabled: DisabledRule[],
   adapter: DateAdapter,
   timezone?: string,
+  searchDirection: 'nearest' | 'forward' = 'nearest',
 ): ISODateString {
   const isDisabled = (day: ISODateString) =>
     isDateDisabled(
@@ -21,7 +22,7 @@ export function resolveEnabledCalendarFocus(
   for (let offset = 0; offset < 366; offset++) {
     const next = adapter.addDays(monthStart, offset);
     if (!isDisabled(next)) return next;
-    if (offset > 0) {
+    if (searchDirection === 'nearest' && offset > 0) {
       const previous = adapter.addDays(monthStart, -offset);
       if (!isDisabled(previous)) return previous;
     }

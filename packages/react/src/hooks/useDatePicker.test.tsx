@@ -121,19 +121,42 @@ describe('useDatePicker — navigation', () => {
   });
 
   it.each([
-    ['nextMonth', '2026-06-15T00:00:00.000Z'],
-    ['previousMonth', '2026-08-15T00:00:00.000Z'],
+    ['nextMonth', '2026-01-15T00:00:00.000Z'],
+    ['previousMonth', '2026-03-15T00:00:00.000Z'],
   ] as const)('%s focuses the first enabled day in the target month', (navigate, initialValue) => {
     const { result } = renderHook(() =>
       useDatePicker({
         defaultValue: initialValue,
-        disabled: [{ dayOfWeek: [3] }],
+        disabled: [{ dayOfWeek: [0, 1] }],
       }),
     );
 
     act(() => result.current[navigate]());
 
-    expect(result.current.focusedDate).toBe('2026-07-02T00:00:00.000Z');
+    expect(
+      result.current.adapter.isSameMonth(result.current.viewMonth, '2026-02-01T00:00:00.000Z'),
+    ).toBe(true);
+    expect(result.current.focusedDate).toBe('2026-02-03T00:00:00.000Z');
+  });
+
+  it('keeps view and focus synchronized when the target month is fully disabled', () => {
+    let disableFebruary = false;
+    const { result } = renderHook(() =>
+      useDatePicker({
+        defaultValue: '2026-01-15T00:00:00.000Z',
+        disabled: [
+          {
+            filter: (iso) => disableFebruary && iso.startsWith('2026-02-'),
+          },
+        ],
+      }),
+    );
+
+    disableFebruary = true;
+    act(() => result.current.nextMonth());
+
+    expect(result.current.viewMonth).toBe('2026-03-01T00:00:00.000Z');
+    expect(result.current.focusedDate).toBe('2026-03-01T00:00:00.000Z');
   });
 
   it('setViewMonth updates viewMonth directly', () => {
