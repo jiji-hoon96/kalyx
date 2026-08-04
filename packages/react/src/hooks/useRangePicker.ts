@@ -1,5 +1,10 @@
 import { useCallback, useId, useRef, useState } from 'react';
-import { civilMidnightFromUtcDay, getCalendarDays } from '@kalyx/core';
+import {
+  calendarDayFromInstant,
+  civilMidnightFromUtcDay,
+  getCalendarDays,
+  isDateDisabled,
+} from '@kalyx/core';
 import type {
   CalendarGrid,
   DateAdapter,
@@ -38,7 +43,7 @@ export interface UseRangePickerReturn {
   /** Handler for clicking a single date */
   selectDate: (iso: ISODateString) => void;
   /** Set the range directly */
-  setRange: (range: DateRange) => void;
+  setRange: (range: DateRange) => boolean;
   /** Whether the popover is open */
   isOpen: boolean;
   open: () => void;
@@ -104,34 +109,47 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
   const [isOpen, setIsOpen] = useState(false);
   const [selectingTarget, setSelectingTarget] = useState<RangeSelectingTarget>('start');
   const [hoverDate, setHoverDate] = useState<ISODateString | null>(null);
-  const [viewMonth, setViewMonth] = useState<ISODateString>(
-    currentValue.start ?? adapter.today(displayTimezone),
-  );
-  const [focusedDate, setFocusedDate] = useState<ISODateString>(
-    currentValue.start ?? adapter.today(displayTimezone),
-  );
+  const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
+    const target = currentValue.start ?? adapter.today(displayTimezone);
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+  });
+  const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
+    const target = currentValue.start ?? adapter.today(displayTimezone);
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+  });
 
   const setRange = useCallback(
     (range: DateRange) => {
+      if (
+        (range.start && isDateDisabled(range.start, disabled, adapter, displayTimezone)) ||
+        (range.end && isDateDisabled(range.end, disabled, adapter, displayTimezone))
+      ) {
+        return false;
+      }
       if (!isControlled) {
         setUncontrolledValue(range);
       }
       onChange?.(range);
+      return true;
     },
-    [isControlled, onChange],
+    [isControlled, onChange, disabled, adapter, displayTimezone],
   );
 
   const selectDate = useCallback(
     (iso: ISODateString) => {
       const normalized = displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
       if (selectingTarget === 'start') {
-        setRange({ start: normalized, end: null });
+        if (!setRange({ start: normalized, end: null })) return;
         setSelectingTarget('end');
         setHoverDate(null);
       } else {
         const start = currentValue.start;
         if (!start) {
-          setRange({ start: normalized, end: null });
+          if (!setRange({ start: normalized, end: null })) return;
           setSelectingTarget('end');
           return;
         }
@@ -140,7 +158,7 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
           ? { start: normalized, end: start }
           : { start, end: normalized };
 
-        setRange(newRange);
+        if (!setRange(newRange)) return;
         setSelectingTarget('start');
         setHoverDate(null);
         setIsOpen(false);
@@ -152,8 +170,11 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
   const open = useCallback(() => {
     setIsOpen(true);
     const target = currentValue.start ?? adapter.today(displayTimezone);
-    setViewMonth(target);
-    setFocusedDate(target);
+    const coordinate = displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+    setViewMonth(coordinate);
+    setFocusedDate(coordinate);
     if (currentValue.start && currentValue.end) {
       setSelectingTarget('start');
     }
@@ -183,7 +204,9 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
 
   const calendar = getCalendarDays(viewMonth, adapter, {
     weekStartsOn,
-    focusedDate,
+    focusedDate: displayTimezone
+      ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
+      : focusedDate,
     disabled,
     range: currentValue,
     rangeHover: hoverDate,

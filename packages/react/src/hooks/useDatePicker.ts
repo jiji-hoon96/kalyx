@@ -1,5 +1,10 @@
 import { useCallback, useId, useRef, useState } from 'react';
-import { civilMidnightFromUtcDay, getCalendarDays } from '@kalyx/core';
+import {
+  calendarDayFromInstant,
+  civilMidnightFromUtcDay,
+  getCalendarDays,
+  isDateDisabled,
+} from '@kalyx/core';
 import type {
   CalendarGrid,
   DateAdapter,
@@ -95,31 +100,41 @@ export function useDatePicker(options: UseDatePickerOptions = {}): UseDatePicker
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [viewMonth, setViewMonth] = useState<ISODateString>(
-    currentValue ?? adapter.today(displayTimezone),
-  );
-  const [focusedDate, setFocusedDate] = useState<ISODateString>(
-    currentValue ?? adapter.today(displayTimezone),
-  );
+  const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
+    const target = currentValue ?? adapter.today(displayTimezone);
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+  });
+  const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
+    const target = currentValue ?? adapter.today(displayTimezone);
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+  });
 
   const selectDate = useCallback(
     (iso: ISODateString | null) => {
       const normalized =
         iso && displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
+      if (normalized && isDateDisabled(normalized, disabled, adapter, displayTimezone)) return;
       if (!isControlled) {
         setUncontrolledValue(normalized);
       }
       onChange?.(normalized);
       setIsOpen(false);
     },
-    [isControlled, onChange, displayTimezone],
+    [isControlled, onChange, displayTimezone, disabled, adapter],
   );
 
   const open = useCallback(() => {
     setIsOpen(true);
     const target = currentValue ?? adapter.today(displayTimezone);
-    setViewMonth(target);
-    setFocusedDate(target);
+    const coordinate = displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
+    setViewMonth(coordinate);
+    setFocusedDate(coordinate);
   }, [currentValue, adapter, displayTimezone]);
 
   const close = useCallback(() => {
@@ -146,7 +161,9 @@ export function useDatePicker(options: UseDatePickerOptions = {}): UseDatePicker
   const calendar = getCalendarDays(viewMonth, adapter, {
     weekStartsOn,
     selected: currentValue,
-    focusedDate,
+    focusedDate: displayTimezone
+      ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
+      : focusedDate,
     disabled,
     timezone: displayTimezone,
   });

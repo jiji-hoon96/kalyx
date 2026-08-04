@@ -189,3 +189,61 @@ describe('useDatePicker — stable IDs', () => {
     expect(result.current.pickerId).toBe(firstId);
   });
 });
+
+describe('useDatePicker — timezone and constraint parity', () => {
+  it.each([
+    {
+      name: 'Seoul',
+      timezone: 'Asia/Seoul',
+      value: '2025-12-31T15:00:00.000Z',
+      coordinate: '2026-01-01T00:00:00.000Z',
+    },
+    {
+      name: 'New York',
+      timezone: 'America/New_York',
+      value: '2026-01-15T05:00:00.000Z',
+      coordinate: '2026-01-15T00:00:00.000Z',
+    },
+  ])(
+    'uses $name civil-day coordinates for initial and opened view/focus',
+    ({ timezone, value, coordinate }) => {
+      const { result } = renderHook(() =>
+        useDatePicker({ defaultValue: value, displayTimezone: timezone }),
+      );
+
+      expect(result.current.viewMonth).toBe(coordinate);
+      expect(result.current.focusedDate).toBe(coordinate);
+
+      act(() => result.current.open());
+
+      expect(result.current.viewMonth).toBe(coordinate);
+      expect(result.current.focusedDate).toBe(coordinate);
+    },
+  );
+
+  it.each([
+    { name: 'exact date', rule: { date: '2026-01-15T05:00:00.000Z' } },
+    { name: 'day of week', rule: { dayOfWeek: [4] } },
+    { name: 'before instant', rule: { before: '2026-01-15T06:00:00.000Z' } },
+    { name: 'after instant', rule: { after: '2026-01-15T04:00:00.000Z' } },
+    { name: 'filter', rule: { filter: (iso: string) => iso === '2026-01-15T05:00:00.000Z' } },
+  ])('rejects a $name rule at the final mutation boundary', ({ rule }) => {
+    const onChange = vi.fn();
+    const initial = '2026-01-14T05:00:00.000Z';
+    const { result } = renderHook(() =>
+      useDatePicker({
+        defaultValue: initial,
+        displayTimezone: 'America/New_York',
+        disabled: [rule],
+        onChange,
+      }),
+    );
+
+    act(() => result.current.open());
+    act(() => result.current.selectDate('2026-01-15T00:00:00.000Z'));
+
+    expect(result.current.value).toBe(initial);
+    expect(result.current.isOpen).toBe(true);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});

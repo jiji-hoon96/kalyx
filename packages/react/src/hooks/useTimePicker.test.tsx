@@ -153,3 +153,23 @@ describe('useTimePicker — format behavior', () => {
     expect(result.current.displayHour).toBe(13);
   });
 });
+
+describe('useTimePicker — filterTime parity', () => {
+  it('rejects a filtered final time without mutating uncontrolled state or calling onChange', () => {
+    const onChange = vi.fn();
+    const { result } = renderHook(() =>
+      useTimePicker({
+        defaultValue: '2026-01-15T05:30:00.000Z',
+        displayTimezone: 'America/New_York',
+        filterTime: (hours, minutes) => hours === 10 && minutes === 30,
+        onChange,
+      }),
+    );
+
+    act(() => result.current.setHour(10));
+
+    expect(result.current.value).toBe('2026-01-15T05:30:00.000Z');
+    expect(result.current.currentTime).toEqual({ hours: 0, minutes: 30, seconds: 0 });
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});

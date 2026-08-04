@@ -193,3 +193,66 @@ describe('useRangePicker — navigation', () => {
     ).toBe(true);
   });
 });
+
+describe('useRangePicker — timezone and constraint parity', () => {
+  it.each([
+    {
+      name: 'Seoul',
+      timezone: 'Asia/Seoul',
+      value: { start: '2025-12-31T15:00:00.000Z', end: '2026-01-01T15:00:00.000Z' },
+      coordinate: '2026-01-01T00:00:00.000Z',
+    },
+    {
+      name: 'New York',
+      timezone: 'America/New_York',
+      value: { start: '2026-01-15T05:00:00.000Z', end: '2026-01-16T05:00:00.000Z' },
+      coordinate: '2026-01-15T00:00:00.000Z',
+    },
+  ])(
+    'uses $name civil-day coordinates for initial and opened view/focus',
+    ({ timezone, value, coordinate }) => {
+      const { result } = renderHook(() =>
+        useRangePicker({ defaultValue: value, displayTimezone: timezone }),
+      );
+
+      expect(result.current.viewMonth).toBe(coordinate);
+      expect(result.current.focusedDate).toBe(coordinate);
+
+      act(() => result.current.open());
+
+      expect(result.current.viewMonth).toBe(coordinate);
+      expect(result.current.focusedDate).toBe(coordinate);
+    },
+  );
+
+  it.each([
+    { name: 'a disabled start endpoint', rule: { date: '2026-01-15T05:00:00.000Z' } },
+    {
+      name: 'a disabled end endpoint',
+      rule: { filter: (iso: string) => iso === '2026-01-16T05:00:00.000Z' },
+    },
+  ])('rejects a direct range with $name without updating uncontrolled state', ({ rule }) => {
+    const onChange = vi.fn();
+    const initial = { start: '2026-01-14T05:00:00.000Z', end: '2026-01-14T05:00:00.000Z' };
+    const { result } = renderHook(() =>
+      useRangePicker({
+        defaultValue: initial,
+        displayTimezone: 'America/New_York',
+        disabled: [rule],
+        onChange,
+      }),
+    );
+
+    act(() => result.current.open());
+    act(() =>
+      result.current.setRange({
+        start: '2026-01-15T05:00:00.000Z',
+        end: '2026-01-16T05:00:00.000Z',
+      }),
+    );
+
+    expect(result.current.value).toEqual(initial);
+    expect(result.current.isOpen).toBe(true);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});
