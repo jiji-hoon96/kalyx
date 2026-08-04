@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { HTMLAttributes } from 'react';
 import {
   getCalendarDays,
+  calendarDayFromInstant,
+  civilMidnightFromUtcDay,
   getISOWeekNumber,
   isDateDisabled,
   getWeekdayNames,
@@ -113,7 +115,10 @@ export function RangePickerCalendar({
     () =>
       getCalendarDays(viewMonth, adapter, {
         weekStartsOn,
-        focusedDate,
+        focusedDate:
+          displayTimezone && focusedDate
+            ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
+            : focusedDate,
         disabled,
         range: value,
         rangeHover: hoverDate,
@@ -180,28 +185,38 @@ export function RangePickerCalendar({
           weekStart = adapter.startOfWeek(iso, weekStartsOn);
           weekEnd = adapter.startOfDay(adapter.endOfWeek(iso, weekStartsOn));
         }
-        const range: DateRange = { start: weekStart, end: weekEnd };
-        ctx.setRange(range);
-        ctx.close();
-        ctx.announce(
-          `${ctx.labels.rangeSelected}: ${safeFormatFullDate(weekStart, locale)} – ${safeFormatFullDate(weekEnd, locale)}`,
-        );
+        const range: DateRange = {
+          start: displayTimezone ? civilMidnightFromUtcDay(weekStart, displayTimezone) : weekStart,
+          end: displayTimezone ? civilMidnightFromUtcDay(weekEnd, displayTimezone) : weekEnd,
+        };
+        if (ctx.setRange(range)) {
+          ctx.close();
+          ctx.announce(
+            `${ctx.labels.rangeSelected}: ${safeFormatFullDate(weekStart, locale)} – ${safeFormatFullDate(weekEnd, locale)}`,
+          );
+        }
       } else {
         // Capture selectingTarget BEFORE selectDate flips it so we can announce
         // the right state. "start" click prompts for the end; "end" click closes
         // the range and announces the full span.
         const wasPickingStart = selectingTarget === 'start';
         const previousStart = value.start;
-        ctx.selectDate(iso);
+        if (!ctx.selectDate(iso)) return;
         const formatted = safeFormatFullDate(iso, locale);
         if (wasPickingStart) {
           ctx.announce(`${formatted}. ${ctx.labels.selectingEnd}`);
         } else if (previousStart) {
           // Mirror the swap-if-before logic from RangePickerRoot.selectDate so the
           // announcement matches what will be committed.
-          const [start, end] = adapter.isBefore(iso, previousStart)
-            ? [iso, previousStart]
-            : [previousStart, iso];
+          const selectedValue = displayTimezone
+            ? civilMidnightFromUtcDay(iso, displayTimezone)
+            : iso;
+          const previousStartCoordinate = displayTimezone
+            ? calendarDayFromInstant(previousStart, displayTimezone)
+            : previousStart;
+          const [start, end] = adapter.isBefore(selectedValue, previousStart)
+            ? [iso, previousStartCoordinate]
+            : [previousStartCoordinate, iso];
           ctx.announce(
             `${ctx.labels.rangeSelected}: ${safeFormatFullDate(start, locale)} – ${safeFormatFullDate(end, locale)}`,
           );
@@ -212,7 +227,17 @@ export function RangePickerCalendar({
         }
       }
     },
-    [selectionMode, weekAnchor, adapter, weekStartsOn, ctx, locale, selectingTarget, value.start],
+    [
+      selectionMode,
+      weekAnchor,
+      adapter,
+      weekStartsOn,
+      ctx,
+      locale,
+      selectingTarget,
+      value.start,
+      displayTimezone,
+    ],
   );
 
   const handleDayClick = useCallback(
@@ -274,7 +299,10 @@ export function RangePickerCalendar({
           case 'Enter':
           case ' ':
             e.preventDefault();
-            if (!isDateDisabled(focusedDate, disabled, adapter)) {
+            const focusedValue = displayTimezone
+              ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
+              : focusedDate;
+            if (!isDateDisabled(focusedValue, disabled, adapter, displayTimezone)) {
               commitDay(focusedDate);
             }
             return;
@@ -296,7 +324,15 @@ export function RangePickerCalendar({
         // Step in the original direction up to one full grid (42 cells) before giving up.
         const skipStep = isBackwardKey(e.key, dir) ? -1 : 1;
         let attempts = 0;
-        while (isDateDisabled(newFocused, disabled, adapter) && attempts < 42) {
+        while (
+          isDateDisabled(
+            displayTimezone ? civilMidnightFromUtcDay(newFocused, displayTimezone) : newFocused,
+            disabled,
+            adapter,
+            displayTimezone,
+          ) &&
+          attempts < 42
+        ) {
           newFocused = adapter.addDays(newFocused, skipStep);
           attempts++;
         }
@@ -326,6 +362,7 @@ export function RangePickerCalendar({
       value.start,
       commitDay,
       dir,
+      displayTimezone,
     ],
   );
 
