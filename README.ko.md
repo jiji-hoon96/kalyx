@@ -12,7 +12,7 @@
 [문서](https://kalyx-docs-site.vercel.app/ko) · [English](https://kalyx-docs-site.vercel.app) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.md](./README.md)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-16.64KB-brightgreen)](https://kalyx-docs-site.vercel.app/ko/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-18.28KB-brightgreen)](https://kalyx-docs-site.vercel.app/ko/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -21,7 +21,7 @@
 
 ---
 
-Kalyx는 **완결된 채로** 배포되는 Headless React DatePicker 라이브러리입니다. 단일 날짜 / 범위 / 시간 / 날짜+시간 / 월 / 연 / 주 7종 픽커를 하나의 조합형 API로 다룹니다 — gzip ~16.6 KB (≤ 20 KB), CSS 없음, SSR 안전.
+Kalyx는 **완결된 채로** 배포되는 Headless React DatePicker 라이브러리입니다. 단일 날짜 / 범위 / 시간 / 날짜+시간 / 월 / 연 / 주 7종 픽커를 하나의 조합형 API로 다룹니다 — gzip ~18.3 KB (≤ 20 KB), CSS 없음, SSR 안전.
 
 ```bash
 pnpm add @kalyx/react
@@ -44,7 +44,7 @@ import { DatePicker } from '@kalyx/react';
 
 2026년 React 데이트 피커 시장은 둘 중 하나를 강요한다: 통합됐지만 무거운 것(react-datepicker ~62 KB, MUI ~58 KB), 또는 가볍지만 부분적인 것(react-day-picker — calendar grid만; Ark UI — standalone TimePicker 없음; React Aria — `@internationalized/date` 종속). react-calendar는 단일 날짜·범위는 다루지만 time·RSC·timezone 저장이 빠지고, react-native-calendars는 모바일 우선이다.
 
-Kalyx는 **7개 프리미티브** — 단일 날짜, 범위, 시간, 날짜+시간, 월, 연, 주 — 를 하나의 composition API로 묶는다. Headless, ~16.6 KB gzip, SSR 안전, ISO 문자열 입출력, date-fns/dayjs/luxon용 adapter 패턴.
+Kalyx는 **7개 프리미티브** — 단일 날짜, 범위, 시간, 날짜+시간, 월, 연, 주 — 를 하나의 composition API로 묶는다. Headless, ~18.3 KB gzip, SSR 안전, ISO 문자열 입출력, date-fns/dayjs/luxon용 adapter 패턴.
 
 ## 특징
 
@@ -105,7 +105,7 @@ API 레퍼런스, 레시피 (Tailwind / shadcn / React Hook Form), 마이그레�
 
 ## 번들
 
-`@kalyx/react` → **16.64 KB** gzip (ESM) / **16.89 KB** (CJS). CI 한계 ≤ 20 KB.
+`@kalyx/react` → **18.28 KB** gzip (ESM) / **18.38 KB** (CJS). CI 한계 ≤ 20 KB.
 
 ## 지원 환경
 

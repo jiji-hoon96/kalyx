@@ -50,7 +50,7 @@ Kalyx 는 그 공백을 채운다:
 - **Headless 철학** — 스타일시트 없음, 덮어써야 할 클래스 없음.
 - **통합된 primitive** — 7개의 picker (DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker) 가 하나의 컨텍스트 모델을 공유한다.
 - **Composition 우선** — Radix 스타일의 dot notation. 100개짜리 prop 덩어리 없음.
-- **~16.6 KB gzip (≤ 20 KB 한계)** — 측정된 값, CI 에서 강제된다.
+- **~18.3 KB gzip (≤ 20 KB 한계)** — 측정된 값, CI 에서 강제된다.
 - **SSR 안전** — Next.js App Router 환경에서 검증됨.
 - **ISO 8601 UTC 문자열** 을 값 계약으로 사용 — Date 객체로 인한 함정 없음.
 - **Timezone 인지** — opt-in `displayTimezone` prop 이 UTC 저장 계약을 유지한 채 DST 와 civil-day 의미론을 처리한다. [Timezone 컨셉 페이지](./concepts/timezone) 참고.
