@@ -44,7 +44,7 @@ const PATHS: Record<IconName, ReactNode> = {
       <path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" />
     </>
   ),
-  // ≤17 KB — a package / box
+  // ≤20 KB — a package / box
   package: (
     <>
       <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z" />

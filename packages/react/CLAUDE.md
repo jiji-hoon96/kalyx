@@ -56,6 +56,6 @@ src/
 ## 빌드
 
 ```bash
-pnpm --filter @kalyx/react build     # tsup: ESM + CJS + DTS (번들 목표 ≤17KB — scripts/check-bundle-size.js TARGET_KB 단일 소스)
+pnpm --filter @kalyx/react build     # tsup: ESM + CJS + DTS (번들 목표 ≤20KB — scripts/check-bundle-size.js TARGET_KB 단일 소스)
 pnpm --filter @kalyx/react typecheck
 ```
