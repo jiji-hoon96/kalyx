@@ -87,6 +87,7 @@ Commands were run in the required order in `/private/tmp/kalyx-codex-correctness
 | `pnpm format:check` | 0 | All matched package source files passed Prettier. |
 | `pnpm check-bundle` | 1 | FAIL: ESM 18.30KB and CJS 18.43KB exceed 17KB. |
 | `pnpm check-tree-shaking` | 0 | Single picker 23.78KB gzip, hook 24.10KB, all 24.80KB; all picker scenarios remain identical. |
+| `node scripts/verify-entry-split.mjs` | 1 | Additional PR-CI gate reproduced locally: default 26.39KB, headless 26.08KB; 1.2% reduction misses the >=2% threshold. CI measured 1.1%. |
 | `pnpm test:e2e` | 0 | 93/93 passed across Chromium, Firefox, and WebKit. |
 | `pnpm --filter docs-site typecheck` | 2 | Existing baseline failure: `src/pages/index.tsx(11,33): Cannot find namespace 'JSX'`. |
 
@@ -94,7 +95,7 @@ Commands were run in the required order in `/private/tmp/kalyx-codex-correctness
 
 Baseline React index was approximately ESM 16.66KB / CJS 16.91KB gzip. The Codex candidate is ESM 18.30KB / CJS 18.43KB, about +1.64KB / +1.52KB and over budget. Source analysis attributes the growth to correctness logic distributed across Range Calendar/Root, DateTime Root, Core, exported headless hooks, and disabled-focus alignment rather than a build-option change. The 17KB limit and tsup/check scripts are untouched.
 
-Consumer tree-shaking also remains an independent product risk: every single rendered picker bundles to the same 23.78KB gzip. This branch does not redesign package entries because that was explicitly out of scope.
+Consumer tree-shaking also remains an independent product risk: every single rendered picker bundles to the same 23.78KB gzip. The dedicated headless entry-split gate also fails because the headless consumer bundle is only 1.2% smaller than default locally (1.1% in CI), below its 2% sanity threshold. This branch does not redesign package entries because that was explicitly out of scope.
 
 No intended breaking value or callback contract was introduced. Independent task review found and corrected a temporary `setRange` return-type regression before final validation.
 
@@ -102,7 +103,7 @@ The final independent correctness review reported no remaining Critical or Impor
 
 ## Remaining risks and recommendation
 
-1. The 17KB hard gate is the only in-scope release blocker. Do not merge or silently raise it without a maintainer decision. A shared transition-layer refactor could reduce duplication but is materially broader and needs its own regression/review cycle.
+1. Bundle packaging has two release blockers: the 17KB React index ceiling and the >=2% headless entry-split threshold. Do not merge, silently raise a threshold, or change the export strategy without a maintainer decision. A shared transition-layer refactor could reduce duplication but is materially broader and needs its own regression/review cycle.
 2. The docs-site JSX namespace failure predates this branch and is outside the correctness scope, but it should be fixed before calling repository-wide validation fully green.
 3. Consumer tree-shaking claims remain unsupported by the current harness result and should be corrected or addressed separately.
 4. Claude PR #176 should be corrected before merging as audit documentation. Do not merge #178/#179/#180 on top of the Codex implementation; they overlap and retain narrower semantics.
