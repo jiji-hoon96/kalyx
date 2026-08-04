@@ -382,6 +382,29 @@ describe('DatePicker — keyboard navigation', () => {
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-16T/));
   });
 
+  it('focuses an enabled day after navigating to a month whose first day is disabled', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker
+        value="2026-06-15T00:00:00.000Z"
+        disabled={[{ dayOfWeek: [3] }]}
+        onChange={vi.fn()}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    await user.click(screen.getByRole('button', { name: 'Next month' }));
+
+    expect(screen.getByRole('button', { name: /July 2, 2026/ })).toHaveFocus();
+    await user.keyboard('{ArrowRight}');
+    expect(screen.getByRole('button', { name: /July 3, 2026/ })).toHaveFocus();
+  });
+
   it('uses the civil instant for timezone-aware Enter disabled checks', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();

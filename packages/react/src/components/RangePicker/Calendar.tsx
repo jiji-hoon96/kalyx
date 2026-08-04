@@ -12,6 +12,7 @@ import {
 } from '@kalyx/core';
 import type { CalendarDay, DateRange } from '@kalyx/core';
 import { useRangePickerContext } from '../../context/RangePickerContext.js';
+import { resolveEnabledCalendarFocus } from '../../internal/calendarFocus.js';
 import { horizontalDayStep, isBackwardKey } from '../_shared/rtl.js';
 
 export interface RangePickerCalendarClassNames {
@@ -154,13 +155,16 @@ export function RangePickerCalendar({
   const navigateMonth = useCallback(
     (direction: number) => {
       const newMonth = adapter.addMonths(viewMonth, direction);
+      const monthStart = adapter.startOfMonth(newMonth);
       ctx.setViewMonth(newMonth);
-      ctx.setFocusedDate(adapter.startOfMonth(newMonth));
+      ctx.setFocusedDate(
+        resolveEnabledCalendarFocus(monthStart, disabled, adapter, displayTimezone),
+      );
       const y = adapter.getYear(newMonth);
       const m = adapter.getMonth(newMonth);
       ctx.announce(formatMonthYear(y, m, locale));
     },
-    [adapter, viewMonth, ctx, locale],
+    [adapter, viewMonth, ctx, locale, disabled, displayTimezone],
   );
 
   const commitDay = useCallback(

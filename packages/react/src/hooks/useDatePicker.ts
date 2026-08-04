@@ -150,15 +150,17 @@ export function useDatePicker(options: UseDatePickerOptions = {}): UseDatePicker
 
   const previousMonth = useCallback(() => {
     const newMonth = adapter.addMonths(viewMonth, -1);
+    const monthStart = adapter.startOfMonth(newMonth);
     setViewMonth(newMonth);
-    setFocusedDate(adapter.startOfMonth(newMonth));
-  }, [adapter, viewMonth]);
+    setFocusedDate(resolveEnabledCalendarFocus(monthStart, disabled, adapter, displayTimezone));
+  }, [adapter, viewMonth, disabled, displayTimezone]);
 
   const nextMonth = useCallback(() => {
     const newMonth = adapter.addMonths(viewMonth, 1);
+    const monthStart = adapter.startOfMonth(newMonth);
     setViewMonth(newMonth);
-    setFocusedDate(adapter.startOfMonth(newMonth));
-  }, [adapter, viewMonth]);
+    setFocusedDate(resolveEnabledCalendarFocus(monthStart, disabled, adapter, displayTimezone));
+  }, [adapter, viewMonth, disabled, displayTimezone]);
 
   const calendar = getCalendarDays(viewMonth, adapter, {
     weekStartsOn,

@@ -120,6 +120,22 @@ describe('useDatePicker — navigation', () => {
     expect(result.current.adapter.isSameMonth(result.current.viewMonth, next)).toBe(true);
   });
 
+  it.each([
+    ['nextMonth', '2026-06-15T00:00:00.000Z'],
+    ['previousMonth', '2026-08-15T00:00:00.000Z'],
+  ] as const)('%s focuses the first enabled day in the target month', (navigate, initialValue) => {
+    const { result } = renderHook(() =>
+      useDatePicker({
+        defaultValue: initialValue,
+        disabled: [{ dayOfWeek: [3] }],
+      }),
+    );
+
+    act(() => result.current[navigate]());
+
+    expect(result.current.focusedDate).toBe('2026-07-02T00:00:00.000Z');
+  });
+
   it('setViewMonth updates viewMonth directly', () => {
     const { result } = renderHook(() => useDatePicker());
 
