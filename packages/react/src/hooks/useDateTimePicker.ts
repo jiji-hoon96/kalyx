@@ -171,8 +171,9 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
     const coordinate = displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
-    setViewMonth(coordinate);
-    setFocusedDate(resolveEnabledCalendarFocus(coordinate, disabled, adapter, displayTimezone));
+    const focus = resolveEnabledCalendarFocus(coordinate, disabled, adapter, displayTimezone);
+    setViewMonth(focus);
+    setFocusedDate(focus);
   }, [currentValue, adapter, displayTimezone, disabled]);
   const close = useCallback(() => setIsOpen(false), []);
   const toggle = useCallback(() => {

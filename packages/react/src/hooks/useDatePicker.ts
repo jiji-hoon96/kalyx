@@ -134,8 +134,9 @@ export function useDatePicker(options: UseDatePickerOptions = {}): UseDatePicker
     const coordinate = displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
-    setViewMonth(coordinate);
-    setFocusedDate(resolveEnabledCalendarFocus(coordinate, disabled, adapter, displayTimezone));
+    const focus = resolveEnabledCalendarFocus(coordinate, disabled, adapter, displayTimezone);
+    setViewMonth(focus);
+    setFocusedDate(focus);
   }, [currentValue, adapter, displayTimezone, disabled]);
 
   const close = useCallback(() => {

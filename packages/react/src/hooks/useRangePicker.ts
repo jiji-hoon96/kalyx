@@ -174,8 +174,9 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
     const coordinate = displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
-    setViewMonth(coordinate);
-    setFocusedDate(resolveEnabledCalendarFocus(coordinate, disabled, adapter, displayTimezone));
+    const focus = resolveEnabledCalendarFocus(coordinate, disabled, adapter, displayTimezone);
+    setViewMonth(focus);
+    setFocusedDate(focus);
     if (currentValue.start && currentValue.end) {
       setSelectingTarget('start');
     }

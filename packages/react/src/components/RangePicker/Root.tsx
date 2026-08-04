@@ -229,8 +229,14 @@ export function RangePickerRoot({
       const focus = displayTimezone
         ? calendarDayFromInstant(targetValue, displayTimezone)
         : adapter.startOfDay(targetValue);
-      setViewMonth(focus);
-      setFocusedDate(resolveEnabledCalendarFocus(focus, disabledRules, adapter, displayTimezone));
+      const enabledFocus = resolveEnabledCalendarFocus(
+        focus,
+        disabledRules,
+        adapter,
+        displayTimezone,
+      );
+      setViewMonth(enabledFocus);
+      setFocusedDate(enabledFocus);
       // An explicit target (from clicking the start/end input) wins. Otherwise, if
       // the range is complete, restart the two-click flow from 'start'.
       if (target) {

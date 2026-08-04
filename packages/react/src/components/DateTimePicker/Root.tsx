@@ -278,10 +278,14 @@ export function DateTimePickerRoot({
     const calendarTarget = displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
-    setViewMonth(calendarTarget);
-    setFocusedDate(
-      resolveEnabledCalendarFocus(calendarTarget, disabledRules, adapter, displayTimezone),
+    const focus = resolveEnabledCalendarFocus(
+      calendarTarget,
+      disabledRules,
+      adapter,
+      displayTimezone,
     );
+    setViewMonth(focus);
+    setFocusedDate(focus);
   }, [isDisabled, readOnly, currentValue, adapter, displayTimezone, disabledRules]);
 
   const close = useCallback(() => {

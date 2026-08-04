@@ -454,6 +454,27 @@ describe('DatePicker — keyboard navigation', () => {
 
     expect(screen.getByRole('button', { name: /January 2, 2026/ })).toHaveFocus();
   });
+
+  it('moves view and focus to the next enabled month when the selected month is fully disabled', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker
+        value="2026-01-17T00:00:00.000Z"
+        disabled={[{ before: '2026-02-01T00:00:00.000Z' }]}
+        onChange={vi.fn()}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+
+    expect(screen.getByRole('grid')).toHaveAttribute('aria-label', 'February 2026');
+    expect(screen.getByRole('button', { name: /February 1, 2026/ })).toHaveFocus();
+  });
 });
 
 describe('DatePicker — context errors', () => {

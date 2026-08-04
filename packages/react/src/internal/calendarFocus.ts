@@ -17,10 +17,14 @@ export function resolveEnabledCalendarFocus(
 
   if (!isDisabled(coordinate)) return coordinate;
 
-  let candidate = adapter.startOfMonth(coordinate);
-  for (let day = 0; day < 31; day++) {
-    if (!isDisabled(candidate)) return candidate;
-    candidate = adapter.addDays(candidate, 1);
+  const monthStart = adapter.startOfMonth(coordinate);
+  for (let offset = 0; offset < 366; offset++) {
+    const next = adapter.addDays(monthStart, offset);
+    if (!isDisabled(next)) return next;
+    if (offset > 0) {
+      const previous = adapter.addDays(monthStart, -offset);
+      if (!isDisabled(previous)) return previous;
+    }
   }
   return coordinate;
 }
