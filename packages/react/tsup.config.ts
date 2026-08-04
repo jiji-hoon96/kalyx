@@ -1,4 +1,5 @@
 import { defineConfig } from "tsup";
+import { REACT_GZIP_CEILING_KB } from "../../scripts/bundle-policy.js";
 
 const USE_CLIENT_DIRECTIVE = '"use client";\n';
 
@@ -34,7 +35,6 @@ export default defineConfig({
 		// Only the default `index` entry is checked against the public size budget;
 		// the headless entry is intentionally smaller and measured separately by
 		// scripts/verify-entry-split.mjs.
-		const TARGET_KB = 20;
 		const outputs = [
 			["ESM index", "dist/index.js", true],
 			["CJS index", "dist/index.cjs", true],
@@ -49,8 +49,11 @@ export default defineConfig({
 				}
 				const content = readFileSync(file);
 				const kb = (gzipSync(content).length / 1024).toFixed(2);
-				const icon = !enforceBudget || parseFloat(kb) <= TARGET_KB ? "✅" : "⚠️";
-				const suffix = enforceBudget ? ` (목표: ≤${TARGET_KB}KB)` : "";
+				const icon =
+					!enforceBudget || parseFloat(kb) <= REACT_GZIP_CEILING_KB ? "✅" : "⚠️";
+				const suffix = enforceBudget
+					? ` (목표: ≤${REACT_GZIP_CEILING_KB}KB)`
+					: "";
 				console.log(`${icon} [${label}] gzip: ${kb}KB${suffix}`);
 			} catch {}
 		}

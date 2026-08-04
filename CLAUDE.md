@@ -252,7 +252,8 @@ kalyx/
 │   ├── docs/                         ← 데모 사이트 (Next.js, 정적 빌드)
 │   └── docs-site/                    ← 문서 사이트 (Docusaurus, i18n)
 ├── scripts/
-│   ├── check-bundle-size.js          ← 번들 크기 측정 (20KB 제한, TARGET_KB 단일 소스 — tsup.config.ts에도 동일 상수 복제)
+│   ├── bundle-policy.js              ← React gzip 제한 단일 소스 (20KB, checker·tsup이 공유)
+│   ├── check-bundle-size.js          ← 공유 정책 기반 번들 크기 측정·게이팅
 │   └── check-tree-shaking.js         ← tree-shaking 검증
 ├── test/
 │   └── setup.ts                      ← Vitest 전역 설정
@@ -757,7 +758,7 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 □ 접근성 기준을 만족하는가? (axe 통과)
 □ 테스트가 작성됐는가? (커버리지 기준 충족)
 □ JSDoc 주석이 있는가? (공개 API)
-□ 번들에 불필요한 의존성을 추가하지 않았는가? (16KB 목표)
+□ 번들에 불필요한 의존성을 추가하지 않았는가? (20KB gzip ceiling)
 □ 내부 구현이 index.ts에 실수로 export되지 않았는가?
 □ changeset 파일을 추가했는가? (공개 API 변경 시 필수)
 ```

@@ -27,6 +27,14 @@ describe('<FeatureGrid>', () => {
     ]);
   });
 
+  it('describes the bundle using the enforced ceiling, not a stale competitor ratio', () => {
+    const bundle = FEATURES.find(feature => feature.id === 'bundle');
+
+    expect(bundle?.titleDefault).toBe('≤20 KB gzipped');
+    expect(bundle?.bodyDefault).toContain('CI ceiling: 20 KB');
+    expect(bundle?.bodyDefault).not.toContain('quarter of react-datepicker');
+  });
+
   it('passes axe', async () => {
     const { container } = render(<FeatureGrid />);
     expect(await axe(container)).toHaveNoViolations();

@@ -40,6 +40,6 @@ export const FEATURES: readonly Feature[] = [
     titleId: 'home.featureGrid.bundle.title',
     titleDefault: '≤20 KB gzipped',
     bodyId: 'home.featureGrid.bundle.body',
-    bodyDefault: 'All seven pickers + hooks + the date-fns adapter. A quarter of react-datepicker. Tree-shakable — pay only for what you import.',
+    bodyDefault: 'All seven pickers + hooks + the date-fns adapter. CI ceiling: 20 KB. Tree-shakable — pay only for what you import.',
   },
 ] as const;

@@ -149,7 +149,7 @@ jobs:
         with:
           name: dist-${{ github.run_id }}
           path: packages/react/dist/
-      # 측정·게이팅은 scripts/check-bundle-size.js 단일 소스 (TARGET_KB=17, B-R1).
+      # 측정·게이팅은 scripts/bundle-policy.js의 20KB 정책을 공유 (B-R1).
       # 스크립트가 kb_esm/kb_cjs 를 $GITHUB_OUTPUT 에 기록하고, 20KB 초과 시 exit 1.
       - name: 크기 측정 및 판정
         id: check
