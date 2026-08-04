@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
@@ -416,6 +416,44 @@ describe('RangePicker — keyboard navigation', () => {
       end: null,
     });
   });
+
+  it('skips a timezone-disabled civil day when navigating', async () => {
+    const user = userEvent.setup();
+    renderRangePicker({
+      value: { start: '2026-01-15T05:00:00.000Z', end: null },
+      displayTimezone: 'America/New_York',
+      disabled: [{ date: '2026-01-16T05:00:00.000Z' }],
+    });
+
+    await user.click(screen.getByLabelText('Start date'));
+    await user.keyboard('{ArrowRight}');
+
+    expect(screen.getByRole('button', { name: /January 17, 2026/ })).toHaveFocus();
+  });
+
+  it.each(['Enter', ' '])('uses the timezone civil instant for %s disabled checks', async (key) => {
+    const onChange = vi.fn();
+    const filter = vi.fn((iso: string) => iso === '2026-01-15T05:00:00.000Z');
+    render(
+      <RangePicker
+        value={{ start: '2026-01-15T05:00:00.000Z', end: null }}
+        displayTimezone="America/New_York"
+        disabled={[{ filter }]}
+        onChange={onChange}
+      >
+        <RangePicker.Input part="start" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+    await userEvent.click(screen.getByLabelText('Start date'));
+    filter.mockClear();
+    fireEvent.keyDown(screen.getByRole('grid'), { key });
+
+    expect(filter.mock.calls).toEqual([['2026-01-15T05:00:00.000Z']]);
+    expect(onChange).not.toHaveBeenCalled();
+  });
 });
 
 describe('RangePicker — range visualization', () => {
@@ -784,6 +822,29 @@ describe('RangePicker — Presets', () => {
     // The "Today" option should be active
     const todayOption = screen.getByRole('button', { name: 'Today' });
     expect(todayOption).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('recomputes direct-range active state when displayTimezone changes', () => {
+    const value = {
+      start: '2026-01-15T00:00:00.000Z',
+      end: '2026-01-15T00:00:00.000Z',
+    };
+    const directRange = {
+      start: '2026-01-15T05:00:00.000Z',
+      end: '2026-01-15T05:00:00.000Z',
+    };
+    const renderPicker = (displayTimezone?: string) => (
+      <RangePicker value={value} displayTimezone={displayTimezone} onChange={vi.fn()}>
+        <RangePicker.Preset range={directRange}>Direct range</RangePicker.Preset>
+      </RangePicker>
+    );
+    const { rerender } = render(renderPicker());
+    const preset = screen.getByRole('button', { name: 'Direct range' });
+    expect(preset).toHaveAttribute('aria-pressed', 'true');
+
+    rerender(renderPicker('America/New_York'));
+
+    expect(preset).toHaveAttribute('aria-pressed', 'false');
   });
 
   it('sets the correct range for "Last 30 days"', async () => {

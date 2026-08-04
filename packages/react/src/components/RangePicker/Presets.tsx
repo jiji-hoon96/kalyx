@@ -187,7 +187,7 @@ export function RangePickerPreset({
       ctx.adapter.isSameDay(ctx.value.start, resolved.start, ctx.displayTimezone) &&
       ctx.adapter.isSameDay(ctx.value.end, resolved.end, ctx.displayTimezone)
     );
-  }, [ctx.value.start, ctx.value.end, ctx.adapter, resolved]);
+  }, [ctx.value.start, ctx.value.end, ctx.adapter, ctx.displayTimezone, resolved]);
 
   // role="option" is invalid outside role="listbox"/role="combobox"; parent is
   // role="group". Use a regular toggle button with aria-pressed.
