@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import Layout from '@theme/Layout';
 import Hero from '../components/Hero';
 import StatStrip from '../components/StatStrip';

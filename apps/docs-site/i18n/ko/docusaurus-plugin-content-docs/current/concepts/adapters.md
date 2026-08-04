@@ -121,9 +121,12 @@ Day.js 지원은 *예시*이지 공식 지원 어댑터가 아닙니다. 모든 
 
 ## 의존성 관련 참고
 
-현재 `date-fns`와 `date-fns-tz`는 `@kalyx/react`의 **런타임 의존성**입니다. 향후 릴리즈에서 이를 별도의 `@kalyx/adapter-date-fns` 패키지로 분리해, 어댑터 없는 번들은 무게를 완전히 뺄 수 있게 됩니다.
+`@kalyx/core`는 이제 날짜 라이브러리에 독립적이며 자체 `date-fns` 의존성이 없습니다. 기본 어댑터는 `@kalyx/adapter-date-fns`에 있고, 기본 `@kalyx/react` 엔트리가 이를 자동으로 주입하므로 `@kalyx/react`만 설치해도 바로 동작합니다.
+
+이미 `dayjs`, `luxon`, 또는 `Temporal`을 사용한다면 `@kalyx/react/headless`에서 import하여 어댑터를 교체하고 번들에서 `date-fns`를 완전히 제외할 수 있습니다. Kalyx는 `@kalyx/adapter-dayjs`와 `@kalyx/adapter-luxon` 공식 drop-in 어댑터를 제공하므로 직접 작성할 필요가 없습니다. 전체 사용법은 [어댑터 가이드](../guides/adapters.md)를 참고하세요.
 
 ## 다음
 
+- [어댑터 가이드 (커스텀 어댑터, `/headless` 엔트리) →](../guides/adapters.md)
 - [ISO 문자열 →](./iso-string.md)
 - [API 레퍼런스 — core →](../api/core.md)

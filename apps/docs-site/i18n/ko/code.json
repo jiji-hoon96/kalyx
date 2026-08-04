@@ -60,7 +60,7 @@
     "description": "FeatureGrid: 번들 카드 제목"
   },
   "home.featureGrid.bundle.body": {
-    "message": "7종 picker + hook + date-fns 어댑터 전부 포함. react-datepicker의 1/4 크기. tree-shakable — 쓰는 것만 비용 부담.",
+    "message": "7종 picker + hook + date-fns 어댑터 전부 포함. CI 한계 20 KB. tree-shakable — 쓰는 것만 비용 부담.",
     "description": "FeatureGrid: 번들 카드 본문"
   },
   "home.sameJsx.eyebrow": {

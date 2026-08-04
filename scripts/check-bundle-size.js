@@ -8,8 +8,8 @@
 //    primitive on the same payload.
 // 3. CI (`.github/workflows/pr-check.yml` `bundle-size` job) invokes this
 //    script directly instead of running its own `gzip -c | wc -c` pipeline,
-//    so shell-gzip vs. Node-zlib defaults can't drift apart inside the
-//    17KB margin (currently ~901 B on CJS / ~1033 B on ESM — CJS binds).
+//    so shell-gzip vs. Node-zlib defaults can't drift apart near the
+//    configured ceiling.
 //
 // When `$GITHUB_OUTPUT` is set, the script appends per-bundle gzip KB values
 // (kb_esm, kb_cjs) so the workflow can read them back for the PR comment
@@ -17,6 +17,7 @@
 
 import { gzipSync } from "zlib";
 import { readFileSync, statSync, appendFileSync } from "fs";
+import { REACT_GZIP_CEILING_KB } from "./bundle-policy.js";
 
 // Bundle target. 12KB → 13KB after the v1.0-rc audit added user-facing
 // features (IME composition handling, popover focus-out, `name`/hidden-input
@@ -35,7 +36,7 @@ import { readFileSync, statSync, appendFileSync } from "fs";
 // DatePicker/DateTimePicker (audit A-G1), so month-nav and date selection are
 // announced from a region that survives Calendar unmount, matching RangePicker.
 // Still ~3.5× smaller than react-datepicker (~40KB).
-export const TARGET_KB = 20;
+export const TARGET_KB = REACT_GZIP_CEILING_KB;
 export const TARGET_BYTES = TARGET_KB * 1024;
 
 export const BUNDLES = [
@@ -46,7 +47,7 @@ export const BUNDLES = [
 // Single source of truth for the gzip primitive. bundle-diff.mjs imports this
 // so base-vs-head deltas are measured with the exact same zlib defaults as the
 // CI gate and tsup post-build hook — no shell-gzip drift inside the
-// 17KB margin (~901 B CJS / ~1033 B ESM).
+// configured margin.
 export function getGzipBytes(filePath) {
 	return gzipSync(readFileSync(filePath)).length;
 }
