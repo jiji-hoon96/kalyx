@@ -14,6 +14,7 @@ import type {
   WeekStartsOn,
 } from '@kalyx/core';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
+import { resolveEnabledCalendarFocus } from '../internal/calendarFocus.js';
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
 
@@ -153,8 +154,8 @@ export function useWeekPicker(options: UseWeekPickerOptions = {}): UseWeekPicker
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
     setViewMonth(coordinate);
-    setFocusedDate(coordinate);
-  }, [currentValue.start, adapter, displayTimezone]);
+    setFocusedDate(resolveEnabledCalendarFocus(coordinate, disabled, adapter, displayTimezone));
+  }, [currentValue.start, adapter, displayTimezone, disabled]);
   const close = useCallback(() => setIsOpen(false), []);
   const toggle = useCallback(() => {
     if (isOpen) close();

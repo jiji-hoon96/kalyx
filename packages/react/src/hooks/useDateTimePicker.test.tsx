@@ -50,6 +50,19 @@ describe('useDateTimePicker', () => {
 });
 
 describe('useDateTimePicker — timezone and constraint parity', () => {
+  it('opens with an enabled focus coordinate when the controlled date is disabled', () => {
+    const { result } = renderHook(() =>
+      useDateTimePicker({
+        value: '2026-01-17T10:00:00.000Z',
+        disabled: [{ dayOfWeek: [0, 6] }],
+      }),
+    );
+
+    act(() => result.current.open());
+
+    expect(result.current.focusedDate).toBe('2026-01-01T00:00:00.000Z');
+  });
+
   it('uses Seoul civil-day coordinates for initial and opened view/focus', () => {
     const { result } = renderHook(() =>
       useDateTimePicker({

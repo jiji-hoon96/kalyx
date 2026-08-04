@@ -18,6 +18,7 @@ import { DatePickerContext } from '../../context/DatePickerContext.js';
 import type { DatePickerContextValue } from '../../context/DatePickerContext.js';
 import type { Direction } from '../_shared/rtl.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
+import { resolveEnabledCalendarFocus } from '../../internal/calendarFocus.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
 import { SR_ONLY } from '../../internal/srOnly.js';
 
@@ -191,8 +192,10 @@ export function DatePickerRoot({
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
     setViewMonth(calendarTarget);
-    setFocusedDate(calendarTarget);
-  }, [isDisabled, readOnly, currentValue, adapter, displayTimezone]);
+    setFocusedDate(
+      resolveEnabledCalendarFocus(calendarTarget, disabledRules, adapter, displayTimezone),
+    );
+  }, [isDisabled, readOnly, currentValue, adapter, displayTimezone, disabledRules]);
 
   const close = useCallback(() => {
     setIsOpen(false);

@@ -124,7 +124,8 @@ describe('DateTimePicker — timezone calendar coordinates', () => {
   it('normalizes a time-bearing default-zone value before keyboard disabled checks', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    const filter = vi.fn((iso: string) => iso === '2026-01-15T00:00:00.000Z');
+    let reject = false;
+    const filter = vi.fn((iso: string) => reject && iso === '2026-01-15T00:00:00.000Z');
     render(
       <DateTimePicker value="2026-01-15T14:30:00.000Z" disabled={[{ filter }]} onChange={onChange}>
         <DateTimePicker.Input />
@@ -135,6 +136,7 @@ describe('DateTimePicker — timezone calendar coordinates', () => {
     );
 
     await user.click(screen.getByRole('combobox'));
+    reject = true;
     filter.mockClear();
     fireEvent.keyDown(screen.getByRole('grid'), { key: 'Enter' });
 

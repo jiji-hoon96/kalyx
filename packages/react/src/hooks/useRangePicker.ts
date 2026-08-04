@@ -15,6 +15,7 @@ import type {
 } from '@kalyx/core';
 import type { RangeSelectingTarget } from '../context/RangePickerContext.js';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
+import { resolveEnabledCalendarFocus } from '../internal/calendarFocus.js';
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
 
@@ -174,11 +175,11 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
     setViewMonth(coordinate);
-    setFocusedDate(coordinate);
+    setFocusedDate(resolveEnabledCalendarFocus(coordinate, disabled, adapter, displayTimezone));
     if (currentValue.start && currentValue.end) {
       setSelectingTarget('start');
     }
-  }, [currentValue, adapter, displayTimezone]);
+  }, [currentValue, adapter, displayTimezone, disabled]);
 
   const close = useCallback(() => {
     setIsOpen(false);

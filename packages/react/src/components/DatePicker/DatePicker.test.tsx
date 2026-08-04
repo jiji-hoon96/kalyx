@@ -280,7 +280,8 @@ describe('DatePicker — timezone calendar coordinates', () => {
   it('normalizes a time-bearing default-zone value before keyboard disabled checks', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    const filter = vi.fn((iso: string) => iso === '2026-01-15T00:00:00.000Z');
+    let reject = false;
+    const filter = vi.fn((iso: string) => reject && iso === '2026-01-15T00:00:00.000Z');
     render(
       <DatePicker value="2026-01-15T14:30:00.000Z" disabled={[{ filter }]} onChange={onChange}>
         <DatePicker.Input aria-label="날짜 선택" />
@@ -291,6 +292,7 @@ describe('DatePicker — timezone calendar coordinates', () => {
     );
 
     await user.click(screen.getByRole('combobox'));
+    reject = true;
     filter.mockClear();
     fireEvent.keyDown(screen.getByRole('grid'), { key: 'Enter' });
 
@@ -383,7 +385,8 @@ describe('DatePicker — keyboard navigation', () => {
   it('uses the civil instant for timezone-aware Enter disabled checks', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    const filter = vi.fn((iso: string) => iso === '2026-01-15T05:00:00.000Z');
+    let reject = false;
+    const filter = vi.fn((iso: string) => reject && iso === '2026-01-15T05:00:00.000Z');
     render(
       <DatePicker
         value="2026-01-15T05:00:00.000Z"
@@ -399,6 +402,7 @@ describe('DatePicker — keyboard navigation', () => {
     );
 
     await user.click(screen.getByRole('combobox'));
+    reject = true;
     filter.mockClear();
     fireEvent.keyDown(screen.getByRole('grid'), { key: 'Enter' });
 
@@ -426,6 +430,29 @@ describe('DatePicker — keyboard navigation', () => {
     fireEvent.keyDown(screen.getByRole('grid'), { key: 'ArrowRight' });
 
     expect(screen.getByRole('button', { name: /January 17, 2026/ })).toHaveFocus();
+  });
+
+  it('moves the first Arrow from the enabled DOM fallback when the controlled value is disabled', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker
+        value="2026-01-17T00:00:00.000Z"
+        disabled={[{ dayOfWeek: [0, 6] }]}
+        onChange={vi.fn()}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    expect(screen.getByRole('button', { name: /January 1, 2026/ })).toHaveFocus();
+
+    await user.keyboard('{ArrowRight}');
+
+    expect(screen.getByRole('button', { name: /January 2, 2026/ })).toHaveFocus();
   });
 });
 
@@ -1136,6 +1163,23 @@ describe('DatePicker — Presets', () => {
     expect(screen.getByRole('button', { name: "New Year's" })).toHaveAttribute(
       'aria-pressed',
       'false',
+    );
+  });
+
+  it.each([
+    ['Asia/Seoul', '2025-12-31T15:00:00.000Z'],
+    ['America/New_York', '2026-01-01T05:00:00.000Z'],
+  ])('marks a zoned start-of-month preset active at a UTC boundary in %s', (timezone, today) => {
+    const adapter = { ...DateFnsAdapter, today: () => today };
+    render(
+      <DatePicker value={today} adapter={adapter} displayTimezone={timezone} onChange={vi.fn()}>
+        <DatePicker.Preset value="startOfMonth">Start of month</DatePicker.Preset>
+      </DatePicker>,
+    );
+
+    expect(screen.getByRole('button', { name: 'Start of month' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
     );
   });
 

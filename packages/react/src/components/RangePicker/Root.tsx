@@ -22,6 +22,7 @@ import type {
 } from '../../context/RangePickerContext.js';
 import type { Direction } from '../_shared/rtl.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
+import { resolveEnabledCalendarFocus } from '../../internal/calendarFocus.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
 import { SR_ONLY } from '../../internal/srOnly.js';
 
@@ -229,7 +230,7 @@ export function RangePickerRoot({
         ? calendarDayFromInstant(targetValue, displayTimezone)
         : adapter.startOfDay(targetValue);
       setViewMonth(focus);
-      setFocusedDate(focus);
+      setFocusedDate(resolveEnabledCalendarFocus(focus, disabledRules, adapter, displayTimezone));
       // An explicit target (from clicking the start/end input) wins. Otherwise, if
       // the range is complete, restart the two-click flow from 'start'.
       if (target) {
@@ -238,7 +239,7 @@ export function RangePickerRoot({
         setSelectingTarget('start');
       }
     },
-    [isDisabled, readOnly, currentValue, adapter, displayTimezone],
+    [isDisabled, readOnly, currentValue, adapter, displayTimezone, disabledRules],
   );
 
   const close = useCallback(() => {

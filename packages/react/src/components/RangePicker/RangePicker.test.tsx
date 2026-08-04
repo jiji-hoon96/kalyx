@@ -433,7 +433,8 @@ describe('RangePicker — keyboard navigation', () => {
 
   it.each(['Enter', ' '])('uses the timezone civil instant for %s disabled checks', async (key) => {
     const onChange = vi.fn();
-    const filter = vi.fn((iso: string) => iso === '2026-01-15T05:00:00.000Z');
+    let reject = false;
+    const filter = vi.fn((iso: string) => reject && iso === '2026-01-15T05:00:00.000Z');
     render(
       <RangePicker
         value={{ start: '2026-01-15T05:00:00.000Z', end: null }}
@@ -448,6 +449,7 @@ describe('RangePicker — keyboard navigation', () => {
       </RangePicker>,
     );
     await userEvent.click(screen.getByLabelText('Start date'));
+    reject = true;
     filter.mockClear();
     fireEvent.keyDown(screen.getByRole('grid'), { key });
 
@@ -731,6 +733,29 @@ describe('RangePicker — date rules and edge cases (CLAUDE.md §7)', () => {
     // Focus on Jan 12 (Mon). ArrowLeft → skip Sun → Fri Jan 9.
     await user.keyboard('{ArrowLeft}');
     expect(screen.getByRole('button', { name: /January 9, 2026/ })).toHaveFocus();
+  });
+
+  it('moves the first Arrow from the enabled DOM fallback when the controlled start is disabled', async () => {
+    const user = userEvent.setup();
+    render(
+      <RangePicker
+        value={{ start: '2026-01-17T00:00:00.000Z', end: null }}
+        disabled={[{ dayOfWeek: [0, 6] }]}
+        onChange={vi.fn()}
+      >
+        <RangePicker.Input part="start" />
+        <RangePicker.Popover>
+          <RangePicker.Calendar />
+        </RangePicker.Popover>
+      </RangePicker>,
+    );
+
+    await user.click(screen.getByLabelText('Start date'));
+    expect(screen.getByRole('button', { name: /January 1, 2026/ })).toHaveFocus();
+
+    await user.keyboard('{ArrowRight}');
+
+    expect(screen.getByRole('button', { name: /January 2, 2026/ })).toHaveFocus();
   });
 });
 

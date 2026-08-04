@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { calendarDayFromInstant } from '@kalyx/core';
 import type { ISODateString } from '@kalyx/core';
@@ -105,45 +105,39 @@ export function DatePickerPreset({
 }: DatePickerPresetProps) {
   const ctx = useDatePickerContext('DatePicker.Preset');
 
+  const resolved = useMemo<ISODateString | null>(() => {
+    if (directDate) {
+      return ctx.displayTimezone
+        ? calendarDayFromInstant(directDate, ctx.displayTimezone)
+        : directDate;
+    }
+    if (!presetKey) return null;
+    const today = ctx.adapter.today(ctx.displayTimezone);
+    const coordinate = ctx.displayTimezone
+      ? calendarDayFromInstant(today, ctx.displayTimezone)
+      : today;
+    return resolveDatePreset(presetKey, coordinate, ctx.adapter);
+  }, [directDate, presetKey, ctx.adapter, ctx.displayTimezone]);
+
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       if (ctx.isDisabled || ctx.isReadOnly) return;
-
-      let resolved: ISODateString;
-      if (directDate) {
-        resolved = ctx.displayTimezone
-          ? calendarDayFromInstant(directDate, ctx.displayTimezone)
-          : directDate;
-      } else if (presetKey) {
-        const today = ctx.adapter.today(ctx.displayTimezone);
-        resolved = resolveDatePreset(
-          presetKey,
-          ctx.displayTimezone ? calendarDayFromInstant(today, ctx.displayTimezone) : today,
-          ctx.adapter,
-        );
-      } else {
-        return;
-      }
+      if (!resolved) return;
 
       ctx.selectDate(resolved);
       onClick?.(e);
     },
-    [ctx, presetKey, directDate, onClick],
+    [ctx, resolved, onClick],
   );
 
   // Active when the preset's resolved date equals the current value (same civil day, tz-aware).
-  const isActive = (() => {
-    if (!ctx.value) return false;
-    let target: ISODateString;
-    if (directDate) {
-      target = directDate;
-    } else if (presetKey) {
-      target = resolveDatePreset(presetKey, ctx.adapter.today(ctx.displayTimezone), ctx.adapter);
-    } else {
-      return false;
-    }
-    return ctx.adapter.isSameDay(ctx.value, target, ctx.displayTimezone);
-  })();
+  const isActive =
+    !!ctx.value &&
+    !!resolved &&
+    ctx.adapter.isSameDay(
+      ctx.displayTimezone ? calendarDayFromInstant(ctx.value, ctx.displayTimezone) : ctx.value,
+      resolved,
+    );
 
   // role="option" is invalid outside role="listbox"/role="combobox"; the parent
   // <DatePicker.Presets> is role="group". Use a regular button with aria-pressed

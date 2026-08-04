@@ -191,6 +191,19 @@ describe('useDatePicker — stable IDs', () => {
 });
 
 describe('useDatePicker — timezone and constraint parity', () => {
+  it('opens with an enabled focus coordinate when the controlled value is disabled', () => {
+    const { result } = renderHook(() =>
+      useDatePicker({
+        value: '2026-01-17T00:00:00.000Z',
+        disabled: [{ dayOfWeek: [0, 6] }],
+      }),
+    );
+
+    act(() => result.current.open());
+
+    expect(result.current.focusedDate).toBe('2026-01-01T00:00:00.000Z');
+  });
+
   it.each([
     {
       name: 'Seoul',

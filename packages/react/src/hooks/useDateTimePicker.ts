@@ -18,6 +18,7 @@ import type {
   WeekStartsOn,
 } from '@kalyx/core';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
+import { resolveEnabledCalendarFocus } from '../internal/calendarFocus.js';
 
 export interface UseDateTimePickerOptions {
   /** Selected datetime (controlled, ISO 8601 UTC — date and time) */
@@ -171,8 +172,8 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
     setViewMonth(coordinate);
-    setFocusedDate(coordinate);
-  }, [currentValue, adapter, displayTimezone]);
+    setFocusedDate(resolveEnabledCalendarFocus(coordinate, disabled, adapter, displayTimezone));
+  }, [currentValue, adapter, displayTimezone, disabled]);
   const close = useCallback(() => setIsOpen(false), []);
   const toggle = useCallback(() => {
     if (isOpen) close();
