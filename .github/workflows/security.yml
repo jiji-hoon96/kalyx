@@ -13,10 +13,12 @@ on:
     paths:
       - '**/package.json'
       - 'pnpm-lock.yaml'
+  # These jobs back REQUIRED status checks in the branch ruleset (License Compatibility,
+  # OSV Vulnerability Scan / osv-scan, osv-scanner). A path-filtered pull_request trigger
+  # made them never report on PRs that don't touch deps → required-but-missing → permanent
+  # "Expected — waiting for status" merge deadlock. Since they are required, they must run
+  # on every PR. (push→main stays dep-path-filtered; the weekly schedule still covers drift.)
   pull_request:
-    paths:
-      - '**/package.json'
-      - 'pnpm-lock.yaml'
   workflow_dispatch:
 
 permissions:
