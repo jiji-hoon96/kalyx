@@ -4,7 +4,7 @@ Date: 2026-08-03 (America/Los_Angeles)
 
 Baseline: `77ed089be47e708f0ba54abdbd4271ee294d9aeb`
 
-Codex candidate: `fix/codex-correctness` through `f5ec11d`
+Codex candidate: `fix/codex-correctness` through `abb787c`
 
 This is an outcome-based comparison, not a blind comparison. Claude PR summaries and diffs were visible before the Codex implementation was finished. The evaluation therefore compares acceptance outcomes, regression risk, public API compatibility, tests, and measured bundle impact rather than claiming model-isolated authorship.
 
@@ -39,7 +39,7 @@ The three Claude fixes are valid narrow bug discoveries. Their isolated CI succe
 | Rejected mutation causes no state, `onChange`, or popover close | PARTIAL | PASS | Codex assertions cover uncontrolled state and callback/close effects at final boundaries. |
 | Disabled focused day keeps DOM focus, state, and first Arrow origin aligned | FAIL (known residual) | PASS | #179 documents its first-Arrow residual; Codex state transition and exact-destination tests cover it. |
 | Public ISO-string contract and existing public return types remain compatible | PASS | PASS | Codex review caught and restored `UseRangePickerReturn.setRange: void`. |
-| Repository 17KB React index budget | PASS per isolated Claude PR | FAIL | Codex measured ESM 18.07KB and CJS 18.19KB. No budget/config change was made. |
+| Repository 17KB React index budget | PASS per isolated Claude PR | FAIL | Codex measured ESM 18.30KB and CJS 18.43KB. No budget/config change was made. |
 
 ## Reproduced bugs and regression tests
 
@@ -49,6 +49,7 @@ The three Claude fixes are valid narrow bug discoveries. Their isolated CI succe
 - TimePicker and DateTimePicker mutations could bypass `filterTime` or apply it before the final merge.
 - Week endpoints were emitted as raw UTC coordinates rather than timezone civil-midnight instants.
 - Derived disabled focus could disagree with React state and the first Arrow origin.
+- A fully disabled month could leave focus trapped because the initial resolver searched only within that month.
 - Review regressions caught stale preset active state after timezone changes, stale hook toggle/navigation focus, and a public hook return-type change.
 
 Strict RED/GREEN evidence is recorded in `.superpowers/sdd/2026-08-03-timezone-constraint-transitions/`. Final focused results were Range/Week 83/83 and headless hooks 83/83.
@@ -62,6 +63,7 @@ Strict RED/GREEN evidence is recorded in `.superpowers/sdd/2026-08-03-timezone-c
 | `d4386ae`, `cf23681` | Date/Time/DateTime Root and preset transitions |
 | `a67276d`, `bc69a5e` | Range/week transitions and review regressions |
 | `41da3ba`, `f5ec11d` | Five headless hooks and review fixes |
+| `8453478`, `abb787c` | Disabled-focus alignment, zoned preset state, and fully disabled month escape |
 
 Production changes are limited to Core timezone/calendar utilities and React picker Roots, Calendars, Presets, contexts, and hooks. Tests were added beside each affected domain. `.changeset/calm-clocks-align.md` releases `@kalyx/core` and `@kalyx/react` as patches.
 
@@ -71,24 +73,26 @@ Commands were run in the required order in `/private/tmp/kalyx-codex-correctness
 
 | Command | Exit | Actual result |
 | --- | ---: | --- |
-| `pnpm build` | 0 | Core/date-fns/React built; React index warning ESM 18.07KB, CJS 18.19KB. |
-| `pnpm test:run` | 0 | 45 files, 842 tests passed. |
-| `pnpm test:coverage` | 0 | 842 passed; statements 89.65%, branches 86.07%, functions 93.98%, lines 91.88%. |
+| `pnpm build` | 0 | Core/date-fns/React built; React index warning ESM 18.30KB, CJS 18.43KB. |
+| `pnpm test:run` | 0 | 45 files, 852 tests passed. |
+| `pnpm test:coverage` | 0 | 852 passed; statements 89.75%, branches 86.17%, functions 94.02%, lines 92.12%. |
 | `pnpm typecheck` | 0 | `tsc -b` passed. |
 | `pnpm lint` | 0 | ESLint passed. |
 | `pnpm format:check` | 0 | All matched package source files passed Prettier. |
-| `pnpm check-bundle` | 1 | FAIL: ESM 18.07KB and CJS 18.19KB exceed 17KB. |
-| `pnpm check-tree-shaking` | 0 | Single picker 23.73KB gzip, hook 24.04KB, all 24.75KB; all picker scenarios remain identical. |
-| `pnpm test:e2e` | 0 | 93/93 passed across Chromium, Firefox, and WebKit after allowing `npx serve` network access. Initial sandbox run failed only because registry access was blocked. |
+| `pnpm check-bundle` | 1 | FAIL: ESM 18.30KB and CJS 18.43KB exceed 17KB. |
+| `pnpm check-tree-shaking` | 0 | Single picker 23.78KB gzip, hook 24.10KB, all 24.80KB; all picker scenarios remain identical. |
+| `pnpm test:e2e` | 0 | 93/93 passed across Chromium, Firefox, and WebKit. |
 | `pnpm --filter docs-site typecheck` | 2 | Existing baseline failure: `src/pages/index.tsx(11,33): Cannot find namespace 'JSX'`. |
 
 ## Bundle and API delta
 
-Baseline React index was approximately ESM 16.66KB / CJS 16.91KB gzip. The Codex candidate is ESM 18.07KB / CJS 18.19KB, about +1.41KB / +1.28KB and over budget. Source analysis attributes the growth to correctness logic distributed across Range Calendar/Root, DateTime Root, Core, and exported headless hooks rather than a build-option change. The 17KB limit and tsup/check scripts are untouched.
+Baseline React index was approximately ESM 16.66KB / CJS 16.91KB gzip. The Codex candidate is ESM 18.30KB / CJS 18.43KB, about +1.64KB / +1.52KB and over budget. Source analysis attributes the growth to correctness logic distributed across Range Calendar/Root, DateTime Root, Core, exported headless hooks, and disabled-focus alignment rather than a build-option change. The 17KB limit and tsup/check scripts are untouched.
 
-Consumer tree-shaking also remains an independent product risk: every single rendered picker bundles to the same 23.73KB gzip. This branch does not redesign package entries because that was explicitly out of scope.
+Consumer tree-shaking also remains an independent product risk: every single rendered picker bundles to the same 23.78KB gzip. This branch does not redesign package entries because that was explicitly out of scope.
 
 No intended breaking value or callback contract was introduced. Independent task review found and corrected a temporary `setRange` return-type regression before final validation.
+
+The final independent correctness review reported no remaining Critical or Important finding in the implemented scope. Bundle size was explicitly excluded from that approval and remains a release decision.
 
 ## Remaining risks and recommendation
 

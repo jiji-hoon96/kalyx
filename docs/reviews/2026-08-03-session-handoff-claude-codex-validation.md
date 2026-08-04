@@ -1,5 +1,8 @@
 # Kalyx Claude/Codex 검증 세션 핸드오프
 
+> **Historical handoff:** 이 문서는 중간 상태를 보존한 기록이다. 현재 결과와 최종 수치는
+> `docs/reviews/2026-08-03-claude-codex-correctness-comparison.md`를 기준으로 한다.
+
 작성 시점: 2026-08-03 (America/Los_Angeles)
 
 ## 1. 이번 세션의 목적과 현재 결론
