@@ -8,6 +8,12 @@ Codex candidate: `fix/codex-correctness` through `abb787c`
 
 This is an outcome-based comparison, not a blind comparison. Claude PR summaries and diffs were visible before the Codex implementation was finished. The evaluation therefore compares acceptance outcomes, regression risk, public API compatibility, tests, and measured bundle impact rather than claiming model-isolated authorship.
 
+## Comparison method and limitations
+
+This report is a code-review and reproduced-outcome assessment, not the blinded experiment originally described in `docs/superpowers/specs/2026-08-03-claude-codex-correctness-comparison-design.md`. The latest Claude diffs, comments, and reported CI were inspected, and their findings were checked against executable reproductions while the Codex candidate was developed. The Claude branches were not run through the same full repository gate in this worktree, and no shared withheld suite, withheld hash, `audit/model-comparison` artifact, or blinded numeric scorecard was produced.
+
+Consequently, Claude PASS/FAIL cells below describe the observable acceptance coverage and residual risk of the reviewed PR diffs; they are not symmetric benchmark scores. A true candidate-to-candidate selection still requires the planned read-only cross-validation after both Draft PRs exist.
+
 ## Latest Claude PR state
 
 All four PRs were re-queried from GitHub on 2026-08-03. They are open, mergeable, blocked by branch protection, and have successful reported CI checks.
@@ -52,7 +58,7 @@ The three Claude fixes are valid narrow bug discoveries. Their isolated CI succe
 - A fully disabled month could leave focus trapped because the initial resolver searched only within that month.
 - Review regressions caught stale preset active state after timezone changes, stale hook toggle/navigation focus, and a public hook return-type change.
 
-Strict RED/GREEN evidence is recorded in `.superpowers/sdd/2026-08-03-timezone-constraint-transitions/`. Final focused results were Range/Week 83/83 and headless hooks 83/83.
+Each fix was developed from a failing reproduction before implementation. The durable regression tests are committed beside the affected domains; most transient RED logs and task review packets remain ignored local session artifacts rather than PR evidence. Final focused results were Range/Week 83/83 and headless hooks 83/83.
 
 ## Codex changes and commits
 
