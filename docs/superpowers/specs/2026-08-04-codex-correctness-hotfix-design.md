@@ -1,7 +1,7 @@
 # Codex Correctness Hotfix Design
 
-> **Date:** 2026-08-04  
-> **Baseline:** `a71c43a` (`@kalyx/core@1.4.1`, `@kalyx/react@1.4.1`)  
+> **Date:** 2026-08-04
+> **Baseline:** `a71c43a` (`@kalyx/core@1.4.1`, `@kalyx/react@1.4.1`)
 > **Branch:** `fix/codex-correctness-2026-08`
 
 ## Goal
