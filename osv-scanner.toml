@@ -1,22 +1,4 @@
-[[IgnoredVulns]]
-id = "GHSA-h67p-54hq-rp68"
-# js-yaml quadratic-complexity DoS in merge-key handling.
-#
-# Why ignored:
-# - Vulnerable range is `<= 4.1.1`; upstream only patched the 4.x line (4.2.0).
-#   No 3.x patch exists or will exist (3.x is EOL).
-# - The 4.x branch in this repo is already forced to >= 4.2.0 via pnpm.overrides
-#   (`"js-yaml@^4": ">=4.2.0"`).
-# - The remaining 3.14.2 instance is pulled in transitively by
-#   @changesets/cli → @manypkg/get-packages@1.x → read-yaml-file@1.1.0,
-#   whose `safeLoad` call was removed in js-yaml 4.x. A global override to 4.x
-#   crashes `changeset` (the release-workflow CLI) immediately.
-# - The vulnerability requires parsing attacker-controlled YAML with merge keys
-#   and repeated aliases. changesets only parses repo-owned files
-#   (package.json, pnpm-workspace.yaml, .changeset/*.md) — there is no
-#   external attack surface.
-#
-# Revisit when @changesets/cli upgrades @manypkg/get-packages to 3.x
-# (which uses read-yaml-file@3 + js-yaml 4).
-ignoreUntil = "2027-01-01T00:00:00Z"
-reason = "No upstream 3.x patch; @changesets/cli transitive parses repo-owned YAML only; 4.x branch already overridden to safe version"
+# osv-scanner ignore list.
+# (GHSA-h67p-54hq-rp68 removed 2026-08-04: js-yaml transitive is now pinned to
+#  3.15.1 / 4.3.1 via pnpm.overrides, which osv-scanner no longer flags — the
+#  earlier 'no 3.x patch' rationale is obsolete.)
