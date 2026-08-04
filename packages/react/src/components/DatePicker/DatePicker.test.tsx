@@ -277,6 +277,27 @@ describe('DatePicker — calendar navigation', () => {
 });
 
 describe('DatePicker — timezone calendar coordinates', () => {
+  it('normalizes a time-bearing default-zone value before keyboard disabled checks', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const filter = vi.fn((iso: string) => iso === '2026-01-15T00:00:00.000Z');
+    render(
+      <DatePicker value="2026-01-15T14:30:00.000Z" disabled={[{ filter }]} onChange={onChange}>
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    filter.mockClear();
+    fireEvent.keyDown(screen.getByRole('grid'), { key: 'Enter' });
+
+    expect(filter.mock.calls).toEqual([['2026-01-15T00:00:00.000Z']]);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
   it('opens January and selects/focuses Seoul January 1 from its stored instant', async () => {
     const user = userEvent.setup();
     render(

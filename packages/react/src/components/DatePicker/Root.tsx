@@ -123,12 +123,16 @@ export function DatePickerRoot({
   // explicit — neither server nor client re-evaluates the fallback after first render.
   const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
     const target = currentValue ?? adapter.today(displayTimezone);
-    return displayTimezone ? calendarDayFromInstant(target, displayTimezone) : target;
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
   });
 
   const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
     const target = currentValue ?? adapter.today(displayTimezone);
-    return displayTimezone ? calendarDayFromInstant(target, displayTimezone) : target;
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
   });
 
   useChangeEffect(isOpen, onOpenChange);
@@ -185,7 +189,7 @@ export function DatePickerRoot({
     const target = currentValue ?? adapter.today(displayTimezone);
     const calendarTarget = displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
-      : target;
+      : adapter.startOfDay(target);
     setViewMonth(calendarTarget);
     setFocusedDate(calendarTarget);
   }, [isDisabled, readOnly, currentValue, adapter, displayTimezone]);

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { DateTimePicker } from './index.js';
@@ -121,6 +121,27 @@ describe('DateTimePicker — basic rendering', () => {
 });
 
 describe('DateTimePicker — timezone calendar coordinates', () => {
+  it('normalizes a time-bearing default-zone value before keyboard disabled checks', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const filter = vi.fn((iso: string) => iso === '2026-01-15T00:00:00.000Z');
+    render(
+      <DateTimePicker value="2026-01-15T14:30:00.000Z" disabled={[{ filter }]} onChange={onChange}>
+        <DateTimePicker.Input />
+        <DateTimePicker.Popover>
+          <DateTimePicker.Calendar />
+        </DateTimePicker.Popover>
+      </DateTimePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    filter.mockClear();
+    fireEvent.keyDown(screen.getByRole('grid'), { key: 'Enter' });
+
+    expect(filter.mock.calls).toEqual([['2026-01-15T00:00:00.000Z']]);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
   it('opens January and selects/focuses Seoul January 1 from its stored instant', async () => {
     const user = userEvent.setup();
     render(

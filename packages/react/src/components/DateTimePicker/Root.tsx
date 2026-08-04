@@ -160,11 +160,15 @@ export function DateTimePickerRoot({
   // Lazy initializers — see DatePicker/Root.tsx for the SSR/hydration rationale.
   const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
     const target = currentValue ?? adapter.today(displayTimezone);
-    return displayTimezone ? calendarDayFromInstant(target, displayTimezone) : target;
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
   });
   const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
     const target = currentValue ?? adapter.today(displayTimezone);
-    return displayTimezone ? calendarDayFromInstant(target, displayTimezone) : target;
+    return displayTimezone
+      ? calendarDayFromInstant(target, displayTimezone)
+      : adapter.startOfDay(target);
   });
 
   useChangeEffect(isOpen, onOpenChange);
@@ -229,17 +233,12 @@ export function DateTimePickerRoot({
         ? civilMidnightFromUtcDay(newDateIso, displayTimezone)
         : newDateIso;
       // Preserve the current time portion (tz-aware when applicable)
-      const time = currentValue
-        ? displayTimezone
-          ? getTimeInTimezone(currentValue, displayTimezone)
-          : getTime(currentValue)
-        : currentTime;
       const merged = displayTimezone
-        ? setTimeInTimezone(normalizedDate, time, displayTimezone)
-        : setTimeOnIso(normalizedDate, time);
+        ? setTimeInTimezone(normalizedDate, currentTime, displayTimezone)
+        : setTimeOnIso(normalizedDate, currentTime);
       updateValue(merged);
     },
-    [currentValue, currentTime, updateValue, displayTimezone],
+    [currentTime, updateValue, displayTimezone],
   );
 
   /**
@@ -264,9 +263,6 @@ export function DateTimePickerRoot({
    */
   const selectDateTime = useCallback(
     (iso: ISODateString | null): boolean => {
-      if (iso === null) {
-        return updateValue(null);
-      }
       // A preset ISO is already a UTC instant; when a display timezone is set the
       // value is interpreted/displayed there, so no civil-midnight remapping is needed.
       return updateValue(iso);
@@ -280,7 +276,7 @@ export function DateTimePickerRoot({
     const target = currentValue ?? adapter.today(displayTimezone);
     const calendarTarget = displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
-      : target;
+      : adapter.startOfDay(target);
     setViewMonth(calendarTarget);
     setFocusedDate(calendarTarget);
   }, [isDisabled, readOnly, currentValue, adapter, displayTimezone]);
