@@ -90,6 +90,8 @@ Commit: `fix(core): align calendar flags with display timezone`
 - Modify: `packages/react/src/components/DatePicker/Presets.tsx`
 - Modify: `packages/react/src/components/TimePicker/Root.tsx`
 - Modify: `packages/react/src/components/DateTimePicker/Root.tsx`
+- Modify: `packages/react/src/components/DateTimePicker/Presets.tsx`
+- Modify: `packages/react/src/context/DatePickerContext.ts`
 - Test: `packages/react/src/components/DatePicker/DatePicker.test.tsx`
 - Test: `packages/react/src/components/TimePicker/TimePicker.test.tsx`
 - Test: `packages/react/src/components/DateTimePicker/DateTimePicker.test.tsx`
@@ -107,7 +109,7 @@ Add component tests proving:
 - DateTimePicker rejects date commits whose merged datetime has a disabled civil date.
 - DateTimePicker rejects full presets and time mutations rejected by `filterTime`.
 
-Run the two component test files and observe the expected failures.
+Run the three component test files and observe the expected failures.
 
 **Step 2: Normalize view/focus coordinates**
 
@@ -119,7 +121,7 @@ In DatePicker `selectDate`, convert the coordinate once, then call `isDateDisabl
 
 In TimePicker `setTime`, derive the final displayed hours/minutes from the merged value and reject it through `filterTime` before state/callback. This keeps typed input, lists, and direct context calls on the same policy.
 
-In DateTimePicker, validate the final merged value in `updateValue`: date rules first, then `filterTime` using the final displayed hours/minutes. Permit `null`. This makes calendar, typed input, presets, and time controls share one gate.
+In DateTimePicker, validate the final merged value in `updateValue`: date rules first, then `filterTime` using the final displayed hours/minutes. Permit `null`. This makes calendar, typed input, presets, and time controls share one gate. Return an internal acceptance result for atomic preset commits, and close the preset popover only after an accepted commit; a rejected preset remains open while its consumer click callback still observes the click.
 
 **Step 4: Fix preset and keyboard boundary inputs**
 
