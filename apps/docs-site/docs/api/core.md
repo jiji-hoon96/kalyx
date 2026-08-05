@@ -59,8 +59,10 @@ type CalendarOptions = {
   selected?: ISODateString | null;
   focusedDate?: ISODateString;
   disabled?: DisabledRule[];
-  range?: DateRange;
+  range?: DateRange | null;
   rangeHover?: ISODateString | null;
+  timezone?: string;
+  fixedWeeks?: boolean;
 };
 
 type TimeValue = {
@@ -86,7 +88,7 @@ import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 
 ### `getCalendarDays(viewMonth, adapter, options)`
 
-Build a 6-week grid for a month.
+Build a 4–6 week grid for a month. Set `fixedWeeks: true` when the layout requires exactly 6 weeks.
 
 ```ts
 import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
@@ -95,11 +97,11 @@ import { getCalendarDays } from '@kalyx/core';
 const grid = getCalendarDays(
   '2026-04-01T00:00:00.000Z',
   DateFnsAdapter,
-  { weekStartsOn: 0, today: '2026-04-16T00:00:00.000Z' },
+  { weekStartsOn: 0, today: '2026-04-16T00:00:00.000Z', fixedWeeks: true },
 );
 ```
 
-Returns `CalendarGrid` (6×7 `CalendarDay`s). Leading and trailing days belong to neighboring months (`isCurrentMonth: false`).
+Returns `CalendarGrid` (4–6 arrays of 7 `CalendarDay`s). Leading and trailing days belong to neighboring months (`isCurrentMonth: false`). With `fixedWeeks: true`, the result is always 6×7.
 
 ### `isDateDisabled(iso, rules, adapter, timezone?)`
 
@@ -149,7 +151,7 @@ minDate(
 
 ### `normalizeISO(value)`
 
-Lenient parser — accepts partial inputs like `2026-04-15` and returns a full UTC midnight ISO string. Returns `null` for invalid input.
+Lenient normalizer — expands a date-only value like `2026-04-15` to a full UTC-midnight ISO string. Full ISO datetimes and unrecognized strings are returned unchanged; an empty string stays empty.
 
 ### `parseInputValue(input, adapter)`
 
@@ -207,7 +209,7 @@ to24Hour(1, 'PM');               // → 13
 import { generateHours, generateMinutes } from '@kalyx/core';
 
 generateHours('24h'); // → [0, 1, 2, …, 23]
-generateHours('12h'); // → [12, 1, 2, …, 11]
+generateHours('12h'); // → [1, 2, …, 12]
 generateMinutes(15);  // → [0, 15, 30, 45]
 ```
 
@@ -230,7 +232,7 @@ formatMonthYear(2026, 3, 'en-US');   // → "April 2026"
 getWeekdayNames('en-US', 0);
 // → [{ short: 'Sun', full: 'Sunday' }, …]
 formatFullDate('2026-04-15T00:00:00.000Z', 'en-US');
-// → "April 15, 2026"
+// → "Wednesday, April 15, 2026"
 ```
 
 ## Timezone utilities
