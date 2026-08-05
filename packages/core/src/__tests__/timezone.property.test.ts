@@ -71,9 +71,16 @@ const timeOfDay = () =>
   });
 
 const RUNS = { numRuns: 300 };
-const IANA_ZONES = Intl.supportedValuesOf('timeZone');
+const supportedIanaZones = () => {
+  if (typeof Intl.supportedValuesOf !== 'function') {
+    throw new Error('All-IANA timezone tests require Intl.supportedValuesOf (Node 20+).');
+  }
+  return Intl.supportedValuesOf('timeZone');
+};
+const IANA_ZONES = supportedIanaZones();
 const IANA_RUNS_PER_ZONE = 12;
 const IANA_SEED = 0x4b414c59;
+const IANA_BOUNDARY_COORDINATES = ['2020-01-01T00:00:00.000Z', '2045-01-01T00:00:00.000Z'] as const;
 
 describe('timezone invariants (property-based)', () => {
   it('round-trips every UTC calendar coordinate through civil midnight', () => {
@@ -94,6 +101,11 @@ describe('timezone invariants (property-based)', () => {
 
     IANA_ZONES.forEach((timeZone, index) => {
       try {
+        IANA_BOUNDARY_COORDINATES.forEach((coordinate) => {
+          const instant = civilMidnightFromUtcDay(coordinate, timeZone);
+          expect(calendarDayFromInstant(instant, timeZone)).toBe(coordinate);
+        });
+
         fc.assert(
           fc.property(utcCalendarCoordinate(), (coordinate) => {
             const instant = civilMidnightFromUtcDay(coordinate, timeZone);
@@ -102,6 +114,7 @@ describe('timezone invariants (property-based)', () => {
           {
             numRuns: IANA_RUNS_PER_ZONE,
             seed: IANA_SEED + index,
+            unbiased: true,
           },
         );
       } catch (error) {
