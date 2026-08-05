@@ -37,6 +37,10 @@ import type {
 
 `@kalyx/core` defines the `DateAdapter` interface but ships no implementation — the package is date-library-agnostic. Install a separate adapter package:
 
+```bash
+pnpm add @kalyx/core @kalyx/adapter-date-fns date-fns
+```
+
 ```ts
 import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 // UTC-safe adapter built on date-fns v4.
