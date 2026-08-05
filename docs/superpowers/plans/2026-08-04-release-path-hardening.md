@@ -52,7 +52,7 @@
 1. Pack each discovered package to a temporary directory and inspect its packed manifest before applying overrides.
 2. Validate workspace rewrites and canonical finite export maps, then install all Kalyx tarballs in a standalone consumer.
 3. Pin the repository pnpm version, link external dependencies from the frozen root install, and perform an offline frozen consumer install.
-4. Execute generated ESM and CommonJS representative-export assertions for roots and required subpaths.
+4. Execute generated ESM and CommonJS required/forbidden export contracts for roots and required subpaths; fail when a public entry point has no explicit contract.
 5. Guarantee cleanup in `finally` and on termination signals, and surface the failing subprocess clearly.
 6. Run `pnpm check-package-tarballs` and require all artifacts to pass.
 

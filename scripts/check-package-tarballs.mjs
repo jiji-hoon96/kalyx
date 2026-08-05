@@ -18,14 +18,14 @@ import { satisfies } from 'semver';
 
 const SCRIPT_DIRECTORY = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_REPO_ROOT = resolve(SCRIPT_DIRECTORY, '..');
-const REPRESENTATIVE_EXPORTS = {
-  '@kalyx/adapter-date-fns': 'DateFnsAdapter',
-  '@kalyx/adapter-dayjs': 'DayjsAdapter',
-  '@kalyx/adapter-luxon': 'LuxonAdapter',
-  '@kalyx/core': 'getCalendarDays',
-  '@kalyx/core/test-helpers': 'runAdapterConformanceTests',
-  '@kalyx/react': 'DatePicker',
-  '@kalyx/react/headless': 'DatePicker',
+const RUNTIME_EXPORT_CONTRACTS = {
+  '@kalyx/adapter-date-fns': { required: ['DateFnsAdapter'], forbidden: [] },
+  '@kalyx/adapter-dayjs': { required: ['DayjsAdapter'], forbidden: [] },
+  '@kalyx/adapter-luxon': { required: ['LuxonAdapter'], forbidden: [] },
+  '@kalyx/core': { required: ['getCalendarDays'], forbidden: [] },
+  '@kalyx/core/test-helpers': { required: ['runAdapterConformanceTests'], forbidden: [] },
+  '@kalyx/react': { required: ['DatePicker', 'DateFnsAdapter'], forbidden: [] },
+  '@kalyx/react/headless': { required: ['DatePicker'], forbidden: ['DateFnsAdapter'] },
 };
 const DEPENDENCY_FIELDS = ['dependencies', 'optionalDependencies', 'peerDependencies'];
 let activeTemporaryDirectory = null;
@@ -78,6 +78,12 @@ export function validatePublishablePackages(packages) {
           problems.push(`${label}: export patterns are not supported: ${exportKey}`);
         } else if (exportKey !== '.' && !exportKey.startsWith('./')) {
           problems.push(`${label}: unsupported export key: ${exportKey}`);
+        } else {
+          const specifier =
+            exportKey === '.' ? manifest.name : `${manifest.name}/${exportKey.slice(2)}`;
+          if (!RUNTIME_EXPORT_CONTRACTS[specifier]) {
+            problems.push(`${label}: missing runtime export contract for ${specifier}`);
+          }
         }
       }
     }
@@ -100,19 +106,25 @@ function getPublicSpecifiers(packages) {
         const specifier = subpath === '.' ? manifest.name : `${manifest.name}/${subpath.slice(2)}`;
         return {
           specifier,
-          expectedExport: REPRESENTATIVE_EXPORTS[specifier] ?? null,
+          ...RUNTIME_EXPORT_CONTRACTS[specifier],
         };
       }),
   );
 }
 
-export function assertRepresentativeExport(specifier, imported) {
-  const expectedExport = REPRESENTATIVE_EXPORTS[specifier];
-  if (expectedExport && !(expectedExport in imported)) {
-    throw new Error(`${specifier} is missing representative export ${expectedExport}`);
+export function assertRepresentativeExports(specifier, imported) {
+  const contract = RUNTIME_EXPORT_CONTRACTS[specifier];
+  if (!contract) throw new Error(`${specifier} has no runtime export contract`);
+
+  for (const exportName of contract.required) {
+    if (!(exportName in imported)) {
+      throw new Error(`${specifier} is missing representative export ${exportName}`);
+    }
   }
-  if (!expectedExport && Object.keys(imported).length === 0) {
-    throw new Error(`${specifier} has no runtime exports`);
+  for (const exportName of contract.forbidden) {
+    if (exportName in imported) {
+      throw new Error(`${specifier} must not export ${exportName}`);
+    }
   }
 }
 
@@ -122,13 +134,17 @@ export function createSmokePrograms(packages) {
   return {
     esm: [
       `const entries = ${serializedEntries};`,
-      'for (const { specifier, expectedExport } of entries) {',
+      'for (const { specifier, required, forbidden } of entries) {',
       '  const imported = await import(specifier);',
-      '  if (expectedExport && !(expectedExport in imported)) {',
-      '    throw new Error(`${specifier} is missing representative export ${expectedExport}`);',
+      '  for (const exportName of required) {',
+      '    if (!(exportName in imported)) {',
+      '      throw new Error(`${specifier} is missing representative export ${exportName}`);',
+      '    }',
       '  }',
-      '  if (!expectedExport && Object.keys(imported).length === 0) {',
-      '    throw new Error(`${specifier} has no ESM runtime exports`);',
+      '  for (const exportName of forbidden) {',
+      '    if (exportName in imported) {',
+      '      throw new Error(`${specifier} must not export ${exportName}`);',
+      '    }',
       '  }',
       '}',
       'console.log(`ESM tarball imports passed (${entries.length} entry points)`);',
@@ -136,13 +152,17 @@ export function createSmokePrograms(packages) {
     ].join('\n'),
     cjs: [
       `const entries = ${serializedEntries};`,
-      'for (const { specifier, expectedExport } of entries) {',
+      'for (const { specifier, required, forbidden } of entries) {',
       '  const imported = require(specifier);',
-      '  if (expectedExport && !(expectedExport in imported)) {',
-      '    throw new Error(`${specifier} is missing representative export ${expectedExport}`);',
+      '  for (const exportName of required) {',
+      '    if (!(exportName in imported)) {',
+      '      throw new Error(`${specifier} is missing representative export ${exportName}`);',
+      '    }',
       '  }',
-      '  if (!expectedExport && Object.keys(imported).length === 0) {',
-      '    throw new Error(`${specifier} has no CommonJS runtime exports`);',
+      '  for (const exportName of forbidden) {',
+      '    if (exportName in imported) {',
+      '      throw new Error(`${specifier} must not export ${exportName}`);',
+      '    }',
       '  }',
       '}',
       'console.log(`CommonJS tarball imports passed (${entries.length} entry points)`);',

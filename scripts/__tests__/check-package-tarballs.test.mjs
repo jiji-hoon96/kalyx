@@ -4,7 +4,7 @@ import { join, resolve } from 'node:path';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
-  assertRepresentativeExport,
+  assertRepresentativeExports,
   collectInstalledExternalPackages,
   createConsumerManifest,
   createSmokePrograms,
@@ -39,7 +39,7 @@ async function createPackages(manifests) {
 
 function validManifest(overrides = {}) {
   return {
-    name: '@kalyx/example',
+    name: '@kalyx/core',
     version: '1.0.0',
     scripts: { build: 'tsup' },
     files: ['dist'],
@@ -58,7 +58,7 @@ describe('discoverPublishablePackages', () => {
 
     const packages = discoverPublishablePackages(packagesDirectory);
 
-    expect(packages.map((entry) => entry.manifest.name)).toEqual(['@kalyx/example']);
+    expect(packages.map((entry) => entry.manifest.name)).toEqual(['@kalyx/core']);
   });
 });
 
@@ -104,6 +104,20 @@ describe('validatePublishablePackages', () => {
     expect(problems).toContain('@kalyx/conditional: exports must declare the canonical "." root');
     expect(problems).toContain('@kalyx/pattern: export patterns are not supported: ./features/*');
   });
+
+  it('requires an explicit smoke contract for every finite public specifier', () => {
+    const problems = validatePublishablePackages([
+      {
+        directory: '/packages/new-adapter',
+        manifestPath: '/packages/new-adapter/package.json',
+        manifest: validManifest({ name: '@kalyx/new-adapter' }),
+      },
+    ]);
+
+    expect(problems).toContain(
+      '@kalyx/new-adapter: missing runtime export contract for @kalyx/new-adapter',
+    );
+  });
 });
 
 describe('createSmokePrograms', () => {
@@ -139,9 +153,21 @@ describe('createSmokePrograms', () => {
   });
 
   it('rejects a nonempty module that exposes the wrong public symbol', () => {
-    expect(() => assertRepresentativeExport('@kalyx/core', { wrongExport: true })).toThrow(
+    expect(() => assertRepresentativeExports('@kalyx/core', { wrongExport: true })).toThrow(
       '@kalyx/core is missing representative export getCalendarDays',
     );
+  });
+
+  it('distinguishes the React default and headless entry contracts', () => {
+    expect(() => assertRepresentativeExports('@kalyx/react', { DatePicker: {} })).toThrow(
+      '@kalyx/react is missing representative export DateFnsAdapter',
+    );
+    expect(() =>
+      assertRepresentativeExports('@kalyx/react/headless', {
+        DatePicker: {},
+        DateFnsAdapter: {},
+      }),
+    ).toThrow('@kalyx/react/headless must not export DateFnsAdapter');
   });
 });
 

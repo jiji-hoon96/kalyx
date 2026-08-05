@@ -49,7 +49,7 @@ The script:
 6. forces every Kalyx dependency to its tarball while linking external dependencies to the exact package directories produced by the root frozen install;
 7. generates a consumer lockfile offline and performs a frozen offline install;
 8. runs ESM and CommonJS smoke programs that import every finite package root/subpath export;
-9. asserts package/subpath-specific representative runtime symbols for the seven current entry points.
+9. asserts explicit package/subpath-specific required and forbidden runtime symbols for the seven current entry points. The React root must expose `DateFnsAdapter`, while the headless entry must not; adding a public entry point without a contract fails metadata validation.
 
 Packed ranges are validated before local overrides are applied, so overrides cannot mask incorrect workspace-range rewriting. Installing all Kalyx tarballs together then verifies artifact resolution without reading workspace sources. External `link:` targets are restricted to the exact pnpm virtual-store packages already selected by the repository lockfile, making the gate registry-independent and reproducible.
 
@@ -72,7 +72,7 @@ Unit tests cover:
 - unsupported conditional-root or pattern export maps are rejected rather than silently skipped;
 - packed internal ranges and exact `workspace:*` rewrites are validated before overrides;
 - the repository manifest set contains all five expected packages and has no validation errors;
-- generated ESM/CommonJS smoke programs include every discovered package/subpath and require representative symbols;
+- generated ESM/CommonJS smoke programs include every discovered package/subpath and enforce its explicit required/forbidden export contract;
 - the consumer uses the pinned pnpm version, packed Kalyx overrides, and locked external-package links.
 
 The repository-level metadata test is expected to fail until provenance is added to dayjs and luxon. The real tarball command then provides integration coverage of pack/install/import behavior.
