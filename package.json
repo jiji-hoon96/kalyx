@@ -14,7 +14,7 @@
 		"url": "https://github.com/jiji-hoon96/kalyx/issues"
 	},
 	"scripts": {
-		"build": "pnpm --filter @kalyx/core build && pnpm --filter @kalyx/adapter-date-fns build && pnpm --filter @kalyx/react build",
+		"build": "pnpm --filter @kalyx/core build && pnpm --filter './packages/*' --filter '!@kalyx/core' --if-present build",
 		"build:core": "pnpm --filter @kalyx/core build",
 		"build:adapter-date-fns": "pnpm --filter @kalyx/adapter-date-fns build",
 		"build:react": "pnpm --filter @kalyx/react build",
@@ -30,6 +30,7 @@
 		"format": "prettier --write 'packages/*/src/**/*.{ts,tsx}'",
 		"format:check": "prettier --check 'packages/*/src/**/*.{ts,tsx}'",
 		"check-bundle": "node scripts/check-bundle-size.js",
+		"check-package-tarballs": "node scripts/check-package-tarballs.mjs",
 		"bundle-diff": "node scripts/bundle-diff.mjs",
 		"check-tree-shaking": "node scripts/check-tree-shaking.js",
 		"check-a11y": "vitest run --reporter=verbose --testPathPattern=a11y",

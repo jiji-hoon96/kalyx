@@ -4,6 +4,7 @@ import { join, resolve } from 'node:path';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
+  createConsumerManifest,
   createSmokePrograms,
   discoverPublishablePackages,
   validatePublishablePackages,
@@ -106,6 +107,31 @@ describe('createSmokePrograms', () => {
       expect(programs.esm).toContain(JSON.stringify(specifier));
       expect(programs.cjs).toContain(JSON.stringify(specifier));
     }
+  });
+});
+
+describe('createConsumerManifest', () => {
+  it('forces transitive Kalyx dependencies to the packed local artifacts', () => {
+    const tarballs = new Map([
+      ['@kalyx/core', '/tmp/kalyx-core.tgz'],
+      ['@kalyx/react', '/tmp/kalyx-react.tgz'],
+    ]);
+
+    const manifest = createConsumerManifest(tarballs, {
+      react: '19.2.7',
+      reactDom: '19.2.7',
+    });
+
+    expect(manifest.dependencies).toMatchObject({
+      '@kalyx/core': 'file:/tmp/kalyx-core.tgz',
+      '@kalyx/react': 'file:/tmp/kalyx-react.tgz',
+      react: '19.2.7',
+      'react-dom': '19.2.7',
+    });
+    expect(manifest.pnpm.overrides).toEqual({
+      '@kalyx/core': 'file:/tmp/kalyx-core.tgz',
+      '@kalyx/react': 'file:/tmp/kalyx-react.tgz',
+    });
   });
 });
 

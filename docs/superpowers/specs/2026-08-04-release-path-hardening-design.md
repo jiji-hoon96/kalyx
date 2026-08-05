@@ -26,13 +26,14 @@ The tarball checker discovers direct children of `packages/` and treats every ma
 
 ## Root Build
 
-Replace the partial explicit build chain with a recursive packages-only build:
+Use a two-stage packages-only build:
 
 ```text
-pnpm --filter './packages/*' --if-present build
+pnpm --filter @kalyx/core build
+pnpm --filter './packages/*' --filter '!@kalyx/core' --if-present build
 ```
 
-pnpm executes the selected workspace projects in topological order. Apps and examples remain outside the root library build, while every current and future package under `packages/` with a build script participates.
+Core is built first because its development-only conformance dependency on the date-fns adapter forms a workspace cycle with the adapter's runtime dependency on core. A single recursive command can therefore start both declaration builds concurrently and fail on a clean tree. After core declarations exist, pnpm executes all remaining packages in topological order. Apps and examples remain outside the root library build, while every current and future package under `packages/` with a build script participates.
 
 ## Tarball Smoke Test
 

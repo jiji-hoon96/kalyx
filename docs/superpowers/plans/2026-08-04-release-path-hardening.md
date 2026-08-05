@@ -38,7 +38,7 @@
 
 - Modify: `package.json`
 
-1. Replace the partial build chain with the packages-only recursive build.
+1. Replace the partial build chain with a core-first stage followed by the packages-only recursive build, avoiding the core/date-fns workspace cycle on clean declaration builds.
 2. Remove all five `dist/` directories, run `pnpm build`, and require all five to be recreated.
 3. Keep named helper build scripts for local convenience unless they become misleading.
 
