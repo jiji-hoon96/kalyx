@@ -71,6 +71,9 @@ const timeOfDay = () =>
   });
 
 const RUNS = { numRuns: 300 };
+const IANA_ZONES = Intl.supportedValuesOf('timeZone');
+const IANA_RUNS_PER_ZONE = 12;
+const IANA_SEED = 0x4b414c59;
 
 describe('timezone invariants (property-based)', () => {
   it('round-trips every UTC calendar coordinate through civil midnight', () => {
@@ -81,6 +84,34 @@ describe('timezone invariants (property-based)', () => {
       }),
       RUNS,
     );
+  });
+
+  it('round-trips calendar coordinates in every supported IANA timezone', () => {
+    expect(IANA_ZONES.length).toBeGreaterThan(0);
+    expect(IANA_ZONES).toEqual(
+      expect.arrayContaining(['Pacific/Auckland', 'Pacific/Chatham', 'Pacific/Kiritimati']),
+    );
+
+    IANA_ZONES.forEach((timeZone, index) => {
+      try {
+        fc.assert(
+          fc.property(utcCalendarCoordinate(), (coordinate) => {
+            const instant = civilMidnightFromUtcDay(coordinate, timeZone);
+            expect(calendarDayFromInstant(instant, timeZone)).toBe(coordinate);
+          }),
+          {
+            numRuns: IANA_RUNS_PER_ZONE,
+            seed: IANA_SEED + index,
+          },
+        );
+      } catch (error) {
+        throw new Error(
+          `Calendar-coordinate round trip failed in ${timeZone}: ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+        );
+      }
+    });
   });
 
   it('startOfDayInTimezone is idempotent', () => {
