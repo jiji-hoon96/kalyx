@@ -18,7 +18,7 @@ import type {
   WeekStartsOn,
 } from '@kalyx/core';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
-import { resolveEnabledCalendarFocus } from '../internal/calendarFocus.js';
+import { resolveEnabledCalendarFocus, resolveMonthNavigation } from '../internal/calendarFocus.js';
 
 export interface UseDateTimePickerOptions {
   /** Selected datetime (controlled, ISO 8601 UTC — date and time) */
@@ -182,19 +182,15 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
   }, [isOpen, open, close]);
 
   const previousMonth = useCallback(() => {
-    setViewMonth((m) => {
-      const next = adapter.addMonths(m, -1);
-      setFocusedDate(adapter.startOfMonth(next));
-      return next;
-    });
-  }, [adapter]);
+    const next = resolveMonthNavigation(viewMonth, -1, disabled, adapter, displayTimezone);
+    setViewMonth(next.viewMonth);
+    setFocusedDate(next.focusedDate);
+  }, [adapter, viewMonth, disabled, displayTimezone]);
   const nextMonth = useCallback(() => {
-    setViewMonth((m) => {
-      const next = adapter.addMonths(m, 1);
-      setFocusedDate(adapter.startOfMonth(next));
-      return next;
-    });
-  }, [adapter]);
+    const next = resolveMonthNavigation(viewMonth, 1, disabled, adapter, displayTimezone);
+    setViewMonth(next.viewMonth);
+    setFocusedDate(next.focusedDate);
+  }, [adapter, viewMonth, disabled, displayTimezone]);
 
   const calendar = getCalendarDays(viewMonth, adapter, {
     weekStartsOn,

@@ -15,7 +15,7 @@ import type {
 } from '@kalyx/core';
 import type { RangeSelectingTarget } from '../context/RangePickerContext.js';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
-import { resolveEnabledCalendarFocus } from '../internal/calendarFocus.js';
+import { resolveEnabledCalendarFocus, resolveMonthNavigation } from '../internal/calendarFocus.js';
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
 
@@ -193,16 +193,16 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
   }, [isOpen, open, close]);
 
   const previousMonth = useCallback(() => {
-    const newMonth = adapter.addMonths(viewMonth, -1);
-    setViewMonth(newMonth);
-    setFocusedDate(adapter.startOfMonth(newMonth));
-  }, [adapter, viewMonth]);
+    const next = resolveMonthNavigation(viewMonth, -1, disabled, adapter, displayTimezone);
+    setViewMonth(next.viewMonth);
+    setFocusedDate(next.focusedDate);
+  }, [adapter, viewMonth, disabled, displayTimezone]);
 
   const nextMonth = useCallback(() => {
-    const newMonth = adapter.addMonths(viewMonth, 1);
-    setViewMonth(newMonth);
-    setFocusedDate(adapter.startOfMonth(newMonth));
-  }, [adapter, viewMonth]);
+    const next = resolveMonthNavigation(viewMonth, 1, disabled, adapter, displayTimezone);
+    setViewMonth(next.viewMonth);
+    setFocusedDate(next.focusedDate);
+  }, [adapter, viewMonth, disabled, displayTimezone]);
 
   const calendar = getCalendarDays(viewMonth, adapter, {
     weekStartsOn,

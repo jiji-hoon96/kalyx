@@ -1174,4 +1174,18 @@ describe('RangePicker — RTL (dir="rtl")', () => {
     await user.click(screen.getAllByRole('combobox')[0]);
     expect(screen.getByRole('grid')).toHaveAttribute('dir', 'ltr');
   });
+
+  it('navigates past a fully disabled month instead of freezing on the current one', async () => {
+    const user = userEvent.setup();
+    renderRangePicker({
+      value: { start: '2026-03-10T00:00:00.000Z', end: null },
+      disabled: [{ filter: (iso) => iso.startsWith('2026-02-') }],
+    });
+
+    await user.click(screen.getByLabelText('Start date'));
+    await user.click(screen.getByRole('button', { name: 'Previous month' }));
+
+    // A 'forward' search lands back on March 1 and the button stops responding.
+    expect(screen.getByRole('button', { name: /January 31, 2026/ })).toHaveFocus();
+  });
 });
