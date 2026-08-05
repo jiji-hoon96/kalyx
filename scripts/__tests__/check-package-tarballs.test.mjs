@@ -4,9 +4,12 @@ import { join, resolve } from 'node:path';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
+  assertRepresentativeExport,
+  collectInstalledExternalPackages,
   createConsumerManifest,
   createSmokePrograms,
   discoverPublishablePackages,
+  validatePackedInternalDependencies,
   validatePublishablePackages,
 } from '../check-package-tarballs.mjs';
 
@@ -15,9 +18,9 @@ const repoRoot = resolve(import.meta.dirname, '../..');
 
 afterEach(async () => {
   await Promise.all(
-    temporaryDirectories.splice(0).map((directory) =>
-      rm(directory, { recursive: true, force: true }),
-    ),
+    temporaryDirectories
+      .splice(0)
+      .map((directory) => rm(directory, { recursive: true, force: true })),
   );
 });
 
@@ -77,6 +80,30 @@ describe('validatePublishablePackages', () => {
       '@kalyx/broken: publishConfig.provenance must be true',
     ]);
   });
+
+  it('rejects export maps that cannot be exhaustively smoke-tested', () => {
+    const problems = validatePublishablePackages([
+      {
+        directory: '/packages/conditional',
+        manifestPath: '/packages/conditional/package.json',
+        manifest: validManifest({
+          name: '@kalyx/conditional',
+          exports: { import: './dist/index.js', require: './dist/index.cjs' },
+        }),
+      },
+      {
+        directory: '/packages/pattern',
+        manifestPath: '/packages/pattern/package.json',
+        manifest: validManifest({
+          name: '@kalyx/pattern',
+          exports: { '.': './dist/index.js', './features/*': './dist/features/*.js' },
+        }),
+      },
+    ]);
+
+    expect(problems).toContain('@kalyx/conditional: exports must declare the canonical "." root');
+    expect(problems).toContain('@kalyx/pattern: export patterns are not supported: ./features/*');
+  });
 });
 
 describe('createSmokePrograms', () => {
@@ -107,6 +134,96 @@ describe('createSmokePrograms', () => {
       expect(programs.esm).toContain(JSON.stringify(specifier));
       expect(programs.cjs).toContain(JSON.stringify(specifier));
     }
+    expect(programs.esm).toContain(JSON.stringify('getCalendarDays'));
+    expect(programs.cjs).toContain(JSON.stringify('runAdapterConformanceTests'));
+  });
+
+  it('rejects a nonempty module that exposes the wrong public symbol', () => {
+    expect(() => assertRepresentativeExport('@kalyx/core', { wrongExport: true })).toThrow(
+      '@kalyx/core is missing representative export getCalendarDays',
+    );
+  });
+});
+
+describe('validatePackedInternalDependencies', () => {
+  const packages = [
+    { manifest: validManifest({ name: '@kalyx/core', version: '1.4.1' }) },
+    {
+      manifest: validManifest({
+        name: '@kalyx/adapter-example',
+        version: '1.0.0',
+        dependencies: { '@kalyx/core': 'workspace:*' },
+      }),
+    },
+  ];
+
+  it('accepts the exact rewrite of workspace:*', () => {
+    const packed = new Map([
+      ['@kalyx/core', { name: '@kalyx/core', version: '1.4.1' }],
+      [
+        '@kalyx/adapter-example',
+        {
+          name: '@kalyx/adapter-example',
+          version: '1.0.0',
+          dependencies: { '@kalyx/core': '1.4.1' },
+        },
+      ],
+    ]);
+
+    expect(validatePackedInternalDependencies(packages, packed)).toEqual([]);
+  });
+
+  it('rejects remaining workspace protocols and incompatible or nonexact rewrites', () => {
+    const remainingWorkspace = new Map([
+      ['@kalyx/core', { name: '@kalyx/core', version: '1.4.1' }],
+      [
+        '@kalyx/adapter-example',
+        {
+          name: '@kalyx/adapter-example',
+          version: '1.0.0',
+          dependencies: { '@kalyx/core': 'workspace:*' },
+        },
+      ],
+    ]);
+    const incompatible = new Map([
+      ['@kalyx/core', { name: '@kalyx/core', version: '1.4.1' }],
+      [
+        '@kalyx/adapter-example',
+        {
+          name: '@kalyx/adapter-example',
+          version: '1.0.0',
+          dependencies: { '@kalyx/core': '^999.0.0' },
+        },
+      ],
+    ]);
+    const nonexact = new Map([
+      ['@kalyx/core', { name: '@kalyx/core', version: '1.4.1' }],
+      [
+        '@kalyx/adapter-example',
+        {
+          name: '@kalyx/adapter-example',
+          version: '1.0.0',
+          dependencies: { '@kalyx/core': '^1.4.1' },
+        },
+      ],
+    ]);
+    const missing = new Map([
+      ['@kalyx/core', { name: '@kalyx/core', version: '1.4.1' }],
+      ['@kalyx/adapter-example', { name: '@kalyx/adapter-example', version: '1.0.0' }],
+    ]);
+
+    expect(validatePackedInternalDependencies(packages, remainingWorkspace)).toContain(
+      '@kalyx/adapter-example: packed dependencies.@kalyx/core still uses workspace:*',
+    );
+    expect(validatePackedInternalDependencies(packages, incompatible)).toContain(
+      '@kalyx/adapter-example: packed dependencies.@kalyx/core range ^999.0.0 does not accept 1.4.1',
+    );
+    expect(validatePackedInternalDependencies(packages, nonexact)).toContain(
+      '@kalyx/adapter-example: workspace:* dependency @kalyx/core must pack as exact 1.4.1, got ^1.4.1',
+    );
+    expect(validatePackedInternalDependencies(packages, missing)).toContain(
+      '@kalyx/adapter-example: packed dependencies is missing internal dependency @kalyx/core',
+    );
   });
 });
 
@@ -118,19 +235,28 @@ describe('createConsumerManifest', () => {
     ]);
 
     const manifest = createConsumerManifest(tarballs, {
-      react: '19.2.7',
-      reactDom: '19.2.7',
+      packageManager: 'pnpm@10.10.0',
+      externalPackages: new Map([
+        ['@floating-ui/react', { version: '0.27.19', directory: '/store/floating-react' }],
+        ['react', { version: '19.2.7', directory: '/store/react' }],
+        ['react-dom', { version: '19.2.7', directory: '/store/react-dom' }],
+      ]),
+      peerDependencyNames: new Set(['react', 'react-dom']),
     });
 
     expect(manifest.dependencies).toMatchObject({
       '@kalyx/core': 'file:/tmp/kalyx-core.tgz',
       '@kalyx/react': 'file:/tmp/kalyx-react.tgz',
-      react: '19.2.7',
-      'react-dom': '19.2.7',
+      react: 'link:/store/react',
+      'react-dom': 'link:/store/react-dom',
     });
+    expect(manifest.packageManager).toBe('pnpm@10.10.0');
     expect(manifest.pnpm.overrides).toEqual({
       '@kalyx/core': 'file:/tmp/kalyx-core.tgz',
       '@kalyx/react': 'file:/tmp/kalyx-react.tgz',
+      '@floating-ui/react': 'link:/store/floating-react',
+      react: 'link:/store/react',
+      'react-dom': 'link:/store/react-dom',
     });
   });
 });
@@ -147,5 +273,15 @@ describe('repository publishable packages', () => {
       '@kalyx/react',
     ]);
     expect(validatePublishablePackages(packages)).toEqual([]);
+
+    const externalPackages = collectInstalledExternalPackages(packages);
+    expect(externalPackages).toMatchObject({
+      '@floating-ui/react': { version: expect.any(String), directory: expect.any(String) },
+      'date-fns': { version: expect.any(String), directory: expect.any(String) },
+      dayjs: { version: expect.any(String), directory: expect.any(String) },
+      luxon: { version: expect.any(String), directory: expect.any(String) },
+      react: { version: expect.any(String), directory: expect.any(String) },
+      'react-dom': { version: expect.any(String), directory: expect.any(String) },
+    });
   });
 });

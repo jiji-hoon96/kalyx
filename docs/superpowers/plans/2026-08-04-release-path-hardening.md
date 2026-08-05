@@ -49,11 +49,12 @@
 - Modify: `scripts/check-package-tarballs.mjs`
 - Modify: `package.json`
 
-1. Pack each discovered package to a temporary directory.
-2. Install all tarballs in a standalone consumer with React peers.
-3. Execute generated ESM and CommonJS import assertions for roots and required subpaths.
-4. Guarantee cleanup in `finally` and surface the failing subprocess clearly.
-5. Run `pnpm check-package-tarballs` and require all artifacts to pass.
+1. Pack each discovered package to a temporary directory and inspect its packed manifest before applying overrides.
+2. Validate workspace rewrites and canonical finite export maps, then install all Kalyx tarballs in a standalone consumer.
+3. Pin the repository pnpm version, link external dependencies from the frozen root install, and perform an offline frozen consumer install.
+4. Execute generated ESM and CommonJS representative-export assertions for roots and required subpaths.
+5. Guarantee cleanup in `finally` and on termination signals, and surface the failing subprocess clearly.
+6. Run `pnpm check-package-tarballs` and require all artifacts to pass.
 
 ## Task 5: Gate PRs and releases
 
@@ -63,7 +64,7 @@
 - Modify: `.github/workflows/release.yml`
 
 1. Add a fresh-checkout Package Tarball Smoke job and include it in All Checks Pass.
-2. Add the same command after the release build and before publish.
+2. Add the same command after the release build and before publish, and make the root `release` command the single guarded publish entry point.
 3. Validate workflow formatting and inspect ordering.
 
 ## Task 6: Full verification and independent review

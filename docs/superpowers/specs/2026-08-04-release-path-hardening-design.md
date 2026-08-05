@@ -44,12 +44,14 @@ The script:
 1. validates all publishable manifests;
 2. creates an OS temporary directory and always removes it;
 3. runs `pnpm pack` in each publishable package into a shared tarball directory;
-4. creates a consumer project outside the workspace;
-5. installs all local tarballs together, plus the React peer dependencies, using the already configured registry/store;
-6. runs ESM and CommonJS smoke programs that import every package root export and the `@kalyx/core/test-helpers` and `@kalyx/react/headless` subpaths;
-7. asserts representative runtime exports exist for each package.
+4. extracts each packed `package.json`, rejects remaining `workspace:` protocols, missing internal dependencies, incompatible internal ranges, and non-exact rewrites of `workspace:*`;
+5. creates a consumer project outside the workspace and pins the repository's `packageManager` version;
+6. forces every Kalyx dependency to its tarball while linking external dependencies to the exact package directories produced by the root frozen install;
+7. generates a consumer lockfile offline and performs a frozen offline install;
+8. runs ESM and CommonJS smoke programs that import every finite package root/subpath export;
+9. asserts package/subpath-specific representative runtime symbols for the seven current entry points.
 
-Installing all local tarballs together verifies that packed workspace dependency ranges resolve to the corresponding artifacts rather than accidentally reading workspace sources or `dist/` folders.
+Packed ranges are validated before local overrides are applied, so overrides cannot mask incorrect workspace-range rewriting. Installing all Kalyx tarballs together then verifies artifact resolution without reading workspace sources. External `link:` targets are restricted to the exact pnpm virtual-store packages already selected by the repository lockfile, making the gate registry-independent and reproducible.
 
 ## CI and Release Ordering
 
@@ -67,8 +69,11 @@ Unit tests cover:
 
 - discovery excludes private packages and includes every publishable package;
 - missing provenance and required metadata are reported;
+- unsupported conditional-root or pattern export maps are rejected rather than silently skipped;
+- packed internal ranges and exact `workspace:*` rewrites are validated before overrides;
 - the repository manifest set contains all five expected packages and has no validation errors;
-- generated ESM/CommonJS smoke programs include every discovered package and required subpath.
+- generated ESM/CommonJS smoke programs include every discovered package/subpath and require representative symbols;
+- the consumer uses the pinned pnpm version, packed Kalyx overrides, and locked external-package links.
 
 The repository-level metadata test is expected to fail until provenance is added to dayjs and luxon. The real tarball command then provides integration coverage of pack/install/import behavior.
 
@@ -84,4 +89,5 @@ Excluded: publishing a version, creating changesets, changing runtime source, re
 2. Every publishable package declares provenance.
 3. Every packed ESM and CJS entry point imports from a standalone consumer.
 4. Broken tarball contents or export maps fail PR CI and the release job before publish.
-5. No package version or npm publication occurs in this PR.
+5. Both the GitHub Changesets action and direct `pnpm release` use the guarded build → tarball smoke → publish path.
+6. No package version or npm publication occurs in this PR.
