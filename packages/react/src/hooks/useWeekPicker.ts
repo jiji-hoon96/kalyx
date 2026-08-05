@@ -164,15 +164,19 @@ export function useWeekPicker(options: UseWeekPickerOptions = {}): UseWeekPicker
   }, [isOpen, open, close]);
 
   const previousMonth = useCallback(() => {
-    const next = resolveMonthNavigation(viewMonth, -1, disabled, adapter, displayTimezone);
-    setViewMonth(next.viewMonth);
-    setFocusedDate(next.focusedDate);
-  }, [adapter, viewMonth, disabled, displayTimezone]);
+    setViewMonth((current) => {
+      const next = resolveMonthNavigation(current, -1, disabled, adapter, displayTimezone);
+      setFocusedDate(next.focusedDate);
+      return next.viewMonth;
+    });
+  }, [adapter, disabled, displayTimezone]);
   const nextMonth = useCallback(() => {
-    const next = resolveMonthNavigation(viewMonth, 1, disabled, adapter, displayTimezone);
-    setViewMonth(next.viewMonth);
-    setFocusedDate(next.focusedDate);
-  }, [adapter, viewMonth, disabled, displayTimezone]);
+    setViewMonth((current) => {
+      const next = resolveMonthNavigation(current, 1, disabled, adapter, displayTimezone);
+      setFocusedDate(next.focusedDate);
+      return next.viewMonth;
+    });
+  }, [adapter, disabled, displayTimezone]);
 
   const calendar = getCalendarDays(viewMonth, adapter, {
     weekStartsOn,

@@ -176,6 +176,24 @@ describe('useWeekPicker — timezone and constraint parity', () => {
     ).toBe(true);
   });
 
+  it('preserves repeated month navigation calls in the same React batch', () => {
+    const { result } = renderHook(() =>
+      useWeekPicker({
+        defaultValue: { start: '2026-01-15T00:00:00.000Z', end: '2026-01-15T00:00:00.000Z' },
+      }),
+    );
+
+    act(() => {
+      result.current.nextMonth();
+      result.current.nextMonth();
+    });
+
+    expect(
+      result.current.adapter.isSameMonth(result.current.viewMonth, '2026-03-01T00:00:00.000Z'),
+    ).toBe(true);
+    expect(result.current.focusedDate).toBe('2026-03-01T00:00:00.000Z');
+  });
+
   it('never focuses a disabled day after month navigation', () => {
     const { result } = renderHook(() =>
       useWeekPicker({
