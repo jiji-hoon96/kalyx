@@ -1,5 +1,9 @@
 import { defineConfig } from "tsup";
-import { REACT_GZIP_CEILING_KB } from "../../scripts/bundle-policy.js";
+import {
+	assertBundleChecks,
+	HEADLESS_REACT_GZIP_CEILING_KB,
+	REACT_GZIP_CEILING_KB,
+} from "../../scripts/bundle-policy.js";
 
 const USE_CLIENT_DIRECTIVE = '"use client";\n';
 
@@ -32,30 +36,40 @@ export default defineConfig({
 		// Mirror scripts/check-bundle-size.js + .github/workflows/pr-check.yml + release.yml.
 		// Raised from 12 → 13 → 14 → 15 → 16 → 17 → 20 KB across milestones as features landed
 		// (CLAUDE.md §2 records each bump's rationale; 17→20 = timezone/constraint correctness breadth).
-		// Only the default `index` entry is checked against the public size budget;
-		// the headless entry is intentionally smaller and measured separately by
-		// scripts/verify-entry-split.mjs.
+		// Both public entries have explicit absolute budgets. Entry-split additionally
+		// verifies that headless does not include date-fns.
 		const outputs = [
-			["ESM index", "dist/index.js", true],
-			["CJS index", "dist/index.cjs", true],
-			["ESM headless", "dist/headless.js", false],
-			["CJS headless", "dist/headless.cjs", false],
+			["ESM index", "dist/index.js", REACT_GZIP_CEILING_KB],
+			["CJS index", "dist/index.cjs", REACT_GZIP_CEILING_KB],
+			["ESM headless", "dist/headless.js", HEADLESS_REACT_GZIP_CEILING_KB],
+			["CJS headless", "dist/headless.cjs", HEADLESS_REACT_GZIP_CEILING_KB],
 		] as const;
-		for (const [label, file, enforceBudget] of outputs) {
+		const checks: Array<{
+			label: string;
+			gzipBytes?: number;
+			ceilingKB?: number;
+			error?: Error;
+		}> = [];
+		for (const [label, file, ceilingKB] of outputs) {
 			try {
 				const original = readFileSync(file, "utf8");
 				if (!original.startsWith(USE_CLIENT_DIRECTIVE.trim())) {
 					writeFileSync(file, USE_CLIENT_DIRECTIVE + original);
 				}
 				const content = readFileSync(file);
-				const kb = (gzipSync(content).length / 1024).toFixed(2);
-				const icon =
-					!enforceBudget || parseFloat(kb) <= REACT_GZIP_CEILING_KB ? "✅" : "⚠️";
-				const suffix = enforceBudget
-					? ` (목표: ≤${REACT_GZIP_CEILING_KB}KB)`
-					: "";
+				const gzipBytes = gzipSync(content).length;
+				const kb = (gzipBytes / 1024).toFixed(2);
+				checks.push({ label, gzipBytes, ceilingKB });
+				const icon = gzipBytes <= ceilingKB * 1024 ? "✅" : "⚠️";
+				const suffix = ` (목표: ≤${ceilingKB}KB)`;
 				console.log(`${icon} [${label}] gzip: ${kb}KB${suffix}`);
-			} catch {}
+			} catch (error) {
+				checks.push({
+					label,
+					error: error instanceof Error ? error : new Error(String(error)),
+				});
+			}
 		}
+		assertBundleChecks(checks);
 	},
 });

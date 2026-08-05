@@ -12,19 +12,15 @@
 //
 // Base sizes are injected in BYTES via env (the CI workflow checks out the base
 // ref, builds, and measures with this same primitive):
-//   BUNDLE_BASE_ESM, BUNDLE_BASE_CJS
+//   BUNDLE_BASE_ESM, BUNDLE_BASE_CJS,
+//   BUNDLE_BASE_HEADLESS_ESM, BUNDLE_BASE_HEADLESS_CJS
 // When absent, the script prints head sizes + margin only (no delta).
 //
 // When $GITHUB_OUTPUT is set, appends a ready-to-render markdown table under
 // the `comment` key (heredoc-delimited) for the PR-comment step to read back.
 
 import { appendFileSync } from "fs";
-import { getGzipBytes, BUNDLES, TARGET_BYTES, TARGET_KB } from "./check-bundle-size.js";
-
-const BASE_ENV = {
-	ESM: "BUNDLE_BASE_ESM",
-	CJS: "BUNDLE_BASE_CJS",
-};
+import { getGzipBytes, BUNDLES } from "./check-bundle-size.js";
 
 function fmtBytes(n) {
 	return `${n.toLocaleString("en-US")} B`;
@@ -45,40 +41,37 @@ function emitGithubOutput(key, value) {
 	if (!process.env.GITHUB_OUTPUT) return;
 	// Multi-line value uses the heredoc delimiter form GitHub Actions requires.
 	const delim = `EOF_${key}_${Date.now()}`;
-	appendFileSync(
-		process.env.GITHUB_OUTPUT,
-		`${key}<<${delim}\n${value}\n${delim}\n`,
-	);
+	appendFileSync(process.env.GITHUB_OUTPUT, `${key}<<${delim}\n${value}\n${delim}\n`);
 }
 
 const rows = [];
 let anyOverBudget = false;
 let anyGrowth = false;
 
-for (const { label, path } of BUNDLES) {
+for (const { label, path, baseEnv, ceilingKB } of BUNDLES) {
 	const head = getGzipBytes(path);
-	const baseRaw = process.env[BASE_ENV[label]];
+	const baseRaw = process.env[baseEnv];
 	const base = baseRaw != null && baseRaw !== "" ? parseInt(baseRaw, 10) : null;
 	const delta = base != null && !Number.isNaN(base) ? head - base : null;
-	const margin = TARGET_BYTES - head;
+	const margin = ceilingKB * 1024 - head;
 
 	if (margin < 0) anyOverBudget = true;
 	if (delta != null && delta > 0) anyGrowth = true;
 
-	rows.push({ label, head, delta, margin });
+	rows.push({ label, path, head, delta, margin, ceilingKB });
 }
 
 // ── Console report ──────────────────────────────────────────────
 console.log("\n📊 Bundle Diff (gzip, vs base)");
 console.log("─".repeat(60));
-for (const { label, head, delta, margin } of rows) {
+for (const { label, head, delta, margin, ceilingKB } of rows) {
 	console.log(`  [${label}] head ${fmtKB(head)} (${fmtBytes(head)})`);
-	console.log(`        delta ${fmtDelta(delta)} | margin ${fmtBytes(margin)} to ${TARGET_KB}KB`);
+	console.log(`        delta ${fmtDelta(delta)} | margin ${fmtBytes(margin)} to ${ceilingKB}KB`);
 }
 console.log("─".repeat(60));
 console.log(
 	anyOverBudget
-		? `  ❌ over ${TARGET_KB}KB budget`
+		? "  ❌ over an entry budget"
 		: anyGrowth
 			? "  ⚠️  grows the bundle — confirm the margin is intended"
 			: "  ✅ no growth",
@@ -87,22 +80,22 @@ console.log("─".repeat(60));
 
 // ── PR-comment markdown ─────────────────────────────────────────
 const tableRows = rows
-	.map(({ label, head, delta, margin }) => {
-		const entry = label === "ESM" ? "`dist/index.js`" : "`dist/index.cjs`";
-		return `| **${label}** (${entry}) | ${fmtKB(head)} | ${fmtDelta(delta)} | ${fmtBytes(margin)} |`;
+	.map(({ label, path, head, delta, margin, ceilingKB }) => {
+		const entry = `\`${path.replace("packages/react/", "")}\``;
+		return `| **${label}** (${entry}) | ${fmtKB(head)} | ${fmtDelta(delta)} | ${fmtBytes(margin)} to ${ceilingKB}KB |`;
 	})
 	.join("\n");
 
 const summary = anyOverBudget
-	? `❌ **Over the ${TARGET_KB}KB budget.** Run \`pnpm bundle-diff\` locally and trim before merge.`
+	? "❌ **Over an entry-specific bundle budget.** Run `pnpm bundle-diff` locally and trim before merge."
 	: anyGrowth
-		? `⚠️ This PR **grows** the bundle. The ${TARGET_KB}KB ceiling is CJS-bound and the working margin is small — confirm the cost is intended.`
+		? "⚠️ This PR **grows** at least one bundle. The working margins are small — confirm the cost is intended."
 		: "✅ No bundle growth vs base.";
 
 const body = [
 	"#### 📊 Bundle diff (gzip, vs base)",
 	"",
-	`| Bundle | head | Δ vs base | margin to ${TARGET_KB}KB |`,
+	"| Bundle | head | Δ vs base | budget margin |",
 	"|---|---|---|---|",
 	tableRows,
 	"",

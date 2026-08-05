@@ -12,12 +12,16 @@
 //    configured ceiling.
 //
 // When `$GITHUB_OUTPUT` is set, the script appends per-bundle gzip KB values
-// (kb_esm, kb_cjs) so the workflow can read them back for the PR comment
-// without re-measuring.
+// (kb_esm, kb_cjs, kb_headless_esm, kb_headless_cjs) so the workflow can read
+// them back for the PR comment without re-measuring.
 
 import { gzipSync } from "zlib";
 import { readFileSync, statSync, appendFileSync } from "fs";
-import { REACT_GZIP_CEILING_KB } from "./bundle-policy.js";
+import {
+	HEADLESS_REACT_GZIP_CEILING_KB,
+	REACT_GZIP_CEILING_KB,
+	isWithinBudget,
+} from "./bundle-policy.js";
 
 // Bundle target. 12KB → 13KB after the v1.0-rc audit added user-facing
 // features (IME composition handling, popover focus-out, `name`/hidden-input
@@ -37,11 +41,36 @@ import { REACT_GZIP_CEILING_KB } from "./bundle-policy.js";
 // announced from a region that survives Calendar unmount, matching RangePicker.
 // Still ~3.5× smaller than react-datepicker (~40KB).
 export const TARGET_KB = REACT_GZIP_CEILING_KB;
-export const TARGET_BYTES = TARGET_KB * 1024;
 
 export const BUNDLES = [
-	{ label: "ESM", path: "packages/react/dist/index.js", outputKey: "kb_esm" },
-	{ label: "CJS", path: "packages/react/dist/index.cjs", outputKey: "kb_cjs" },
+	{
+		label: "ESM default",
+		path: "packages/react/dist/index.js",
+		outputKey: "kb_esm",
+		baseEnv: "BUNDLE_BASE_ESM",
+		ceilingKB: REACT_GZIP_CEILING_KB,
+	},
+	{
+		label: "CJS default",
+		path: "packages/react/dist/index.cjs",
+		outputKey: "kb_cjs",
+		baseEnv: "BUNDLE_BASE_CJS",
+		ceilingKB: REACT_GZIP_CEILING_KB,
+	},
+	{
+		label: "ESM headless",
+		path: "packages/react/dist/headless.js",
+		outputKey: "kb_headless_esm",
+		baseEnv: "BUNDLE_BASE_HEADLESS_ESM",
+		ceilingKB: HEADLESS_REACT_GZIP_CEILING_KB,
+	},
+	{
+		label: "CJS headless",
+		path: "packages/react/dist/headless.cjs",
+		outputKey: "kb_headless_cjs",
+		baseEnv: "BUNDLE_BASE_HEADLESS_CJS",
+		ceilingKB: HEADLESS_REACT_GZIP_CEILING_KB,
+	},
 ];
 
 // Single source of truth for the gzip primitive. bundle-diff.mjs imports this
@@ -50,10 +79,6 @@ export const BUNDLES = [
 // configured margin.
 export function getGzipBytes(filePath) {
 	return gzipSync(readFileSync(filePath)).length;
-}
-
-function getGzipKB(filePath) {
-	return (getGzipBytes(filePath) / 1024).toFixed(2);
 }
 
 function getRawKB(filePath) {
@@ -71,27 +96,30 @@ function run() {
 
 	let allOk = true;
 
-	for (const { label, path, outputKey } of BUNDLES) {
-		const gzipKB = parseFloat(getGzipKB(path));
+	for (const { label, path, outputKey, ceilingKB } of BUNDLES) {
+		const gzipBytes = getGzipBytes(path);
+		const gzipKB = parseFloat((gzipBytes / 1024).toFixed(2));
 		const rawKB = parseFloat(getRawKB(path));
-		const ok = gzipKB <= TARGET_KB;
+		const ok = isWithinBudget(gzipBytes, ceilingKB);
 		if (!ok) allOk = false;
 
 		console.log(`  [${label}] ${path}`);
-		console.log(`    원본: ${rawKB}KB | gzip: ${gzipKB}KB | ${ok ? "✅" : "❌ 초과!"}`);
+		console.log(
+			`    원본: ${rawKB}KB | gzip: ${gzipKB}KB | 한계: ${ceilingKB}KB | ${ok ? "✅" : "❌ 초과!"}`,
+		);
 		emitGithubOutput(outputKey, gzipKB);
 	}
 
 	console.log("─".repeat(48));
-	console.log(`  목표: ≤ ${TARGET_KB}KB (gzip)`);
+	console.log(
+		`  기본 목표: ≤ ${TARGET_KB}KB | headless 목표: ≤ ${HEADLESS_REACT_GZIP_CEILING_KB}KB (gzip)`,
+	);
 	console.log(`  결과: ${allOk ? "✅ PASS" : "❌ FAIL"}`);
 	console.log("─".repeat(48));
 
 	if (!allOk) {
 		console.error("\n❌ 번들 크기 초과!");
-		console.error(
-			"   분석: npx source-map-explorer packages/react/dist/index.js",
-		);
+		console.error("   분석: npx source-map-explorer packages/react/dist/index.js");
 		process.exit(1);
 	}
 }
