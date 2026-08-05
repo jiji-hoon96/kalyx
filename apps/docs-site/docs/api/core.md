@@ -12,7 +12,7 @@ Platform-independent date logic. Usually consumed transitively through `@kalyx/r
 pnpm add @kalyx/core
 ```
 
-The examples that use `DateFnsAdapter` also require its adapter package and peer dependency:
+The examples that use `DateFnsAdapter` also require its adapter package and underlying date library:
 
 ```bash
 pnpm add @kalyx/adapter-date-fns date-fns
@@ -190,9 +190,16 @@ formatTimeString({ hours: 9, minutes: 30, seconds: 0 });       // → "09:30"
 formatTimeString({ hours: 9, minutes: 30, seconds: 0 }, true); // → "09:30:00"
 ```
 
-### `formatTimeFromISO(iso, withSeconds?)`
+### `formatTimeFromISO(iso, format)`
 
-Convenience wrapper — equivalent to `formatTimeString(getTime(iso), withSeconds)`.
+Format an ISO datetime in UTC using `HH:mm`, `HH:mm:ss`, `h:mm a`, or `h:mm:ss a`.
+
+```ts
+import { formatTimeFromISO } from '@kalyx/core';
+
+formatTimeFromISO('2026-04-15T13:30:00.000Z', 'h:mm a');
+// → "1:30 PM"
+```
 
 ### 12h helpers
 

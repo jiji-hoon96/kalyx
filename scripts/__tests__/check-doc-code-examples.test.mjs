@@ -46,6 +46,32 @@ describe('extractExecutableFences', () => {
     expect(snippets[0].extension).toBe('ts');
   });
 
+  it('supports Docusaurus metadata, tilde fences, and longer closing fences', () => {
+    const markdown = [
+      '```ts title="TypeScript example"',
+      'const first: number = 1;',
+      '````',
+      '~~~tsx',
+      'const second = <span />;',
+      '~~~~',
+    ].join('\n');
+
+    expect(extractExecutableFences(markdown, 'api.md')).toEqual([
+      {
+        sourcePath: 'api.md',
+        startLine: 2,
+        extension: 'ts',
+        code: 'const first: number = 1;',
+      },
+      {
+        sourcePath: 'api.md',
+        startLine: 5,
+        extension: 'tsx',
+        code: 'const second = <span />;',
+      },
+    ]);
+  });
+
   it('rejects an unclosed executable fence', () => {
     expect(() => extractExecutableFences('before\n```ts\nconst value = 1;', 'api.md')).toThrow(
       'api.md:2: unclosed TypeScript fence',
@@ -61,6 +87,21 @@ describe('assertMatchingFenceCounts', () => {
         { sourcePath: 'ko.md', snippets: [{}] },
       ]),
     ).toThrow('executable fence count mismatch: en.md has 2, ko.md has 1');
+  });
+
+  it('rejects equal-count locales with different executable content', () => {
+    expect(() =>
+      assertMatchingFenceCounts([
+        {
+          sourcePath: 'en.md',
+          snippets: [{ extension: 'ts', code: 'const locale = "en";' }],
+        },
+        {
+          sourcePath: 'ko.md',
+          snippets: [{ extension: 'ts', code: 'const locale = "ko";' }],
+        },
+      ]),
+    ).toThrow('executable fence mismatch: en.md and ko.md differ at fence 1');
   });
 
   it('rejects an empty executable document', () => {

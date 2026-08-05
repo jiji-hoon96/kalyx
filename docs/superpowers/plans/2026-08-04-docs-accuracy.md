@@ -17,7 +17,7 @@
 - Create: `scripts/__tests__/check-doc-code-examples.test.mjs`
 - Create: `scripts/check-doc-code-examples.mjs`
 
-1. Add tests for `ts`/`tsx` extraction, source line tracking, unclosed executable fences, EN/KO fence-count mismatch, valid workspace-package imports, and an invalid `DateFnsAdapter` import from `@kalyx/core`.
+1. Add tests for `ts`/`tsx` extraction (including CommonMark and Docusaurus fence forms), source line tracking, unclosed executable fences, EN/KO executable parity, valid workspace-package imports, and an invalid `DateFnsAdapter` import from `@kalyx/core`.
 2. Run `pnpm vitest run scripts/__tests__/check-doc-code-examples.test.mjs` and record the expected RED result because the implementation module does not exist.
 3. Implement the smallest parser, parity validator, TypeScript compiler wrapper, diagnostic formatter, temporary-file cleanup, and direct CLI entry point that satisfy the tests.
 4. Run the focused test again and require GREEN.

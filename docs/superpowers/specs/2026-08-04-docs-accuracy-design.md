@@ -36,7 +36,7 @@ The compiler resolves workspace packages through explicit paths to built declara
 The check fails when:
 
 - either locale contains no TypeScript or TSX fences;
-- EN and KO contain different executable-fence counts;
+- EN and KO contain different executable-fence counts, languages, or code;
 - a fence is unclosed;
 - any actual TypeScript diagnostic is produced.
 
@@ -52,7 +52,7 @@ The parser and validation helpers are exported without executing the CLI when im
 - an unclosed fence is rejected;
 - a real nonexistent Kalyx export produces a diagnostic;
 - valid core plus adapter imports compile;
-- locale count mismatch is rejected.
+- locale count or executable-content mismatch is rejected.
 
 Tests use the real TypeScript compiler, not mocked diagnostics.
 
@@ -102,6 +102,6 @@ Update `packages/react/package.json` description from the stale `≤16 KB gzippe
 
 1. Copying any TypeScript fence from either Core API page produces type-correct code against the current workspace declarations.
 2. `DateFnsAdapter` is never documented as an `@kalyx/core` export.
-3. EN/KO fence counts cannot drift silently.
+3. EN/KO executable fences cannot drift silently in count, language, or code.
 4. PR CI blocks invalid Core API TypeScript examples.
 5. Installation and package-size metadata match the actual package graph and 20 KB policy.

@@ -33,7 +33,13 @@ export function extractExecutableFences(markdown, sourcePath) {
     const line = lines[index];
 
     if (openFence) {
-      if (line.trim() === openFence.marker) {
+      const closingMatch = line.match(/^\s*(`{3,}|~{3,})\s*$/);
+      const closesFence =
+        closingMatch &&
+        closingMatch[1][0] === openFence.character &&
+        closingMatch[1].length >= openFence.length;
+
+      if (closesFence) {
         if (openFence.extension) {
           snippets.push({
             sourcePath,
@@ -47,12 +53,13 @@ export function extractExecutableFences(markdown, sourcePath) {
       continue;
     }
 
-    const match = line.match(/^\s*(`{3,})([^`]*)$/);
+    const match = line.match(/^\s*(`{3,}|~{3,})(.*)$/);
     if (!match) continue;
 
-    const language = match[2].trim().toLowerCase();
+    const language = match[2].trim().split(/\s+/, 1)[0].toLowerCase();
     openFence = {
-      marker: match[1],
+      character: match[1][0],
+      length: match[1].length,
       line: index + 1,
       extension: EXECUTABLE_LANGUAGES.get(language) ?? null,
     };
@@ -81,6 +88,23 @@ export function assertMatchingFenceCounts(documents) {
         `executable fence count mismatch: ${expected.sourcePath} has ${expected.snippets.length}, ` +
           `${document.sourcePath} has ${document.snippets.length}`,
       );
+    }
+
+    for (let index = 0; index < expected.snippets.length; index += 1) {
+      const expectedSnippet = expected.snippets[index];
+      const actualSnippet = document.snippets[index];
+      const expectedCode = expectedSnippet.code?.replace(/\r\n/g, '\n').trim();
+      const actualCode = actualSnippet.code?.replace(/\r\n/g, '\n').trim();
+
+      if (
+        expectedSnippet.extension !== actualSnippet.extension ||
+        expectedCode !== actualCode
+      ) {
+        throw new Error(
+          `executable fence mismatch: ${expected.sourcePath} and ${document.sourcePath} ` +
+            `differ at fence ${index + 1}`,
+        );
+      }
     }
   }
 }
