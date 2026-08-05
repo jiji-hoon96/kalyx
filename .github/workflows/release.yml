@@ -42,6 +42,9 @@ jobs:
       - name: 빌드
         run: pnpm build
 
+      - name: 패키지 tarball import 검증
+        run: pnpm check-package-tarballs
+
       - name: 테스트 (릴리즈 전 최종 검증)
         run: pnpm test:run
 
