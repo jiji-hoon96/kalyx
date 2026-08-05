@@ -25,17 +25,18 @@ Add `scripts/check-doc-code-examples.mjs`. It reads these source documents direc
 - `apps/docs-site/docs/api/core.md`
 - `apps/docs-site/i18n/ko/docusaurus-plugin-content-docs/current/api/core.md`
 
-The script extracts every fenced `ts`/`typescript` block, records its source path and starting line, writes each block as its own virtual module, and compiles the blocks together with the TypeScript compiler API using strict, no-emit, bundler-style module resolution. Each snippet is isolated by appending `export {}` so type declarations and local variable names in separate examples cannot collide.
+The script extracts every fenced `ts`/`typescript`/`tsx` block, records its source path and starting line, writes each block as its own virtual module, and compiles the blocks together with the TypeScript compiler API using strict, no-emit, bundler-style module resolution and the React JSX transform. Each snippet is isolated by appending `export {}` so type declarations and local variable names in separate examples cannot collide.
 
 The compiler resolves workspace packages through explicit paths to built declarations:
 
 - `@kalyx/core` → `packages/core/dist/index.d.ts`
 - `@kalyx/adapter-date-fns` → `packages/adapter-date-fns/dist/index.d.ts`
+- `@kalyx/react` → `packages/react/dist/index.d.ts`
 
 The check fails when:
 
-- either locale contains no TypeScript fences;
-- EN and KO contain different TypeScript-fence counts;
+- either locale contains no TypeScript or TSX fences;
+- EN and KO contain different executable-fence counts;
 - a fence is unclosed;
 - any actual TypeScript diagnostic is produced.
 
@@ -47,7 +48,7 @@ The root command is `pnpm check-doc-examples`. PR CI runs it in the existing Doc
 
 The parser and validation helpers are exported without executing the CLI when imported. Vitest tests exercise real Markdown strings and compiler behavior:
 
-- two valid fences are extracted with correct start lines;
+- valid TypeScript and TSX fences are extracted with correct start lines and extensions;
 - an unclosed fence is rejected;
 - a real nonexistent Kalyx export produces a diagnostic;
 - valid core plus adapter imports compile;
