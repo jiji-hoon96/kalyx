@@ -33,7 +33,7 @@
 		"check-package-tarballs": "node scripts/check-package-tarballs.mjs",
 		"bundle-diff": "node scripts/bundle-diff.mjs",
 		"check-tree-shaking": "node scripts/check-tree-shaking.js",
-		"check-a11y": "vitest run --reporter=verbose --testPathPattern=a11y",
+		"check-a11y": "node scripts/check-a11y.mjs",
 		"changeset": "changeset",
 		"version": "changeset version",
 		"release": "pnpm build && pnpm check-package-tarballs && changeset publish",

@@ -382,6 +382,30 @@ describe('DatePicker — keyboard navigation', () => {
     expect(onChange).toHaveBeenCalledWith(expect.stringMatching(/^2026-01-16T/));
   });
 
+  it('focuses a rendered enabled day after timezone-aware month navigation', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker
+        value="2026-01-14T10:00:00.000Z"
+        displayTimezone="Pacific/Kiritimati"
+        disabled={[{ dayOfWeek: [0, 1] }]}
+        onChange={vi.fn()}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    await user.click(screen.getByRole('button', { name: 'Next month' }));
+
+    expect(screen.getByRole('button', { name: /February 3, 2026/ })).toHaveFocus();
+    await user.keyboard('{ArrowRight}');
+    expect(screen.getByRole('button', { name: /February 4, 2026/ })).toHaveFocus();
+  });
+
   it('uses the civil instant for timezone-aware Enter disabled checks', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
@@ -1840,5 +1864,26 @@ describe('DatePicker — RTL (dir="rtl")', () => {
     // RTL: physically-left cell is the *next* (higher-index) year → 2027.
     await user.keyboard('{ArrowLeft}');
     expect(screen.getByRole('gridcell', { name: '2027' })).toHaveFocus();
+  });
+
+  it('navigates past a fully disabled month instead of freezing on the current one', async () => {
+    const user = userEvent.setup();
+    render(
+      <DatePicker
+        defaultValue="2026-03-10T00:00:00.000Z"
+        disabled={[{ filter: (iso) => iso.startsWith('2026-02-') }]}
+      >
+        <DatePicker.Input aria-label="날짜 선택" />
+        <DatePicker.Popover>
+          <DatePicker.Calendar />
+        </DatePicker.Popover>
+      </DatePicker>,
+    );
+
+    await user.click(screen.getByRole('combobox'));
+    await user.click(screen.getByRole('button', { name: 'Previous month' }));
+
+    // A 'forward' search lands back on March 1 and the button stops responding.
+    expect(screen.getByRole('button', { name: /January 31, 2026/ })).toHaveFocus();
   });
 });

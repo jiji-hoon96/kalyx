@@ -33,6 +33,8 @@ const ZONES = [
   'Asia/Kolkata', // +5:30
   'Asia/Kathmandu', // +5:45
   'Australia/Eucla', // +8:45
+  'Pacific/Auckland', // +12/+13 DST
+  'Pacific/Chatham', // +12:45/+13:45 DST
   'Pacific/Niue', // -11
   'Pacific/Kiritimati', // +14
 ] as const;
@@ -48,6 +50,19 @@ const isoInstant = () =>
     })
     .map((d) => d.toISOString());
 
+const utcCalendarCoordinate = () =>
+  fc
+    .date({
+      min: new Date('2020-01-01T00:00:00.000Z'),
+      max: new Date('2045-01-01T00:00:00.000Z'),
+      noInvalidDate: true,
+    })
+    .map((date) =>
+      new Date(
+        Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()),
+      ).toISOString(),
+    );
+
 const timeOfDay = () =>
   fc.record({
     hours: fc.integer({ min: 0, max: 23 }),
@@ -56,8 +71,62 @@ const timeOfDay = () =>
   });
 
 const RUNS = { numRuns: 300 };
+const supportedIanaZones = () => {
+  if (typeof Intl.supportedValuesOf !== 'function') {
+    throw new Error('All-IANA timezone tests require Intl.supportedValuesOf (Node 20+).');
+  }
+  return Intl.supportedValuesOf('timeZone');
+};
+const IANA_ZONES = supportedIanaZones();
+const IANA_RUNS_PER_ZONE = 12;
+const IANA_SEED = 0x4b414c59;
+const IANA_BOUNDARY_COORDINATES = ['2020-01-01T00:00:00.000Z', '2045-01-01T00:00:00.000Z'] as const;
 
 describe('timezone invariants (property-based)', () => {
+  it('round-trips every UTC calendar coordinate through civil midnight', () => {
+    fc.assert(
+      fc.property(utcCalendarCoordinate(), zone(), (coordinate, timeZone) => {
+        const instant = civilMidnightFromUtcDay(coordinate, timeZone);
+        expect(calendarDayFromInstant(instant, timeZone)).toBe(coordinate);
+      }),
+      RUNS,
+    );
+  });
+
+  it('round-trips calendar coordinates in every supported IANA timezone', () => {
+    expect(IANA_ZONES.length).toBeGreaterThan(0);
+    expect(IANA_ZONES).toEqual(
+      expect.arrayContaining(['Pacific/Auckland', 'Pacific/Chatham', 'Pacific/Kiritimati']),
+    );
+
+    IANA_ZONES.forEach((timeZone, index) => {
+      try {
+        IANA_BOUNDARY_COORDINATES.forEach((coordinate) => {
+          const instant = civilMidnightFromUtcDay(coordinate, timeZone);
+          expect(calendarDayFromInstant(instant, timeZone)).toBe(coordinate);
+        });
+
+        fc.assert(
+          fc.property(utcCalendarCoordinate(), (coordinate) => {
+            const instant = civilMidnightFromUtcDay(coordinate, timeZone);
+            expect(calendarDayFromInstant(instant, timeZone)).toBe(coordinate);
+          }),
+          {
+            numRuns: IANA_RUNS_PER_ZONE,
+            seed: IANA_SEED + index,
+            unbiased: true,
+          },
+        );
+      } catch (error) {
+        throw new Error(
+          `Calendar-coordinate round trip failed in ${timeZone}: ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+        );
+      }
+    });
+  });
+
   it('startOfDayInTimezone is idempotent', () => {
     fc.assert(
       fc.property(isoInstant(), zone(), (iso, tz) => {

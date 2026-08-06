@@ -50,8 +50,8 @@ jobs:
 
       - name: 번들 크기 확인
         # Single source of truth for the gzip ceiling + measurement:
-        # scripts/check-bundle-size.js (TARGET_KB) — the same gate pr-check.yml
-        # and tsup use. Avoids the stale inline 16KB limit that blocked 1.2.0
+        # scripts/check-bundle-size.js + bundle-policy.js — the same default and
+        # headless gates pr-check.yml and tsup use. Avoids stale inline limits
         # after the ceiling was raised to 20KB (2026-08 timezone/constraint correctness breadth).
         run: node scripts/check-bundle-size.js
 

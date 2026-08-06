@@ -212,9 +212,9 @@ const DISABLED = [{ dayOfWeek: [0, 6] }] as const;
 
 Kalyx's `@kalyx/react` is ~18.3 KB gzipped (CI ceiling 20 KB). If your bundle is larger:
 
-1. Check that tree-shaking is working — only import what you use
-2. `date-fns` is a dependency and adds ~5KB for the functions Kalyx uses. If you already use date-fns in your app, the cost is shared.
-3. Run `pnpm check-bundle` in the Kalyx repo to verify
+1. Inspect your production bundler report; the root entry does not currently guarantee per-picker elimination.
+2. The default entry includes the date-fns adapter. If your app already ships another date library, compare the explicit `/headless` entry with the same consumer setup.
+3. Run `pnpm check-bundle` for artifact ceilings and `pnpm check-tree-shaking` for the repository consumer scenarios.
 
 ---
 
