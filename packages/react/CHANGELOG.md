@@ -16,6 +16,27 @@
 ### Patch Changes
 
 - 0f7b368: Correct calendar civil-day identity in display timezones and enforce disabled date and time constraints consistently across picker components, presets, keyboard interactions, context mutations, and headless hooks.
+
+  > **Added retroactively (2026-08-06).** The entry above understated the release.
+  > Enforcing the constraints changed what the pickers emit, so apps that set
+  > `displayTimezone` or `disabled` may observe different `onChange` traffic than
+  > on 1.4.0:
+  >
+  > - **`selectDate` is now a silent no-op on a disabled date.** Previously it
+  >   fired `onChange` even when the target violated a `disabled` rule. Nothing
+  >   is emitted now and the popover stays open. This closed a real hole — typed
+  >   input and presets could commit values the grid refused — but if you relied
+  >   on `onChange` firing for every attempt, that signal is gone. The same guard
+  >   applies at the RangePicker and DateTimePicker commit boundaries.
+  > - **`DatePicker.Presets` re-normalizes preset dates** through
+  >   `calendarDayFromInstant` when `displayTimezone` is set, so a preset now
+  >   commits the same instant that clicking the equivalent cell would. Under a
+  >   non-zero UTC offset this is a different value than 1.4.0 stored for the
+  >   same preset.
+  > - **Custom grid renderers** should also read the `@kalyx/core@1.4.1` note:
+  >   `CalendarDay` flags changed basis, and `isDateDisabled` took a new
+  >   `timezone` parameter.
+
 - Updated dependencies [0f7b368]
   - @kalyx/core@1.4.1
 

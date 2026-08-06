@@ -14,6 +14,26 @@
 
 - 0f7b368: Correct calendar civil-day identity in display timezones and enforce disabled date and time constraints consistently across picker components, presets, keyboard interactions, context mutations, and headless hooks.
 
+  > **Added retroactively (2026-08-06).** The entry above understated the release:
+  > correcting the civil-day identity also changed what these functions return for
+  > callers who set a `timezone`. If you consume `@kalyx/core` directly — custom
+  > grids, your own disabled logic — the following are behavior changes, not just
+  > bug fixes:
+  >
+  > - **`getCalendarDays` flag basis.** `isToday`, `isSelected`, `isFocused`,
+  >   `isDisabled` and the range flags are now evaluated against each cell's
+  >   civil-midnight instant in `timezone` rather than its raw UTC coordinate.
+  >   Under a non-zero UTC offset these flags can land on a different cell than
+  >   in 1.4.0 — which is the point, but custom renderers will see the shift.
+  >   `CalendarDay.isoString` still carries the raw UTC coordinate, so it is not
+  >   interchangeable with the value the flags were computed from.
+  > - **`isDateDisabled` gained a 4th parameter,** `timezone?: string`. Existing
+  >   3-argument calls are unaffected. When you do pass a zone, `{ date }` and
+  >   `{ dayOfWeek }` match by civil day, and the `iso` you pass must be an
+  >   instant of the kind the pickers emit — a hand-written `…T00:00:00.000Z` is
+  >   a UTC coordinate and will resolve to the wrong civil day under a non-zero
+  >   offset. `{ before }` / `{ after }` remain instant comparisons.
+
 ## 1.4.0
 
 ### Minor Changes
