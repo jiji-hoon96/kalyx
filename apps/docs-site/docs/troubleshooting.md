@@ -137,6 +137,24 @@ Kalyx never takes a `Date` — its value contract is an ISO-8601 UTC string, so 
 
 See the [Timezone concept page](./concepts/timezone.md) for the full model.
 
+### Disabled dates or min/max boundaries are off by one under `displayTimezone`
+
+Same root cause as above, one layer down. `disabled` rules and the `isDateDisabled` helper compare **instants**. A boundary you wrote by hand as `'2026-01-15T00:00:00.000Z'` is a UTC coordinate, not civil midnight in your zone — so with `displayTimezone` set, the boundary day itself can fall on the wrong side of the rule.
+
+```tsx
+import { civilMidnightFromUtcDay } from '@kalyx/core';
+
+const tz = 'America/New_York';
+
+// ❌ a raw UTC coordinate — in New_York this instant is still Jan 14 locally
+disabled={[{ before: '2026-01-15T00:00:00.000Z' }]}
+
+// ✅ the same civil day, expressed as the instant the picker itself uses
+disabled={[{ before: civilMidnightFromUtcDay('2026-01-15T00:00:00.000Z', tz) }]}
+```
+
+The reliable rule: when `displayTimezone` is set, every date you hand the picker should be a value it could have emitted — one you got back from `onChange`, or one you built with `civilMidnightFromUtcDay`. Inside a custom grid, use the `isDisabled` flag `getCalendarDays` already computed for each cell instead of calling `isDateDisabled` yourself.
+
 ### DST transition causes unexpected behavior
 
 During DST transitions (e.g., US "spring forward"), 2:00 AM doesn't exist. Kalyx handles this internally with two-pass offset correction. If you're doing manual timezone math, use `@kalyx/core`'s `startOfDayInTimezone` instead of computing midnight yourself.
@@ -210,11 +228,19 @@ const DISABLED = [{ dayOfWeek: [0, 6] }] as const;
 
 ### Bundle size seems larger than expected
 
-Kalyx's `@kalyx/react` is ~18.3 KB gzipped (CI ceiling 20 KB). If your bundle is larger:
+You will see two different numbers, and both are correct — they measure different things.
 
-1. Inspect your production bundler report; the root entry does not currently guarantee per-picker elimination.
-2. The default entry includes the date-fns adapter. If your app already ships another date library, compare the explicit `/headless` entry with the same consumer setup.
-3. Run `pnpm check-bundle` for artifact ceilings and `pnpm check-tree-shaking` for the repository consumer scenarios.
+**~18.5 KB is the published artifact.** That is what the badge and the CI ceiling track: the gzipped size of `@kalyx/react`'s own `dist/index.js`, with its dependencies left external. It is the number Kalyx controls and gates on (20 KB, enforced across all four artifacts — `index` and `headless`, ESM and CJS).
+
+**~24 KB is what a consumer actually ships.** Your bundler resolves the dependencies the artifact only references, so the graph also pulls in `@kalyx/core`, `@kalyx/adapter-date-fns` (and the date-fns functions it uses), and `@floating-ui/react`. Run `pnpm check-tree-shaking` in this repository to see the measured scenarios — currently ~24.0 KB gzipped for a single picker and ~25.0 KB for all seven plus the hooks.
+
+The roughly 5.5 KB gap between the two is the dependency graph, not overhead in Kalyx. Quote the ~24 KB figure when comparing against libraries that publish a single all-in number.
+
+If your own bundle is larger than that:
+
+1. Inspect your production bundler report; the root entry does not currently guarantee per-picker elimination — importing one picker costs about the same as importing all seven.
+2. The default entry includes the date-fns adapter. If your app already ships another date library, compare the explicit `/headless` entry with the same consumer setup so date-fns isn't counted twice.
+3. Run `pnpm check-bundle` for artifact ceilings and `pnpm check-tree-shaking` for the consumer scenarios.
 
 ---
 

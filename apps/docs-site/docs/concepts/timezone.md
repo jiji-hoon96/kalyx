@@ -116,6 +116,9 @@ import {
 - **Omitting the prop keeps UTC semantics.** Existing code continues to work.
 - **Adapter contract unchanged.** Custom adapters implementing the `DateAdapter` interface should honor the `timezone?: string` parameter on `format`, `isSameDay`, `startOfDay`, and `today`. The built-in `DateFnsAdapter` already does.
 - **IANA zone only.** Offsets like `"+09:00"` are not supported — use `"Asia/Seoul"`.
+- **Hand-written `…T00:00:00.000Z` values are not civil midnight.** This is the one that bites. A literal like `'2026-01-15T00:00:00.000Z'` names a UTC coordinate; in `America/New_York` that instant is still January 14 locally, and in `Pacific/Auckland` it is already January 15 mid-afternoon. So the moment you turn on `displayTimezone`, values you assembled by hand — a `value` from a database `DATE` column, a `{ before }` / `{ after }` boundary, an argument to `isDateDisabled` — no longer mean the calendar day you typed.
+
+  Use values of the same kind the picker emits: whatever came out of `onChange`, or an instant built with `civilMidnightFromUtcDay(coordinate, zone)`. Going the other way, `calendarDayFromInstant(instant, zone)` tells you which calendar cell an instant belongs to. Inside a custom grid, read the precomputed `isDisabled` / `isSelected` flags from `getCalendarDays` rather than re-deriving them — they are already normalized per cell.
 
 ## Next
 

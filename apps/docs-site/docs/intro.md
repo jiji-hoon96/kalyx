@@ -58,7 +58,7 @@ Kalyx fills the gap:
 ## Who it's for
 
 - Teams already using **Tailwind**, **shadcn/ui**, **Chakra**, or their own design system, who want date UI that obeys their tokens.
-- Apps that care about **bundle size** and **tree-shaking**.
+- Apps that care about **bundle size** — the whole set of pickers lands in roughly the space one competitor's single picker takes, under a CI-enforced ceiling. (Per-picker elimination is *not* claimed: importing one picker costs about the same as importing all seven. See [Troubleshooting → bundle size](./troubleshooting.md#bundle-size-seems-larger-than-expected).)
 - Anything running on **Next.js**, **Remix**, or other SSR/RSC environments.
 
 ## What's in the box

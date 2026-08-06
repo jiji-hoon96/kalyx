@@ -249,6 +249,7 @@ Renders the month grid. Fully keyboard navigable (see [Accessibility](../concept
 | --- | --- | --- |
 | `classNames` | `DatePickerCalendarClassNames` | Styling for internal slots. |
 | `onTitleClick` | `() => void` | Fires when the month/year title is clicked — wire to `MonthGrid` / `YearGrid`. |
+| `fixedWeeks` | `boolean` (default `false`) | Always render 6 week rows. Without it the grid is 4–6 rows, so the popover changes height from month to month. |
 
 ### `classNames` keys
 
@@ -436,6 +437,31 @@ There's no `minDate` / `maxDate` prop — express the same rule with `disabled`:
   onChange={setIso}
 />
 ```
+
+:::caution Pair `disabled` boundaries with `displayTimezone`
+
+`disabled` rules compare against **instants**, not calendar-page coordinates. Without `displayTimezone` the two are the same thing and the example above is exact.
+
+Once you set `displayTimezone`, a hand-written `'2026-01-01T00:00:00.000Z'` is no longer civil January 1 in your zone — under a negative UTC offset it is still December 31 locally, and under a large positive offset it is already January 1 well before local midnight. The boundary day can then land on the wrong side of the rule.
+
+Pass the same kind of value the picker itself emits — the instant you receive from `onChange`, or one built with `civilMidnightFromUtcDay`:
+
+```tsx
+import { civilMidnightFromUtcDay } from '@kalyx/core';
+
+const tz = 'Asia/Seoul';
+
+<DatePicker
+  displayTimezone={tz}
+  disabled={[{ before: civilMidnightFromUtcDay('2026-01-01T00:00:00.000Z', tz) }]}
+  value={iso}
+  onChange={setIso}
+/>;
+```
+
+The same rule applies when calling [`isDateDisabled`](../api/core.md#isdatedisablediso-rules-adapter-timezone) yourself. For per-cell state inside a custom grid, prefer the precomputed `isDisabled` flag from `getCalendarDays` — it already normalizes each cell.
+
+:::
 
 ## Related
 
