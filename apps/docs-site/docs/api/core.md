@@ -12,6 +12,12 @@ Platform-independent date logic. Usually consumed transitively through `@kalyx/r
 pnpm add @kalyx/core
 ```
 
+The examples that use `DateFnsAdapter` also require its adapter package and underlying date library:
+
+```bash
+pnpm add @kalyx/adapter-date-fns date-fns
+```
+
 ## Types
 
 ```ts
@@ -53,8 +59,10 @@ type CalendarOptions = {
   selected?: ISODateString | null;
   focusedDate?: ISODateString;
   disabled?: DisabledRule[];
-  range?: DateRange;
+  range?: DateRange | null;
   rangeHover?: ISODateString | null;
+  timezone?: string;
+  fixedWeeks?: boolean;
 };
 
 type TimeValue = {
@@ -73,31 +81,33 @@ See the [Adapters concept →](../concepts/adapters.md) for the full interface.
 Default adapter — UTC-safe, built on date-fns v4.
 
 ```ts
-import { DateFnsAdapter } from '@kalyx/core';
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 ```
 
 ## Calendar utilities
 
 ### `getCalendarDays(viewMonth, adapter, options)`
 
-Build a 6-week grid for a month.
+Build a 4–6 week grid for a month. Set `fixedWeeks: true` when the layout requires exactly 6 weeks.
 
 ```ts
-import { getCalendarDays, DateFnsAdapter } from '@kalyx/core';
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
+import { getCalendarDays } from '@kalyx/core';
 
 const grid = getCalendarDays(
   '2026-04-01T00:00:00.000Z',
   DateFnsAdapter,
-  { weekStartsOn: 0, today: '2026-04-16T00:00:00.000Z' },
+  { weekStartsOn: 0, today: '2026-04-16T00:00:00.000Z', fixedWeeks: true },
 );
 ```
 
-Returns `CalendarGrid` (6×7 `CalendarDay`s). Leading and trailing days belong to neighboring months (`isCurrentMonth: false`).
+Returns `CalendarGrid` (4–6 arrays of 7 `CalendarDay`s). Leading and trailing days belong to neighboring months (`isCurrentMonth: false`). With `fixedWeeks: true`, the result is always 6×7.
 
 ### `isDateDisabled(iso, rules, adapter, timezone?)`
 
 ```ts
-import { isDateDisabled, DateFnsAdapter } from '@kalyx/core';
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
+import { isDateDisabled } from '@kalyx/core';
 
 isDateDisabled(
   '2026-04-18T00:00:00.000Z',
@@ -123,12 +133,17 @@ coordinate: under a negative UTC offset, `2026-01-15T00:00:00.000Z` is still the
 precomputed `isDisabled` flag from `getCalendarDays(...)` instead — it normalizes
 each cell for you.
 
-### `minDate(dates)` / `maxDate(dates)`
+### `minDate(a, b, adapter)` / `maxDate(a, b, adapter)`
 
 ```ts
-import { minDate, maxDate } from '@kalyx/core';
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
+import { minDate } from '@kalyx/core';
 
-minDate(['2026-04-15T00:00:00.000Z', '2026-04-10T00:00:00.000Z']);
+minDate(
+  '2026-04-15T00:00:00.000Z',
+  '2026-04-10T00:00:00.000Z',
+  DateFnsAdapter,
+);
 // → "2026-04-10T00:00:00.000Z"
 ```
 
@@ -136,14 +151,17 @@ minDate(['2026-04-15T00:00:00.000Z', '2026-04-10T00:00:00.000Z']);
 
 ### `normalizeISO(value)`
 
-Lenient parser — accepts partial inputs like `2026-04-15` and returns a full UTC midnight ISO string. Returns `null` for invalid input.
+Lenient normalizer — expands a date-only value like `2026-04-15` to a full UTC-midnight ISO string. Full ISO datetimes and unrecognized strings are returned unchanged; an empty string stays empty.
 
-### `parseInputValue(input, format, adapter)`
+### `parseInputValue(input, adapter)`
 
-Parse a user-typed string with an explicit format.
+Parse `yyyy-MM-dd`, `yyyy/MM/dd`, or an eight-digit `yyyyMMdd` user input.
 
 ```ts
-parseInputValue('15/04/2026', 'dd/MM/yyyy', DateFnsAdapter);
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
+import { parseInputValue } from '@kalyx/core';
+
+parseInputValue('2026/04/15', DateFnsAdapter);
 // → "2026-04-15T00:00:00.000Z"
 ```
 
@@ -164,15 +182,24 @@ getTime('2026-04-15T09:30:00.000Z');
 ### `parseTimeString(input)` / `formatTimeString(time, withSeconds?)`
 
 ```ts
+import { formatTimeString, parseTimeString } from '@kalyx/core';
+
 parseTimeString('09:30');   // → { hours: 9, minutes: 30, seconds: 0 }
 parseTimeString('09:30:45'); // → { hours: 9, minutes: 30, seconds: 45 }
 formatTimeString({ hours: 9, minutes: 30, seconds: 0 });       // → "09:30"
 formatTimeString({ hours: 9, minutes: 30, seconds: 0 }, true); // → "09:30:00"
 ```
 
-### `formatTimeFromISO(iso, withSeconds?)`
+### `formatTimeFromISO(iso, format)`
 
-Convenience wrapper — equivalent to `formatTimeString(getTime(iso), withSeconds)`.
+Format an ISO datetime in UTC using `HH:mm`, `HH:mm:ss`, `h:mm a`, or `h:mm:ss a`.
+
+```ts
+import { formatTimeFromISO } from '@kalyx/core';
+
+formatTimeFromISO('2026-04-15T13:30:00.000Z', 'h:mm a');
+// → "1:30 PM"
+```
 
 ### 12h helpers
 
@@ -186,14 +213,18 @@ to24Hour(1, 'PM');               // → 13
 ### Option generators
 
 ```ts
+import { generateHours, generateMinutes } from '@kalyx/core';
+
 generateHours('24h'); // → [0, 1, 2, …, 23]
-generateHours('12h'); // → [12, 1, 2, …, 11]
+generateHours('12h'); // → [1, 2, …, 12]
 generateMinutes(15);  // → [0, 15, 30, 45]
 ```
 
 ### `isSameTime(a, b)`
 
 ```ts
+import { isSameTime } from '@kalyx/core';
+
 isSameTime({ hours: 9, minutes: 0, seconds: 0 }, { hours: 9, minutes: 0, seconds: 0 });
 // → true
 ```
@@ -201,12 +232,14 @@ isSameTime({ hours: 9, minutes: 0, seconds: 0 }, { hours: 9, minutes: 0, seconds
 ## Locale utilities
 
 ```ts
+import { formatFullDate, formatMonthYear, getMonthName, getWeekdayNames } from '@kalyx/core';
+
 getMonthName(3, 'en-US');            // → "April"
 formatMonthYear(2026, 3, 'en-US');   // → "April 2026"
 getWeekdayNames('en-US', 0);
 // → [{ short: 'Sun', full: 'Sunday' }, …]
 formatFullDate('2026-04-15T00:00:00.000Z', 'en-US');
-// → "April 15, 2026"
+// → "Wednesday, April 15, 2026"
 ```
 
 ## Timezone utilities
@@ -218,6 +251,8 @@ Used internally by every picker when `displayTimezone` is set. Exposed publicly 
 Format a UTC instant in the requested zone. Handles DST transitions.
 
 ```ts
+import { formatInTimezone } from '@kalyx/core';
+
 formatInTimezone('2026-03-08T07:30:00.000Z', 'yyyy-MM-dd HH:mm', 'America/New_York');
 // → '2026-03-08 03:30'   (post spring-forward EDT)
 ```
@@ -227,6 +262,8 @@ formatInTimezone('2026-03-08T07:30:00.000Z', 'yyyy-MM-dd HH:mm', 'America/New_Yo
 Civil midnight of the given UTC instant's day, expressed as a UTC ISO string.
 
 ```ts
+import { startOfDayInTimezone } from '@kalyx/core';
+
 startOfDayInTimezone('2026-01-15T12:00:00.000Z', 'Asia/Seoul');
 // → '2026-01-14T15:00:00.000Z'
 ```
@@ -252,6 +289,8 @@ The bridge Calendar uses: maps a UTC-midnight grid cell ISO to civil midnight of
 Read and write time-of-day as observed in the zone. `setTimeInTimezone` preserves the civil date and replaces the time portion, iterating once to absorb DST offsets.
 
 ```ts
+import { setTimeInTimezone } from '@kalyx/core';
+
 setTimeInTimezone('2026-01-15T00:00:00.000Z', { hours: 10 }, 'Asia/Seoul');
 // → '2026-01-15T01:00:00.000Z'   (Seoul 10:00 = UTC 01:00)
 ```
@@ -281,7 +320,11 @@ import type {
 Each label set provides keys like `triggerOpen`, `prevMonth`, `nextMonth`, `hourOption(h)`, etc. Pass a `Partial<*Labels>` to override only what you need:
 
 ```tsx
+import { DatePicker } from '@kalyx/react';
+
 <DatePicker labels={{ triggerOpen: 'Open calendar', triggerClose: 'Close calendar' }}>
+  <span />
+</DatePicker>;
 ```
 
 ## See also

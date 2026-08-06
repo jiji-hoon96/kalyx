@@ -30,6 +30,7 @@
 		"format": "prettier --write 'packages/*/src/**/*.{ts,tsx}'",
 		"format:check": "prettier --check 'packages/*/src/**/*.{ts,tsx}'",
 		"check-bundle": "node scripts/check-bundle-size.js",
+		"check-doc-examples": "node scripts/check-doc-code-examples.mjs",
 		"check-package-tarballs": "node scripts/check-package-tarballs.mjs",
 		"bundle-diff": "node scripts/bundle-diff.mjs",
 		"check-tree-shaking": "node scripts/check-tree-shaking.js",

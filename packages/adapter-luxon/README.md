@@ -13,7 +13,7 @@ Already shipping luxon? Use this adapter with `@kalyx/react/headless` and skip b
 pnpm add @kalyx/adapter-luxon luxon
 ```
 
-Peer dependency: `@kalyx/core`.
+`@kalyx/core` is both this package's runtime dependency and its peer compatibility boundary, so it is installed with the adapter. Add `@kalyx/core` to your own dependencies as well if your application imports its utilities directly. When you use `@kalyx/react/headless`, `@kalyx/react` already supplies its own core dependency.
 
 ## Usage
 
