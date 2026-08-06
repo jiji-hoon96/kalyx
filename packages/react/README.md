@@ -1,9 +1,9 @@
 # @kalyx/react
 
-> The headless React DatePicker, finally complete. Zero CSS · SSR-safe · ~18.28 KB gzip (≤ 20 KB ceiling).
+> The headless React DatePicker, finally complete. Zero CSS · SSR-safe · ~18.3 KB gzip (≤ 20 KB ceiling).
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-18.28KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-~18.3KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/jiji-hoon96/kalyx/blob/main/LICENSE)
 
@@ -73,7 +73,7 @@ import {
 - **SSR-safe** — tested on Next.js App Router.
 - **ISO 8601 UTC strings** — eliminates `Date`-object footguns.
 - **Accessible** — ARIA roles, keyboard navigation, axe-clean.
-- **Tree-shakable** — pay only for the components you render.
+- **Consumer bundle report** — `sideEffects: false` is declared, and `pnpm check-tree-shaking` records root-entry cost without promising per-picker elimination.
 - **TypeScript strict** — no `any`, full type exports.
 
 ## Styling

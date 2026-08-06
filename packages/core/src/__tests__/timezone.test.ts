@@ -216,6 +216,18 @@ describe('civilMidnightFromUtcDay — calendar-grid cell bridge', () => {
       '2026-06-15T00:00:00.000Z',
     );
   });
+
+  it.each([
+    ['Pacific/Auckland', '2026-01-14T11:00:00.000Z'],
+    ['Pacific/Chatham', '2026-01-14T10:15:00.000Z'],
+    ['Pacific/Kiritimati', '2026-01-14T10:00:00.000Z'],
+  ] as const)('preserves January 15 in %s', (timeZone, expected) => {
+    const coordinate = '2026-01-15T00:00:00.000Z';
+    const instant = civilMidnightFromUtcDay(coordinate, timeZone);
+
+    expect(instant).toBe(expected);
+    expect(calendarDayFromInstant(instant, timeZone)).toBe(coordinate);
+  });
 });
 
 describe('calendarDayFromInstant — civil-date calendar coordinate', () => {

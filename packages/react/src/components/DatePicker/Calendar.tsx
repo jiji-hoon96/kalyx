@@ -11,6 +11,7 @@ import {
 } from '@kalyx/core';
 import type { CalendarDay } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
+import { resolveMonthNavigation } from '../../internal/calendarFocus.js';
 import { horizontalDayStep, isBackwardKey } from '../_shared/rtl.js';
 
 export interface DatePickerCalendarClassNames {
@@ -122,14 +123,14 @@ export function DatePickerCalendar({
 
   const navigateMonth = useCallback(
     (direction: number) => {
-      const newMonth = adapter.addMonths(viewMonth, direction);
-      ctx.setViewMonth(newMonth);
-      ctx.setFocusedDate(adapter.startOfMonth(newMonth));
-      const y = adapter.getYear(newMonth);
-      const m = adapter.getMonth(newMonth);
+      const next = resolveMonthNavigation(viewMonth, direction, disabled, adapter, displayTimezone);
+      ctx.setViewMonth(next.viewMonth);
+      ctx.setFocusedDate(next.focusedDate);
+      const y = adapter.getYear(next.focusedDate);
+      const m = adapter.getMonth(next.focusedDate);
       ctx.announce(formatMonthYear(y, m, locale));
     },
-    [adapter, viewMonth, ctx, locale],
+    [adapter, viewMonth, ctx, locale, disabled, displayTimezone],
   );
 
   const handleDayClick = useCallback(

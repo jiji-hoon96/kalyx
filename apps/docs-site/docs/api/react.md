@@ -199,7 +199,7 @@ non-default backend): `@kalyx/adapter-dayjs`, `@kalyx/adapter-luxon`.
 
 ## Bundle size
 
-Gzipped build of the full public surface: **~18.28 KB** (7 components, CI ceiling 20 KB). Tree-shakes per import — e.g., using only `TimePicker` drops DatePicker code. Verified in CI by `scripts/check-bundle-size.js`.
+Gzipped default-entry artifact: **~18.3 KB** (7 components, CI ceiling 20 KB). The headless ESM and CJS artifacts have their own 20 KB CI gate. `sideEffects: false` is declared, but the current consumer harness does not demonstrate per-picker elimination from the root entry; measure your production bundle for your exact imports.
 
 ## See also
 

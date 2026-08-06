@@ -64,9 +64,9 @@ import { DatePicker } from '@kalyx/react';
 </DatePicker>
 ```
 
-The main entry auto-installs `DateFnsAdapter`. You pay for `date-fns` (the
-seven functions Kalyx actually calls — about 2 KB gzipped after tree-shaking)
-and get the calendar working immediately.
+The main entry auto-installs `DateFnsAdapter`, so the required date-fns functions
+are part of the consumer graph and the calendar works immediately. Measure the
+exact cost with your application's bundler; it varies with the surrounding graph.
 
 This is the right choice for **most** apps. Keep reading only if you have a
 reason to switch.

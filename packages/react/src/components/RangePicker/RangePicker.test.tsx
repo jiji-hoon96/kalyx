@@ -417,6 +417,21 @@ describe('RangePicker — keyboard navigation', () => {
     });
   });
 
+  it('focuses a rendered enabled day when multiple leading days are disabled', async () => {
+    const user = userEvent.setup();
+    renderRangePicker({
+      value: { start: '2026-01-15T00:00:00.000Z', end: null },
+      disabled: [{ dayOfWeek: [0, 1] }],
+    });
+
+    await user.click(screen.getByLabelText('Start date'));
+    await user.click(screen.getByRole('button', { name: 'Next month' }));
+
+    expect(screen.getByRole('button', { name: /February 3, 2026/ })).toHaveFocus();
+    await user.keyboard('{ArrowRight}');
+    expect(screen.getByRole('button', { name: /February 4, 2026/ })).toHaveFocus();
+  });
+
   it('skips a timezone-disabled civil day when navigating', async () => {
     const user = userEvent.setup();
     renderRangePicker({
@@ -1158,5 +1173,19 @@ describe('RangePicker — RTL (dir="rtl")', () => {
     );
     await user.click(screen.getAllByRole('combobox')[0]);
     expect(screen.getByRole('grid')).toHaveAttribute('dir', 'ltr');
+  });
+
+  it('navigates past a fully disabled month instead of freezing on the current one', async () => {
+    const user = userEvent.setup();
+    renderRangePicker({
+      value: { start: '2026-03-10T00:00:00.000Z', end: null },
+      disabled: [{ filter: (iso) => iso.startsWith('2026-02-') }],
+    });
+
+    await user.click(screen.getByLabelText('Start date'));
+    await user.click(screen.getByRole('button', { name: 'Previous month' }));
+
+    // A 'forward' search lands back on March 1 and the button stops responding.
+    expect(screen.getByRole('button', { name: /January 31, 2026/ })).toHaveFocus();
   });
 });
