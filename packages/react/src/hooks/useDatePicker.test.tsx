@@ -120,6 +120,45 @@ describe('useDatePicker — navigation', () => {
     expect(result.current.adapter.isSameMonth(result.current.viewMonth, next)).toBe(true);
   });
 
+  it.each([
+    ['nextMonth', '2026-01-15T00:00:00.000Z'],
+    ['previousMonth', '2026-03-15T00:00:00.000Z'],
+  ] as const)('%s focuses the first enabled day in the target month', (navigate, initialValue) => {
+    const { result } = renderHook(() =>
+      useDatePicker({
+        defaultValue: initialValue,
+        disabled: [{ dayOfWeek: [0, 1] }],
+      }),
+    );
+
+    act(() => result.current[navigate]());
+
+    expect(
+      result.current.adapter.isSameMonth(result.current.viewMonth, '2026-02-01T00:00:00.000Z'),
+    ).toBe(true);
+    expect(result.current.focusedDate).toBe('2026-02-03T00:00:00.000Z');
+  });
+
+  it('keeps view and focus synchronized when the target month is fully disabled', () => {
+    let disableFebruary = false;
+    const { result } = renderHook(() =>
+      useDatePicker({
+        defaultValue: '2026-01-15T00:00:00.000Z',
+        disabled: [
+          {
+            filter: (iso) => disableFebruary && iso.startsWith('2026-02-'),
+          },
+        ],
+      }),
+    );
+
+    disableFebruary = true;
+    act(() => result.current.nextMonth());
+
+    expect(result.current.viewMonth).toBe('2026-03-01T00:00:00.000Z');
+    expect(result.current.focusedDate).toBe('2026-03-01T00:00:00.000Z');
+  });
+
   it('setViewMonth updates viewMonth directly', () => {
     const { result } = renderHook(() => useDatePicker());
 
@@ -272,5 +311,22 @@ describe('useDatePicker — timezone and constraint parity', () => {
     expect(result.current.value).toBe(initial);
     expect(result.current.isOpen).toBe(true);
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('reaches the earlier month when the whole previous month is disabled', () => {
+    const { result } = renderHook(() =>
+      useDatePicker({
+        defaultValue: '2026-03-10T00:00:00.000Z',
+        disabled: [{ filter: (iso: string) => iso.startsWith('2026-02-') }],
+      }),
+    );
+
+    act(() => result.current.previousMonth());
+
+    // A 'forward' search bounces back into March and freezes the button.
+    expect(result.current.focusedDate).toBe('2026-01-31T00:00:00.000Z');
+    expect(
+      result.current.adapter.isSameMonth(result.current.viewMonth, '2026-01-01T00:00:00.000Z'),
+    ).toBe(true);
   });
 });

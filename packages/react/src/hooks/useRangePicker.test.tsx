@@ -268,4 +268,35 @@ describe('useRangePicker — timezone and constraint parity', () => {
     expect(result.current.isOpen).toBe(true);
     expect(onChange).not.toHaveBeenCalled();
   });
+
+  it('reaches the earlier month when the whole previous month is disabled', () => {
+    const { result } = renderHook(() =>
+      useRangePicker({
+        defaultValue: { start: '2026-03-10T00:00:00.000Z', end: '2026-03-10T00:00:00.000Z' },
+        disabled: [{ filter: (iso: string) => iso.startsWith('2026-02-') }],
+      }),
+    );
+
+    act(() => result.current.previousMonth());
+
+    // A 'forward' search bounces back into March and freezes the button.
+    expect(result.current.focusedDate).toBe('2026-01-31T00:00:00.000Z');
+    expect(
+      result.current.adapter.isSameMonth(result.current.viewMonth, '2026-01-01T00:00:00.000Z'),
+    ).toBe(true);
+  });
+
+  it('never focuses a disabled day after month navigation', () => {
+    const { result } = renderHook(() =>
+      useRangePicker({
+        defaultValue: { start: '2026-01-15T00:00:00.000Z', end: '2026-01-15T00:00:00.000Z' },
+        disabled: [{ dayOfWeek: [0, 1] }],
+      }),
+    );
+
+    // February 2026 starts on a Sunday, so the raw month start is disabled.
+    act(() => result.current.nextMonth());
+
+    expect(result.current.focusedDate).toBe('2026-02-03T00:00:00.000Z');
+  });
 });
