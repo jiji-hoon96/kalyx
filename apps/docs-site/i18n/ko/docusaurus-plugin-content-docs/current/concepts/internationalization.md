@@ -199,4 +199,4 @@ function RtlToggle() {
 ## 다음
 
 - [접근성 →](./accessibility.md)
-- [마이그레이션 가이드 (v0.2 → v0.3) →](../migration.md#v02--v03--aria-labels-i18n)
+- [마이그레이션 가이드 (v0.2 → v0.3) →](../migration.md#v02--v03--aria-라벨-i18n)

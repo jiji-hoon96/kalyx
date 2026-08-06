@@ -77,11 +77,15 @@ const date = new Date(iso);
 For fine-grained conversion Kalyx exports helpers from `@kalyx/core`:
 
 ```ts
-import { normalizeISO, parseInputValue, DateFnsAdapter } from '@kalyx/react';
+import { normalizeISO, parseInputValue } from '@kalyx/core';
+import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 
-normalizeISO('2026-04-15');           // "2026-04-15T00:00:00.000Z"
-parseInputValue('15/04/2026', 'dd/MM/yyyy', DateFnsAdapter); // → ISO or null
+normalizeISO('2026-04-15'); // "2026-04-15T00:00:00.000Z"
+parseInputValue('2026-04-15', DateFnsAdapter); // "2026-04-15T00:00:00.000Z"
+parseInputValue('nope', DateFnsAdapter); // null
 ```
+
+These two live in `@kalyx/core`, not `@kalyx/react` — only `DateFnsAdapter` is re-exported from the React package. `parseInputValue` takes the adapter as its second argument and reads the input format from it; there is no separate format parameter.
 
 ## Times and time zones
 
