@@ -238,7 +238,7 @@ const DISABLED = [{ dayOfWeek: [0, 6] }] as const;
 
 그보다도 번들이 크다면:
 
-1. 프로덕션 번들러 리포트를 확인하세요. 현재 루트 엔트리는 picker별 제거를 보장하지 않습니다 — 피커 하나만 import 해도 7종을 전부 import 하는 것과 비용이 거의 같습니다.
+1. 프로덕션 번들러 리포트를 확인하세요. 쓰지 않는 picker 는 실제로 제거됩니다(TimePicker 하나만 쓰면 약 16.2 KB, 7종 전부는 약 25.0 KB). 다만 picker 들이 context·popover·캘린더 계산 같은 상당한 기반을 공유하므로, 하나만 쓴다고 7분의 1이 되지는 않습니다.
 2. 기본 엔트리는 date-fns 어댑터를 포함합니다. 앱에서 다른 날짜 라이브러리를 사용한다면 같은 소비자 설정으로 명시적인 `/headless` 엔트리와 비교해 date-fns 가 두 번 계산되지 않게 하세요.
 3. 산출물 한계는 `pnpm check-bundle`, 소비자 시나리오는 `pnpm check-tree-shaking`으로 확인하세요.
 

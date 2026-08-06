@@ -52,7 +52,7 @@ Kalyx does the opposite — if you want a month dropdown, you mount one:
 
 This means:
 
-1. **Composition stays explicit.** Import the public parts you use, and verify the cost in your production bundler; the current root entry does not guarantee per-picker elimination.
+1. **Composition stays explicit.** Import the public parts you use — pickers you don't import are eliminated, and the sub-components hanging off a picker you do import come along with it. Verify the cost in your production bundler.
 2. **No hidden state.** The structure of the tree *is* the feature set.
 3. **Style per slot.** Every primitive is a DOM element you can target.
 

@@ -238,7 +238,7 @@ The roughly 5.5 KB gap between the two is the dependency graph, not overhead in 
 
 If your own bundle is larger than that:
 
-1. Inspect your production bundler report; the root entry does not currently guarantee per-picker elimination — importing one picker costs about the same as importing all seven.
+1. Inspect your production bundler report. Unused pickers *are* eliminated (TimePicker alone measures ~16.2 KB against ~25.0 KB for all seven), but the pickers share a substantial base — context, popover, calendar math — so importing one is not a seventh of importing all.
 2. The default entry includes the date-fns adapter. If your app already ships another date library, compare the explicit `/headless` entry with the same consumer setup so date-fns isn't counted twice.
 3. Run `pnpm check-bundle` for artifact ceilings and `pnpm check-tree-shaking` for the consumer scenarios.
 

@@ -7,7 +7,7 @@
 import { DateTimePicker as DateTimePickerBase } from './index.js';
 import { DateTimePickerPresets, DateTimePickerPreset } from './Presets.js';
 
-export const DateTimePicker = Object.assign(DateTimePickerBase, {
+export const DateTimePicker = /*#__PURE__*/ Object.assign(DateTimePickerBase, {
   Presets: DateTimePickerPresets,
   Preset: DateTimePickerPreset,
 });

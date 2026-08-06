@@ -27,7 +27,7 @@ import type { MonthPickerGridProps, MonthPickerGridClassNames } from './Grid.js'
  * </MonthPicker>
  * ```
  */
-export const MonthPicker = Object.assign(MonthPickerRoot, {
+export const MonthPicker = /*#__PURE__*/ Object.assign(MonthPickerRoot, {
   Input: DatePickerInput,
   Trigger: DatePickerTrigger,
   Popover: DatePickerPopover,

@@ -73,7 +73,7 @@ import {
 - **SSR-safe** — tested on Next.js App Router.
 - **ISO 8601 UTC strings** — eliminates `Date`-object footguns.
 - **Accessible** — ARIA roles, keyboard navigation, axe-clean.
-- **Consumer bundle report** — `sideEffects: false` is declared, and `pnpm check-tree-shaking` records root-entry cost without promising per-picker elimination.
+- **Per-picker tree-shaking** — `sideEffects: false` plus pure-annotated exports, so unused pickers are eliminated. Measured: TimePicker alone ~16.2 KB vs ~25.0 KB for all seven. Run `pnpm check-tree-shaking` for the current numbers.
 - **TypeScript strict** — no `any`, full type exports.
 
 ## Styling

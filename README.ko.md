@@ -55,7 +55,7 @@ Kalyx는 **7개 프리미티브** — 단일 날짜, 범위, 시간, 날짜+시�
 - **IANA 타임존** — `displayTimezone`이 DST·civil day 처리, 저장 계약은 UTC.
 - **접근성** — WAI-ARIA + 풀 키보드, axe 자동 통과.
 - **i18n 준비 완료** — `locale` prop (Intl 기반 월/요일/AM-PM 이름, locale 기반 주 시작 요일 추론) + `dir` prop 으로 RTL 지원.
-- **번들러 친화 메타데이터** — `sideEffects: false`를 선언하며, `pnpm check-tree-shaking`으로 현재 루트 엔트리 비용을 확인할 수 있습니다.
+- **picker별 tree-shaking** — 쓰지 않는 picker 는 제거됩니다. 실측으로 TimePicker 하나만 쓰면 약 16.2 KB gzip, 7종 전부는 약 25.0 KB 입니다. `pnpm check-tree-shaking` 으로 확인할 수 있습니다.
 - **TypeScript strict** — `any` 없음.
 
 ## 패키지

@@ -19,7 +19,13 @@ const publicCopy = [
   .join('\n');
 
 describe('public bundle claims', () => {
-  it('does not promise unsupported per-picker tree-shaking', () => {
+  // Per-picker elimination DOES work now (see scripts/__tests__/tree-shaking.test.mjs),
+  // so it is fair to say unused pickers are dropped. These phrases stay banned anyway
+  // because they claim something stronger and still false: that cost scales with what
+  // you use. It doesn't — the pickers share a large base, so one picker is ~16-20 KB
+  // against ~25 KB for all seven, not a seventh of it. Quote the measured numbers
+  // instead of reaching for "pay for what you use".
+  it('does not promise cost that scales with what you render', () => {
     expect(publicCopy).not.toMatch(/pay only for (?:the components|what) you (?:render|import)/i);
     expect(publicCopy).not.toContain('쓰는 것만 비용 부담');
     expect(publicCopy).not.toContain('임포트한 만큼만 비용');
