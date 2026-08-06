@@ -99,7 +99,7 @@ const config: Config = {
     },
     metadata: [
       {name: 'keywords', content: 'react, datepicker, headless, typescript, tailwind, accessible, ssr, calendar, timepicker, rangepicker'},
-      {name: 'description', content: 'Headless, SSR-safe React DatePicker with Input, Calendar, TimePicker, and RangePicker in ~18.3 KB (≤ 20 KB ceiling).'},
+      {name: 'description', content: 'Headless, SSR-safe React DatePicker with Input, Calendar, TimePicker, and RangePicker in ~18.5 KB (≤ 20 KB ceiling).'},
     ],
     navbar: {
       title: 'Kalyx',

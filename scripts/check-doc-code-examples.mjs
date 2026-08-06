@@ -11,6 +11,26 @@ import { dirname, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import ts from 'typescript';
 
+// COVERAGE BOUNDARY — read this before trusting the "compiled N examples" line.
+//
+// This checker compiles only the two documents listed below: `api/core.md` in EN
+// and KO. The docs site has ~70 pages and ~35 EN pages carry ts/tsx fences, so
+// the component pages, hook pages, quick-start, migration, adapters, concepts,
+// recipes and `api/react.md` are ALL unverified. A green run means "api/core.md
+// type-checks", not "the documentation is correct".
+//
+// Three further gaps, in descending order of how likely they are to bite:
+//   1. ```jsx / ```js fences are not executable languages here, so moving a
+//      broken example into a jsx fence silently removes it from verification.
+//   2. A `type Foo = {…}` block written inline in the docs is a NEW local
+//      declaration, not an import — it compiles forever no matter how far it
+//      drifts from the real type. Mirrored type blocks are not protected.
+//   3. `// → "..."` result comments are prose to the compiler. Nothing checks
+//      that the stated output is what the function actually returns.
+//
+// EN/KO parity below is positional and byte-exact per fence, which is why the
+// KO translation of these pages must leave code fences — including comments
+// inside them — untouched.
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_REPO_ROOT = resolve(SCRIPT_DIR, '..');
 const CORE_API_DOCUMENTS = [

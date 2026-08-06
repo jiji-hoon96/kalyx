@@ -36,11 +36,15 @@ import('./packages/react/dist/index.js').then(m => {
 
 ## 판정 기준
 
-| 상태 | gzip 크기 | 조치 |
-|---|---|---|
-| ✅ OK | ≤ 18KB | 문제없음 |
-| ⚠️ 주의 | 18–20KB | 최적화 검토 |
-| ❌ 초과 | > 20KB | 반드시 축소 필요 |
+| 상태 | index (ESM/CJS) | headless (ESM/CJS) | 조치 |
+|---|---|---|---|
+| ✅ OK | ≤ 19KB | ≤ 19.5KB | 문제없음 |
+| ⚠️ 주의 | 19–20KB | 19.5–20KB | 최적화 검토 |
+| ❌ 초과 | > 20KB | > 20KB | 반드시 축소 필요 |
+
+밴드를 엔트리별로 나눈 이유: 천장은 넷 다 20KB 로 같지만 **남은 여유가 다르다.**
+index 는 1.4KB 이상 남는데 headless 는 수백 바이트 수준이라, 단일 밴드를 쓰면
+index 가 멀쩡한데도 매번 경고가 떠 표가 무시당한다. 실제로 막히는 건 항상 headless 다.
 
 게이트 대상은 **네 아티팩트 전부**(`dist/index.js`·`index.cjs`·`headless.js`·`headless.cjs`)이며
 단일 소스는 `scripts/bundle-policy.js` 다. `tsup` 의 `onSuccess` 가 초과 시 **throw** 하므로

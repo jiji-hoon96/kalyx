@@ -407,7 +407,7 @@ jobs:
     },
     // date-fns는 major 변경이 많으므로 pin
     {
-      "matchPackageNames": ["date-fns", "date-fns-tz"],
+      "matchPackageNames": ["date-fns"],
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "labels": ["breaking-change", "dependencies"]

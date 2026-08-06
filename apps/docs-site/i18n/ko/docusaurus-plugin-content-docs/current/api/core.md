@@ -253,7 +253,7 @@ formatFullDate('2026-04-15T00:00:00.000Z', 'en-US');
 
 ### `getWeekStartForLocale(locale?)`
 
-해당 locale이 관습적으로 쓰는 한 주의 첫 요일을 `WeekStartsOn`(`0` = 일요일 … `6` = 토요일)으로 반환합니다. `weekStartsOn`을 넘기지 않으면 `DatePicker`와 `RangePicker`가 이 함수를 호출합니다. 명시한 prop이 항상 우선합니다.
+해당 locale이 관습적으로 쓰는 한 주의 첫 요일을 `WeekStartsOn` — `0`(일요일) 또는 `1`(월요일) — 로 반환합니다. 런타임의 locale 데이터가 구분하는 시작 요일이 그 둘입니다. `weekStartsOn`을 넘기지 않으면 `DatePicker`와 `RangePicker`가 이 함수를 호출합니다. 명시한 prop이 항상 우선합니다.
 
 ```ts
 import { getWeekStartForLocale } from '@kalyx/core';
@@ -261,8 +261,6 @@ import { getWeekStartForLocale } from '@kalyx/core';
 getWeekStartForLocale('en-US'); // → 0  (Sunday)
 getWeekStartForLocale('de-DE'); // → 1  (Monday)
 ```
-
-실제로 나오는 값은 `0`과 `1` 뿐입니다 — 런타임의 locale 데이터가 구분하는 시작 요일이 그 둘입니다.
 
 ### `getDayPeriodName(period, locale?)`
 
