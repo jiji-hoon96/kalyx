@@ -83,6 +83,20 @@ jobs:
           path: packages/react/dist/
           retention-days: 1
 
+  package-smoke:
+    name: Package Tarball Smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm check-package-tarballs
+
   bundle-size:
     name: Bundle Size (gzip ceiling)
     runs-on: ubuntu-latest
@@ -256,6 +270,7 @@ jobs:
         lint,
         test,
         build,
+        package-smoke,
         bundle-size,
         ssr-check,
         docs-site,
