@@ -27,9 +27,10 @@ npm install @kalyx/react
 
 - `@kalyx/core` — 플랫폼 독립 날짜 로직.
 - `@floating-ui/react` — SSR 안전 popover 위치 계산.
-- `date-fns` + `date-fns-tz` — 기본 날짜 엔진.
+- `date-fns` — 기본 날짜 엔진. `@kalyx/adapter-date-fns`를 통해 연결됩니다.
 
-자동으로 함께 설치됩니다.
+자동으로 함께 설치됩니다. timezone 처리에는 의존성이 추가되지 않습니다 —
+`displayTimezone`은 플랫폼 자체의 `Intl.DateTimeFormat` 위에 구현돼 있습니다.
 
 ## TypeScript
 

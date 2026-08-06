@@ -17,7 +17,7 @@
 // render time telling you exactly what's missing.
 //
 // Why this entry exists: the default `@kalyx/react` entry bundles
-// `@kalyx/adapter-date-fns` (≈date-fns + date-fns-tz). Teams already shipping
+// `@kalyx/adapter-date-fns` (and through it, date-fns). Teams already shipping
 // dayjs / luxon don't want that duplication. Importing from `/headless` lets
 // tree-shaking strip the date-fns code path entirely while keeping the rest of
 // the component surface identical.

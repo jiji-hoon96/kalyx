@@ -38,9 +38,14 @@ import('./packages/react/dist/index.js').then(m => {
 
 | 상태 | gzip 크기 | 조치 |
 |---|---|---|
-| ✅ OK | ≤ 16KB | 문제없음 |
+| ✅ OK | ≤ 18KB | 문제없음 |
 | ⚠️ 주의 | 18–20KB | 최적화 검토 |
 | ❌ 초과 | > 20KB | 반드시 축소 필요 |
+
+게이트 대상은 **네 아티팩트 전부**(`dist/index.js`·`index.cjs`·`headless.js`·`headless.cjs`)이며
+단일 소스는 `scripts/bundle-policy.js` 다. `tsup` 의 `onSuccess` 가 초과 시 **throw** 하므로
+`pnpm build` 자체가 실패하고, `release = pnpm build && changeset publish` 라 릴리즈도 함께 막힌다.
+현재 병목은 `headless.cjs` 다 — index 보다 여유가 훨씬 적다.
 
 ## 크기 초과 시 점검 항목
 

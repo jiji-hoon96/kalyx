@@ -114,9 +114,16 @@ interface DateAdapter {
 
 ## date-fns Adapter 구현 (핵심 메서드)
 
+> **⚠️ 아래는 개념 스케치다. 실제 구현은 `packages/adapter-date-fns/src/index.ts` 를 보라.**
+> 실물 어댑터는 **`date-fns-tz` 를 쓰지 않는다** — 어느 package.json 에도 없다.
+> timezone 작업은 전부 `@kalyx/core` 의 `Intl.DateTimeFormat` 기반 유틸
+> (`formatInTimezone`·`startOfDayInTimezone`·`isSameDayInTimezone`·`todayInTimezone`)에 위임한다.
+> 어댑터는 date-fns 로 파싱·비교만 하고 tz 는 core 가 처리한다 — 이래야 dayjs/luxon 어댑터도
+> 동일한 tz 시맨틱을 공짜로 물려받는다.
+
 ```tsx
-import { parseISO, formatISO, addDays, isSameDay, startOfDay } from 'date-fns';
-import { toZonedTime, fromZonedTime, format as tzFormat } from 'date-fns-tz';
+import { parseISO } from 'date-fns';
+import { formatInTimezone, startOfDayInTimezone } from '@kalyx/core';
 
 export const DateFnsAdapter: DateAdapter = {
   parse(value) {
@@ -257,13 +264,14 @@ const iso = '2026-01-15T00:00:00.000Z';  // 명시적 UTC
 // ❌ 위험 — 존재하지 않는 시간 생성 가능
 const date = new Date('2026-03-08T02:30:00');
 
-// ✅ date-fns-tz가 DST를 자동으로 올바르게 처리
-import { fromZonedTime } from 'date-fns-tz';
-const safeDate = fromZonedTime(
-  new Date('2026-03-08T02:30:00'),
+// ✅ core 의 Intl 기반 유틸이 DST를 처리한다 (date-fns-tz 아님 — 의존성 없음)
+import { setTimeInTimezone } from '@kalyx/core';
+const safeIso = setTimeInTimezone(
+  '2026-03-08T00:00:00.000Z',
+  { hours: 2, minutes: 30 },
   'America/New_York'
 );
-// DST로 인해 자동으로 03:30으로 조정
+// gap 시간은 앞으로 snap — 03:30 으로 조정된다 (정책: disambiguation 'earlier')
 
 // 캘린더에서 날짜 선택 시 항상 어댑터를 통해 처리
 const selectedIso = adapter.startOfDay(iso, 'America/New_York');

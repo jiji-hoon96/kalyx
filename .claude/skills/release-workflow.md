@@ -188,10 +188,9 @@ changeset 파일 예시:
   },
 
   "dependencies": {
-    "@floating-ui/react": "^0.26.0",
+    "@floating-ui/react": "^0.27.0",
     "@kalyx/core": "workspace:*",
-    "date-fns": "^4.0.0",
-    "date-fns-tz": "^3.0.0"
+    "@kalyx/adapter-date-fns": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19.0.0",

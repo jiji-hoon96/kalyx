@@ -35,7 +35,7 @@ export const FEATURES: readonly Feature[] = [
     titleDefault: 'Timezone-aware',
     bodyId: 'home.featureGrid.timezone.body',
     bodyDefault:
-      'IANA timezones via date-fns-tz, DST-aware. ISO-8601 UTC strings in, ISO-8601 UTC strings out — your storage layer stays clean.',
+      'IANA timezones on the platform’s own Intl, DST-aware, no extra dependency. ISO-8601 UTC strings in, ISO-8601 UTC strings out — your storage layer stays clean.',
   },
   {
     id: 'bundle',
