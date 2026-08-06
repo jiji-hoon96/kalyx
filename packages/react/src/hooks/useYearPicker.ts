@@ -92,12 +92,20 @@ export function useYearPicker(options: UseYearPickerOptions = {}): UseYearPicker
 
   const selectYear = useCallback(
     (iso: ISODateString) => {
+      // Same predicate the grid uses for `isDisabled`, so a cell the grid renders
+      // as unselectable cannot be committed programmatically either. Deliberately
+      // not `isDateDisabled`: a year is disabled only when *fully* excluded, so a
+      // day-granular rule must not block the year.
+      const yearEnd = new Date(
+        Date.UTC(adapter.getYear(iso), 11, 31, 23, 59, 59, 999),
+      ).toISOString();
+      if (isRangeFullyDisabled(iso, yearEnd, disabled, adapter)) return;
       const normalized = displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
       if (!isControlled) setUncontrolledValue(normalized);
       onChange?.(normalized);
       setIsOpen(false);
     },
-    [isControlled, onChange, displayTimezone],
+    [isControlled, onChange, displayTimezone, disabled, adapter],
   );
 
   const open = useCallback(() => {

@@ -99,12 +99,17 @@ export function useMonthPicker(options: UseMonthPickerOptions = {}): UseMonthPic
 
   const selectMonth = useCallback(
     (iso: ISODateString) => {
+      // Same predicate the grid uses for `isDisabled`, so a cell the grid renders
+      // as unselectable cannot be committed programmatically either. Deliberately
+      // not `isDateDisabled`: a month is disabled only when *fully* excluded, so a
+      // day-granular rule must not block the month.
+      if (isRangeFullyDisabled(iso, adapter.endOfMonth(iso), disabled, adapter)) return;
       const normalized = displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
       if (!isControlled) setUncontrolledValue(normalized);
       onChange?.(normalized);
       setIsOpen(false);
     },
-    [isControlled, onChange, displayTimezone],
+    [isControlled, onChange, displayTimezone, disabled, adapter],
   );
 
   const open = useCallback(() => {

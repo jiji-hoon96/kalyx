@@ -54,6 +54,46 @@ describe('useMonthPicker', () => {
     expect(result.current.months[3].isDisabled).toBe(false);
   });
 
+  it('refuses to commit a month the grid reports as disabled', () => {
+    const onChange = vi.fn();
+    const { result } = renderHook(() =>
+      useMonthPicker({
+        value: APR_2026,
+        onChange,
+        disabled: [{ before: '2026-04-01T00:00:00.000Z' }],
+      }),
+    );
+    act(() => result.current.open());
+    // March 2026 is entirely before the bound — the grid marks it disabled.
+    expect(result.current.months[2].isDisabled).toBe(true);
+
+    act(() => result.current.selectMonth(result.current.months[2].isoString));
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(result.current.value).toBe(APR_2026);
+    expect(result.current.isOpen).toBe(true);
+  });
+
+  it('still commits a month that is only partially disabled', () => {
+    const onChange = vi.fn();
+    const { result } = renderHook(() =>
+      useMonthPicker({
+        defaultValue: APR_2026,
+        onChange,
+        // A single-day rule never disables a whole month, so the grid keeps June
+        // selectable — the commit guard must agree rather than being stricter.
+        disabled: [{ date: '2026-06-10T00:00:00.000Z' }, { dayOfWeek: [0, 6] }],
+      }),
+    );
+    act(() => result.current.open());
+    expect(result.current.months[5].isDisabled).toBe(false);
+
+    act(() => result.current.selectMonth(result.current.months[5].isoString));
+
+    expect(onChange).toHaveBeenCalledWith('2026-06-01T00:00:00.000Z');
+    expect(result.current.value).toBe('2026-06-01T00:00:00.000Z');
+  });
+
   it('toggles open state', () => {
     const { result } = renderHook(() => useMonthPicker());
     act(() => result.current.toggle());
