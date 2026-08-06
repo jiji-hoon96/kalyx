@@ -199,7 +199,7 @@ non-default backend): `@kalyx/adapter-dayjs`, `@kalyx/adapter-luxon`.
 
 ## Bundle size
 
-Gzipped build of the full public surface: **~18.28 KB** (7 components, CI ceiling 20 KB). Tree-shakes per import — e.g., using only `TimePicker` drops DatePicker code. Verified in CI by `scripts/check-bundle-size.js`.
+기본 엔트리 산출물은 gzip 기준 **약 18.3 KB**이며 CI 한계는 20 KB입니다. Headless ESM/CJS 산출물에도 별도의 20 KB CI 게이트가 적용됩니다. `sideEffects: false`를 선언하지만 현재 소비자 하네스는 루트 엔트리에서 picker별 제거를 입증하지 못하므로, 실제 import 조합은 애플리케이션의 프로덕션 번들에서 측정하세요.
 
 ## See also
 

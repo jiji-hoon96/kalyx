@@ -12,7 +12,7 @@
 [문서](https://kalyx-docs-site.vercel.app/ko) · [English](https://kalyx-docs-site.vercel.app) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.md](./README.md)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-18.28KB-brightgreen)](https://kalyx-docs-site.vercel.app/ko/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-~18.3KB-brightgreen)](https://kalyx-docs-site.vercel.app/ko/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -55,7 +55,7 @@ Kalyx는 **7개 프리미티브** — 단일 날짜, 범위, 시간, 날짜+시�
 - **IANA 타임존** — `displayTimezone`이 DST·civil day 처리, 저장 계약은 UTC.
 - **접근성** — WAI-ARIA + 풀 키보드, axe 자동 통과.
 - **i18n 준비 완료** — `locale` prop (Intl 기반 월/요일/AM-PM 이름, locale 기반 주 시작 요일 추론) + `dir` prop 으로 RTL 지원.
-- **트리셰이킹** — `sideEffects: false`. 임포트한 만큼만 비용.
+- **번들러 친화 메타데이터** — `sideEffects: false`를 선언하며, `pnpm check-tree-shaking`으로 현재 루트 엔트리 비용을 확인할 수 있습니다.
 - **TypeScript strict** — `any` 없음.
 
 ## 패키지
@@ -105,7 +105,7 @@ API 레퍼런스, 레시피 (Tailwind / shadcn / React Hook Form), 마이그레�
 
 ## 번들
 
-`@kalyx/react` → **18.28 KB** gzip (ESM) / **18.38 KB** (CJS). CI 한계 ≤ 20 KB.
+`@kalyx/react` → gzip **약 18.3 KB**. 기본 및 headless ESM/CJS 산출물의 CI 한계는 각각 20 KB입니다.
 
 ## 지원 환경
 

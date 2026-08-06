@@ -125,8 +125,12 @@ jobs:
           pnpm --dir /tmp/base-ref build
           ESM=$(node -e "import('${{ github.workspace }}/scripts/check-bundle-size.js').then(m => process.stdout.write(String(m.getGzipBytes('/tmp/base-ref/packages/react/dist/index.js'))))")
           CJS=$(node -e "import('${{ github.workspace }}/scripts/check-bundle-size.js').then(m => process.stdout.write(String(m.getGzipBytes('/tmp/base-ref/packages/react/dist/index.cjs'))))")
+          HEADLESS_ESM=$(node -e "import('${{ github.workspace }}/scripts/check-bundle-size.js').then(m => process.stdout.write(String(m.getGzipBytes('/tmp/base-ref/packages/react/dist/headless.js'))))")
+          HEADLESS_CJS=$(node -e "import('${{ github.workspace }}/scripts/check-bundle-size.js').then(m => process.stdout.write(String(m.getGzipBytes('/tmp/base-ref/packages/react/dist/headless.cjs'))))")
           echo "esm=$ESM" >> "$GITHUB_OUTPUT"
           echo "cjs=$CJS" >> "$GITHUB_OUTPUT"
+          echo "headless_esm=$HEADLESS_ESM" >> "$GITHUB_OUTPUT"
+          echo "headless_cjs=$HEADLESS_CJS" >> "$GITHUB_OUTPUT"
           git worktree remove --force /tmp/base-ref
       - name: 번들 diff 계산
         id: diff
@@ -134,6 +138,8 @@ jobs:
         env:
           BUNDLE_BASE_ESM: ${{ steps.base.outputs.esm }}
           BUNDLE_BASE_CJS: ${{ steps.base.outputs.cjs }}
+          BUNDLE_BASE_HEADLESS_ESM: ${{ steps.base.outputs.headless_esm }}
+          BUNDLE_BASE_HEADLESS_CJS: ${{ steps.base.outputs.headless_cjs }}
         run: node scripts/bundle-diff.mjs
       - name: PR 코멘트
         if: github.event_name == 'pull_request'
@@ -222,14 +228,41 @@ jobs:
       # Regression-guard for the `/headless` contract: the headless entry must
       # NOT pull in date-fns or @kalyx/adapter-date-fns. The script bundles
       # both entries with esbuild and asserts the headless metafile is
-      # date-fns-free + at least 5% smaller gzipped than the default entry.
+      # date-fns-free. The percentage delta is informational because the two
+      # entries expose different hook surfaces.
       - run: node scripts/verify-entry-split.mjs
+
+  validation-tools:
+    name: Accessibility and Consumer Bundles
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm check-a11y
+      - run: pnpm check-tree-shaking
 
   all-pass:
     name: All Checks Pass
     runs-on: ubuntu-latest
     needs:
-      [typecheck, lint, test, build, bundle-size, ssr-check, docs-site, hero-freshness, entry-split]
+      [
+        typecheck,
+        lint,
+        test,
+        build,
+        bundle-size,
+        ssr-check,
+        docs-site,
+        hero-freshness,
+        entry-split,
+        validation-tools,
+      ]
     if: always()
     steps:
       # `toJSON(needs)` serialises with `": "` (space after colon), so the

@@ -12,7 +12,7 @@
 [Docs](https://kalyx-docs-site.vercel.app) · [한국어](https://kalyx-docs-site.vercel.app/ko) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.ko](./README.ko.md)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-18.28KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-~18.3KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -55,7 +55,7 @@ Kalyx ships **seven primitives** — single date, range, time, date+time, month,
 - **IANA timezone-aware** — opt-in `displayTimezone` handles DST without changing storage.
 - **Accessible** — WAI-ARIA + full keyboard, axe-clean.
 - **i18n-ready** — `locale` prop (Intl-based month/weekday/AM-PM names, locale-inferred week start) + RTL via the `dir` prop.
-- **Tree-shakable** — `sideEffects: false`. Use only what you import.
+- **Bundler-friendly metadata** — `sideEffects: false`; use `pnpm check-tree-shaking` to inspect the current root-entry cost.
 - **TypeScript strict** — no `any`.
 
 ## Packages
@@ -105,7 +105,7 @@ Recorded from the [live playground](https://kalyx-docs-site.vercel.app/playgroun
 
 ## Bundle
 
-`@kalyx/react` → **18.28 KB** gzip (ESM) / **18.38 KB** (CJS). CI gate: ≤ 20 KB.
+`@kalyx/react` → **~18.3 KB** gzip. CI gate: ≤ 20 KB for default and headless ESM/CJS artifacts.
 
 ## Browser support
 

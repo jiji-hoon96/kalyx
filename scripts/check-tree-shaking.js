@@ -10,15 +10,11 @@
 import { gzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { createRequire } from 'node:module';
-
-const require = createRequire(import.meta.url);
-const esbuild = require('esbuild');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 
-const SCENARIOS = [
+export const SCENARIOS = [
   {
     name: 'Baseline (types only)',
     entry: `import type { ISODateString } from '@kalyx/react';\nexport type _ = ISODateString;`,
@@ -74,7 +70,8 @@ const KALYX_REACT_DIST = resolve(ROOT, 'packages/react/dist/index.js');
 const KALYX_CORE_DIST = resolve(ROOT, 'packages/core/dist/index.js');
 
 async function measure(entry) {
-  const result = await esbuild.build({
+  const { build } = await import('esbuild');
+  const result = await build({
     stdin: {
       contents: entry,
       resolveDir: ROOT,
@@ -100,12 +97,22 @@ async function measure(entry) {
   return { raw: output.length, gzip: gzip.length };
 }
 
-async function main() {
+export function assertCompleteScenarioResults(scenarios, results) {
+  const failures = results
+    .filter((result) => result.error)
+    .map((result) => `${result.name}: ${result.error.message}`);
+  const completedNames = new Set(results.map((result) => result.name));
+  const missing = scenarios.filter(({ name }) => !completedNames.has(name)).map(({ name }) => name);
+  if (missing.length > 0) failures.push(`missing: ${missing.join(', ')}`);
+  if (failures.length > 0) {
+    throw new Error(`Tree-shaking scenarios failed: ${failures.join('; ')}`);
+  }
+}
+
+export async function main() {
   console.log('\n🌳 Tree-shaking Bundle Report');
   console.log('─'.repeat(70));
-  console.log(
-    `  ${'Scenario'.padEnd(32)} ${'Raw'.padStart(10)} ${'Gzip'.padStart(10)}`,
-  );
+  console.log(`  ${'Scenario'.padEnd(32)} ${'Raw'.padStart(10)} ${'Gzip'.padStart(10)}`);
   console.log('─'.repeat(70));
 
   const results = [];
@@ -117,20 +124,25 @@ async function main() {
         `  ${scenario.name.padEnd(32)} ${(kb(raw) + ' KB').padStart(10)} ${(kb(gzip) + ' KB').padStart(10)}`,
       );
     } catch (err) {
-      console.error(`  ${scenario.name.padEnd(32)} ❌ ${err.message}`);
+      const error = err instanceof Error ? err : new Error(String(err));
+      results.push({ name: scenario.name, error });
+      console.error(`  ${scenario.name.padEnd(32)} ❌ ${error.message}`);
     }
   }
+
+  assertCompleteScenarioResults(SCENARIOS, results);
 
   console.log('─'.repeat(70));
   console.log('  Excludes react, react-dom (peer deps).');
   console.log('  Minified + gzipped as a consumer bundler would ship it.');
-  console.log(
-    "  Baseline = shared deps (Floating UI + date-fns). Per-picker cost = scenario - baseline.",
-  );
+  console.log('  Baseline is a type-only control and should be nearly empty.');
+  console.log('  Compare scenarios directly; no per-picker elimination is assumed.');
   console.log('');
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((err) => {
+    console.error(err instanceof Error ? err.message : err);
+    process.exitCode = 1;
+  });
+}
