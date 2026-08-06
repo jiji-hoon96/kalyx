@@ -42,7 +42,7 @@
 - **React Aria**: 기능 완전하지만 복잡하고, `@internationalized/date` 의존 강제 (date-fns 비호환).
 - **Headless UI**: DatePicker 구현 거부 ("유지보수가 너무 큼").
 
-**우리가 채우는 공백:** Headless + Input·Calendar·TimePicker·RangePicker 통합 + date-fns 호환 + SSR 안전 + ≤ 20KB
+**우리가 채우는 공백:** Headless + Input·Calendar·TimePicker·RangePicker 통합 + date-fns 호환 + SSR 안전 + ≤ 20KB (기본 엔트리)
 
 ### 포지셔닝
 
@@ -69,7 +69,7 @@ Ark UI가 포기한 TimePicker 통합
 | 스타일링 | Zero CSS (Headless) | CSS 충돌 원천 차단 |
 | 날짜 코어 | Adapter 패턴 — `@kalyx/adapter-date-fns` 기본 (분리 완료), `@kalyx/adapter-dayjs`·`@kalyx/adapter-luxon` 공식 어댑터 npm 배포됨 | Temporal API 전환 대비, 사용자가 dayjs/luxon 선택 가능 |
 | 포지셔닝 | Floating UI | 3KB, SSR 안전, Popper.js 후계자 |
-| 번들 목표 | **≤ 20KB gzip** | react-datepicker 62KB 대비. RC 단계 12 → 13KB 상향(commit e93d082), v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향, v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향, v1.0-rc.8 TimePicker `filterTime` 프로그래밍 콜백 추가하면서 15 → 16KB 상향, v1.1 B10 a11y announce() 패리티(A-G1 — DatePicker/DateTimePicker Root live-region) 추가하면서 16 → 17KB 상향, 2026-08 timezone/constraint 정확성 전면 수정(negative-offset 셀 배치 P0 + 전 mutation 경계 parity)으로 17 → 20KB 상향 — 정확성 우선 결정 |
+| 번들 목표 | **기본 엔트리 ≤ 20KB gzip · `/headless` ≤ 22KB** (단일 소스 `scripts/bundle-policy.js`) | react-datepicker 62KB 대비. RC 단계 12 → 13KB 상향(commit e93d082), v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향, v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향, v1.0-rc.8 TimePicker `filterTime` 프로그래밍 콜백 추가하면서 15 → 16KB 상향, v1.1 B10 a11y announce() 패리티(A-G1 — DatePicker/DateTimePicker Root live-region) 추가하면서 16 → 17KB 상향, 2026-08 timezone/constraint 정확성 전면 수정(negative-offset 셀 배치 P0 + 전 mutation 경계 parity)으로 17 → 20KB 상향 — 정확성 우선 결정. 2026-08 **`/headless` 만 20 → 22KB 분리** — headless 는 index 와 같은 컴포넌트에 훅 7종 전부 + `DateTimePicker.Presets` 를 더 싣는데 천장이 같아서, 코드를 더 많이 싣는 쪽의 여유가 더 적은 역전이 있었다(index 1.4KB 남을 때 headless 200B 미만). 기본 엔트리 20KB 는 공개 수치라 불변 |
 | 테스트 | Vitest + Testing Library + jest-axe | |
 | 빌드 | tsup (ESM + CJS 이중 출력) | |
 | 모노레포 | pnpm workspaces | |
@@ -140,22 +140,48 @@ useEffect(() => {                         // 클라이언트에서만
 }, []);
 ```
 
-### 원칙 3: 날짜 값 = ISO 8601 UTC string
+### 원칙 3: 날짜 값 = ISO 8601 UTC string (**instant**, 캘린더 좌표 아님)
 
 ```tsx
 // 모든 날짜의 입출력은 이 형식으로만
 type ISODateString = string; // "2026-01-15T00:00:00.000Z"
 
-// ✅ 올바른 props
+// ✅ displayTimezone 없음 — UTC 시맨틱, 문자열이 곧 그 날짜
 <DatePicker
-  value="2026-01-15T00:00:00.000Z"  // 항상 UTC ISO string
-  displayTimezone="Asia/Seoul"       // 표시 timezone 분리
+  value="2026-01-15T00:00:00.000Z"
   onChange={(iso: string | null) => save(iso)}  // 항상 UTC 반환
 />
 
 // ❌ 금지
 <DatePicker value={new Date()} />   // native Date 객체
 ```
+
+**`displayTimezone` 을 켜면 값은 "instant" 다.** ISO string 은 *시점*이지 캘린더 좌표가 아니다.
+`"2026-01-15T00:00:00.000Z"` 는 `America/New_York` 에서 **현지 1월 14일 19시**다 — 그래서 이 값을
+`value` 로 주면 캘린더가 14일을 하이라이트한다. **이건 버그가 아니라 정확한 동작이다.**
+
+```tsx
+// ❌ 손으로 만든 UTC 좌표 — displayTimezone 아래에서는 네가 타이핑한 날짜가 아니다
+<DatePicker value="2026-01-15T00:00:00.000Z" displayTimezone="America/New_York" />
+
+// ✅ 피커가 스스로 내보낼 수 있었던 값을 넘긴다
+<DatePicker
+  value={civilMidnightFromUtcDay('2026-01-15T00:00:00.000Z', 'America/New_York')}
+  displayTimezone="America/New_York"
+  onChange={save}   // 이후로는 onChange 가 준 값을 그대로 되돌려주면 된다
+/>
+```
+
+같은 규칙이 `disabled` 의 `{date}`·`{before}`·`{after}` 와 `isDateDisabled` 인자에도 적용된다.
+반대 방향 변환은 `calendarDayFromInstant(instant, zone)` 다.
+
+> **왜 라이브러리가 알아서 정규화해 주지 않는가 (2026-08 결정, 실측 근거):**
+> `"…T00:00:00.000Z"` 하나만 보고 그게 좌표인지 instant 인지 구분할 방법이 없다.
+> Root 에서 inbound 정규화를 하면 **양수 offset 존에서 controlled 값이 렌더마다 하루씩 뒤로 밀린다**
+> (`civilMidnightFromUtcDay` 가 멱등이 아니다 — Seoul: 1/15 → 1/14 → 1/13 → 1/12).
+> 멱등인 `startOfDayInTimezone` 은 반대로 결함을 못 고친다. 둘 다 만족하는 변환은 존재하지 않으므로
+> **계약을 instant 로 고정**했다. 사용자 문서는 `concepts/timezone.md`·`troubleshooting.md`·
+> `components/datepicker.md` 에 이미 노출돼 있다.
 
 ### 원칙 4: Dot Notation (Object.assign 패턴)
 
@@ -255,7 +281,7 @@ kalyx/
 │   ├── docs/                         ← 데모 사이트 (Next.js, 정적 빌드)
 │   └── docs-site/                    ← 문서 사이트 (Docusaurus, i18n)
 ├── scripts/
-│   ├── bundle-policy.js              ← React gzip 제한 단일 소스 (20KB, checker·tsup이 공유)
+│   ├── bundle-policy.js              ← React gzip 제한 단일 소스 (index 20KB / headless 22KB, checker·tsup이 공유)
 │   ├── check-bundle-size.js          ← 공유 정책 기반 번들 크기 측정·게이팅
 │   └── check-tree-shaking.js         ← tree-shaking 검증
 ├── test/
@@ -512,7 +538,7 @@ PR 열기 전 확인:
 | 커맨드 | 설명 |
 |---|---|
 | `/new-component` | 새 서브 컴포넌트 스캐폴딩 (컴포넌트·타입·테스트 파일 생성) |
-| `/check-bundle` | 빌드 후 번들 크기 측정, 20KB 초과 시 실패 (네 아티팩트 전부: index ESM/CJS + headless ESM/CJS) |
+| `/check-bundle` | 빌드 후 번들 크기 측정, 천장 초과 시 실패 (index ESM/CJS 20KB · headless ESM/CJS 22KB) |
 | `/check-a11y` | axe 자동 검사 + ARIA 수동 체크리스트 |
 | `/release` | Changesets 기반 버전 범프·CHANGELOG·npm 배포 가이드 |
 
@@ -761,7 +787,7 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 □ 접근성 기준을 만족하는가? (axe 통과)
 □ 테스트가 작성됐는가? (커버리지 기준 충족)
 □ JSDoc 주석이 있는가? (공개 API)
-□ 번들에 불필요한 의존성을 추가하지 않았는가? (20KB gzip ceiling)
+□ 번들에 불필요한 의존성을 추가하지 않았는가? (기본 20KB / headless 22KB gzip ceiling)
 □ 내부 구현이 index.ts에 실수로 export되지 않았는가?
 □ changeset 파일을 추가했는가? (공개 API 변경 시 필수)
 ```

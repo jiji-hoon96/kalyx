@@ -34,9 +34,12 @@ export default defineConfig({
 		const { gzipSync } = await import("zlib");
 		const { readFileSync, writeFileSync } = await import("fs");
 		// Mirror scripts/check-bundle-size.js + .github/workflows/pr-check.yml + release.yml.
-		// Raised from 12 → 13 → 14 → 15 → 16 → 17 → 20 KB across milestones as features landed
-		// (CLAUDE.md §2 records each bump's rationale; 17→20 = timezone/constraint correctness breadth).
-		// Both public entries have explicit absolute budgets. Entry-split additionally
+		// Default entry raised 12 → 13 → 14 → 15 → 16 → 17 → 20 KB across milestones as
+		// features landed (CLAUDE.md §2 records each bump's rationale; 17→20 =
+		// timezone/constraint correctness breadth). The headless entry was split off the
+		// same number and raised to 22 KB in 2026-08 — it ships strictly more code than
+		// index, so an equal ceiling made it bind first on every change. See
+		// scripts/bundle-policy.js for the full rationale. Entry-split additionally
 		// verifies that headless does not include date-fns.
 		const outputs = [
 			["ESM index", "dist/index.js", REACT_GZIP_CEILING_KB],

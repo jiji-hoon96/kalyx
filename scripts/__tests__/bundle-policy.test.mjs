@@ -14,9 +14,16 @@ const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, '../..');
 
 describe('React bundle policy', () => {
-  it('keeps the approved ceiling at 20KB', () => {
+  it('keeps the approved ceilings: 20KB default, 22KB headless', () => {
     expect(REACT_GZIP_CEILING_KB).toBe(20);
-    expect(HEADLESS_REACT_GZIP_CEILING_KB).toBe(20);
+    expect(HEADLESS_REACT_GZIP_CEILING_KB).toBe(22);
+  });
+
+  it('gives the entry that ships more code the larger budget', () => {
+    // headless = index surface + 4 extra hooks + DateTimePicker.Presets, so an
+    // equal ceiling would make it bind first on every change. Guards against a
+    // future edit quietly collapsing the two numbers back together.
+    expect(HEADLESS_REACT_GZIP_CEILING_KB).toBeGreaterThan(REACT_GZIP_CEILING_KB);
   });
 
   it('compares raw bytes at the exact boundary without rounding overages down', () => {

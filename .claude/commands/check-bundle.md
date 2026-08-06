@@ -1,6 +1,6 @@
 ---
 name: check-bundle
-description: 현재 번들 크기를 분석하고 20KB 목표 달성 여부를 확인한다.
+description: 현재 번들 크기를 분석하고 목표(index 20KB / headless 22KB) 달성 여부를 확인한다.
 ---
 
 # /check-bundle
@@ -8,7 +8,7 @@ description: 현재 번들 크기를 분석하고 20KB 목표 달성 여부를 �
 ## 설명
 
 빌드 후 번들 크기를 분석한다.
-목표: `@kalyx/react` gzip 20KB 이하 (rc 단계에서 12 → 13KB 상향(commit e93d082); v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향; v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향; v1.0-rc.8 TimePicker `filterTime` 추가하면서 15 → 16KB 상향; v1.1 B10 a11y announce() 패리티 추가하면서 16 → 17KB 상향; 2026-08 timezone/constraint 정확성 전면 수정으로 17 → 20KB 상향)
+목표: 기본 엔트리 gzip **20KB** 이하, `/headless` 엔트리 **22KB** 이하 (rc 단계에서 12 → 13KB 상향(commit e93d082); v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향; v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향; v1.0-rc.8 TimePicker `filterTime` 추가하면서 15 → 16KB 상향; v1.1 B10 a11y announce() 패리티 추가하면서 16 → 17KB 상향; 2026-08 timezone/constraint 정확성 전면 수정으로 17 → 20KB 상향; 2026-08 headless 만 20 → 22KB 분리 상향 — 아래 판정 기준 참고)
 
 ## Claude가 수행할 작업
 
@@ -38,13 +38,15 @@ import('./packages/react/dist/index.js').then(m => {
 
 | 상태 | index (ESM/CJS) | headless (ESM/CJS) | 조치 |
 |---|---|---|---|
-| ✅ OK | ≤ 19KB | ≤ 19.5KB | 문제없음 |
-| ⚠️ 주의 | 19–20KB | 19.5–20KB | 최적화 검토 |
-| ❌ 초과 | > 20KB | > 20KB | 반드시 축소 필요 |
+| ✅ OK | ≤ 19KB | ≤ 21KB | 문제없음 |
+| ⚠️ 주의 | 19–20KB | 21–22KB | 최적화 검토 |
+| ❌ 초과 | > 20KB | > 22KB | 반드시 축소 필요 |
 
-밴드를 엔트리별로 나눈 이유: 천장은 넷 다 20KB 로 같지만 **남은 여유가 다르다.**
-index 는 1.4KB 이상 남는데 headless 는 수백 바이트 수준이라, 단일 밴드를 쓰면
-index 가 멀쩡한데도 매번 경고가 떠 표가 무시당한다. 실제로 막히는 건 항상 headless 다.
+**두 엔트리는 천장이 다르다** — index 20KB, headless 22KB. `scripts/bundle-policy.js` 가 단일 소스다.
+headless 는 index 와 같은 컴포넌트에 더해 훅 7종 전부와 `DateTimePicker.Presets` 를 싣는다.
+원래 둘이 같은 20KB 를 썼는데, 그러면 **코드를 더 많이 싣는 쪽이 여유가 더 적어져**
+index 가 1.4KB 씩 남는 동안 headless 가 200B 미만에서 먼저 막히는 상태가 됐다.
+2026-08 에 headless 만 22KB 로 올린 이유가 이것이다. 기본 엔트리 20KB 는 공개 수치라 그대로다.
 
 게이트 대상은 **네 아티팩트 전부**(`dist/index.js`·`index.cjs`·`headless.js`·`headless.cjs`)이며
 단일 소스는 `scripts/bundle-policy.js` 다. `tsup` 의 `onSuccess` 가 초과 시 **throw** 하므로

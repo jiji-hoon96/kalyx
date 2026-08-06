@@ -25,7 +25,7 @@ Push to PR branch
   ├── lint
   ├── test (커버리지 포함)
   ├── build
-  └── bundle-size (20KB 게이팅)
+  └── bundle-size (index 20KB / headless 22KB 게이팅)
 
 PR merge to main
     ↓
@@ -149,8 +149,8 @@ jobs:
         with:
           name: dist-${{ github.run_id }}
           path: packages/react/dist/
-      # 측정·게이팅은 scripts/bundle-policy.js의 20KB 정책을 공유 (B-R1).
-      # 스크립트가 kb_esm/kb_cjs 를 $GITHUB_OUTPUT 에 기록하고, 20KB 초과 시 exit 1.
+      # 측정·게이팅은 scripts/bundle-policy.js의 정책을 공유 (B-R1, index 20KB / headless 22KB).
+      # 스크립트가 kb_esm/kb_cjs 를 $GITHUB_OUTPUT 에 기록하고, 천장 초과 시 exit 1.
       - name: 크기 측정 및 판정
         id: check
         run: node scripts/check-bundle-size.js
@@ -437,7 +437,7 @@ Branch name pattern: main
    - lint
    - test (Node 22)
    - build
-   - Bundle Size Check (≤20KB)
+   - Bundle Size Check (index ≤20KB / headless ≤22KB)
    - All Checks Pass
 
 ✅ Require branches to be up to date before merging

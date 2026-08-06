@@ -105,7 +105,7 @@ API 레퍼런스, 레시피 (Tailwind / shadcn / React Hook Form), 마이그레�
 
 ## 번들
 
-`@kalyx/react` → gzip **약 18.5 KB**. 기본 및 headless ESM/CJS 산출물의 CI 한계는 각각 20 KB입니다.
+`@kalyx/react` → gzip **약 18.5 KB**. CI 한계는 기본 엔트리(ESM+CJS)가 20 KB, 더 큰 headless 엔트리가 별도로 22 KB 입니다.
 
 ## 지원 환경
 

@@ -230,7 +230,7 @@ const DISABLED = [{ dayOfWeek: [0, 6] }] as const;
 
 서로 다른 두 숫자를 보게 되는데, 둘 다 맞습니다 — 재는 대상이 다릅니다.
 
-**~18.5 KB 는 배포된 아티팩트입니다.** 배지와 CI 게이트가 추적하는 값으로, 의존성을 external 로 둔 `@kalyx/react` 자체 `dist/index.js` 의 gzip 크기입니다. Kalyx 가 직접 통제하고 게이팅하는 수치입니다(20 KB, 네 아티팩트 전부 — `index`·`headless` × ESM·CJS).
+**~18.5 KB 는 배포된 아티팩트입니다.** 배지와 CI 게이트가 추적하는 값으로, 의존성을 external 로 둔 `@kalyx/react` 자체 `dist/index.js` 의 gzip 크기입니다. Kalyx 가 직접 통제하고 게이팅하는 수치입니다 — 기본 엔트리는 ESM·CJS 모두 20 KB 입니다. 선택적으로 쓰는 `headless` 엔트리는 같은 컴포넌트에 훅 7종까지 싣기 때문에 22 KB 로 따로 게이팅합니다.
 
 **~24 KB 는 소비자가 실제로 배포하는 크기입니다.** 아티팩트가 참조만 하던 의존성을 번들러가 해석하므로, 그래프에 `@kalyx/core`·`@kalyx/adapter-date-fns`(및 거기서 쓰는 date-fns 함수들)·`@floating-ui/react` 가 함께 들어옵니다. 이 저장소에서 `pnpm check-tree-shaking` 을 돌리면 실측 시나리오를 볼 수 있습니다 — 현재 피커 하나 기준 약 24.0 KB gzip, 7종 전부 + 훅 기준 약 25.0 KB 입니다.
 

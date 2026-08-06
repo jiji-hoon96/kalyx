@@ -230,7 +230,7 @@ const DISABLED = [{ dayOfWeek: [0, 6] }] as const;
 
 You will see two different numbers, and both are correct — they measure different things.
 
-**~18.5 KB is the published artifact.** That is what the badge and the CI ceiling track: the gzipped size of `@kalyx/react`'s own `dist/index.js`, with its dependencies left external. It is the number Kalyx controls and gates on (20 KB, enforced across all four artifacts — `index` and `headless`, ESM and CJS).
+**~18.5 KB is the published artifact.** That is what the badge and the CI ceiling track: the gzipped size of `@kalyx/react`'s own `dist/index.js`, with its dependencies left external. It is the number Kalyx controls and gates on: 20 KB for the default entry in both ESM and CJS. The opt-in `headless` entry is gated separately at 22 KB, since it ships the same components plus all seven hooks.
 
 **~24 KB is what a consumer actually ships.** Your bundler resolves the dependencies the artifact only references, so the graph also pulls in `@kalyx/core`, `@kalyx/adapter-date-fns` (and the date-fns functions it uses), and `@floating-ui/react`. Run `pnpm check-tree-shaking` in this repository to see the measured scenarios — currently ~24.0 KB gzipped for a single picker and ~25.0 KB for all seven plus the hooks.
 

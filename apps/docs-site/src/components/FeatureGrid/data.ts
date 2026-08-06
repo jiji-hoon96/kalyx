@@ -44,6 +44,6 @@ export const FEATURES: readonly Feature[] = [
     titleDefault: '≤20 KB gzipped',
     bodyId: 'home.featureGrid.bundle.body',
     bodyDefault:
-      'All seven pickers + hooks + the date-fns adapter. Default and headless artifacts each have an explicit 20 KB CI ceiling.',
+      'All seven pickers + hooks + the date-fns adapter. The default entry has an explicit 20 KB CI ceiling; the larger headless entry has its own at 22 KB.',
   },
 ] as const;

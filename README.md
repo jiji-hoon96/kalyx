@@ -105,7 +105,7 @@ Recorded from the [live playground](https://kalyx-docs-site.vercel.app/playgroun
 
 ## Bundle
 
-`@kalyx/react` → **~18.5 KB** gzip. CI gate: ≤ 20 KB for default and headless ESM/CJS artifacts.
+`@kalyx/react` → **~18.5 KB** gzip. CI gate: ≤ 20 KB for the default entry (ESM + CJS); the larger headless entry is gated separately at ≤ 22 KB.
 
 ## Browser support
 
