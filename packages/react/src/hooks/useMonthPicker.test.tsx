@@ -80,9 +80,13 @@ describe('useMonthPicker', () => {
       useMonthPicker({
         defaultValue: APR_2026,
         onChange,
-        // A single-day rule never disables a whole month, so the grid keeps June
-        // selectable — the commit guard must agree rather than being stricter.
-        disabled: [{ date: '2026-06-10T00:00:00.000Z' }, { dayOfWeek: [0, 6] }],
+        // The rule lands exactly on the coordinate the grid commits for June
+        // (2026-06-01), so `isDateDisabled` would refuse it. A single-day rule
+        // never disables a whole month, so the grid still renders June as
+        // selectable — and the commit guard must agree rather than being
+        // stricter. This is what makes the test discriminate between
+        // `isRangeFullyDisabled` (correct) and `isDateDisabled` (too strict).
+        disabled: [{ date: '2026-06-01T00:00:00.000Z' }, { dayOfWeek: [0, 1, 6] }],
       }),
     );
     act(() => result.current.open());

@@ -77,9 +77,13 @@ describe('useYearPicker', () => {
       useYearPicker({
         value: YEAR_2026,
         onChange,
-        // Day-granular rules never disable a whole year, so the grid keeps 2020
-        // selectable — the commit guard must agree rather than being stricter.
-        disabled: [{ date: '2020-06-10T00:00:00.000Z' }, { dayOfWeek: [0, 6] }],
+        // The rule lands exactly on the coordinate the grid commits for 2020
+        // (2020-01-01), so `isDateDisabled` would refuse it. Day-granular rules
+        // never disable a whole year, so the grid still renders 2020 as
+        // selectable — and the commit guard must agree rather than being
+        // stricter. This is what makes the test discriminate between
+        // `isRangeFullyDisabled` (correct) and `isDateDisabled` (too strict).
+        disabled: [{ date: '2020-01-01T00:00:00.000Z' }, { dayOfWeek: [0, 3, 6] }],
       }),
     );
     act(() => result.current.open());
