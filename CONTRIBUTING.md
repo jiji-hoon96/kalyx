@@ -24,7 +24,7 @@ pnpm test          # watch mode
 pnpm test:run      # single run (CI)
 pnpm typecheck     # tsc -b
 pnpm lint          # eslint
-pnpm check-bundle  # gzip size check (≤ 20 KB)
+pnpm check-bundle  # gzip size check (default ≤ 20 KB, headless ≤ 22 KB)
 ```
 
 ### Branch Naming
@@ -104,13 +104,13 @@ Before opening a PR, verify:
 - [ ] `pnpm lint` passes
 - [ ] `pnpm test:run` passes
 - [ ] `pnpm build` succeeds
-- [ ] `pnpm check-bundle` — bundle ≤ 20 KB gzip
+- [ ] `pnpm check-bundle` — default entry ≤ 20 KB, headless ≤ 22 KB gzip
 - [ ] Changeset added if public API changed (`pnpm changeset`)
 - [ ] New public APIs have JSDoc comments
 
 ## Bundle Size
 
-The gzip target is **≤ 20 KB** for `@kalyx/react`. Check with:
+The gzip target for `@kalyx/react` is **≤ 20 KB** on the default entry and **≤ 22 KB** on `/headless`, which ships the extra hooks. `scripts/bundle-policy.js` is the single source. Check with:
 
 ```bash
 pnpm build && pnpm check-bundle

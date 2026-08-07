@@ -51,4 +51,47 @@ describe('useYearPicker', () => {
     expect(result.current.years[4].year).toBe(2020);
     expect(result.current.years[4].isDisabled).toBe(false);
   });
+
+  it('refuses to commit a year the grid reports as disabled', () => {
+    const onChange = vi.fn();
+    const { result } = renderHook(() =>
+      useYearPicker({
+        value: YEAR_2026,
+        onChange,
+        disabled: [{ before: '2020-01-01T00:00:00.000Z' }],
+      }),
+    );
+    act(() => result.current.open());
+    expect(result.current.years[3].isDisabled).toBe(true);
+
+    act(() => result.current.selectYear(result.current.years[3].isoString));
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(result.current.value).toBe(YEAR_2026);
+    expect(result.current.isOpen).toBe(true);
+  });
+
+  it('still commits a year that is only partially disabled', () => {
+    const onChange = vi.fn();
+    const { result } = renderHook(() =>
+      useYearPicker({
+        value: YEAR_2026,
+        onChange,
+        // The rule lands exactly on the coordinate the grid commits for 2020
+        // (2020-01-01), so `isDateDisabled` would refuse it. Day-granular rules
+        // never disable a whole year, so the grid still renders 2020 as
+        // selectable — and the commit guard must agree rather than being
+        // stricter. This is what makes the test discriminate between
+        // `isRangeFullyDisabled` (correct) and `isDateDisabled` (too strict).
+        disabled: [{ date: '2020-01-01T00:00:00.000Z' }, { dayOfWeek: [0, 3, 6] }],
+      }),
+    );
+    act(() => result.current.open());
+    expect(result.current.years[4].isDisabled).toBe(false);
+
+    act(() => result.current.selectYear(result.current.years[4].isoString));
+
+    expect(onChange).toHaveBeenCalledWith(result.current.years[4].isoString);
+    expect(result.current.isOpen).toBe(false);
+  });
 });

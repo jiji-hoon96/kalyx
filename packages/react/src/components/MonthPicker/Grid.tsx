@@ -79,9 +79,15 @@ export function MonthPickerGrid({ classNames, ...props }: MonthPickerGridProps) 
     () =>
       Array.from({ length: 12 }, (_, i) => {
         const monthStart = new Date(Date.UTC(currentYear, i, 1)).toISOString();
-        return isRangeFullyDisabled(monthStart, adapter.endOfMonth(monthStart), disabled, adapter);
+        return isRangeFullyDisabled(
+          monthStart,
+          adapter.addMonths(monthStart, 1),
+          disabled,
+          adapter,
+          displayTimezone,
+        );
       }),
-    [currentYear, disabled, adapter],
+    [currentYear, disabled, adapter, displayTimezone],
   );
 
   const navigateYear = useCallback(

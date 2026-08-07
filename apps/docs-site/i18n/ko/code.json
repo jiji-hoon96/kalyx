@@ -60,7 +60,7 @@
     "description": "FeatureGrid: 번들 카드 제목"
   },
   "home.featureGrid.bundle.body": {
-    "message": "7종 picker + hook + date-fns 어댑터 전부 포함. 기본 및 headless 산출물에 각각 20 KB CI 한계를 적용합니다.",
+    "message": "7종 picker + hook + date-fns 어댑터 전부 포함. 기본 엔트리에 20 KB CI 한계를, 더 큰 headless 엔트리에는 별도로 22 KB 한계를 적용합니다.",
     "description": "FeatureGrid: 번들 카드 본문"
   },
   "home.sameJsx.eyebrow": {

@@ -207,7 +207,7 @@ Peer 의존성: `react ^19.0.0`, `react-dom ^19.0.0`.
 
 ## 번들 크기
 
-기본 엔트리 산출물은 gzip 기준 **약 18.5 KB**입니다(컴포넌트 7종, CI 한계 20 KB). Headless ESM/CJS 산출물에도 별도의 20 KB CI 게이트가 적용됩니다.
+기본 엔트리 산출물은 gzip 기준 **약 18.5 KB**입니다(컴포넌트 7종, CI 한계 20 KB). Headless ESM/CJS 산출물에는 별도의 22 KB CI 게이트가 적용됩니다 — 이 엔트리는 같은 컴포넌트에 더해 훅 7종 전부와 `DateTimePicker.Presets`까지 싣기 때문에, 기본 엔트리의 수치를 공유하지 않고 따로 예산을 잡습니다.
 
 이 수치는 의존성을 external 로 둔 **산출물** 기준입니다. 애플리케이션이 실제로 배포하는 크기는 더 큽니다 — 번들러가 `@kalyx/core`·`@kalyx/adapter-date-fns`·`@floating-ui/react` 까지 해석하기 때문이며, 이 저장소의 소비자 하네스 실측은 **약 24 KB** gzip 입니다. `sideEffects: false`를 선언하지만 그 하네스는 루트 엔트리에서 picker별 제거를 입증하지 못합니다 — 피커 하나만 import 해도 7종 전부와 비용이 거의 같습니다. 실제 import 조합은 프로덕션 번들에서 직접 측정하시고, 전체 설명은 [트러블슈팅 → 번들 크기](../troubleshooting.md#번들-크기가-예상보다-큽니다)를 참고하세요.
 

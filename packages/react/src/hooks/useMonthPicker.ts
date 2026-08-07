@@ -99,12 +99,18 @@ export function useMonthPicker(options: UseMonthPickerOptions = {}): UseMonthPic
 
   const selectMonth = useCallback(
     (iso: ISODateString) => {
+      // Same predicate the grid uses for `isDisabled`, so a cell the grid renders
+      // as unselectable cannot be committed programmatically either. Deliberately
+      // not `isDateDisabled`: a month is disabled only when *fully* excluded, so a
+      // day-granular rule must not block the month.
+      if (isRangeFullyDisabled(iso, adapter.addMonths(iso, 1), disabled, adapter, displayTimezone))
+        return;
       const normalized = displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
       if (!isControlled) setUncontrolledValue(normalized);
       onChange?.(normalized);
       setIsOpen(false);
     },
-    [isControlled, onChange, displayTimezone],
+    [isControlled, onChange, displayTimezone, disabled, adapter],
   );
 
   const open = useCallback(() => {
@@ -145,13 +151,24 @@ export function useMonthPicker(options: UseMonthPickerOptions = {}): UseMonthPic
           isCurrent: todayYear === viewYear && todayMonth === i,
           isDisabled: isRangeFullyDisabled(
             isoString,
-            adapter.endOfMonth(isoString),
+            adapter.addMonths(isoString, 1),
             disabled,
             adapter,
+            displayTimezone,
           ),
         };
       }),
-    [viewYear, locale, selectedYear, selectedMonth, todayYear, todayMonth, disabled, adapter],
+    [
+      viewYear,
+      locale,
+      selectedYear,
+      selectedMonth,
+      todayYear,
+      todayMonth,
+      disabled,
+      adapter,
+      displayTimezone,
+    ],
   );
 
   return {

@@ -212,7 +212,7 @@ non-default backend): `@kalyx/adapter-dayjs`, `@kalyx/adapter-luxon`.
 
 ## Bundle size
 
-Gzipped default-entry artifact: **~18.5 KB** (7 components, CI ceiling 20 KB). The headless ESM and CJS artifacts have their own 20 KB CI gate.
+Gzipped default-entry artifact: **~18.5 KB** (7 components, CI ceiling 20 KB). The headless ESM and CJS artifacts have their own CI gate at 22 KB — that entry ships the same components plus all seven hooks and `DateTimePicker.Presets`, so it is budgeted separately rather than sharing the default entry's number.
 
 That figure measures the artifact with its dependencies external. What your application ships is larger, because the bundler also resolves `@kalyx/core`, `@kalyx/adapter-date-fns`, and `@floating-ui/react` — the repository's consumer harness measures **~24 KB** gzipped. `sideEffects: false` is declared, but that harness does not demonstrate per-picker elimination from the root entry, so importing one picker costs about the same as importing all seven. Measure your production bundle for your exact imports, and see [Troubleshooting → bundle size](../troubleshooting.md#bundle-size-seems-larger-than-expected) for the full reconciliation.
 
