@@ -47,7 +47,7 @@ import type { DateTimePickerInputProps } from './Input.js';
  * </DateTimePicker>
  * ```
  */
-export const DateTimePicker = Object.assign(DateTimePickerRoot, {
+export const DateTimePicker = /*#__PURE__*/ Object.assign(DateTimePickerRoot, {
   Input: DateTimePickerInput,
   Popover: DatePickerPopover,
   Calendar: DatePickerCalendar,

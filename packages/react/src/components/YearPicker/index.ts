@@ -27,7 +27,7 @@ import type { YearPickerGridProps, YearPickerGridClassNames } from './Grid.js';
  * </YearPicker>
  * ```
  */
-export const YearPicker = Object.assign(YearPickerRoot, {
+export const YearPicker = /*#__PURE__*/ Object.assign(YearPickerRoot, {
   Input: DatePickerInput,
   Trigger: DatePickerTrigger,
   Popover: DatePickerPopover,

@@ -50,7 +50,7 @@ import type {
  * </RangePicker>
  * ```
  */
-export const RangePicker = Object.assign(RangePickerRoot, {
+export const RangePicker = /*#__PURE__*/ Object.assign(RangePickerRoot, {
   Input: RangePickerInput,
   Popover: RangePickerPopover,
   Calendar: RangePickerCalendar,

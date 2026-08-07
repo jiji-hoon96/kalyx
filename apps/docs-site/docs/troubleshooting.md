@@ -232,13 +232,13 @@ You will see two different numbers, and both are correct — they measure differ
 
 **~18.5 KB is the published artifact.** That is what the badge and the CI ceiling track: the gzipped size of `@kalyx/react`'s own `dist/index.js`, with its dependencies left external. It is the number Kalyx controls and gates on: 20 KB for the default entry in both ESM and CJS. The opt-in `headless` entry is gated separately at 22 KB, since it ships the same components plus all seven hooks.
 
-**~24 KB is what a consumer actually ships.** Your bundler resolves the dependencies the artifact only references, so the graph also pulls in `@kalyx/core`, `@kalyx/adapter-date-fns` (and the date-fns functions it uses), and `@floating-ui/react`. Run `pnpm check-tree-shaking` in this repository to see the measured scenarios — currently ~24.0 KB gzipped for a single picker and ~25.0 KB for all seven plus the hooks.
+**16–25 KB is what a consumer actually ships**, depending on how much you import. Your bundler resolves the dependencies the artifact only references, so the graph also pulls in `@kalyx/core`, `@kalyx/adapter-date-fns` (and the date-fns functions it uses), and `@floating-ui/react`. Run `pnpm check-tree-shaking` in this repository for the measured scenarios — currently ~16.2 KB gzipped for `TimePicker` alone, ~19.9 KB for the heaviest single picker, and ~25.0 KB for all seven plus the hooks.
 
-The roughly 5.5 KB gap between the two is the dependency graph, not overhead in Kalyx. Quote the ~24 KB figure when comparing against libraries that publish a single all-in number.
+The consumer figure is always the larger of the two, because the artifact number excludes dependencies the consumer must resolve. How much larger depends on your imports: roughly 6.5 KB over the artifact if you import everything, and less if you import one picker. Quote the scenario that matches your usage when comparing against libraries that publish a single all-in number.
 
 If your own bundle is larger than that:
 
-1. Inspect your production bundler report; the root entry does not currently guarantee per-picker elimination — importing one picker costs about the same as importing all seven.
+1. Inspect your production bundler report. Unused pickers *are* eliminated (TimePicker alone measures ~16.2 KB against ~25.0 KB for all seven), but the pickers share a substantial base — context, popover, calendar math — so importing one is not a seventh of importing all.
 2. The default entry includes the date-fns adapter. If your app already ships another date library, compare the explicit `/headless` entry with the same consumer setup so date-fns isn't counted twice.
 3. Run `pnpm check-bundle` for artifact ceilings and `pnpm check-tree-shaking` for the consumer scenarios.
 

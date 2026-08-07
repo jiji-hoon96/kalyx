@@ -27,7 +27,7 @@ import type { WeekPickerCalendarProps, WeekPickerCalendarClassNames } from './Ca
  * </WeekPicker>
  * ```
  */
-export const WeekPicker = Object.assign(WeekPickerRoot, {
+export const WeekPicker = /*#__PURE__*/ Object.assign(WeekPickerRoot, {
   Input: RangePickerInput,
   Popover: RangePickerPopover,
   Calendar: WeekPickerCalendar,

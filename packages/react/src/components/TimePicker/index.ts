@@ -43,7 +43,7 @@ import type { TimePickerAmPmToggleProps, TimePickerAmPmToggleClassNames } from '
  * </TimePicker>
  * ```
  */
-export const TimePicker = Object.assign(TimePickerRoot, {
+export const TimePicker = /*#__PURE__*/ Object.assign(TimePickerRoot, {
   Input: TimePickerInput,
   Popover: TimePickerPopover,
   HourList: TimePickerHourList,

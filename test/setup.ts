@@ -31,7 +31,14 @@ global.IntersectionObserver = class IntersectionObserver {
 	disconnect() {}
 } as unknown as typeof IntersectionObserver;
 
-Element.prototype.scrollIntoView = () => {};
+// Guarded because this setup file is global, but a few suites opt into the node
+// environment via `@vitest-environment node` (esbuild refuses to run under
+// jsdom's TextEncoder). Those have no DOM, and an unguarded `Element` reference
+// throws during setup — which surfaces as "0 tests collected" rather than a
+// useful error.
+if (typeof Element !== "undefined") {
+	Element.prototype.scrollIntoView = () => {};
+}
 
 // jsdom does not implement matchMedia; HeroDemo (and any prefers-reduced-motion
 // consumer) reads it. Provide a no-op default that reports no match.

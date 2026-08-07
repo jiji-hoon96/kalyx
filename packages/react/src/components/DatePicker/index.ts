@@ -47,7 +47,7 @@ import type {
  * </DatePicker>
  * ```
  */
-export const DatePicker = Object.assign(DatePickerRoot, {
+export const DatePicker = /*#__PURE__*/ Object.assign(DatePickerRoot, {
   Input: DatePickerInput,
   Trigger: DatePickerTrigger,
   Popover: DatePickerPopover,

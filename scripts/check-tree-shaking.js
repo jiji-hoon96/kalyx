@@ -136,7 +136,8 @@ export async function main() {
   console.log('  Excludes react, react-dom (peer deps).');
   console.log('  Minified + gzipped as a consumer bundler would ship it.');
   console.log('  Baseline is a type-only control and should be nearly empty.');
-  console.log('  Compare scenarios directly; no per-picker elimination is assumed.');
+  console.log('  Pickers you do not import are eliminated; the remainder share a large base,');
+  console.log('  so one picker is a large fraction of all seven rather than a seventh of it.');
   console.log('');
 }
 
