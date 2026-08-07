@@ -81,7 +81,7 @@ function BasicWeekPicker() {
             gridCell: 'kx-live-cell',
             weekdayHeader: 'kx-live-weekday',
             day: 'kx-live-day-range',
-            dayInWeek: 'kx-live-inrange',
+            dayInRange: 'kx-live-inrange',
             dayRangeStart: 'kx-live-range-start',
             dayRangeEnd: 'kx-live-range-end',
             dayToday: 'live-day-today',
@@ -126,7 +126,7 @@ function MondayStartWeekPicker() {
             gridCell: 'kx-live-cell',
             weekdayHeader: 'kx-live-weekday',
             day: 'kx-live-day-range',
-            dayInWeek: 'kx-live-inrange',
+            dayInRange: 'kx-live-inrange',
             dayRangeStart: 'kx-live-range-start',
             dayRangeEnd: 'kx-live-range-end',
             dayToday: 'live-day-today',
@@ -212,14 +212,14 @@ Inherited from `RangePicker.Root`. With `displayTimezone` set, the start and end
 
 ### Calendar classNames
 
-Same shape as `RangePicker.Calendar` classNames, with an extra `dayInWeek` modifier that styles every cell of the selected week:
+Same shape as `RangePicker.Calendar` classNames, with an extra `dayInRange` modifier that styles every cell of the selected week:
 
 ```tsx
 <WeekPicker.Calendar
   classNames={{
     root: '',
     day: '',
-    dayInWeek: 'bg-blue-100',
+    dayInRange: 'bg-blue-100',
     dayRangeStart: 'rounded-l',
     dayRangeEnd: 'rounded-r',
     dayToday: 'font-bold',

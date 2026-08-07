@@ -413,7 +413,7 @@ The “Try it live” example at the top of this page already wires this flow �
 
 ```tsx
 <form action="/api/save" method="post">
-  <DatePicker name="startDate" defaultValue="2026-04-15T00:00:00.000Z">
+  <DatePicker defaultValue="2026-04-15T00:00:00.000Z">
     <DatePicker.Input name="startDate" />
     <DatePicker.Popover>
       <DatePicker.Calendar />

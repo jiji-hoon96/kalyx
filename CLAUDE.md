@@ -206,10 +206,17 @@ import { DatePicker } from '@kalyx/react';
 
 ```tsx
 // 비제어 (폼 제출용)
-<DatePicker name="birthDate" defaultValue="1990-01-01T00:00:00.000Z" />
+// `name` 은 Root 가 아니라 Input 에 붙는다 — hidden input 을 렌더하는 건 Input 이고,
+// Root 에는 name prop 이 없다. `children` 도 필수라 self-closing 은 타입 에러다.
+// 폼 제출을 지원하는 건 DatePicker.Input 뿐이다 (Month/Year/Week/Range/DateTime 은 미지원).
+<DatePicker defaultValue="1990-01-01T00:00:00.000Z">
+  <DatePicker.Input name="birthDate" />
+</DatePicker>
 
 // 제어 (상태 동기화용)
-<DatePicker value={date} onChange={setDate} />
+<DatePicker value={date} onChange={setDate}>
+  <DatePicker.Input />
+</DatePicker>
 ```
 
 ---
