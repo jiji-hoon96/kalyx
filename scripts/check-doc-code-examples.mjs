@@ -408,20 +408,27 @@ export function compileSnippets(snippets, { repoRoot = DEFAULT_REPO_ROOT } = {})
   const generatedFiles = new Map();
 
   try {
+    const compiledSources = [];
     const rootNames = snippets.map((snippet, index) => {
       const filename = resolve(temporaryDirectory, `snippet-${index}.${snippet.extension}`);
       const preamble = buildPreamble(snippet.code);
       const body = preamble.length > 0 ? `${preamble.join('\n')}\n${snippet.code}` : snippet.code;
+      compiledSources.push(body);
       writeFileSync(filename, `${body}\nexport {};\n`, 'utf8');
       generatedFiles.set(filename, { snippet, preambleLength: preamble.length });
       return filename;
     });
 
-    // Every mapped declaration must exist before compiling. Otherwise a missing
-    // `dist/` degrades into "Cannot find module", which reads like a broken doc
-    // rather than an unbuilt package — and passes locally whenever a stale
-    // `dist/` from an earlier build happens to be lying around.
+    // Any declaration these snippets actually import must exist before compiling.
+    // Otherwise a missing `dist/` degrades into "Cannot find module", which reads
+    // like a broken document rather than an unbuilt package — and passes locally
+    // whenever a stale `dist/` from an earlier build happens to be lying around.
+    //
+    // Scoped to the modules referenced, not every mapping: callers that compile a
+    // single core-only snippet must not be forced to build the whole workspace.
+    const referenced = compiledSources.join('\n');
     for (const [specifier, [declarationPath]] of Object.entries(MODULE_PATHS(repoRoot))) {
+      if (!referenced.includes(`'${specifier}'`) && !referenced.includes(`"${specifier}"`)) continue;
       if (!existsSync(declarationPath)) {
         throw new Error(
           `Cannot check documentation: ${specifier} has no built declaration at ` +
