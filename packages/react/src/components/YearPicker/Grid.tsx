@@ -78,10 +78,10 @@ export function YearPickerGrid({ classNames, ...props }: YearPickerGridProps) {
       Array.from({ length: 12 }, (_, i) => {
         const year = decadeStart + i;
         const yearStart = new Date(Date.UTC(year, 0, 1)).toISOString();
-        const yearEnd = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999)).toISOString();
-        return isRangeFullyDisabled(yearStart, yearEnd, disabled, adapter);
+        const nextYearStart = new Date(Date.UTC(year + 1, 0, 1)).toISOString();
+        return isRangeFullyDisabled(yearStart, nextYearStart, disabled, adapter, displayTimezone);
       }),
-    [decadeStart, disabled, adapter],
+    [decadeStart, disabled, adapter, displayTimezone],
   );
 
   const navigateDecade = useCallback(

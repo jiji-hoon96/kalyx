@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
+import { civilMidnightFromUtcDay } from '@kalyx/core';
 import { useMonthPicker } from './useMonthPicker.js';
 
 const APR_2026 = '2026-04-15T00:00:00.000Z';
@@ -96,6 +97,37 @@ describe('useMonthPicker', () => {
 
     expect(onChange).toHaveBeenCalledWith('2026-06-01T00:00:00.000Z');
     expect(result.current.value).toBe('2026-06-01T00:00:00.000Z');
+  });
+
+  // Reproduction of record from the #193 review: under a large positive offset the
+  // cell's civil range sits ~14h earlier than its UTC coordinates, so comparing raw
+  // UTC coordinates against a civil-midnight bound left a fully out-of-range month
+  // enabled — and therefore committable. Asserted for both offset signs because the
+  // negative case passed by accident before the fix.
+  it.each([
+    ['Pacific/Kiritimati', 'a +14 zone'],
+    ['Pacific/Niue', 'a -11 zone'],
+  ])('respects a displayTimezone-aware bound in %s (%s)', (zone) => {
+    const onChange = vi.fn();
+    const bound = civilMidnightFromUtcDay('2026-01-01T00:00:00.000Z', zone);
+    const { result } = renderHook(() =>
+      useMonthPicker({
+        defaultValue: '2026-03-01T00:00:00.000Z',
+        onChange,
+        displayTimezone: zone,
+        disabled: [{ before: bound }],
+      }),
+    );
+    act(() => result.current.previousYear());
+    // December 2025 is entirely before civil Jan 1 in that zone.
+    expect(result.current.months[11].isDisabled).toBe(true);
+
+    act(() => result.current.selectMonth(result.current.months[11].isoString));
+    expect(onChange).not.toHaveBeenCalled();
+
+    // January 2026 opens exactly at the bound, so it must stay selectable.
+    act(() => result.current.nextYear());
+    expect(result.current.months[0].isDisabled).toBe(false);
   });
 
   it('toggles open state', () => {

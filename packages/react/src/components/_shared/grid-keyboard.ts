@@ -1,24 +1,48 @@
 import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
+import { civilMidnightFromUtcDay } from '@kalyx/core';
 import type { DateAdapter, DisabledRule, ISODateString } from '@kalyx/core';
 import type { Direction } from './rtl.js';
 
 /**
- * A range of dates `[start, end]` is "fully disabled" when every day in it is
- * excluded by a `before` or `after` rule. `date` and `dayOfWeek` rules only
- * disable individual days, so they never disable an entire range.
+ * A half-open range `[startInclusive, endExclusive)` is "fully disabled" when
+ * every instant in it is excluded by a `before` or `after` rule. `date` and
+ * `dayOfWeek` rules only disable individual days, so they never disable an
+ * entire range.
  *
- * Used by `MonthPicker.Grid` and `YearPicker.Grid` to mark a whole month or
- * year unselectable when min/max bounds rule it out.
+ * Used by `MonthPicker.Grid` / `YearPicker.Grid` and the matching headless hooks
+ * to mark a whole month or year unselectable when min/max bounds rule it out —
+ * both for the rendered `isDisabled` flag and for the commit guard, so the two
+ * cannot disagree.
+ *
+ * @param endExclusive - Start of the *next* period, not this period's last
+ *   millisecond.
+ * @param timezone - When set, the range is interpreted as civil days in that
+ *   zone rather than UTC coordinates.
  */
 export function isRangeFullyDisabled(
-  start: ISODateString,
-  end: ISODateString,
+  startInclusive: ISODateString,
+  endExclusive: ISODateString,
   rules: DisabledRule[],
   adapter: DateAdapter,
+  timezone?: string,
 ): boolean {
+  // The range is half-open: [startInclusive, endExclusive). Callers pass the start
+  // of the *next* period as the end rather than its last millisecond, so that the
+  // timezone conversion below is a plain civil-midnight lookup on both ends
+  // instead of day arithmetic on a `23:59:59.999` timestamp.
+  //
+  // With a timezone, the cell covers civil days in *that* zone, so both ends are
+  // mapped to the instants those civil midnights correspond to. Comparing raw UTC
+  // coordinates against a civil-midnight bound is what left a fully out-of-range
+  // month enabled under large positive offsets: in Pacific/Kiritimati (+14) the
+  // civil range sits ~14h earlier than its UTC coordinates suggest.
+  const start = timezone ? civilMidnightFromUtcDay(startInclusive, timezone) : startInclusive;
+  const end = timezone ? civilMidnightFromUtcDay(endExclusive, timezone) : endExclusive;
+
   for (const rule of rules) {
-    if ('before' in rule && adapter.isBefore(end, rule.before)) return true;
+    // Every instant in [start, end) precedes `before` exactly when end <= before.
+    if ('before' in rule && !adapter.isAfter(end, rule.before)) return true;
     if ('after' in rule && adapter.isAfter(start, rule.after)) return true;
   }
   return false;
