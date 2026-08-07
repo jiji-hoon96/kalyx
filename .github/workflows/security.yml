@@ -13,11 +13,21 @@ on:
     paths:
       - '**/package.json'
       - 'pnpm-lock.yaml'
+  # No `paths` filter here, unlike the push trigger above: these two jobs are
+  # required status checks on `main`, and required checks are matched by name.
+  # A path-filtered workflow does not report skipped checks — it reports
+  # nothing at all — so any PR that misses the filter (docs, tests, refactors:
+  # most of them) would sit permanently pending. Both jobs finish in well
+  # under two minutes, so running them unconditionally is cheap.
   pull_request:
-    paths:
-      - '**/package.json'
-      - 'pnpm-lock.yaml'
   workflow_dispatch:
+
+# Force-pushes to a PR branch would otherwise stack independent scan runs that
+# all race to completion; the newest head is the only one a required check is
+# evaluated against. Mirrors pr-check.yml.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   actions: read
@@ -31,6 +41,12 @@ jobs:
     # osv.dev vulnerability database — independent of npm's deprecated
     # audit endpoint that `pnpm audit` still calls.
     name: OSV Vulnerability Scan
+    # ⚠️ This is a required status check on `main`, reported under the composed
+    # name `OSV Vulnerability Scan / osv-scan` — the second half is the job id
+    # *inside* the upstream reusable workflow. The @v2.0.0 pin is therefore
+    # load-bearing: bumping it (or the tag moving) can rename the check and
+    # leave every PR permanently pending. Update the ruleset's required
+    # contexts in the same change as any version bump here.
     uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.0.0
     with:
       scan-args: |-
