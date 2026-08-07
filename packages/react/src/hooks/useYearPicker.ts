@@ -96,10 +96,8 @@ export function useYearPicker(options: UseYearPickerOptions = {}): UseYearPicker
       // as unselectable cannot be committed programmatically either. Deliberately
       // not `isDateDisabled`: a year is disabled only when *fully* excluded, so a
       // day-granular rule must not block the year.
-      const yearEnd = new Date(
-        Date.UTC(adapter.getYear(iso), 11, 31, 23, 59, 59, 999),
-      ).toISOString();
-      if (isRangeFullyDisabled(iso, yearEnd, disabled, adapter)) return;
+      const nextYearStart = new Date(Date.UTC(adapter.getYear(iso) + 1, 0, 1)).toISOString();
+      if (isRangeFullyDisabled(iso, nextYearStart, disabled, adapter, displayTimezone)) return;
       const normalized = displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
       if (!isControlled) setUncontrolledValue(normalized);
       onChange?.(normalized);
@@ -137,16 +135,22 @@ export function useYearPicker(options: UseYearPickerOptions = {}): UseYearPicker
       Array.from({ length: 12 }, (_, i) => {
         const year = decadeStart + i;
         const isoString = new Date(Date.UTC(year, 0, 1)).toISOString();
-        const yearEnd = new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999)).toISOString();
+        const nextYearStart = new Date(Date.UTC(year + 1, 0, 1)).toISOString();
         return {
           isoString,
           year,
           isSelected: year === selectedYear,
           isCurrent: year === todayYear,
-          isDisabled: isRangeFullyDisabled(isoString, yearEnd, disabled, adapter),
+          isDisabled: isRangeFullyDisabled(
+            isoString,
+            nextYearStart,
+            disabled,
+            adapter,
+            displayTimezone,
+          ),
         };
       }),
-    [decadeStart, selectedYear, todayYear, disabled, adapter],
+    [decadeStart, selectedYear, todayYear, disabled, adapter, displayTimezone],
   );
 
   return {
