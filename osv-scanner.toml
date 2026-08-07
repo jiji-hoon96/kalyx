@@ -1,4 +1,33 @@
 # osv-scanner ignore list.
-# (GHSA-h67p-54hq-rp68 removed 2026-08-04: js-yaml transitive is now pinned to
-#  3.15.1 / 4.3.1 via pnpm.overrides, which osv-scanner no longer flags — the
-#  earlier 'no 3.x patch' rationale is obsolete.)
+#
+# Entries here suppress a finding that `fail-on-vuln: true` would otherwise turn
+# into a merge block on every PR. Each one needs a reason and an expiry — an
+# ignore without a date silently becomes permanent.
+
+[[IgnoredVulns]]
+id = "GHSA-5p2g-fcmc-qvqq"
+ignoreUntil = 2026-11-07
+reason = """
+image-size 2.0.2: denial of service via infinite loops in the JXL and HEIF
+parsers (CVE-2025-71329, HIGH). No fixed version exists — OSV reports
+`fixed: []` with `last_affected: 2.0.2`, which is also the latest release on
+npm, so there is nothing to upgrade or override to.
+
+Not reachable by anyone installing Kalyx: `pnpm why image-size --filter
+'@kalyx/*'` returns nothing. It arrives only through
+@docusaurus/mdx-loader in `apps/docs-site`, which is private and never
+published. Exploiting it would mean committing a malformed JXL or HEIF file to
+this repository and waiting for a docs build to hang — a self-inflicted CI
+outage, not exposure for library consumers.
+
+Revisit when image-size ships a fix or Docusaurus moves off it.
+"""
+
+[[IgnoredVulns]]
+id = "GHSA-w3rx-r6r6-pgpr"
+ignoreUntil = 2026-11-07
+reason = """
+image-size 2.0.2: denial of service via an infinite loop in the ICNS parser
+(CVE-2025-71330, HIGH). Same dependency, same reachability and same absence of a
+fix as GHSA-5p2g-fcmc-qvqq above.
+"""
