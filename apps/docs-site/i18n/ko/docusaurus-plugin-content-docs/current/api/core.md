@@ -253,7 +253,13 @@ formatFullDate('2026-04-15T00:00:00.000Z', 'en-US');
 
 ### `getWeekStartForLocale(locale?)`
 
-해당 locale이 관습적으로 쓰는 한 주의 첫 요일을 `WeekStartsOn` — `0`(일요일) 또는 `1`(월요일) — 로 반환합니다. 런타임의 locale 데이터가 구분하는 시작 요일이 그 둘입니다. `weekStartsOn`을 넘기지 않으면 `DatePicker`와 `RangePicker`가 이 함수를 호출합니다. 명시한 prop이 항상 우선합니다.
+해당 locale이 관습적으로 쓰는 한 주의 첫 요일을 `WeekStartsOn` — `0`(일요일) 또는 `1`(월요일) — 로 좁혀서 반환합니다. `weekStartsOn`을 넘기지 않으면 `DatePicker`와 `RangePicker`가 이 함수를 호출합니다. 명시한 prop이 항상 우선합니다.
+
+:::note 토요일·금요일 시작 locale 은 월요일로 보고됩니다
+
+런타임은 시작 요일을 둘보다 많이 구분합니다 — `Intl` 은 `ar-AF`·`fa-IR` 에 토요일, `dv-MV` 에 금요일을 보고합니다. 공개 타입 `WeekStartsOn` 이 `0 | 1` 이라 일요일이 아닌 결과는 전부 `1` 로 좁혀집니다. 따라서 이 locale 들은 관습적인 시작이 아니라 월요일 시작 그리드로 렌더됩니다. 정확한 시작 요일이 필요하면 `weekStartsOn` 을 명시하세요.
+
+:::
 
 ```ts
 import { getWeekStartForLocale } from '@kalyx/core';
