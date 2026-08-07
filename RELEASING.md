@@ -56,6 +56,45 @@ manual, by an authenticated maintainer. Lessons from the dayjs/luxon launches:
    (GitHub Actions · Repository `jiji-hoon96/kalyx` · Workflow `release.yml` ·
    environment empty) so every later release is hands-off.
 
+## Cross-package dependency ranges
+
+Every published package references its workspace siblings with **`workspace:^`**,
+never `workspace:*`. pnpm substitutes the range at pack time:
+
+| protocol in the repo | what lands in the tarball |
+|---|---|
+| `workspace:^` | `^<sibling's version at publish time>` |
+| `workspace:*` | the exact version, e.g. `1.4.2` |
+
+`workspace:*` is not a tighter version of the same thing — it changes who gets
+patches and when. Measured with `pnpm changeset version` against a core-only
+patch changeset:
+
+- With **`workspace:*`**, `@kalyx/react` is pulled in as a dependent so its
+  pinned range can be rewritten, and `linked: [["@kalyx/core","@kalyx/react"]]`
+  aligns both versions. A core patch therefore always forces a react release,
+  and anyone staying on the older react keeps the old core.
+- With **`workspace:^`**, the existing range already satisfies the new version,
+  so react is not released at all and existing installs pick the core patch up
+  on their next resolve.
+
+The floor cannot go stale: `workspace:^` is never rewritten in the repo, so each
+publish stamps that moment's sibling version. A react release that needs a new
+core API is packed alongside it and declares `^<that core version>`, which makes
+an older core uninstallable with it.
+
+Verify after any change here by unpacking the tarball, not by reading
+`package.json`:
+
+```bash
+cd packages/react && pnpm pack --pack-destination /tmp
+tar -xzOf /tmp/kalyx-react-*.tgz package/package.json | jq .dependencies
+```
+
+Workspace refs in `devDependencies` (e.g. `@kalyx/core`'s dev use of
+`@kalyx/adapter-date-fns`) and in the private `examples/*` and `apps/*` packages
+are never published, so their protocol is immaterial.
+
 ## Open follow-ups
 
 - Backfill the `@kalyx/adapter-date-fns@1.0.0` GitHub Release (the 1.0.0 manual

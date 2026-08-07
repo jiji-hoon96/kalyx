@@ -451,10 +451,10 @@ importers:
         specifier: ^0.27.0
         version: 0.27.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@kalyx/adapter-date-fns':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../adapter-date-fns
       '@kalyx/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
       react:
         specifier: ^19.0.0
