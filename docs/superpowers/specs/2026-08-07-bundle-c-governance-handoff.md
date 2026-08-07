@@ -1,5 +1,19 @@
 # 묶음 C (거버넌스) 핸드오프 — 2026-08-07
 
+> ## ⛔ 이 문서는 완료됐고 대체됐다 — [`2026-08-08-post-bundle-c-handoff.md`](./2026-08-08-post-bundle-c-handoff.md)
+>
+> 묶음 C 5건 전부 출하됐다. 아래는 착수 시점의 기록으로만 보존한다.
+>
+> **여기 적힌 세 가지는 실측과 다르다. 그대로 따르지 말 것:**
+>
+> 1. **§C-2 의 required check 이름 `OSV Vulnerability Scan` 은 틀렸다.** 실제 이름은
+>    **`OSV Vulnerability Scan / osv-scan`** — 뒷부분은 upstream reusable workflow 내부의
+>    job id 다. 적힌 대로 등록했으면 **모든 PR 이 영구 pending** 이 됐다.
+> 2. **§C-3 "core-only 패치가 react 사용자에게 자동 전달 안 됨" 은 부정확했다.** 전달은 됐고,
+>    다만 react 버전을 올려야 받았다(`linked` 가 react 를 재배포시킨다).
+> 3. **§C-4 미서명 배포본은 2건이 아니라 6건이었다** (core 0.2.0 / react 0.2.0 /
+>    date-fns 1.0.0-rc.1·1.0.0 / dayjs 0.1.0 / luxon 0.1.0).
+
 > **시작점**: `main` @ `02075fa` · 열린 PR 0 · 946 테스트 green · npm `@kalyx/react@1.4.3`
 > **이 문서 하나만 읽고 시작할 수 있게** 쓴 것. 아래 상태는 전부 이 세션에서 API·실행으로 확인한 실측이다.
 
