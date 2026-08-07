@@ -2,13 +2,15 @@
 
 import {
   existsSync,
+  readdirSync,
+  statSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
   rmSync,
   writeFileSync,
 } from 'node:fs';
-import { dirname, relative, resolve } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import ts from 'typescript';
 
@@ -458,6 +460,73 @@ export function compileSnippets(snippets, { repoRoot = DEFAULT_REPO_ROOT } = {})
   }
 }
 
+// The three lists above are hand-maintained, so nothing stops a newly added or
+// renamed page from belonging to none of them: it would simply go unchecked
+// while CI stayed green and the "N pages deliberately unchecked" line stayed
+// wrong. That would quietly void this script's whole claim — that every page it
+// does not compile is named with a reason — so the inventory is asserted against
+// the files actually on disk.
+//
+// Kept pure and separately exported so the rules can be tested directly rather
+// than through a fabricated docs tree.
+export function findInventoryProblems(documentsOnDisk, lists) {
+  const problems = [];
+  const seen = new Map();
+
+  for (const [listName, entries] of Object.entries(lists)) {
+    for (const path of entries) {
+      if (seen.has(path)) {
+        problems.push(`${path} is listed twice: in ${seen.get(path)} and ${listName}`);
+        continue;
+      }
+      seen.set(path, listName);
+    }
+  }
+
+  const onDisk = new Map(documentsOnDisk.map((d) => [d.path, d]));
+
+  for (const [path, listName] of seen) {
+    const document = onDisk.get(path);
+    if (!document) {
+      problems.push(`${listName} lists ${path}, which does not exist — renamed or deleted?`);
+    } else if (!document.hasExecutableFences) {
+      problems.push(
+        `${listName} lists ${path}, which has no ts/tsx fences — drop it from the list`,
+      );
+    }
+  }
+
+  for (const document of documentsOnDisk) {
+    if (!document.hasExecutableFences || seen.has(document.path)) continue;
+    problems.push(
+      `${document.path} has ts/tsx fences but is in no list — add it to CHECKED_DOCUMENTS, ` +
+        'EN_ONLY_DOCUMENTS, or UNCHECKED_DOCUMENTS with a reason',
+    );
+  }
+
+  return problems;
+}
+
+function listMarkdownFiles(directory) {
+  return readdirSync(directory).flatMap((entry) => {
+    const path = join(directory, entry);
+    if (statSync(path).isDirectory()) return listMarkdownFiles(path);
+    return /\.mdx?$/.test(entry) ? [path] : [];
+  });
+}
+
+function readDocumentInventory(repoRoot) {
+  const enRoot = resolve(repoRoot, EN_DOCS_ROOT);
+  return listMarkdownFiles(enRoot).map((absolutePath) => {
+    const path = relative(enRoot, absolutePath).split(sep).join('/');
+    return {
+      path,
+      hasExecutableFences:
+        extractExecutableFences(readFileSync(absolutePath, 'utf8'), path).length > 0,
+    };
+  });
+}
+
 function readDocument(repoRoot, documentPath) {
   const absolutePath = resolve(repoRoot, documentPath);
   const sourcePath = relative(repoRoot, absolutePath);
@@ -468,7 +537,11 @@ function readDocument(repoRoot, documentPath) {
 }
 
 export function checkDocumentExamples({ repoRoot = DEFAULT_REPO_ROOT } = {}) {
-  const problems = [];
+  const problems = findInventoryProblems(readDocumentInventory(repoRoot), {
+    CHECKED_DOCUMENTS,
+    EN_ONLY_DOCUMENTS: EN_ONLY_DOCUMENTS.map(([path]) => path),
+    UNCHECKED_DOCUMENTS: UNCHECKED_DOCUMENTS.map(([path]) => path),
+  });
   const documents = [];
 
   for (const relativePath of CHECKED_DOCUMENTS) {

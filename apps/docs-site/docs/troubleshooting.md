@@ -193,7 +193,10 @@ Both `className` (root element) and `classNames` (slots) are supported. Use `cla
 
 ### Value is not submitted with the form
 
-In uncontrolled mode, pass a `name` prop to `DatePicker.Root`:
+In uncontrolled mode, pass a `name` prop to `DatePicker.Input`. The Input is what
+renders the hidden field carrying the ISO value, and `name` is not a prop on the
+Root. Note that `DatePicker` is the only picker with form-submission support —
+MonthPicker, YearPicker, WeekPicker, RangePicker and DateTimePicker have none.
 
 ```tsx
 <DatePicker defaultValue="2026-04-15T00:00:00.000Z">

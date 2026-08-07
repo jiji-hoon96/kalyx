@@ -5,6 +5,7 @@ import {
   buildPreamble,
   collectBoundIdentifiers,
   compileSnippets,
+  findInventoryProblems,
   extractExecutableFences,
 } from '../check-doc-code-examples.mjs';
 
@@ -110,6 +111,59 @@ describe('assertMatchingFenceCounts', () => {
     expect(() => assertMatchingFenceCounts([{ sourcePath: 'en.md', snippets: [] }])).toThrow(
       'en.md contains no TypeScript or TSX fences',
     );
+  });
+});
+
+describe('findInventoryProblems', () => {
+  const listed = (...paths) => ({ CHECKED_DOCUMENTS: paths, UNCHECKED_DOCUMENTS: [] });
+
+  it('accepts an inventory where every fenced page is listed exactly once', () => {
+    expect(
+      findInventoryProblems(
+        [
+          { path: 'a.md', hasExecutableFences: true },
+          { path: 'b.md', hasExecutableFences: false },
+        ],
+        listed('a.md'),
+      ),
+    ).toEqual([]);
+  });
+
+  it('rejects a fenced page that is in no list', () => {
+    const [problem] = findInventoryProblems(
+      [{ path: 'new-page.md', hasExecutableFences: true }],
+      listed(),
+    );
+
+    expect(problem).toContain('new-page.md');
+    expect(problem).toContain('is in no list');
+  });
+
+  it('rejects a listed page that no longer exists', () => {
+    const [problem] = findInventoryProblems([], listed('renamed.md'));
+
+    expect(problem).toContain('renamed.md');
+    expect(problem).toContain('does not exist');
+  });
+
+  it('rejects a listed page that has no executable fences', () => {
+    const [problem] = findInventoryProblems(
+      [{ path: 'prose-only.md', hasExecutableFences: false }],
+      listed('prose-only.md'),
+    );
+
+    expect(problem).toContain('prose-only.md');
+    expect(problem).toContain('no ts/tsx fences');
+  });
+
+  it('rejects a page listed in two lists at once', () => {
+    const [problem] = findInventoryProblems([{ path: 'dup.md', hasExecutableFences: true }], {
+      CHECKED_DOCUMENTS: ['dup.md'],
+      UNCHECKED_DOCUMENTS: ['dup.md'],
+    });
+
+    expect(problem).toContain('dup.md');
+    expect(problem).toContain('listed twice');
   });
 });
 

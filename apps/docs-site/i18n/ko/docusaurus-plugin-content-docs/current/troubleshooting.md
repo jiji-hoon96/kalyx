@@ -193,7 +193,10 @@ Both `className` (root element) and `classNames` (slots) are supported. Use `cla
 
 ### Value is not submitted with the form
 
-In uncontrolled mode, pass a `name` prop to `DatePicker.Root`:
+비제어 모드에서는 `name` 을 `DatePicker.Input` 에 넘긴다. ISO 값을 담은 hidden
+필드를 렌더하는 건 Input 이고, Root 에는 `name` prop 이 없다. 폼 제출을 지원하는
+피커는 `DatePicker` 뿐이다 — MonthPicker·YearPicker·WeekPicker·RangePicker·
+DateTimePicker 는 지원하지 않는다.
 
 ```tsx
 <DatePicker defaultValue="2026-04-15T00:00:00.000Z">
