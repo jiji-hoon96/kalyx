@@ -60,6 +60,7 @@ const EN_ONLY_DOCUMENTS = [
   ['concepts/styling.md', 'KO fence content has drifted from EN'],
   ['concepts/timezone.md', 'KO fence content has drifted from EN'],
   ['recipes/use-cases.md', 'KO fence content has drifted from EN'],
+  ['recipes/tailwind.md', 'KO fence content has drifted from EN'],
 ];
 
 // Not compiled, with the reason each one fails. This list is the difference
@@ -78,9 +79,6 @@ const UNCHECKED_DOCUMENTS = [
   ['components/monthpicker.md', 'DEFECT: `name` on Root — no form-submission support on MonthPicker'],
   ['components/yearpicker.md', 'DEFECT: `name` on Root — no form-submission support on YearPicker'],
   ['components/weekpicker.md', 'DEFECT: `name` on Root — no form-submission support on WeekPicker'],
-  // DEFECT: `classNames={{ button: … }}` on TimePicker.AmPmToggle; the real key
-  // set is TimePickerAmPmToggleClassNames, which has no `button`.
-  ['recipes/tailwind.md', 'DEFECT: unknown `button` key in TimePickerAmPmToggleClassNames'],
   // Anatomy trees render `<DatePicker.Preset />` and `<RangePicker.Preset />`
   // self-closing, but `children` is required on both.
   ['components/datepicker.md', 'anatomy fences self-close components whose `children` is required'],

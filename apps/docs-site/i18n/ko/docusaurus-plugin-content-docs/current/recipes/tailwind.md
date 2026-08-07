@@ -114,8 +114,8 @@ import { DatePicker } from '@kalyx/react';
     <TimePicker.AmPmToggle
       classNames={{
         root: 'flex flex-col gap-1',
-        button: 'rounded border px-2 py-1 text-xs',
-        buttonSelected: '!bg-indigo-600 !text-white !border-indigo-600',
+        option: 'rounded border px-2 py-1 text-xs',
+        optionSelected: '!bg-indigo-600 !text-white !border-indigo-600',
       }}
     />
   </div>
