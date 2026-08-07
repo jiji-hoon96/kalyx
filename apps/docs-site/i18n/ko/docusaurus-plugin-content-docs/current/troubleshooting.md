@@ -196,7 +196,7 @@ Both `className` (root element) and `classNames` (slots) are supported. Use `cla
 In uncontrolled mode, pass a `name` prop to `DatePicker.Root`:
 
 ```tsx
-<DatePicker name="startDate" defaultValue="2026-04-15T00:00:00.000Z">
+<DatePicker defaultValue="2026-04-15T00:00:00.000Z">
   <DatePicker.Input name="startDate" />
   ...
 </DatePicker>

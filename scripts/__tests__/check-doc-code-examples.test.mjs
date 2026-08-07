@@ -2,6 +2,8 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   assertMatchingFenceCounts,
+  buildPreamble,
+  collectBoundIdentifiers,
   compileSnippets,
   extractExecutableFences,
 } from '../check-doc-code-examples.mjs';
@@ -111,7 +113,123 @@ describe('assertMatchingFenceCounts', () => {
   });
 });
 
+describe('collectBoundIdentifiers', () => {
+  it('finds names bound by imports, declarations, and destructuring', () => {
+    const bound = collectBoundIdentifiers(
+      [
+        "import { DatePicker } from '@kalyx/react';",
+        "import type { ISODateString as Iso } from '@kalyx/core';",
+        "import React from 'react';",
+        'const [iso, setIso] = useState(null);',
+        'function handler() {}',
+        'type Local = string;',
+      ].join('\n'),
+    );
+
+    expect(bound).toContain('DatePicker');
+    expect(bound).toContain('Iso');
+    expect(bound).toContain('React');
+    expect(bound).toContain('iso');
+    expect(bound).toContain('setIso');
+    expect(bound).toContain('handler');
+    expect(bound).toContain('Local');
+  });
+
+  it('is not truncated by a brace inside a comment in the import clause', () => {
+    // Regression: a `}` inside an inline comment used to end the import-clause
+    // match early, hiding every name after it and making the preamble re-import
+    // one the fence had already imported.
+    const bound = collectBoundIdentifiers(
+      [
+        'import {',
+        '  getTimeInTimezone, // UTC iso → { hours, minutes } as seen in tz',
+        '  startOfDayInTimezone,',
+        "} from '@kalyx/core';",
+      ].join('\n'),
+    );
+
+    expect(bound).toContain('startOfDayInTimezone');
+  });
+});
+
+describe('buildPreamble', () => {
+  it('supplies the referenced names, with real types rather than any', () => {
+    const preamble = buildPreamble('<DatePicker value={iso} onChange={setIso} />;');
+
+    expect(preamble).toContain("import { DatePicker } from '@kalyx/react';");
+    expect(preamble).toContain('declare let iso: string | null;');
+    expect(preamble).toContain('declare const setIso: (next: string | null) => void;');
+    // Nothing is `any` — that is what keeps a supplied identifier from turning
+    // the surrounding assertions vacuous.
+    expect(preamble.join('\n')).not.toContain('any');
+  });
+
+  it('matches a JSX attribute name as a reference, which is imprecise but inert', () => {
+    // `value={iso}` names the prop, not a variable, so `declare let value` is
+    // surplus. It is unused, so it cannot make a fence pass that should fail —
+    // recorded here so the behaviour is deliberate rather than a surprise.
+    expect(buildPreamble('<DatePicker value={iso} />;')).toContain(
+      'declare let value: string | null;',
+    );
+  });
+
+  it('omits names the fence already binds, so nothing is declared twice', () => {
+    const preamble = buildPreamble(
+      ["import { DatePicker } from '@kalyx/react';", 'const iso = null;'].join('\n'),
+    );
+
+    expect(preamble).toEqual([]);
+  });
+
+  it('ignores names that appear only inside comments', () => {
+    expect(buildPreamble('// RangePicker is covered on its own page\nconst x = 1;')).toEqual([]);
+  });
+
+  it('does not match a name that is part of a longer identifier', () => {
+    expect(buildPreamble('const DatePickerWrapper = 1;')).toEqual([]);
+  });
+});
+
 describe('compileSnippets', () => {
+  it('type-checks a preamble-dependent excerpt against the real props', () => {
+    const [diagnostic] = compileSnippets(
+      [
+        {
+          sourcePath: 'apps/docs-site/docs/intro.md',
+          startLine: 20,
+          extension: 'tsx',
+          // No import and no useState: this only compiles via the preamble.
+          code: '<DatePicker value={iso} onChangeTypo={setIso}><span /></DatePicker>;',
+        },
+      ],
+      { repoRoot },
+    );
+
+    expect(diagnostic).toContain('apps/docs-site/docs/intro.md:20:');
+    expect(diagnostic).toContain('onChangeTypo');
+  });
+
+  it('reports a preamble-internal error as such instead of mislocating it', () => {
+    const diagnostics = compileSnippets(
+      [
+        {
+          sourcePath: 'doc.md',
+          startLine: 5,
+          extension: 'ts',
+          code: 'const bad: number = iso;',
+        },
+      ],
+      { repoRoot },
+    );
+
+    // `iso` comes from the preamble and is `string | null`, so this fails on the
+    // document line, not inside the generated preamble.
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0]).toContain('doc.md:5:');
+  });
+});
+
+describe('compileSnippets (self-contained fences)', () => {
   it('compiles real core, adapter, and React imports including JSX', () => {
     const diagnostics = compileSnippets(
       [
