@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import {
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -357,6 +358,23 @@ export function assertMatchingFenceCounts(documents) {
   }
 }
 
+// Every module a documentation fence may import, mapped to the built
+// declaration that defines it. Used both to configure the compiler and to
+// assert up front that each package has actually been built.
+function MODULE_PATHS(repoRoot) {
+  return {
+        '@kalyx/core': [resolve(repoRoot, 'packages/core/dist/index.d.ts')],
+        '@kalyx/adapter-date-fns': [
+          resolve(repoRoot, 'packages/adapter-date-fns/dist/index.d.ts'),
+        ],
+        '@kalyx/react': [resolve(repoRoot, 'packages/react/dist/index.d.ts')],
+        '@kalyx/react/headless': [resolve(repoRoot, 'packages/react/dist/headless.d.ts')],
+        '@kalyx/adapter-dayjs': [resolve(repoRoot, 'packages/adapter-dayjs/dist/index.d.ts')],
+        '@kalyx/adapter-luxon': [resolve(repoRoot, 'packages/adapter-luxon/dist/index.d.ts')],
+        '@kalyx/core/test-helpers': [resolve(repoRoot, 'packages/core/dist/test-helpers/index.d.ts')],
+  };
+}
+
 function formatDiagnostic(diagnostic, generatedFiles) {
   const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
   const entry = diagnostic.file ? generatedFiles.get(diagnostic.file.fileName) : undefined;
@@ -399,6 +417,19 @@ export function compileSnippets(snippets, { repoRoot = DEFAULT_REPO_ROOT } = {})
       return filename;
     });
 
+    // Every mapped declaration must exist before compiling. Otherwise a missing
+    // `dist/` degrades into "Cannot find module", which reads like a broken doc
+    // rather than an unbuilt package — and passes locally whenever a stale
+    // `dist/` from an earlier build happens to be lying around.
+    for (const [specifier, [declarationPath]] of Object.entries(MODULE_PATHS(repoRoot))) {
+      if (!existsSync(declarationPath)) {
+        throw new Error(
+          `Cannot check documentation: ${specifier} has no built declaration at ` +
+            `${relative(repoRoot, declarationPath)}. Run \`pnpm build\` first.`,
+        );
+      }
+    }
+
     const options = {
       strict: true,
       noEmit: true,
@@ -408,17 +439,7 @@ export function compileSnippets(snippets, { repoRoot = DEFAULT_REPO_ROOT } = {})
       moduleResolution: ts.ModuleResolutionKind.Bundler,
       jsx: ts.JsxEmit.ReactJSX,
       baseUrl: repoRoot,
-      paths: {
-        '@kalyx/core': [resolve(repoRoot, 'packages/core/dist/index.d.ts')],
-        '@kalyx/adapter-date-fns': [
-          resolve(repoRoot, 'packages/adapter-date-fns/dist/index.d.ts'),
-        ],
-        '@kalyx/react': [resolve(repoRoot, 'packages/react/dist/index.d.ts')],
-        '@kalyx/react/headless': [resolve(repoRoot, 'packages/react/dist/headless.d.ts')],
-        '@kalyx/adapter-dayjs': [resolve(repoRoot, 'packages/adapter-dayjs/dist/index.d.ts')],
-        '@kalyx/adapter-luxon': [resolve(repoRoot, 'packages/adapter-luxon/dist/index.d.ts')],
-        '@kalyx/core/test-helpers': [resolve(repoRoot, 'packages/core/dist/test-helpers/index.d.ts')],
-      },
+      paths: MODULE_PATHS(repoRoot),
     };
     const program = ts.createProgram(rootNames, options);
 

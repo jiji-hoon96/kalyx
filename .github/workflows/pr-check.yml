@@ -210,6 +210,12 @@ jobs:
       - run: pnpm --filter @kalyx/core build
       - run: pnpm --filter @kalyx/adapter-date-fns build
       - run: pnpm --filter @kalyx/react build
+      # The dayjs and luxon adapters are needed too: `api/react.md` imports both,
+      # and `check-doc-examples` resolves them from `dist/*.d.ts`. Without these
+      # the checker fails only in CI, since a local `dist/` left over from an
+      # earlier build hides it.
+      - run: pnpm --filter @kalyx/adapter-dayjs build
+      - run: pnpm --filter @kalyx/adapter-luxon build
       - run: pnpm check-doc-examples
       - run: pnpm --filter docs-site build
 
