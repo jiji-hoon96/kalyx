@@ -258,7 +258,13 @@ formatFullDate('2026-04-15T00:00:00.000Z', 'en-US');
 
 ### `getWeekStartForLocale(locale?)`
 
-The first day of the week the locale conventionally uses, as a `WeekStartsOn` — `0` (Sunday) or `1` (Monday), the two starts the runtime's locale data distinguishes. `DatePicker` and `RangePicker` call this when you don't pass `weekStartsOn`; an explicit prop always wins.
+The first day of the week the locale conventionally uses, narrowed to a `WeekStartsOn` — `0` (Sunday) or `1` (Monday). `DatePicker` and `RangePicker` call this when you don't pass `weekStartsOn`; an explicit prop always wins.
+
+:::note Saturday- and Friday-start locales are reported as Monday
+
+The runtime distinguishes more than two starts — `Intl` reports Saturday for `ar-AF` and `fa-IR`, and Friday for `dv-MV`. The public `WeekStartsOn` type is `0 | 1`, so every non-Sunday result is narrowed to `1`. Those locales therefore render a Monday-start grid, not their conventional one. If you need an exact start, pass `weekStartsOn` explicitly.
+
+:::
 
 ```ts
 import { getWeekStartForLocale } from '@kalyx/core';
