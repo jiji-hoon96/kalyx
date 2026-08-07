@@ -232,9 +232,9 @@ const DISABLED = [{ dayOfWeek: [0, 6] }] as const;
 
 **~18.5 KB 는 배포된 아티팩트입니다.** 배지와 CI 게이트가 추적하는 값으로, 의존성을 external 로 둔 `@kalyx/react` 자체 `dist/index.js` 의 gzip 크기입니다. Kalyx 가 직접 통제하고 게이팅하는 수치입니다 — 기본 엔트리는 ESM·CJS 모두 20 KB 입니다. 선택적으로 쓰는 `headless` 엔트리는 같은 컴포넌트에 훅 7종까지 싣기 때문에 22 KB 로 따로 게이팅합니다.
 
-**~24 KB 는 소비자가 실제로 배포하는 크기입니다.** 아티팩트가 참조만 하던 의존성을 번들러가 해석하므로, 그래프에 `@kalyx/core`·`@kalyx/adapter-date-fns`(및 거기서 쓰는 date-fns 함수들)·`@floating-ui/react` 가 함께 들어옵니다. 이 저장소에서 `pnpm check-tree-shaking` 을 돌리면 실측 시나리오를 볼 수 있습니다 — 현재 피커 하나 기준 약 24.0 KB gzip, 7종 전부 + 훅 기준 약 25.0 KB 입니다.
+**소비자가 실제로 배포하는 크기는 16~25 KB** 로, 얼마나 import 하느냐에 따라 달라집니다. 아티팩트가 참조만 하던 의존성을 번들러가 해석하므로, 그래프에 `@kalyx/core`·`@kalyx/adapter-date-fns`(및 거기서 쓰는 date-fns 함수들)·`@floating-ui/react` 가 함께 들어옵니다. 이 저장소에서 `pnpm check-tree-shaking` 을 돌리면 실측 시나리오를 볼 수 있습니다 — 현재 `TimePicker` 하나는 약 16.2 KB gzip, 가장 무거운 단일 picker 는 약 19.9 KB, 7종 전부 + 훅은 약 25.0 KB 입니다.
 
-두 수치의 약 5.5 KB 차이는 의존성 그래프이지 Kalyx 의 오버헤드가 아닙니다. 단일 합산 수치를 공개하는 라이브러리와 비교할 때는 ~24 KB 쪽을 인용하세요.
+소비자 수치가 항상 더 큽니다 — 아티팩트 수치는 소비자가 해석해야 할 의존성을 빼고 잰 값이기 때문입니다. 얼마나 더 큰지는 import 범위에 달렸습니다: 전부 import 하면 아티팩트보다 약 6.5 KB 크고, 하나만 import 하면 그보다 작습니다. 단일 합산 수치를 공개하는 라이브러리와 비교할 때는 본인 사용 범위에 맞는 시나리오를 인용하세요.
 
 그보다도 번들이 크다면:
 
