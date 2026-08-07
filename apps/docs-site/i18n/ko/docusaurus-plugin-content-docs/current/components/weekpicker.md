@@ -96,17 +96,18 @@ Restrict selectable weeks. Any `DisabledRule` that matches at least one day in a
 ## Uncontrolled
 
 ```tsx
-<form action="/api/save" method="post">
-  <WeekPicker name="sprintWeek" defaultValue={{ start: '2026-04-13T00:00:00.000Z', end: '2026-04-19T00:00:00.000Z' }}>
-    <WeekPicker.Input part="start" />
-    <WeekPicker.Input part="end" />
-    <WeekPicker.Popover>
-      <WeekPicker.Calendar />
-    </WeekPicker.Popover>
-  </WeekPicker>
-  <button type="submit">Save</button>
-</form>
+<WeekPicker defaultValue={{ start: '2026-04-13T00:00:00.000Z', end: '2026-04-19T00:00:00.000Z' }}>
+  <WeekPicker.Input part="start" />
+  <WeekPicker.Input part="end" />
+  <WeekPicker.Popover>
+    <WeekPicker.Calendar />
+  </WeekPicker.Popover>
+</WeekPicker>
 ```
+
+`DatePicker` 와 달리 이 피커는 네이티브 폼 제출을 지원하지 않는다 — `name` prop 이
+없고 hidden input 도 렌더하지 않는다. 값을 제출하려면 `onChange` 로 상태에 담아
+직접 `<input type="hidden">` 을 렌더한다.
 
 ## Timezone
 

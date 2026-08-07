@@ -76,8 +76,8 @@ In SSR, the initial render has no user interaction yet. Start with either `defau
 
 ```tsx
 {/* Uncontrolled — good for forms */}
-<DatePicker name="checkIn" defaultValue="2026-04-15T00:00:00.000Z">
-  <DatePicker.Input />
+<DatePicker defaultValue="2026-04-15T00:00:00.000Z">
+  <DatePicker.Input name="checkIn" />
 </DatePicker>
 
 {/* Controlled with null — good for optional fields */}

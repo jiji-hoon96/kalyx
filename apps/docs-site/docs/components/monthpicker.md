@@ -197,16 +197,17 @@ function DisabledMonthPicker() {
 For simple forms where you don't need React state:
 
 ```tsx
-<form action="/api/save" method="post">
-  <MonthPicker name="billingMonth" defaultValue="2026-04-01T00:00:00.000Z">
-    <MonthPicker.Input />
-    <MonthPicker.Popover>
-      <MonthPicker.Grid />
-    </MonthPicker.Popover>
-  </MonthPicker>
-  <button type="submit">Save</button>
-</form>
+<MonthPicker defaultValue="2026-04-01T00:00:00.000Z">
+  <MonthPicker.Input />
+  <MonthPicker.Popover>
+    <MonthPicker.Grid />
+  </MonthPicker.Popover>
+</MonthPicker>
 ```
+
+Unlike `DatePicker`, this picker has no native form-submission support: there is
+no `name` prop and nothing renders a hidden input. To submit the value, keep it
+in state via `onChange` and render your own `<input type="hidden">`.
 
 ## Event callbacks
 
