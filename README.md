@@ -12,7 +12,7 @@
 [Docs](https://kalyx-docs-site.vercel.app) · [한국어](https://kalyx-docs-site.vercel.app/ko) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.ko](./README.ko.md)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-~18.3KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-~18.5KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -21,7 +21,7 @@
 
 ---
 
-Kalyx ships a **complete** set of date-related React primitives — single dates, date ranges, time, date+time, month, year, and week — under one composition API. ~18.3 KB gzip (≤20 KB ceiling), zero CSS, SSR-safe.
+Kalyx ships a **complete** set of date-related React primitives — single dates, date ranges, time, date+time, month, year, and week — under one composition API. ~18.5 KB gzip (≤20 KB ceiling), zero CSS, SSR-safe.
 
 ```bash
 pnpm add @kalyx/react
@@ -44,7 +44,7 @@ import { DatePicker } from '@kalyx/react';
 
 In 2026, the React date-picker landscape forces a trade-off: integrated-but-heavy (react-datepicker ~62 KB, MUI ~58 KB) or headless-but-partial (react-day-picker — calendar grid only; Ark UI — no standalone TimePicker; React Aria — `@internationalized/date` lock-in). react-calendar covers single dates and ranges but stops short of time, RSC, and timezone-aware storage. react-native-calendars is mobile-first.
 
-Kalyx ships **seven primitives** — single date, range, time, date+time, month, year, week — under one composition API. Headless, ~18.3 KB gzip, SSR-safe, ISO strings in / ISO strings out, adapter pattern for date-fns / dayjs / luxon.
+Kalyx ships **seven primitives** — single date, range, time, date+time, month, year, week — under one composition API. Headless, ~18.5 KB gzip, SSR-safe, ISO strings in / ISO strings out, adapter pattern for date-fns / dayjs / luxon.
 
 ## Features
 
@@ -105,7 +105,7 @@ Recorded from the [live playground](https://kalyx-docs-site.vercel.app/playgroun
 
 ## Bundle
 
-`@kalyx/react` → **~18.3 KB** gzip. CI gate: ≤ 20 KB for default and headless ESM/CJS artifacts.
+`@kalyx/react` → **~18.5 KB** gzip. CI gate: ≤ 20 KB for default and headless ESM/CJS artifacts.
 
 ## Browser support
 

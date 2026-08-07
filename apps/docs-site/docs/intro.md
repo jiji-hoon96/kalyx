@@ -50,7 +50,7 @@ Kalyx fills the gap:
 - **Headless philosophy** — no stylesheets, no classes you must override.
 - **Integrated primitives** — 7 pickers (DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker) share one context model.
 - **Composition first** — Radix-style dot notation. No 100-prop monoliths.
-- **~18.3 KB gzip (≤ 20 KB ceiling)** — measured, enforced in CI.
+- **~18.5 KB gzip (≤ 20 KB ceiling)** — measured, enforced in CI.
 - **SSR-safe** — tested with Next.js App Router.
 - **ISO 8601 UTC strings** as the value contract — no Date-object footguns.
 - **Timezone-aware** — opt-in `displayTimezone` prop handles DST and civil-day semantics without changing the UTC storage contract. See the [Timezone concept page](./concepts/timezone).
@@ -58,7 +58,7 @@ Kalyx fills the gap:
 ## Who it's for
 
 - Teams already using **Tailwind**, **shadcn/ui**, **Chakra**, or their own design system, who want date UI that obeys their tokens.
-- Apps that care about **bundle size** and **tree-shaking**.
+- Apps that care about **bundle size** — the whole set of pickers lands in roughly the space one competitor's single picker takes, under a CI-enforced ceiling. (Per-picker elimination is *not* claimed: importing one picker costs about the same as importing all seven. See [Troubleshooting → bundle size](./troubleshooting.md#bundle-size-seems-larger-than-expected).)
 - Anything running on **Next.js**, **Remix**, or other SSR/RSC environments.
 
 ## What's in the box

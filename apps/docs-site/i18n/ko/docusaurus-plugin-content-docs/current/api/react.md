@@ -6,7 +6,7 @@ sidebar_position: 2
 
 # @kalyx/react
 
-Public React API. All names below are importable directly from `@kalyx/react`.
+공개 React API입니다. 아래 이름들은 전부 `@kalyx/react`에서 바로 import 할 수 있습니다.
 
 ```ts
 import {
@@ -15,50 +15,59 @@ import {
 } from '@kalyx/react';
 ```
 
-## Components
+## 컴포넌트
 
-| Name | Reference |
+| 이름 | 문서 |
 | --- | --- |
-| `DatePicker` | [Component docs](../components/datepicker.md) |
-| `RangePicker` | [Component docs](../components/rangepicker.md) |
-| `TimePicker` | [Component docs](../components/timepicker.md) |
-| `DateTimePicker` | [Component docs](../components/datetimepicker.md) |
-| `MonthPicker` | [Component docs](../components/monthpicker.md) |
-| `YearPicker` | [Component docs](../components/yearpicker.md) |
-| `WeekPicker` | [Component docs](../components/weekpicker.md) |
+| `DatePicker` | [컴포넌트 문서](../components/datepicker.md) |
+| `RangePicker` | [컴포넌트 문서](../components/rangepicker.md) |
+| `TimePicker` | [컴포넌트 문서](../components/timepicker.md) |
+| `DateTimePicker` | [컴포넌트 문서](../components/datetimepicker.md) |
+| `MonthPicker` | [컴포넌트 문서](../components/monthpicker.md) |
+| `YearPicker` | [컴포넌트 문서](../components/yearpicker.md) |
+| `WeekPicker` | [컴포넌트 문서](../components/weekpicker.md) |
 
-## Hooks
+## 훅
 
-| Name | Reference |
+| 이름 | 문서 |
 | --- | --- |
-| `useDatePicker` | [Hook docs](../hooks/use-date-picker.md) |
-| `useRangePicker` | [Hook docs](../hooks/use-range-picker.md) |
-| `useTimePicker` | [Hook docs](../hooks/use-time-picker.md) |
+| `useDatePicker` | [훅 문서](../hooks/use-date-picker.md) |
+| `useRangePicker` | [훅 문서](../hooks/use-range-picker.md) |
+| `useTimePicker` | [훅 문서](../hooks/use-time-picker.md) |
 
-## Adapters
+훅 4종은 `@kalyx/react/headless` 엔트리에만 실립니다. 기본 엔트리의 바이트 예산 밖에 두기 위해서입니다.
 
-`DateFnsAdapter` is re-exported from `@kalyx/react` for convenience (it's the
-default the main entry already installs):
+| 이름 | 문서 |
+| --- | --- |
+| `useMonthPicker` | [훅 문서](../hooks/use-month-picker.md) |
+| `useYearPicker` | [훅 문서](../hooks/use-year-picker.md) |
+| `useWeekPicker` | [훅 문서](../hooks/use-week-picker.md) |
+| `useDateTimePicker` | [훅 문서](../hooks/use-date-time-picker.md) |
+
+```ts
+import { useMonthPicker } from '@kalyx/react/headless';
+```
+
+## 어댑터
+
+`DateFnsAdapter`는 편의를 위해 `@kalyx/react`에서 다시 export 합니다(메인 엔트리가 이미 기본으로 주입하는 어댑터입니다).
 
 ```ts
 import { DateFnsAdapter } from '@kalyx/react';
 ```
 
-Two more prebuilt adapters ship as separate packages, for use with the
-`@kalyx/react/headless` entry:
+미리 만들어 둔 어댑터 두 종이 별도 패키지로 배포돼 있으며, `@kalyx/react/headless` 엔트리와 함께 씁니다.
 
 ```ts
 import { DayjsAdapter } from '@kalyx/adapter-dayjs';
 import { LuxonAdapter } from '@kalyx/adapter-luxon';
 ```
 
-All three implement the same `DateAdapter` contract, run in UTC, and are
-validated against `@kalyx/core/test-helpers`. See the
-[adapters guide](../guides/adapters.md).
+세 어댑터 모두 동일한 `DateAdapter` 계약을 구현하고, UTC로 동작하며, `@kalyx/core/test-helpers`로 검증됩니다. [어댑터 가이드](../guides/adapters.md)를 참고하세요.
 
-## Types
+## 타입
 
-### DatePicker types
+### DatePicker 타입
 
 ```ts
 import type {
@@ -79,7 +88,7 @@ import type {
 } from '@kalyx/react';
 ```
 
-### RangePicker types
+### RangePicker 타입
 
 ```ts
 import type {
@@ -96,7 +105,7 @@ import type {
 } from '@kalyx/react';
 ```
 
-### TimePicker types
+### TimePicker 타입
 
 ```ts
 import type {
@@ -111,7 +120,7 @@ import type {
 } from '@kalyx/react';
 ```
 
-### DateTimePicker types
+### DateTimePicker 타입
 
 ```ts
 import type {
@@ -120,9 +129,9 @@ import type {
 } from '@kalyx/react';
 ```
 
-Sub-component types are re-exported from DatePicker and TimePicker.
+서브 컴포넌트 타입은 DatePicker와 TimePicker에서 다시 export 됩니다.
 
-### MonthPicker types
+### MonthPicker 타입
 
 ```ts
 import type {
@@ -135,7 +144,7 @@ import type {
 } from '@kalyx/react';
 ```
 
-### YearPicker types
+### YearPicker 타입
 
 ```ts
 import type {
@@ -148,7 +157,7 @@ import type {
 } from '@kalyx/react';
 ```
 
-### WeekPicker types
+### WeekPicker 타입
 
 ```ts
 import type {
@@ -160,7 +169,7 @@ import type {
 } from '@kalyx/react';
 ```
 
-### Hook types
+### 훅 타입
 
 ```ts
 import type {
@@ -173,7 +182,7 @@ import type {
 } from '@kalyx/react';
 ```
 
-### Re-exports from `@kalyx/core`
+### `@kalyx/core` 재export
 
 ```ts
 import type {
@@ -186,22 +195,23 @@ import type {
 } from '@kalyx/react';
 ```
 
-## Runtime dependencies
+## 런타임 의존성
 
 - `@kalyx/core` (workspace)
-- `@kalyx/adapter-date-fns` (workspace — bundles `date-fns` for the default entry)
+- `@kalyx/adapter-date-fns` (workspace — 기본 엔트리를 위해 `date-fns`를 함께 들고 옵니다)
 - `@floating-ui/react ^0.27.0`
 
-Peer dependencies: `react ^19.0.0`, `react-dom ^19.0.0`.
+Peer 의존성: `react ^19.0.0`, `react-dom ^19.0.0`.
 
-Optional adapter packages (install only if you use the `/headless` entry with a
-non-default backend): `@kalyx/adapter-dayjs`, `@kalyx/adapter-luxon`.
+선택적 어댑터 패키지(`/headless` 엔트리를 기본이 아닌 백엔드와 함께 쓸 때만 설치): `@kalyx/adapter-dayjs`, `@kalyx/adapter-luxon`.
 
-## Bundle size
+## 번들 크기
 
-기본 엔트리 산출물은 gzip 기준 **약 18.3 KB**이며 CI 한계는 20 KB입니다. Headless ESM/CJS 산출물에도 별도의 20 KB CI 게이트가 적용됩니다. `sideEffects: false`를 선언하지만 현재 소비자 하네스는 루트 엔트리에서 picker별 제거를 입증하지 못하므로, 실제 import 조합은 애플리케이션의 프로덕션 번들에서 측정하세요.
+기본 엔트리 산출물은 gzip 기준 **약 18.5 KB**입니다(컴포넌트 7종, CI 한계 20 KB). Headless ESM/CJS 산출물에도 별도의 20 KB CI 게이트가 적용됩니다.
 
-## See also
+이 수치는 의존성을 external 로 둔 **산출물** 기준입니다. 애플리케이션이 실제로 배포하는 크기는 더 큽니다 — 번들러가 `@kalyx/core`·`@kalyx/adapter-date-fns`·`@floating-ui/react` 까지 해석하기 때문이며, 이 저장소의 소비자 하네스 실측은 **약 24 KB** gzip 입니다. `sideEffects: false`를 선언하지만 그 하네스는 루트 엔트리에서 picker별 제거를 입증하지 못합니다 — 피커 하나만 import 해도 7종 전부와 비용이 거의 같습니다. 실제 import 조합은 프로덕션 번들에서 직접 측정하시고, 전체 설명은 [트러블슈팅 → 번들 크기](../troubleshooting.md#번들-크기가-예상보다-큽니다)를 참고하세요.
+
+## 함께 보기
 
 - [@kalyx/core API →](./core.md)
-- [Migration guide →](../migration.md)
+- [마이그레이션 가이드 →](../migration.md)

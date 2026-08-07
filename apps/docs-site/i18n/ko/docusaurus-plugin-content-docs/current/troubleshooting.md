@@ -137,6 +137,24 @@ Kalyx는 `Date`를 받지 않습니다 — 값 계약이 ISO-8601 UTC 문자열�
 
 전체 모델은 [타임존 개념 페이지](./concepts/timezone.md)를 참고하세요.
 
+### `displayTimezone`을 켜면 disabled 날짜나 min/max 경계가 하루 어긋납니다
+
+위와 같은 원인이 한 겹 아래에서 나타난 것입니다. `disabled` 규칙과 `isDateDisabled` 헬퍼는 **instant**를 비교합니다. 손으로 `'2026-01-15T00:00:00.000Z'`라고 쓴 경계값은 civil 자정이 아니라 UTC 좌표이므로, `displayTimezone`이 켜져 있으면 경계일 자체가 규칙의 반대편으로 넘어갈 수 있습니다.
+
+```tsx
+import { civilMidnightFromUtcDay } from '@kalyx/core';
+
+const tz = 'America/New_York';
+
+// ❌ raw UTC 좌표 — New_York에서 이 instant는 현지 기준 아직 1월 14일
+disabled={[{ before: '2026-01-15T00:00:00.000Z' }]}
+
+// ✅ 같은 civil 날짜를, 피커가 실제로 쓰는 instant로 표현
+disabled={[{ before: civilMidnightFromUtcDay('2026-01-15T00:00:00.000Z', tz) }]}
+```
+
+믿을 수 있는 규칙: `displayTimezone`을 설정했다면 피커에 넘기는 모든 날짜는 **피커가 스스로 내보낼 수 있었던 값**이어야 합니다 — `onChange`로 돌려받은 값이거나 `civilMidnightFromUtcDay`로 만든 값입니다. 커스텀 그리드 안에서는 `isDateDisabled`를 직접 부르지 말고 `getCalendarDays`가 셀마다 이미 계산해 둔 `isDisabled` 플래그를 쓰세요.
+
 ### DST 전환 시 예기치 않은 동작
 
 DST 전환(예: 미국 "spring forward") 동안 새벽 2:00는 존재하지 않습니다. Kalyx는 two-pass 오프셋 보정으로 내부 처리합니다. 수동 타임존 계산을 한다면 자정을 직접 계산하지 말고 `@kalyx/core`의 `startOfDayInTimezone`을 쓰세요.
@@ -208,13 +226,21 @@ const DISABLED = [{ dayOfWeek: [0, 6] }] as const;
 <DatePicker disabled={DISABLED}>
 ```
 
-### Bundle size seems larger than expected
+### 번들 크기가 예상보다 큽니다
 
-Kalyx's `@kalyx/react` is ~18.3 KB gzipped (CI ceiling 20 KB). If your bundle is larger:
+서로 다른 두 숫자를 보게 되는데, 둘 다 맞습니다 — 재는 대상이 다릅니다.
 
-1. 프로덕션 번들러 리포트를 확인하세요. 현재 루트 엔트리는 picker별 제거를 보장하지 않습니다.
-2. 기본 엔트리는 date-fns 어댑터를 포함합니다. 앱에서 다른 날짜 라이브러리를 사용한다면 같은 소비자 설정으로 명시적인 `/headless` 엔트리와 비교하세요.
-3. 산출물 한계는 `pnpm check-bundle`, 저장소 소비자 시나리오는 `pnpm check-tree-shaking`으로 확인하세요.
+**~18.5 KB 는 배포된 아티팩트입니다.** 배지와 CI 게이트가 추적하는 값으로, 의존성을 external 로 둔 `@kalyx/react` 자체 `dist/index.js` 의 gzip 크기입니다. Kalyx 가 직접 통제하고 게이팅하는 수치입니다(20 KB, 네 아티팩트 전부 — `index`·`headless` × ESM·CJS).
+
+**~24 KB 는 소비자가 실제로 배포하는 크기입니다.** 아티팩트가 참조만 하던 의존성을 번들러가 해석하므로, 그래프에 `@kalyx/core`·`@kalyx/adapter-date-fns`(및 거기서 쓰는 date-fns 함수들)·`@floating-ui/react` 가 함께 들어옵니다. 이 저장소에서 `pnpm check-tree-shaking` 을 돌리면 실측 시나리오를 볼 수 있습니다 — 현재 피커 하나 기준 약 24.0 KB gzip, 7종 전부 + 훅 기준 약 25.0 KB 입니다.
+
+두 수치의 약 5.5 KB 차이는 의존성 그래프이지 Kalyx 의 오버헤드가 아닙니다. 단일 합산 수치를 공개하는 라이브러리와 비교할 때는 ~24 KB 쪽을 인용하세요.
+
+그보다도 번들이 크다면:
+
+1. 프로덕션 번들러 리포트를 확인하세요. 현재 루트 엔트리는 picker별 제거를 보장하지 않습니다 — 피커 하나만 import 해도 7종을 전부 import 하는 것과 비용이 거의 같습니다.
+2. 기본 엔트리는 date-fns 어댑터를 포함합니다. 앱에서 다른 날짜 라이브러리를 사용한다면 같은 소비자 설정으로 명시적인 `/headless` 엔트리와 비교해 date-fns 가 두 번 계산되지 않게 하세요.
+3. 산출물 한계는 `pnpm check-bundle`, 소비자 시나리오는 `pnpm check-tree-shaking`으로 확인하세요.
 
 ---
 

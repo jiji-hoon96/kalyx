@@ -133,6 +133,20 @@ coordinate: under a negative UTC offset, `2026-01-15T00:00:00.000Z` is still the
 precomputed `isDisabled` flag from `getCalendarDays(...)` instead — it normalizes
 each cell for you.
 
+### `getISOWeekNumber(iso)`
+
+ISO 8601 week number (1–53) of the instant's UTC day. Weeks start Monday and week 1 is the one containing the first Thursday of the year, so early-January and late-December dates can belong to the neighboring year's numbering. `WeekPicker` uses this for its week labels.
+
+```ts
+import { getISOWeekNumber } from '@kalyx/core';
+
+getISOWeekNumber('2026-01-01T00:00:00.000Z'); // → 1   (a Thursday, so ISO week 1)
+getISOWeekNumber('2026-04-15T00:00:00.000Z'); // → 16
+getISOWeekNumber('2026-12-31T00:00:00.000Z'); // → 53
+```
+
+This reads the **UTC** day. Under a `displayTimezone` the civil day can differ, so convert first with `calendarDayFromInstant(iso, timeZone)` if you need the week number the user sees.
+
 ### `minDate(a, b, adapter)` / `maxDate(a, b, adapter)`
 
 ```ts
@@ -242,6 +256,34 @@ formatFullDate('2026-04-15T00:00:00.000Z', 'en-US');
 // → "Wednesday, April 15, 2026"
 ```
 
+### `getWeekStartForLocale(locale?)`
+
+The first day of the week the locale conventionally uses, narrowed to a `WeekStartsOn` — `0` (Sunday) or `1` (Monday). `DatePicker` and `RangePicker` call this when you don't pass `weekStartsOn`; an explicit prop always wins.
+
+:::note Saturday- and Friday-start locales are reported as Monday
+
+The runtime distinguishes more than two starts — `Intl` reports Saturday for `ar-AF` and `fa-IR`, and Friday for `dv-MV`. The public `WeekStartsOn` type is `0 | 1`, so every non-Sunday result is narrowed to `1`. Those locales therefore render a Monday-start grid, not their conventional one. If you need an exact start, pass `weekStartsOn` explicitly.
+
+:::
+
+```ts
+import { getWeekStartForLocale } from '@kalyx/core';
+
+getWeekStartForLocale('en-US'); // → 0  (Sunday)
+getWeekStartForLocale('de-DE'); // → 1  (Monday)
+```
+
+### `getDayPeriodName(period, locale?)`
+
+Localized AM/PM name, used by `TimePicker.AmPmToggle`.
+
+```ts
+import { getDayPeriodName } from '@kalyx/core';
+
+getDayPeriodName('AM', 'en-US'); // → "AM"
+getDayPeriodName('PM', 'ko-KR'); // → "오후"
+```
+
 ## Timezone utilities
 
 Used internally by every picker when `displayTimezone` is set. Exposed publicly so you can run the same math yourself.
@@ -283,6 +325,28 @@ UTC offset (minutes east of UTC) at the given instant. Differs before and after 
 ### `civilMidnightFromUtcDay(gridUtcIso, timeZone)`
 
 The bridge Calendar uses: maps a UTC-midnight grid cell ISO to civil midnight of the same calendar day in the zone. You rarely need this directly — it is exported for custom calendar renderers.
+
+```ts
+import { civilMidnightFromUtcDay } from '@kalyx/core';
+
+civilMidnightFromUtcDay('2026-01-15T00:00:00.000Z', 'Asia/Seoul');
+// → '2026-01-14T15:00:00.000Z'   (Seoul Jan 15, 00:00)
+```
+
+### `calendarDayFromInstant(iso, timeZone)`
+
+The inverse of `civilMidnightFromUtcDay`: takes any instant and returns the UTC-midnight coordinate of the civil day that instant falls on in the zone. Use it to answer "which calendar cell does this value belong to?"
+
+```ts
+import { calendarDayFromInstant } from '@kalyx/core';
+
+calendarDayFromInstant('2025-12-31T15:00:00.000Z', 'Asia/Seoul');
+// → '2026-01-01T00:00:00.000Z'   (already Jan 1 in Seoul)
+calendarDayFromInstant('2026-01-15T05:00:00.000Z', 'America/New_York');
+// → '2026-01-15T00:00:00.000Z'
+```
+
+The two functions round-trip in every IANA zone: `calendarDayFromInstant(civilMidnightFromUtcDay(c, tz), tz) === c`. That property is enforced across all zones in the core test suite.
 
 ### `getTimeInTimezone(iso, timeZone)` / `setTimeInTimezone(iso, partial, timeZone)`
 

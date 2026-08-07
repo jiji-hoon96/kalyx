@@ -92,6 +92,7 @@ type DateRange = {
 | Prop | 타입 | 설명 |
 | --- | --- | --- |
 | `classNames` | `RangePickerCalendarClassNames` | 스타일. |
+| `fixedWeeks` | `boolean` (기본 `false`) | 항상 6주 행을 렌더. 지정하지 않으면 4~6행이라 달마다 popover 높이가 바뀐다. |
 
 ```ts
 type RangePickerCalendarClassNames = {

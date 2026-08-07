@@ -1,22 +1,22 @@
 ---
 id: testing
-title: Testing
+title: 테스트
 sidebar_position: 4
 ---
 
-# Testing
+# 테스트
 
-How to test Kalyx components in your application using Vitest (or Jest) + Testing Library.
+Vitest(또는 Jest) + Testing Library로 애플리케이션 안의 Kalyx 컴포넌트를 테스트하는 방법입니다.
 
-## Setup
+## 설정
 
-Install the testing dependencies:
+테스트 의존성을 설치합니다.
 
 ```bash npm2yarn
 npm install -D vitest @testing-library/react @testing-library/user-event @testing-library/jest-dom jest-axe jsdom
 ```
 
-Configure Vitest with jsdom:
+Vitest를 jsdom으로 설정합니다.
 
 ```ts title="vitest.config.ts"
 import { defineConfig } from 'vitest/config';
@@ -34,7 +34,7 @@ export default defineConfig({
 import '@testing-library/jest-dom';
 import 'jest-axe/extend-expect';
 
-// Required for Floating UI in jsdom
+// jsdom 환경의 Floating UI 에 필요
 global.ResizeObserver = class {
   observe() {}
   unobserve() {}
@@ -42,7 +42,7 @@ global.ResizeObserver = class {
 };
 ```
 
-## Basic rendering
+## 기본 렌더링
 
 ```tsx
 import { render, screen } from '@testing-library/react';
@@ -66,7 +66,7 @@ test('renders an input', () => {
 });
 ```
 
-## Selecting a date
+## 날짜 선택
 
 ```tsx
 test('calls onChange with ISO string when a date is clicked', async () => {
@@ -75,21 +75,21 @@ test('calls onChange with ISO string when a date is clicked', async () => {
 
   render(<TestDatePicker onChange={handleChange} />);
 
-  // Open the popover by clicking the input
+  // input 을 클릭해 popover 를 연다
   await user.click(screen.getByPlaceholderText('Pick a date'));
 
-  // Click a day button (e.g., the 15th)
+  // 날짜 버튼을 클릭한다 (예: 15일)
   const day15 = screen.getByRole('button', { name: /15/ });
   await user.click(day15);
 
-  // onChange receives an ISO string, not a Date object
+  // onChange 는 Date 객체가 아니라 ISO string 을 받는다
   expect(handleChange).toHaveBeenCalledWith(
     expect.stringMatching(/^\d{4}-\d{2}-15T00:00:00\.000Z$/),
   );
 });
 ```
 
-## Keyboard navigation
+## 키보드 내비게이션
 
 ```tsx
 test('can select a date with keyboard only', async () => {
@@ -98,15 +98,15 @@ test('can select a date with keyboard only', async () => {
 
   render(<TestDatePicker onChange={handleChange} />);
 
-  // Focus the input and open popover
+  // input 에 포커스를 주고 popover 를 연다
   const input = screen.getByPlaceholderText('Pick a date');
   await user.click(input);
 
-  // Navigate with arrow keys inside the calendar
+  // 캘린더 안에서 화살표 키로 이동한다
   const grid = screen.getByRole('grid');
-  await user.type(grid, '{ArrowDown}');   // move to next week
-  await user.type(grid, '{ArrowRight}');  // move to next day
-  await user.type(grid, '{Enter}');       // commit selection
+  await user.type(grid, '{ArrowDown}');   // 다음 주로 이동
+  await user.type(grid, '{ArrowRight}');  // 다음 날로 이동
+  await user.type(grid, '{Enter}');       // 선택 확정
 
   expect(handleChange).toHaveBeenCalledTimes(1);
 });
@@ -123,7 +123,7 @@ test('Escape closes the popover', async () => {
 });
 ```
 
-## Controlled component
+## 제어 컴포넌트
 
 ```tsx
 test('controlled mode reflects external value changes', () => {
@@ -172,9 +172,9 @@ test('selects a date range', async () => {
 
   await user.click(screen.getByPlaceholderText('Start'));
 
-  // Click start date
+  // 시작일 클릭
   await user.click(screen.getByRole('button', { name: /10/ }));
-  // Click end date
+  // 종료일 클릭
   await user.click(screen.getByRole('button', { name: /20/ }));
 
   expect(handleChange).toHaveBeenCalledWith(
@@ -186,9 +186,9 @@ test('selects a date range', async () => {
 });
 ```
 
-## Accessibility testing
+## 접근성 테스트
 
-Use `jest-axe` to catch WCAG violations:
+WCAG 위반을 잡으려면 `jest-axe`를 쓰세요.
 
 ```tsx
 import { axe } from 'jest-axe';
@@ -197,18 +197,18 @@ test('DatePicker has no accessibility violations', async () => {
   const user = userEvent.setup();
   const { container } = render(<TestDatePicker />);
 
-  // Test closed state
+  // 닫힌 상태 검사
   expect(await axe(container)).toHaveNoViolations();
 
-  // Open popover and test open state
+  // popover 를 열고 열린 상태도 검사
   await user.click(screen.getByPlaceholderText('Pick a date'));
   expect(await axe(container)).toHaveNoViolations();
 });
 ```
 
-## Testing with timezone
+## timezone 테스트
 
-When testing `displayTimezone` behavior, assert against the formatted display value, not the raw ISO string:
+`displayTimezone` 동작을 테스트할 때는 raw ISO string 이 아니라 **포매팅된 표시값**을 단언하세요.
 
 ```tsx
 test('displays date in the specified timezone', () => {
@@ -225,15 +225,15 @@ test('displays date in the specified timezone', () => {
     </DatePicker>,
   );
 
-  // Seoul is UTC+9, so 15:00 UTC = 2026-01-16 00:00 KST
+  // 서울은 UTC+9 이므로 15:00 UTC = 2026-01-16 00:00 KST
   const input = screen.getByRole('combobox');
   expect(input).toHaveValue('2026-01-16');
 });
 ```
 
-## Tips
+## 팁
 
-- **Always use `userEvent.setup()`** instead of `fireEvent` — it simulates real browser behavior (focus, blur, keydown sequences).
-- **Mock `ResizeObserver`** in your test setup — jsdom doesn't implement it, and Floating UI requires it.
-- **Don't test internal implementation** — test what the user sees (input values, aria attributes, visible text), not internal state.
-- **Snapshot testing is discouraged** — the calendar grid changes with the current date. Prefer behavior assertions.
+- **항상 `userEvent.setup()`을 쓰세요** — `fireEvent` 대신입니다. 실제 브라우저 동작(focus, blur, keydown 순서)을 시뮬레이션합니다.
+- **테스트 셋업에서 `ResizeObserver`를 목으로 만드세요** — jsdom에는 구현이 없는데 Floating UI가 이를 요구합니다.
+- **내부 구현을 테스트하지 마세요** — 내부 상태가 아니라 사용자가 보는 것(input 값, aria 속성, 보이는 텍스트)을 테스트하세요.
+- **스냅샷 테스트는 권장하지 않습니다** — 캘린더 그리드는 현재 날짜에 따라 바뀝니다. 동작 단언을 쓰세요.

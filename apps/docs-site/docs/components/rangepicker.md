@@ -149,6 +149,7 @@ Month grid with range highlighting.
 | Prop | Type | Description |
 | --- | --- | --- |
 | `classNames` | `RangePickerCalendarClassNames` | Styling. |
+| `fixedWeeks` | `boolean` (default `false`) | Always render 6 week rows. Without it the grid is 4–6 rows, so the popover changes height from month to month. |
 
 ```ts
 type RangePickerCalendarClassNames = {

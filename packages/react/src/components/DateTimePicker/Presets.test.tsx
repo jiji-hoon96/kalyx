@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 // Presets/Preset live on the `/headless` entry only (keeps the default bundle
-// under the 16KB ceiling), so we import the headless-augmented DateTimePicker.
+// under its gzip ceiling), so we import the headless-augmented DateTimePicker.
 import { DateTimePicker } from './headless.js';
 
 const MON_9AM = '2026-01-19T09:00:00.000Z'; // Monday

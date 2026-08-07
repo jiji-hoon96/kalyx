@@ -84,11 +84,14 @@ Ark UI가 포기한 TimePicker 통합
   },
   "dependencies": {
     "@floating-ui/react": "포지셔닝 엔진 (SSR safe)",
-    "date-fns": "기본 날짜 어댑터",
-    "date-fns-tz": "timezone 처리"
+    "@kalyx/core": "플랫폼 독립 날짜 로직",
+    "@kalyx/adapter-date-fns": "기본 날짜 어댑터 (date-fns 를 이 패키지가 들고 있다)"
   }
 }
 ```
+
+**timezone 은 의존성이 아니다.** `displayTimezone` 은 플랫폼의 `Intl.DateTimeFormat` 위에
+`@kalyx/core/utils/timezone.ts` 로 직접 구현돼 있다. `date-fns-tz` 는 어느 package.json 에도 없다.
 
 **금지:** `moment`, `dayjs`, `luxon`을 `dependencies`로 추가. → Adapter 패턴으로 제공.
 
@@ -509,7 +512,7 @@ PR 열기 전 확인:
 | 커맨드 | 설명 |
 |---|---|
 | `/new-component` | 새 서브 컴포넌트 스캐폴딩 (컴포넌트·타입·테스트 파일 생성) |
-| `/check-bundle` | 빌드 후 번들 크기 측정, 16KB 초과 시 실패 |
+| `/check-bundle` | 빌드 후 번들 크기 측정, 20KB 초과 시 실패 (네 아티팩트 전부: index ESM/CJS + headless ESM/CJS) |
 | `/check-a11y` | axe 자동 검사 + ARIA 수동 체크리스트 |
 | `/release` | Changesets 기반 버전 범프·CHANGELOG·npm 배포 가이드 |
 

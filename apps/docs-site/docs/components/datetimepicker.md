@@ -143,7 +143,7 @@ DateTimePicker re-exports sub-components from both DatePicker and TimePicker und
 | --- | --- |
 | `.Input` | Combined date + time input — parses both. |
 | `.Popover` | Same as DatePicker.Popover. |
-| `.Calendar` | Month grid (stays open on select). |
+| `.Calendar` | Month grid (stays open on select). Takes the same props as `DatePicker.Calendar`, including `fixedWeeks`. |
 | `.MonthGrid` | Optional month jump. |
 | `.YearGrid` | Optional year jump. |
 | `.HourList` | Same as TimePicker.HourList. |

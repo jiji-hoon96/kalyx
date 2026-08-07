@@ -35,6 +35,19 @@ import {
 | `useRangePicker` | [Hook docs](../hooks/use-range-picker.md) |
 | `useTimePicker` | [Hook docs](../hooks/use-time-picker.md) |
 
+Four more hooks ship on the `@kalyx/react/headless` entry only, which keeps them out of the default entry's byte budget:
+
+| Name | Reference |
+| --- | --- |
+| `useMonthPicker` | [Hook docs](../hooks/use-month-picker.md) |
+| `useYearPicker` | [Hook docs](../hooks/use-year-picker.md) |
+| `useWeekPicker` | [Hook docs](../hooks/use-week-picker.md) |
+| `useDateTimePicker` | [Hook docs](../hooks/use-date-time-picker.md) |
+
+```ts
+import { useMonthPicker } from '@kalyx/react/headless';
+```
+
 ## Adapters
 
 `DateFnsAdapter` is re-exported from `@kalyx/react` for convenience (it's the
@@ -199,7 +212,9 @@ non-default backend): `@kalyx/adapter-dayjs`, `@kalyx/adapter-luxon`.
 
 ## Bundle size
 
-Gzipped default-entry artifact: **~18.3 KB** (7 components, CI ceiling 20 KB). The headless ESM and CJS artifacts have their own 20 KB CI gate. `sideEffects: false` is declared, but the current consumer harness does not demonstrate per-picker elimination from the root entry; measure your production bundle for your exact imports.
+Gzipped default-entry artifact: **~18.5 KB** (7 components, CI ceiling 20 KB). The headless ESM and CJS artifacts have their own 20 KB CI gate.
+
+That figure measures the artifact with its dependencies external. What your application ships is larger, because the bundler also resolves `@kalyx/core`, `@kalyx/adapter-date-fns`, and `@floating-ui/react` — the repository's consumer harness measures **~24 KB** gzipped. `sideEffects: false` is declared, but that harness does not demonstrate per-picker elimination from the root entry, so importing one picker costs about the same as importing all seven. Measure your production bundle for your exact imports, and see [Troubleshooting → bundle size](../troubleshooting.md#bundle-size-seems-larger-than-expected) for the full reconciliation.
 
 ## See also
 

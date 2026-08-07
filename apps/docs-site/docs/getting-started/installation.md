@@ -27,9 +27,10 @@ npm install @kalyx/react
 
 - `@kalyx/core` — platform-independent date logic.
 - `@floating-ui/react` — SSR-safe popover positioning.
-- `date-fns` + `date-fns-tz` — default date engine.
+- `date-fns` — default date engine, wired in through `@kalyx/adapter-date-fns`.
 
-These are installed automatically.
+These are installed automatically. Timezone handling does not add a dependency —
+`displayTimezone` is built on the platform's own `Intl.DateTimeFormat`.
 
 ## TypeScript
 

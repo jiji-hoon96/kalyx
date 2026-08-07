@@ -124,6 +124,7 @@ Floating UI 위치 계산 포털 (`role="dialog"`, `aria-modal="false"`). 바깥
 | Prop | 타입 | 설명 |
 | --- | --- | --- |
 | `classNames` | `DatePickerCalendarClassNames` | 내부 슬롯 스타일. |
+| `fixedWeeks` | `boolean` (기본 `false`) | 항상 6주 행을 렌더. 지정하지 않으면 4~6행이라 달마다 popover 높이가 바뀐다. |
 | `onTitleClick` | `() => void` | 월/연 타이틀 클릭 시 — `MonthGrid`/`YearGrid`와 연결. |
 
 ### `classNames` 키
@@ -251,6 +252,31 @@ function WithJump() {
   onChange={setIso}
 />
 ```
+
+:::caution `disabled` 경계값은 `displayTimezone`과 짝을 맞추세요
+
+`disabled` 규칙은 캘린더 좌표가 아니라 **instant**를 비교합니다. `displayTimezone`을 쓰지 않으면 둘이 같은 것이라 위 예제가 정확합니다.
+
+`displayTimezone`을 켜는 순간, 손으로 쓴 `'2026-01-01T00:00:00.000Z'`는 더 이상 그 존의 civil 1월 1일이 아닙니다 — 음수 UTC offset에서는 현지 기준 아직 12월 31일이고, 큰 양수 offset에서는 현지 자정보다 한참 전에 이미 1월 1일입니다. 그래서 경계일이 규칙의 반대편에 놓일 수 있습니다.
+
+피커가 실제로 내보내는 것과 같은 종류의 값을 넘기세요 — `onChange`로 받은 instant, 또는 `civilMidnightFromUtcDay`로 만든 값입니다.
+
+```tsx
+import { civilMidnightFromUtcDay } from '@kalyx/core';
+
+const tz = 'Asia/Seoul';
+
+<DatePicker
+  displayTimezone={tz}
+  disabled={[{ before: civilMidnightFromUtcDay('2026-01-01T00:00:00.000Z', tz) }]}
+  value={iso}
+  onChange={setIso}
+/>;
+```
+
+[`isDateDisabled`](../api/core.md#isdatedisablediso-rules-adapter-timezone)를 직접 호출할 때도 같은 규칙이 적용됩니다. 커스텀 그리드의 셀별 상태는 `getCalendarDays`가 미리 계산해 둔 `isDisabled` 플래그를 쓰세요 — 셀마다 이미 정규화돼 있습니다.
+
+:::
 
 ## 관련
 

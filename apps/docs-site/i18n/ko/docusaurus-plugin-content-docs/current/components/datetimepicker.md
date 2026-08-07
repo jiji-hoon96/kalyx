@@ -72,7 +72,7 @@ DateTimePicker는 DatePicker와 TimePicker의 서브 컴포넌트를 한 네임�
 | --- | --- |
 | `.Input` | 결합 날짜+시간 입력 — 둘 다 파싱. |
 | `.Popover` | DatePicker.Popover와 동일. |
-| `.Calendar` | 월 그리드 (선택해도 열린 상태 유지). |
+| `.Calendar` | 월 그리드 (선택해도 열린 상태 유지). `fixedWeeks`를 포함해 `DatePicker.Calendar`와 동일한 prop을 받습니다. |
 | `.MonthGrid` | 선택. 월 이동. |
 | `.YearGrid` | 선택. 연도 이동. |
 | `.HourList` | TimePicker.HourList와 동일. |

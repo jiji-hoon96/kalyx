@@ -52,7 +52,7 @@
     "description": "FeatureGrid: Timezone 카드 제목"
   },
   "home.featureGrid.timezone.body": {
-    "message": "date-fns-tz 기반 IANA timezone, DST까지 처리. 입력도 출력도 ISO-8601 UTC string — 저장 계층은 깔끔하게.",
+    "message": "플랫폼 자체 Intl 기반 IANA timezone, DST까지 처리, 추가 의존성 없음. 입력도 출력도 ISO-8601 UTC string — 저장 계층은 깔끔하게.",
     "description": "FeatureGrid: Timezone 카드 본문"
   },
   "home.featureGrid.bundle.title": {
