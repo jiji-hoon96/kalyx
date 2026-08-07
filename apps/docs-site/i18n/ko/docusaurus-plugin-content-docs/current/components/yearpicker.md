@@ -92,16 +92,17 @@ Restrict selectable years. Rules are evaluated against January 1 of each year.
 ## Uncontrolled
 
 ```tsx
-<form action="/api/save" method="post">
-  <YearPicker name="taxYear" defaultValue="2026-01-01T00:00:00.000Z">
-    <YearPicker.Input />
-    <YearPicker.Popover>
-      <YearPicker.Grid />
-    </YearPicker.Popover>
-  </YearPicker>
-  <button type="submit">Save</button>
-</form>
+<YearPicker defaultValue="2026-01-01T00:00:00.000Z">
+  <YearPicker.Input />
+  <YearPicker.Popover>
+    <YearPicker.Grid />
+  </YearPicker.Popover>
+</YearPicker>
 ```
+
+`DatePicker` 와 달리 이 피커는 네이티브 폼 제출을 지원하지 않는다 — `name` prop 이
+없고 hidden input 도 렌더하지 않는다. 값을 제출하려면 `onChange` 로 상태에 담아
+직접 `<input type="hidden">` 을 렌더한다.
 
 ## Event callbacks
 

@@ -182,16 +182,17 @@ function DisabledYearPicker() {
 ## Uncontrolled
 
 ```tsx
-<form action="/api/save" method="post">
-  <YearPicker name="taxYear" defaultValue="2026-01-01T00:00:00.000Z">
-    <YearPicker.Input />
-    <YearPicker.Popover>
-      <YearPicker.Grid />
-    </YearPicker.Popover>
-  </YearPicker>
-  <button type="submit">Save</button>
-</form>
+<YearPicker defaultValue="2026-01-01T00:00:00.000Z">
+  <YearPicker.Input />
+  <YearPicker.Popover>
+    <YearPicker.Grid />
+  </YearPicker.Popover>
+</YearPicker>
 ```
+
+Unlike `DatePicker`, this picker has no native form-submission support: there is
+no `name` prop and nothing renders a hidden input. To submit the value, keep it
+in state via `onChange` and render your own `<input type="hidden">`.
 
 ## Event callbacks
 

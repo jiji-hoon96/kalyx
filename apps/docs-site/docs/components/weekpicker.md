@@ -190,17 +190,18 @@ Restrict selectable weeks. Any `DisabledRule` that matches at least one day in a
 ## Uncontrolled
 
 ```tsx
-<form action="/api/save" method="post">
-  <WeekPicker name="sprintWeek" defaultValue={{ start: '2026-04-13T00:00:00.000Z', end: '2026-04-19T00:00:00.000Z' }}>
-    <WeekPicker.Input part="start" />
-    <WeekPicker.Input part="end" />
-    <WeekPicker.Popover>
-      <WeekPicker.Calendar />
-    </WeekPicker.Popover>
-  </WeekPicker>
-  <button type="submit">Save</button>
-</form>
+<WeekPicker defaultValue={{ start: '2026-04-13T00:00:00.000Z', end: '2026-04-19T00:00:00.000Z' }}>
+  <WeekPicker.Input part="start" />
+  <WeekPicker.Input part="end" />
+  <WeekPicker.Popover>
+    <WeekPicker.Calendar />
+  </WeekPicker.Popover>
+</WeekPicker>
 ```
+
+Unlike `DatePicker`, this picker has no native form-submission support: there is
+no `name` prop and nothing renders a hidden input. To submit the value, keep it
+in state via `onChange` and render your own `<input type="hidden">`.
 
 ## Timezone
 

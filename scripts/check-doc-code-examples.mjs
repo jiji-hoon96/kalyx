@@ -61,24 +61,15 @@ const EN_ONLY_DOCUMENTS = [
   ['concepts/timezone.md', 'KO fence content has drifted from EN'],
   ['recipes/use-cases.md', 'KO fence content has drifted from EN'],
   ['recipes/tailwind.md', 'KO fence content has drifted from EN'],
+  ['components/monthpicker.md', 'KO has one fewer executable fence'],
+  ['components/yearpicker.md', 'KO has one fewer executable fence'],
 ];
 
 // Not compiled, with the reason each one fails. This list is the difference
 // between "the documentation is verified" and what this script actually proves,
 // so keep it accurate — and prefer fixing an entry to explaining it.
-//
-// Three of these are real defects awaiting a decision rather than checker
-// limitations, and are called out as DEFECT below.
 const UNCHECKED_DOCUMENTS = [
-  // DEFECT: documents `name` on a picker Root for native form submission. Only
-  // `DatePicker.Input` implements that (via a hidden input); MonthPicker,
-  // YearPicker, WeekPicker, RangePicker and DateTimePicker have no
-  // form-submission support at all, so these sections promise a feature that
-  // does not exist. Fixing needs a product call: implement `name` on those
-  // Inputs, or delete the sections.
-  ['components/monthpicker.md', 'DEFECT: `name` on Root — no form-submission support on MonthPicker'],
-  ['components/yearpicker.md', 'DEFECT: `name` on Root — no form-submission support on YearPicker'],
-  ['components/weekpicker.md', 'DEFECT: `name` on Root — no form-submission support on WeekPicker'],
+  ['components/weekpicker.md', 'a fence uses `{/* ... */}` as children, which JSX treats as none'],
   // Anatomy trees render `<DatePicker.Preset />` and `<RangePicker.Preset />`
   // self-closing, but `children` is required on both.
   ['components/datepicker.md', 'anatomy fences self-close components whose `children` is required'],

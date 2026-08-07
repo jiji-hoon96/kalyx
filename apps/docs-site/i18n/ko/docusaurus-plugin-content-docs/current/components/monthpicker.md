@@ -107,16 +107,17 @@ Restrict selectable months using the same `DisabledRule` syntax as `DatePicker`.
 For simple forms where you don't need React state:
 
 ```tsx
-<form action="/api/save" method="post">
-  <MonthPicker name="billingMonth" defaultValue="2026-04-01T00:00:00.000Z">
-    <MonthPicker.Input />
-    <MonthPicker.Popover>
-      <MonthPicker.Grid />
-    </MonthPicker.Popover>
-  </MonthPicker>
-  <button type="submit">Save</button>
-</form>
+<MonthPicker defaultValue="2026-04-01T00:00:00.000Z">
+  <MonthPicker.Input />
+  <MonthPicker.Popover>
+    <MonthPicker.Grid />
+  </MonthPicker.Popover>
+</MonthPicker>
 ```
+
+`DatePicker` 와 달리 이 피커는 네이티브 폼 제출을 지원하지 않는다 — `name` prop 이
+없고 hidden input 도 렌더하지 않는다. 값을 제출하려면 `onChange` 로 상태에 담아
+직접 `<input type="hidden">` 을 렌더한다.
 
 ## Event callbacks
 

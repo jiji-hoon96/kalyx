@@ -76,8 +76,8 @@ SSR 첫 렌더에는 아직 사용자 상호작용이 없습니다. `defaultValu
 
 ```tsx
 {/* 비제어 — 폼에 적합 */}
-<DatePicker name="checkIn" defaultValue="2026-04-15T00:00:00.000Z">
-  <DatePicker.Input />
+<DatePicker defaultValue="2026-04-15T00:00:00.000Z">
+  <DatePicker.Input name="checkIn" />
 </DatePicker>
 
 {/* null 제어 — 선택 필드에 적합 */}
