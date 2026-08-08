@@ -14,6 +14,7 @@ import type { CalendarDay, DateRange } from '@kalyx/core';
 import { useRangePickerContext } from '../../context/RangePickerContext.js';
 import { resolveMonthNavigation } from '../../internal/calendarFocus.js';
 import { horizontalDayStep, isBackwardKey } from '../_shared/rtl.js';
+import { getWeekCoordinateRange, isWeekSelectionDisabled } from '../_shared/week.js';
 
 export interface RangePickerCalendarClassNames {
   root?: string;
@@ -146,6 +147,25 @@ export function RangePickerCalendar({
   const month = adapter.getMonth(viewMonth);
   const title = formatMonthYear(year, month, locale);
 
+  const isSelectionDisabled = useCallback(
+    (iso: string) => {
+      if (selectionMode === 'week') {
+        return isWeekSelectionDisabled(
+          iso,
+          disabled,
+          adapter,
+          weekStartsOn,
+          weekAnchor,
+          selectingTarget,
+          displayTimezone,
+        );
+      }
+      const value = displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
+      return isDateDisabled(value, disabled, adapter, displayTimezone);
+    },
+    [selectionMode, disabled, adapter, weekStartsOn, weekAnchor, selectingTarget, displayTimezone],
+  );
+
   useEffect(() => {
     if (!ctx.isOpen || !gridRef.current) return;
     const focusedButton = gridRef.current.querySelector<HTMLButtonElement>('[data-focused="true"]');
@@ -167,25 +187,14 @@ export function RangePickerCalendar({
   const commitDay = useCallback(
     (iso: string) => {
       if (selectionMode === 'week') {
-        let weekStart: string;
-        let weekEnd: string;
-        if (weekAnchor === 'clicked') {
-          // Rolling 7-day span anchored to the clicked day. The active input
-          // decides the direction: clicking while targeting 'end' makes the
-          // clicked day the END (span goes backward 6 days); otherwise it's the
-          // START (span goes forward 6 days).
-          if (selectingTarget === 'end') {
-            weekEnd = adapter.startOfDay(iso);
-            weekStart = adapter.startOfDay(adapter.addDays(weekEnd, -6));
-          } else {
-            weekStart = adapter.startOfDay(iso);
-            weekEnd = adapter.startOfDay(adapter.addDays(weekStart, 6));
-          }
-        } else {
-          // 'calendar': the weekStartsOn-aligned week around the clicked day.
-          weekStart = adapter.startOfWeek(iso, weekStartsOn);
-          weekEnd = adapter.startOfDay(adapter.endOfWeek(iso, weekStartsOn));
-        }
+        const { start: weekStart, end: weekEnd } = getWeekCoordinateRange(
+          iso,
+          adapter,
+          weekStartsOn,
+          weekAnchor,
+          selectingTarget,
+        );
+        if (isSelectionDisabled(iso)) return;
         const range: DateRange = {
           start: displayTimezone ? civilMidnightFromUtcDay(weekStart, displayTimezone) : weekStart,
           end: displayTimezone ? civilMidnightFromUtcDay(weekEnd, displayTimezone) : weekEnd,
@@ -238,15 +247,16 @@ export function RangePickerCalendar({
       selectingTarget,
       value.start,
       displayTimezone,
+      isSelectionDisabled,
     ],
   );
 
   const handleDayClick = useCallback(
     (day: CalendarDay) => {
-      if (day.isDisabled) return;
+      if (isSelectionDisabled(day.isoString)) return;
       commitDay(day.isoString);
     },
-    [commitDay],
+    [commitDay, isSelectionDisabled],
   );
 
   const handleDayMouseEnter = useCallback(
@@ -300,10 +310,7 @@ export function RangePickerCalendar({
           case 'Enter':
           case ' ':
             e.preventDefault();
-            const focusedValue = displayTimezone
-              ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
-              : focusedDate;
-            if (!isDateDisabled(focusedValue, disabled, adapter, displayTimezone)) {
+            if (!isSelectionDisabled(focusedDate)) {
               commitDay(focusedDate);
             }
             return;
@@ -325,15 +332,7 @@ export function RangePickerCalendar({
         // Step in the original direction up to one full grid (42 cells) before giving up.
         const skipStep = isBackwardKey(e.key, dir) ? -1 : 1;
         let attempts = 0;
-        while (
-          isDateDisabled(
-            displayTimezone ? civilMidnightFromUtcDay(newFocused, displayTimezone) : newFocused,
-            disabled,
-            adapter,
-            displayTimezone,
-          ) &&
-          attempts < 42
-        ) {
+        while (isSelectionDisabled(newFocused) && attempts < 42) {
           newFocused = adapter.addDays(newFocused, skipStep);
           attempts++;
         }
@@ -364,6 +363,7 @@ export function RangePickerCalendar({
       commitDay,
       dir,
       displayTimezone,
+      isSelectionDisabled,
     ],
   );
 
@@ -443,6 +443,7 @@ export function RangePickerCalendar({
                 </th>
               ) : null}
               {week.map((day, colIndex) => {
+                const dayDisabled = isSelectionDisabled(day.isoString);
                 const dayClasses =
                   [
                     classNames?.day,
@@ -450,7 +451,7 @@ export function RangePickerCalendar({
                     day.isRangeEnd && classNames?.dayRangeEnd,
                     day.isInRange && classNames?.dayInRange,
                     day.isToday && classNames?.dayToday,
-                    day.isDisabled && classNames?.dayDisabled,
+                    dayDisabled && classNames?.dayDisabled,
                     !day.isCurrentMonth && classNames?.dayOutsideMonth,
                   ]
                     .filter(Boolean)
@@ -467,14 +468,14 @@ export function RangePickerCalendar({
                     role="gridcell"
                     aria-colindex={colIndex + 1}
                     aria-selected={isSelected || undefined}
-                    aria-disabled={day.isDisabled || undefined}
+                    aria-disabled={dayDisabled || undefined}
                     aria-current={day.isToday ? 'date' : undefined}
                     className={classNames?.gridCell}
                   >
                     <button
                       type="button"
                       tabIndex={day.isFocused ? 0 : -1}
-                      disabled={day.isDisabled}
+                      disabled={dayDisabled}
                       data-focused={day.isFocused || undefined}
                       data-range-start={day.isRangeStart || undefined}
                       data-range-end={day.isRangeEnd || undefined}

@@ -11,7 +11,7 @@ function renderWeekPicker(
     value?: DateRange;
     defaultValue?: DateRange;
     onChange?: (r: DateRange) => void;
-    disabled?: boolean;
+    disabled?: boolean | DisabledRule[];
     weekStartsOn?: 0 | 1;
     weekAnchor?: 'calendar' | 'clicked';
     displayTimezone?: string;
@@ -372,15 +372,30 @@ describe('WeekPicker — date rules and edge cases (CLAUDE.md §7)', () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it('keyboard ArrowLeft skips disabled days', async () => {
+  it('disables every cell in a week when an interior day is disabled', async () => {
     const user = userEvent.setup();
-    renderWithDisabled({ start: '2026-01-12T00:00:00.000Z', end: '2026-01-12T00:00:00.000Z' }, [
-      { dayOfWeek: [0, 6] },
+    const { onChange } = renderWeekPicker({
+      value: JAN_ANCHOR,
+      disabled: [{ date: '2026-01-14T00:00:00.000Z' }],
+    });
+
+    await user.click(screen.getByLabelText('Start date'));
+    const monday = screen.getByRole('button', { name: /January 12, 2026/ });
+    expect(monday).toBeDisabled();
+    expect(monday.closest('[role="gridcell"]')).toHaveAttribute('aria-disabled', 'true');
+    await user.click(monday);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('keyboard ArrowLeft skips a week containing a disabled day', async () => {
+    const user = userEvent.setup();
+    renderWithDisabled({ start: '2026-01-18T00:00:00.000Z', end: '2026-01-18T00:00:00.000Z' }, [
+      { date: '2026-01-14T00:00:00.000Z' },
     ]);
 
     await user.click(screen.getByLabelText('Start date'));
     await user.keyboard('{ArrowLeft}');
-    expect(screen.getByRole('button', { name: /January 9, 2026/ })).toHaveFocus();
+    expect(screen.getByRole('button', { name: /January 10, 2026/ })).toHaveFocus();
   });
 });
 

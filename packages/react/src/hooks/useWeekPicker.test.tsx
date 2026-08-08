@@ -126,6 +126,29 @@ describe('useWeekPicker — timezone and constraint parity', () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
+  it('rejects a week when an interior day is disabled and marks the whole week disabled', () => {
+    const onChange = vi.fn();
+    const initial = { start: '2026-01-04T00:00:00.000Z', end: '2026-01-10T00:00:00.000Z' };
+    const { result } = renderHook(() =>
+      useWeekPicker({
+        defaultValue: initial,
+        disabled: [{ date: '2026-01-14T00:00:00.000Z' }],
+        onChange,
+      }),
+    );
+
+    act(() => result.current.open());
+    act(() => result.current.selectWeek('2026-01-12T00:00:00.000Z'));
+
+    expect(result.current.value).toEqual(initial);
+    expect(result.current.isOpen).toBe(true);
+    expect(onChange).not.toHaveBeenCalled();
+    expect(
+      result.current.calendar.flat().find((day) => day.isoString.startsWith('2026-01-12'))
+        ?.isDisabled,
+    ).toBe(true);
+  });
+
   it('recenters zoned view and focus when toggle opens after navigation and a controlled value change', () => {
     const { result, rerender } = renderHook(
       ({ value }) => useWeekPicker({ value, displayTimezone: 'America/New_York' }),

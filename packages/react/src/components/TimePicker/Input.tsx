@@ -6,14 +6,17 @@ import { useTimePickerContext } from '../../context/TimePickerContext.js';
 export interface TimePickerInputProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'value' | 'onChange' | 'type'
-> {}
+> {
+  /** Form field name for a hidden input containing the selected ISO value. */
+  name?: string;
+}
 
 /**
  * TimePicker.Input — Text input for HH:MM or HH:MM:SS format.
  * Supports direct typing by the user.
  */
 export const TimePickerInput = forwardRef<HTMLInputElement, TimePickerInputProps>(
-  function TimePickerInput({ onBlur, onKeyDown, onClick, ...props }, ref) {
+  function TimePickerInput({ name, onBlur, onKeyDown, onClick, ...props }, ref) {
     const ctx = useTimePickerContext('TimePicker.Input');
     const [inputText, setInputText] = useState<string | null>(null);
 
@@ -79,30 +82,33 @@ export const TimePickerInput = forwardRef<HTMLInputElement, TimePickerInputProps
     const listId = `${ctx.pickerId}-time`;
 
     return (
-      <input
-        ref={(node) => {
-          ctx.referenceRef.current = node;
-          if (typeof ref === 'function') ref(node);
-          else if (ref) ref.current = node;
-        }}
-        type="text"
-        role="combobox"
-        inputMode="numeric"
-        autoComplete="off"
-        aria-label={ctx.labels.timeInput}
-        aria-expanded={ctx.isOpen}
-        aria-haspopup="dialog"
-        aria-controls={ctx.isOpen ? listId : undefined}
-        placeholder={ctx.withSeconds ? 'HH:MM:SS' : 'HH:MM'}
-        value={displayValue}
-        disabled={ctx.isDisabled || props.disabled}
-        readOnly={ctx.isReadOnly}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        {...props}
-      />
+      <>
+        <input
+          ref={(node) => {
+            ctx.referenceRef.current = node;
+            if (typeof ref === 'function') ref(node);
+            else if (ref) ref.current = node;
+          }}
+          type="text"
+          role="combobox"
+          inputMode="numeric"
+          autoComplete="off"
+          aria-label={ctx.labels.timeInput}
+          aria-expanded={ctx.isOpen}
+          aria-haspopup="dialog"
+          aria-controls={ctx.isOpen ? listId : undefined}
+          placeholder={ctx.withSeconds ? 'HH:MM:SS' : 'HH:MM'}
+          value={displayValue}
+          disabled={ctx.isDisabled || props.disabled}
+          readOnly={ctx.isReadOnly}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          {...props}
+        />
+        {name ? <input type="hidden" name={name} value={ctx.value ?? ''} /> : null}
+      </>
     );
   },
 );

@@ -163,6 +163,8 @@ export function RangePickerRoot({
     (range: DateRange) => {
       if (isDisabled || readOnly) return false;
       if (
+        (range.start && !usableDate(range.start, adapter)) ||
+        (range.end && !usableDate(range.end, adapter)) ||
         (range.start && isDateDisabled(range.start, disabledRules, adapter, displayTimezone)) ||
         (range.end && isDateDisabled(range.end, disabledRules, adapter, displayTimezone))
       ) {
@@ -185,6 +187,7 @@ export function RangePickerRoot({
   const selectDate = useCallback(
     (iso: ISODateString) => {
       if (isDisabled || readOnly) return false;
+      if (!usableDate(iso, adapter)) return false;
 
       // Normalize UTC-grid ISOs to civil-midnight-in-tz before storing (see DatePicker.Root).
       const normalized = displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;

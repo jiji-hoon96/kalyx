@@ -120,7 +120,7 @@ When `displayTimezone` is set, year highlighting is timezone-aware. This matters
 
 ## Disabled rules
 
-Restrict selectable years. Rules are evaluated against January 1 of each year.
+Restrict selectable years. A year is disabled only when the rules exclude every day in that year; a rule that blocks January 1 alone does not disable the remaining year.
 
 ```jsx live
 function DisabledYearPicker() {
@@ -183,16 +183,16 @@ function DisabledYearPicker() {
 
 ```tsx
 <YearPicker defaultValue="2026-01-01T00:00:00.000Z">
-  <YearPicker.Input />
+  <YearPicker.Input name="fiscalYear" />
   <YearPicker.Popover>
     <YearPicker.Grid />
   </YearPicker.Popover>
 </YearPicker>
 ```
 
-Unlike `DatePicker`, this picker has no native form-submission support: there is
-no `name` prop and nothing renders a hidden input. To submit the value, keep it
-in state via `onChange` and render your own `<input type="hidden">`.
+`YearPicker.Input` inherits `DatePicker.Input`'s native form contract. Passing
+`name` renders a hidden input containing the year-start UTC ISO value; the
+visible formatted input is not submitted under that name.
 
 ## Event callbacks
 

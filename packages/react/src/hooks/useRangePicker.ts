@@ -127,6 +127,8 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
   const setRange = useCallback(
     (range: DateRange) => {
       if (
+        (range.start && !usableDate(range.start, adapter)) ||
+        (range.end && !usableDate(range.end, adapter)) ||
         (range.start && isDateDisabled(range.start, disabled, adapter, displayTimezone)) ||
         (range.end && isDateDisabled(range.end, disabled, adapter, displayTimezone))
       ) {
@@ -143,6 +145,7 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
 
   const selectDate = useCallback(
     (iso: ISODateString) => {
+      if (!usableDate(iso, adapter)) return;
       const normalized = displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
       if (selectingTarget === 'start') {
         if (!setRange({ start: normalized, end: null })) return;

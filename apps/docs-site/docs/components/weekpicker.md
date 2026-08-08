@@ -199,9 +199,9 @@ Restrict selectable weeks. Any `DisabledRule` that matches at least one day in a
 </WeekPicker>
 ```
 
-Unlike `DatePicker`, this picker has no native form-submission support: there is
-no `name` prop and nothing renders a hidden input. To submit the value, keep it
-in state via `onChange` and render your own `<input type="hidden">`.
+For native form submission, pass `name` to either endpoint input. A hidden field
+submits that endpoint's UTC-ISO value while the visible formatted input remains
+unnamed.
 
 ## Timezone
 

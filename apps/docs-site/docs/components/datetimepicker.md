@@ -336,6 +336,11 @@ function BookingFlow() {
 | `onOpenChange` | `(isOpen: boolean) => void` | The popover opens or closes. Not fired on initial mount. |
 | `onCalendarNavigate` | `(viewMonth: ISODateString) => void` | The calendar view moves to a different month. Not fired on initial mount. |
 
+## Native form submission
+
+Pass `name` to `DateTimePicker.Input` to submit the complete UTC-ISO value in a
+hidden field. The visible localized text input remains unnamed.
+
 ## Related
 
 - [DatePicker →](./datepicker.md)

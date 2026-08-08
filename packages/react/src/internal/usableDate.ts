@@ -18,5 +18,25 @@ export function usableDate(
   value: ISODateString | null | undefined,
   adapter: DateAdapter,
 ): ISODateString | null {
-  return value && adapter.isValid(value) ? value : null;
+  if (!value) return null;
+  try {
+    return adapter.isValid(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+export function isUsableDate(
+  value: ISODateString | null | undefined,
+  adapter: DateAdapter,
+): value is ISODateString {
+  return usableDate(value, adapter) !== null;
+}
+
+export function getUsableDate(
+  value: ISODateString | null | undefined,
+  adapter: DateAdapter,
+  fallback: () => ISODateString,
+): ISODateString {
+  return usableDate(value, adapter) ?? fallback();
 }

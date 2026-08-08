@@ -93,6 +93,7 @@ export function useYearPicker(options: UseYearPickerOptions = {}): UseYearPicker
 
   const selectYear = useCallback(
     (iso: ISODateString) => {
+      if (!usableDate(iso, adapter)) return;
       // Same predicate the grid uses for `isDisabled`, so a cell the grid renders
       // as unselectable cannot be committed programmatically either. Deliberately
       // not `isDateDisabled`: a year is disabled only when *fully* excluded, so a

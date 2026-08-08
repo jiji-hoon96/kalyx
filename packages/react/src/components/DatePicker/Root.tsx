@@ -89,7 +89,11 @@ export interface DatePickerRootProps {
   children: ReactNode;
 }
 
-export function DatePickerRoot({
+interface DatePickerRootImplProps extends DatePickerRootProps {
+  selectionGranularity?: 'day' | 'month' | 'year';
+}
+
+function DatePickerRootImpl({
   value: controlledValue,
   defaultValue,
   onChange,
@@ -105,7 +109,8 @@ export function DatePickerRoot({
   adapter: adapterProp,
   labels: labelsProp,
   children,
-}: DatePickerRootProps) {
+  selectionGranularity = 'day',
+}: DatePickerRootImplProps) {
   const adapter = resolveAdapter(adapterProp, getDefaultAdapter(), 'DatePicker');
   const pickerId = useId();
   const isControlled = useRef(controlledValue !== undefined).current;
@@ -162,12 +167,22 @@ export function DatePickerRoot({
   const selectDate = useCallback(
     (iso: ISODateString | null) => {
       if (isDisabled || readOnly) return;
+      if (iso && !usableDate(iso, adapter)) return;
+
+      let coordinate = iso;
+      if (coordinate && selectionGranularity === 'month') {
+        coordinate = adapter.startOfMonth(coordinate);
+      } else if (coordinate && selectionGranularity === 'year') {
+        coordinate = new Date(Date.UTC(adapter.getYear(coordinate), 0, 1)).toISOString();
+      }
 
       // The grid emits UTC-midnight ISO strings. When displayTimezone is set, map those to the
       // civil midnight of the same calendar day in that zone — otherwise "picking Jan 15 in KST"
       // would save Jan 14 15:00 UTC shifted incorrectly.
       const normalized =
-        iso && displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
+        coordinate && displayTimezone
+          ? civilMidnightFromUtcDay(coordinate, displayTimezone)
+          : coordinate;
 
       if (normalized && isDateDisabled(normalized, disabledRules, adapter, displayTimezone)) {
         return;
@@ -181,7 +196,16 @@ export function DatePickerRoot({
       // Close the popover after selection
       setIsOpen(false);
     },
-    [isControlled, isDisabled, readOnly, onChange, displayTimezone, disabledRules, adapter],
+    [
+      isControlled,
+      isDisabled,
+      readOnly,
+      onChange,
+      displayTimezone,
+      disabledRules,
+      adapter,
+      selectionGranularity,
+    ],
   );
 
   const open = useCallback(() => {
@@ -272,4 +296,14 @@ export function DatePickerRoot({
       </div>
     </DatePickerContext.Provider>
   );
+}
+
+export function DatePickerRoot(props: DatePickerRootProps) {
+  return <DatePickerRootImpl {...props} />;
+}
+
+export function DatePickerRootWithGranularity(
+  props: DatePickerRootProps & { selectionGranularity: 'month' | 'year' },
+) {
+  return <DatePickerRootImpl {...props} />;
 }

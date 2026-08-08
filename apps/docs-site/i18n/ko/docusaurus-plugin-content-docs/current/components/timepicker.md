@@ -158,6 +158,11 @@ function Example() {
 }
 ```
 
+## 네이티브 폼 제출
+
+`TimePicker.Input`에 `name`을 지정하면 화면의 `HH:mm` 문자열이 아니라 전체
+UTC-ISO 값이 hidden input으로 제출됩니다.
+
 ## 관련
 
 - [DateTimePicker →](./datetimepicker.md)

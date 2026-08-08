@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import type { DisabledRule } from '@kalyx/core';
@@ -73,6 +73,14 @@ describe('YearPicker — basic interactions', () => {
 
     await user.click(screen.getByRole('combobox'));
     await user.click(screen.getByRole('gridcell', { name: '2024' }));
+
+    expect(onChange).toHaveBeenCalledWith('2024-01-01T00:00:00.000Z');
+  });
+
+  it('commits year-start ISO when a full date is typed', () => {
+    const { onChange } = renderYearPicker({ defaultValue: '2026-01-01T00:00:00.000Z' });
+
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: '2024-08-19' } });
 
     expect(onChange).toHaveBeenCalledWith('2024-01-01T00:00:00.000Z');
   });

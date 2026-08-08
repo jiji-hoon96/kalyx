@@ -324,4 +324,14 @@ describe('setTimeInTimezone', () => {
     // 03:30 EDT = 07:30 UTC
     expect(result).toBe('2026-03-08T07:30:00.000Z');
   });
+
+  it.each([
+    [{ hours: 24 }, 'hours'],
+    [{ minutes: -1 }, 'minutes'],
+    [{ seconds: 60 }, 'seconds'],
+  ])('rejects an out-of-range programmatic partial %o', (partial, field) => {
+    expect(() => setTimeInTimezone('2026-01-15T00:00:00.000Z', partial, 'Asia/Seoul')).toThrow(
+      new RegExp(field),
+    );
+  });
 });

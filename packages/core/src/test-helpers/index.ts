@@ -150,10 +150,12 @@ export function runAdapterConformanceTests(adapter: DateAdapter, deps: Conforman
     });
 
     describe('isValid', () => {
-      it('accepts a real date and rejects empty / garbage', () => {
+      it('accepts a real date and rejects empty, garbage, and impossible calendar dates', () => {
         expect(adapter.isValid('2026-01-15')).toBe(true);
         expect(adapter.isValid('')).toBe(false);
         expect(adapter.isValid('not-a-date')).toBe(false);
+        expect(adapter.isValid('2026-02-29')).toBe(false);
+        expect(adapter.isValid('2026-02-30T00:00:00.000Z')).toBe(false);
       });
     });
 

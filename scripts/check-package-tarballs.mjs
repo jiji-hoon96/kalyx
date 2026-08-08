@@ -54,13 +54,16 @@ export function discoverPublishablePackages(packagesDirectory) {
 export function validatePublishablePackages(packages) {
   const problems = [];
 
-  for (const { manifest, manifestPath } of packages) {
+  for (const { directory, manifest, manifestPath } of packages) {
     const label = manifest.name || manifestPath;
     if (!manifest.name) problems.push(`${label}: missing name`);
     if (!manifest.version) problems.push(`${label}: missing version`);
     if (!manifest.scripts?.build) problems.push(`${label}: missing scripts.build`);
     if (!Array.isArray(manifest.files) || manifest.files.length === 0) {
       problems.push(`${label}: files must be a non-empty array`);
+    }
+    if (!existsSync(join(directory, 'LICENSE'))) {
+      problems.push(`${label}: LICENSE file is missing`);
     }
     if (
       !manifest.exports ||

@@ -7,11 +7,24 @@ export interface TimeValue {
   seconds: number; // 0-59
 }
 
+function assertTimePartial(time: Partial<TimeValue>): void {
+  for (const [field, value, max] of [
+    ['hours', time.hours, 23],
+    ['minutes', time.minutes, 59],
+    ['seconds', time.seconds, 59],
+  ] as const) {
+    if (value !== undefined && (!Number.isInteger(value) || value < 0 || value > max)) {
+      throw new RangeError(`[setTime] ${field} must be an integer in [0, ${max}], got ${value}`);
+    }
+  }
+}
+
 /**
  * Replaces the time portion of an ISO datetime.
  * Operates in UTC.
  */
 export function setTime(iso: ISODateString, time: Partial<TimeValue>): ISODateString {
+  assertTimePartial(time);
   const date = new Date(iso);
   if (time.hours !== undefined) date.setUTCHours(time.hours);
   if (time.minutes !== undefined) date.setUTCMinutes(time.minutes);

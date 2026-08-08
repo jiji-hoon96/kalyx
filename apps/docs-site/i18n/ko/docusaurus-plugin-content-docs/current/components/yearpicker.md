@@ -71,7 +71,7 @@ When `displayTimezone` is set, year highlighting is timezone-aware. This matters
 
 ## Disabled rules
 
-Restrict selectable years. Rules are evaluated against January 1 of each year.
+규칙이 해당 연도의 모든 날짜를 제외할 때만 연도 전체가 비활성화됩니다. 1월 1일 하나만 막는 규칙은 나머지 날짜까지 비활성화하지 않습니다.
 
 ```tsx
 <YearPicker
@@ -93,16 +93,16 @@ Restrict selectable years. Rules are evaluated against January 1 of each year.
 
 ```tsx
 <YearPicker defaultValue="2026-01-01T00:00:00.000Z">
-  <YearPicker.Input />
+  <YearPicker.Input name="fiscalYear" />
   <YearPicker.Popover>
     <YearPicker.Grid />
   </YearPicker.Popover>
 </YearPicker>
 ```
 
-`DatePicker` 와 달리 이 피커는 네이티브 폼 제출을 지원하지 않는다 — `name` prop 이
-없고 hidden input 도 렌더하지 않는다. 값을 제출하려면 `onChange` 로 상태에 담아
-직접 `<input type="hidden">` 을 렌더한다.
+`YearPicker.Input`은 `DatePicker.Input`의 네이티브 폼 계약을 그대로 상속합니다.
+`name`을 넘기면 연도 시작 UTC ISO 값을 담은 hidden input이 렌더링되며, 화면에 보이는
+포맷된 입력값은 그 이름으로 제출되지 않습니다.
 
 ## Event callbacks
 
