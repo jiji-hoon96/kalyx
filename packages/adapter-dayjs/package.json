@@ -1,6 +1,6 @@
 {
 	"name": "@kalyx/adapter-dayjs",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "dayjs adapter for @kalyx/core — implements the DateAdapter contract using dayjs (UTC mode). Timezone work is delegated to @kalyx/core's Intl-based utilities.",
 	"license": "MIT",
 	"author": "jiji-hoon96",
