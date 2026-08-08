@@ -1,6 +1,6 @@
 {
 	"name": "@kalyx/react",
-	"version": "1.4.5",
+	"version": "1.4.6",
 	"description": "Headless, SSR-safe React date, range, time, date-time, month, year, and week pickers — ISO 8601 UTC strings, IANA timezone support, ≤20 KB gzipped",
 	"license": "MIT",
 	"author": "jiji-hoon96",
