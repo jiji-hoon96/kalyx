@@ -2,6 +2,7 @@ import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import type { InputHTMLAttributes } from 'react';
 import { parseInputValue } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
+import { usableDate } from '../../internal/usableDate.js';
 
 export interface DatePickerInputProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -47,10 +48,16 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
       setInputText(null);
     }, [ctx.value]);
 
+    // A malformed value is data (a stale row, a half-typed form field), so show it back
+    // verbatim rather than formatting it. The validity check has to come first: adapters
+    // build the output from `getUTCFullYear()` and friends, which yield "NaN-NaN-NaN" on an
+    // unparseable string instead of throwing, so the catch below never sees those.
     let formattedValue = '';
     if (ctx.value) {
       try {
-        formattedValue = ctx.adapter.format(ctx.value, displayFormat, ctx.displayTimezone);
+        formattedValue = usableDate(ctx.value, ctx.adapter)
+          ? ctx.adapter.format(ctx.value, displayFormat, ctx.displayTimezone)
+          : ctx.value;
       } catch {
         formattedValue = ctx.value;
       }

@@ -19,6 +19,7 @@ import type {
 } from '@kalyx/core';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 import { resolveEnabledCalendarFocus, resolveMonthNavigation } from '../internal/calendarFocus.js';
+import { usableDate } from '../internal/usableDate.js';
 
 export interface UseDateTimePickerOptions {
   /** Selected datetime (controlled, ISO 8601 UTC — date and time) */
@@ -98,13 +99,13 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
 
   const [isOpen, setIsOpen] = useState(false);
   const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
-    const target = currentValue ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
   });
   const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
-    const target = currentValue ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
@@ -156,7 +157,7 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
 
   const setTime = useCallback(
     (partial: Partial<TimeValue>) => {
-      const base = currentValue ?? adapter.today(displayTimezone);
+      const base = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
       const merged = displayTimezone
         ? setTimeInTimezone(base, partial, displayTimezone)
         : setTimeOnIso(base, partial);
@@ -167,7 +168,7 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
 
   const open = useCallback(() => {
     setIsOpen(true);
-    const target = currentValue ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     const coordinate = displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);

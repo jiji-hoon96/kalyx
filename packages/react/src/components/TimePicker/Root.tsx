@@ -12,6 +12,7 @@ import { TimePickerContext } from '../../context/TimePickerContext.js';
 import type { TimePickerContextValue, TimePickerFormat } from '../../context/TimePickerContext.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
 import { useChangeEffect } from '../../hooks/useChangeEffect.js';
+import { usableDate } from '../../internal/usableDate.js';
 
 /**
  * Props for the TimePicker Root component.
@@ -123,12 +124,13 @@ export function TimePickerRoot({
 
   // SSR-safe: when value is null, fall back to a deterministic {0,0,0} so server
   // and client render the same markup. `today()` is only resolved at event time.
+  // A malformed value takes the same fallback: `getTimeInTimezone` would otherwise hand an
+  // Invalid Date to `Intl` and throw mid-render.
   const currentTime = useMemo(() => {
-    if (!currentValue) return { hours: 0, minutes: 0, seconds: 0 };
-    return displayTimezone
-      ? getTimeInTimezone(currentValue, displayTimezone)
-      : getTime(currentValue);
-  }, [currentValue, displayTimezone]);
+    const usable = usableDate(currentValue, adapter);
+    if (!usable) return { hours: 0, minutes: 0, seconds: 0 };
+    return displayTimezone ? getTimeInTimezone(usable, displayTimezone) : getTime(usable);
+  }, [currentValue, displayTimezone, adapter]);
 
   const setTime = useCallback(
     (partial: Partial<TimeValue>) => {

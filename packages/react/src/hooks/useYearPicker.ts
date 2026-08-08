@@ -3,6 +3,7 @@ import { civilMidnightFromUtcDay } from '@kalyx/core';
 import type { DateAdapter, DisabledRule, ISODateString } from '@kalyx/core';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 import { isRangeFullyDisabled } from '../components/_shared/grid-keyboard.js';
+import { usableDate } from '../internal/usableDate.js';
 
 export interface UseYearPickerOptions {
   /** Selected year (controlled mode), stored as the year-start ISO string */
@@ -79,7 +80,7 @@ export function useYearPicker(options: UseYearPickerOptions = {}): UseYearPicker
 
   const [isOpen, setIsOpen] = useState(false);
   const [viewMonth, setViewMonth] = useState<ISODateString>(
-    () => currentValue ?? adapter.today(displayTimezone),
+    () => usableDate(currentValue, adapter) ?? adapter.today(displayTimezone),
   );
 
   const [today, setToday] = useState<ISODateString | null>(null);
@@ -108,7 +109,7 @@ export function useYearPicker(options: UseYearPickerOptions = {}): UseYearPicker
 
   const open = useCallback(() => {
     setIsOpen(true);
-    setViewMonth(currentValue ?? adapter.today(displayTimezone));
+    setViewMonth(usableDate(currentValue, adapter) ?? adapter.today(displayTimezone));
   }, [currentValue, adapter, displayTimezone]);
   const close = useCallback(() => setIsOpen(false), []);
   const toggle = useCallback(() => setIsOpen((o) => !o), []);

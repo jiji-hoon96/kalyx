@@ -3,6 +3,7 @@ import { civilMidnightFromUtcDay, getMonthName } from '@kalyx/core';
 import type { DateAdapter, DisabledRule, ISODateString } from '@kalyx/core';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 import { isRangeFullyDisabled } from '../components/_shared/grid-keyboard.js';
+import { usableDate } from '../internal/usableDate.js';
 
 export interface UseMonthPickerOptions {
   /** Selected month (controlled mode), stored as the month-start ISO string */
@@ -86,7 +87,7 @@ export function useMonthPicker(options: UseMonthPickerOptions = {}): UseMonthPic
 
   const [isOpen, setIsOpen] = useState(false);
   const [viewMonth, setViewMonth] = useState<ISODateString>(
-    () => currentValue ?? adapter.today(displayTimezone),
+    () => usableDate(currentValue, adapter) ?? adapter.today(displayTimezone),
   );
 
   // SSR-safe "today": null on the server / during hydration, resolved after mount.
@@ -115,7 +116,7 @@ export function useMonthPicker(options: UseMonthPickerOptions = {}): UseMonthPic
 
   const open = useCallback(() => {
     setIsOpen(true);
-    setViewMonth(currentValue ?? adapter.today(displayTimezone));
+    setViewMonth(usableDate(currentValue, adapter) ?? adapter.today(displayTimezone));
   }, [currentValue, adapter, displayTimezone]);
   const close = useCallback(() => setIsOpen(false), []);
   const toggle = useCallback(() => setIsOpen((o) => !o), []);

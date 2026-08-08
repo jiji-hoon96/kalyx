@@ -2,6 +2,7 @@ import { forwardRef, useCallback } from 'react';
 import type { InputHTMLAttributes } from 'react';
 import { formatTimeString, getTime, getTimeInTimezone } from '@kalyx/core';
 import { useDatePickerContext } from '../../context/DatePickerContext.js';
+import { usableDate } from '../../internal/usableDate.js';
 
 export interface DateTimePickerInputProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -19,8 +20,12 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
     const ctx = useDatePickerContext('DateTimePicker.Input');
 
     // Combine the date portion (yyyy-MM-dd) and the time portion (HH:mm)
+    // Adapters render an unparseable value as "NaN-NaN-NaN" rather than throwing, so the
+    // validity check has to gate the format call — the catch alone would not see it.
     let displayValue = '';
-    if (ctx.value) {
+    if (ctx.value && !usableDate(ctx.value, ctx.adapter)) {
+      displayValue = ctx.value;
+    } else if (ctx.value) {
       try {
         const datePart = ctx.adapter.format(ctx.value, 'yyyy-MM-dd', ctx.displayTimezone);
         const time = ctx.displayTimezone

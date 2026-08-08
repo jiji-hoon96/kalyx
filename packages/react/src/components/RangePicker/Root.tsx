@@ -25,6 +25,7 @@ import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 import { resolveEnabledCalendarFocus } from '../../internal/calendarFocus.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
 import { SR_ONLY } from '../../internal/srOnly.js';
+import { usableDate } from '../../internal/usableDate.js';
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
 
@@ -127,14 +128,14 @@ export function RangePickerRoot({
 
   // Lazy initializers — see DatePicker/Root.tsx for the SSR/hydration rationale.
   const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
-    const target = currentValue.start ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue.start, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
   });
 
   const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
-    const target = currentValue.start ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue.start, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
@@ -225,7 +226,7 @@ export function RangePickerRoot({
     (target?: RangeSelectingTarget) => {
       if (isDisabled || readOnly) return;
       setIsOpen(true);
-      const targetValue = currentValue.start ?? adapter.today(displayTimezone);
+      const targetValue = usableDate(currentValue.start, adapter) ?? adapter.today(displayTimezone);
       const focus = displayTimezone
         ? calendarDayFromInstant(targetValue, displayTimezone)
         : adapter.startOfDay(targetValue);
