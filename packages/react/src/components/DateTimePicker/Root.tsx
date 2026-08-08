@@ -28,6 +28,7 @@ import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 import { resolveEnabledCalendarFocus } from '../../internal/calendarFocus.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
 import { SR_ONLY } from '../../internal/srOnly.js';
+import { usableDate } from '../../internal/usableDate.js';
 
 /**
  * Props for the DateTimePicker Root component.
@@ -160,13 +161,13 @@ export function DateTimePickerRoot({
   const announce = useCallback((message: string) => setAnnouncement(message), []);
   // Lazy initializers — see DatePicker/Root.tsx for the SSR/hydration rationale.
   const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
-    const target = currentValue ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
   });
   const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
-    const target = currentValue ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
@@ -184,12 +185,13 @@ export function DateTimePickerRoot({
 
   // When value is null, use a stable {0,0,0} fallback for hydration safety —
   // avoid invoking adapter.today() during render to keep server/client output deterministic.
+  // A malformed value takes the same fallback: `getTimeInTimezone` would otherwise hand an
+  // Invalid Date to `Intl` and throw mid-render.
   const currentTime: TimeValue = useMemo(() => {
-    if (!currentValue) return { hours: 0, minutes: 0, seconds: 0 };
-    return displayTimezone
-      ? getTimeInTimezone(currentValue, displayTimezone)
-      : getTime(currentValue);
-  }, [currentValue, displayTimezone]);
+    const usable = usableDate(currentValue, adapter);
+    if (!usable) return { hours: 0, minutes: 0, seconds: 0 };
+    return displayTimezone ? getTimeInTimezone(usable, displayTimezone) : getTime(usable);
+  }, [currentValue, displayTimezone, adapter]);
 
   const updateValue = useCallback(
     (next: ISODateString | null): boolean => {
@@ -249,7 +251,7 @@ export function DateTimePickerRoot({
     (partial: Partial<TimeValue>) => {
       // If no date yet, start from today at midnight (tz-aware). today() is resolved at
       // event time (not during render) so SSR hydration output stays stable.
-      const base = currentValue ?? adapter.today(displayTimezone);
+      const base = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
       const merged = displayTimezone
         ? setTimeInTimezone(base, partial, displayTimezone)
         : setTimeOnIso(base, partial);
@@ -274,7 +276,7 @@ export function DateTimePickerRoot({
   const open = useCallback(() => {
     if (isDisabled || readOnly) return;
     setIsOpen(true);
-    const target = currentValue ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     const calendarTarget = displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);

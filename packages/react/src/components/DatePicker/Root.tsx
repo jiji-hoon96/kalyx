@@ -21,6 +21,7 @@ import { useChangeEffect } from '../../hooks/useChangeEffect.js';
 import { resolveEnabledCalendarFocus } from '../../internal/calendarFocus.js';
 import { getDefaultAdapter, resolveAdapter } from '../../internal/defaultAdapter.js';
 import { SR_ONLY } from '../../internal/srOnly.js';
+import { usableDate } from '../../internal/usableDate.js';
 
 /**
  * Props for the DatePicker Root component.
@@ -123,14 +124,14 @@ export function DatePickerRoot({
   // render. Avoids redundant Date allocations and makes the SSR/hydration contract
   // explicit — neither server nor client re-evaluates the fallback after first render.
   const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
-    const target = currentValue ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
   });
 
   const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
-    const target = currentValue ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
@@ -187,7 +188,7 @@ export function DatePickerRoot({
     if (isDisabled || readOnly) return;
     setIsOpen(true);
     // Reset the view to the current value or today when opening
-    const target = currentValue ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     const calendarTarget = displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);

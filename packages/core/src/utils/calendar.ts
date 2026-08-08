@@ -37,14 +37,28 @@ export function getCalendarDays(
   const {
     weekStartsOn = 0,
     today,
-    selected,
-    focusedDate,
+    selected: rawSelected,
+    focusedDate: rawFocusedDate,
     disabled = [],
-    range,
-    rangeHover,
+    range: rawRange,
+    rangeHover: rawRangeHover,
     timezone,
     fixedWeeks = false,
   } = options;
+
+  // `selected` / `focusedDate` / `range` usually originate from consumer state — a form
+  // field or a database row — so an unparseable string is data rather than a programming
+  // error. They are only ever compared against grid cells, and a comparison that cannot be
+  // computed is simply false, so drop them instead of letting `isSameDay` reach
+  // `Intl.DateTimeFormat.formatToParts(Invalid Date)` and throw `RangeError` mid-render.
+  const usable = (iso: ISODateString | null | undefined) =>
+    iso && adapter.isValid(iso) ? iso : undefined;
+  const selected = usable(rawSelected);
+  const focusedDate = usable(rawFocusedDate);
+  const rangeHover = usable(rawRangeHover);
+  const range = rawRange
+    ? { start: usable(rawRange.start) ?? null, end: usable(rawRange.end) ?? null }
+    : rawRange;
 
   const todayISO = today ?? adapter.today(timezone);
   const monthStart = adapter.startOfMonth(monthISO);

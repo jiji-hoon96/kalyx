@@ -14,6 +14,7 @@ import type {
 } from '@kalyx/core';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 import { resolveEnabledCalendarFocus, resolveMonthNavigation } from '../internal/calendarFocus.js';
+import { usableDate } from '../internal/usableDate.js';
 
 export interface UseDatePickerOptions {
   /** Selected date (controlled mode) */
@@ -102,13 +103,13 @@ export function useDatePicker(options: UseDatePickerOptions = {}): UseDatePicker
 
   const [isOpen, setIsOpen] = useState(false);
   const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
-    const target = currentValue ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
   });
   const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
-    const target = currentValue ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
@@ -130,7 +131,7 @@ export function useDatePicker(options: UseDatePickerOptions = {}): UseDatePicker
 
   const open = useCallback(() => {
     setIsOpen(true);
-    const target = currentValue ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     const coordinate = displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);

@@ -209,6 +209,26 @@ MonthPicker, YearPicker, WeekPicker, RangePicker and DateTimePicker have none.
 
 See the dedicated [React Hook Form recipe](./recipes/react-hook-form.md).
 
+### The input shows the raw string instead of a formatted date
+
+The value you passed is not a parseable ISO 8601 string. Rather than guessing, the
+picker leaves it alone: the calendar opens on the current month and the input echoes
+your string back so the bad data stays visible.
+
+This is the usual symptom of an empty string or a `null` column reaching `value`.
+Pass `null` for "no selection" instead of `''`:
+
+```tsx
+// The row has no date yet
+<DatePicker value={row.startsOn ?? null} onChange={save}>
+  <DatePicker.Input />
+</DatePicker>
+```
+
+Anything `new Date(value)` cannot parse counts as malformed — `''`, `'null'`,
+`'2026-02-30T00:00:00.000Z'` (February has no 30th), or a bare `'2026-01-15'`
+that was concatenated rather than normalized.
+
 ---
 
 ## Performance

@@ -209,6 +209,25 @@ DateTimePicker 는 지원하지 않는다.
 
 See the dedicated [React Hook Form recipe](./recipes/react-hook-form.md).
 
+### The input shows the raw string instead of a formatted date
+
+넘긴 값이 파싱 가능한 ISO 8601 문자열이 아니다. 피커는 값을 추측해서 고치지 않고
+그대로 둔다 — 캘린더는 이번 달로 열리고, 입력창은 넘긴 문자열을 그대로 되돌려
+보여줘서 잘못된 데이터가 눈에 남는다.
+
+빈 문자열이나 `null` 컬럼이 `value` 로 흘러들어올 때 주로 나타난다. "선택 없음" 은
+`''` 이 아니라 `null` 로 넘긴다:
+
+```tsx
+// 아직 날짜가 없는 행
+<DatePicker value={row.startsOn ?? null} onChange={save}>
+  <DatePicker.Input />
+</DatePicker>
+```
+
+`new Date(value)` 가 파싱하지 못하는 값은 전부 malformed 다 — `''`, `'null'`,
+`'2026-02-30T00:00:00.000Z'`(2월 30일은 없다), 정규화 없이 이어붙인 `'2026-01-15'` 등.
+
 ---
 
 ## Performance

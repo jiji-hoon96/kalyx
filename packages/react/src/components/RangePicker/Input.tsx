@@ -1,6 +1,7 @@
 import { forwardRef, useCallback } from 'react';
 import type { InputHTMLAttributes } from 'react';
 import { useRangePickerContext } from '../../context/RangePickerContext.js';
+import { usableDate } from '../../internal/usableDate.js';
 
 export type RangeInputPart = 'start' | 'end';
 
@@ -27,10 +28,14 @@ export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputPro
     const displayFormat = formatProp ?? ctx.displayFormat;
 
     const value = ctx.value[part];
+    // Adapters render an unparseable value as "NaN-NaN-NaN" rather than throwing, so the
+    // validity check has to gate the format call — the catch alone would not see it.
     let displayValue = '';
     if (value) {
       try {
-        displayValue = ctx.adapter.format(value, displayFormat, ctx.displayTimezone);
+        displayValue = usableDate(value, ctx.adapter)
+          ? ctx.adapter.format(value, displayFormat, ctx.displayTimezone)
+          : value;
       } catch {
         displayValue = value;
       }

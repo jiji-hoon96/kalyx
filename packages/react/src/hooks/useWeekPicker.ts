@@ -15,6 +15,7 @@ import type {
 } from '@kalyx/core';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 import { resolveEnabledCalendarFocus, resolveMonthNavigation } from '../internal/calendarFocus.js';
+import { usableDate } from '../internal/usableDate.js';
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
 
@@ -96,13 +97,13 @@ export function useWeekPicker(options: UseWeekPickerOptions = {}): UseWeekPicker
 
   const [isOpen, setIsOpen] = useState(false);
   const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
-    const target = currentValue.start ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue.start, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
   });
   const [focusedDate, setFocusedDate] = useState<ISODateString>(() => {
-    const target = currentValue.start ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue.start, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
@@ -149,7 +150,7 @@ export function useWeekPicker(options: UseWeekPickerOptions = {}): UseWeekPicker
 
   const open = useCallback(() => {
     setIsOpen(true);
-    const target = currentValue.start ?? adapter.today(displayTimezone);
+    const target = usableDate(currentValue.start, adapter) ?? adapter.today(displayTimezone);
     const coordinate = displayTimezone
       ? calendarDayFromInstant(target, displayTimezone)
       : adapter.startOfDay(target);
