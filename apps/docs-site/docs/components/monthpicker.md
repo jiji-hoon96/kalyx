@@ -133,7 +133,7 @@ Month names follow the `locale` prop (BCP 47). The built-in `getMonthName` helpe
 
 ## Disabled rules
 
-Restrict selectable months using the same `DisabledRule` syntax as `DatePicker`. Rules are evaluated against the first day of each month.
+Restrict selectable months using the same `DisabledRule` syntax as `DatePicker`. A month is disabled only when the rules exclude every day in that month; a rule that blocks just the first day does not disable the remaining month.
 
 ```jsx live
 function DisabledMonthPicker() {
@@ -198,16 +198,16 @@ For simple forms where you don't need React state:
 
 ```tsx
 <MonthPicker defaultValue="2026-04-01T00:00:00.000Z">
-  <MonthPicker.Input />
+  <MonthPicker.Input name="billingMonth" />
   <MonthPicker.Popover>
     <MonthPicker.Grid />
   </MonthPicker.Popover>
 </MonthPicker>
 ```
 
-Unlike `DatePicker`, this picker has no native form-submission support: there is
-no `name` prop and nothing renders a hidden input. To submit the value, keep it
-in state via `onChange` and render your own `<input type="hidden">`.
+`MonthPicker.Input` inherits `DatePicker.Input`'s native form contract. Passing
+`name` renders a hidden input containing the month-start UTC ISO value; the
+visible formatted input is not submitted under that name.
 
 ## Event callbacks
 

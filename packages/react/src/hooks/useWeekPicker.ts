@@ -1,10 +1,5 @@
 import { useCallback, useId, useRef, useState } from 'react';
-import {
-  calendarDayFromInstant,
-  civilMidnightFromUtcDay,
-  getCalendarDays,
-  isDateDisabled,
-} from '@kalyx/core';
+import { calendarDayFromInstant, civilMidnightFromUtcDay, getCalendarDays } from '@kalyx/core';
 import type {
   CalendarGrid,
   DateAdapter,
@@ -16,6 +11,7 @@ import type {
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 import { resolveEnabledCalendarFocus, resolveMonthNavigation } from '../internal/calendarFocus.js';
 import { usableDate } from '../internal/usableDate.js';
+import { getWeekCoordinateRange, isWeekSelectionDisabled } from '../components/_shared/week.js';
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
 
@@ -111,27 +107,35 @@ export function useWeekPicker(options: UseWeekPickerOptions = {}): UseWeekPicker
 
   const selectWeek = useCallback(
     (iso: ISODateString) => {
+      if (!usableDate(iso, adapter)) return;
       const coordinate = displayTimezone ? iso : adapter.startOfDay(iso);
-      let weekStart: ISODateString;
-      let weekEnd: ISODateString;
-      if (weekAnchor === 'clicked') {
-        weekStart = selectingTarget === 'end' ? adapter.addDays(coordinate, -6) : coordinate;
-        weekEnd = selectingTarget === 'end' ? coordinate : adapter.addDays(coordinate, 6);
-      } else {
-        weekStart = adapter.startOfWeek(coordinate, weekStartsOn);
-        const calendarWeekEnd = adapter.endOfWeek(coordinate, weekStartsOn);
-        weekEnd = displayTimezone ? adapter.startOfDay(calendarWeekEnd) : calendarWeekEnd;
-      }
+      const { start: weekStart, end: weekEnd } = getWeekCoordinateRange(
+        coordinate,
+        adapter,
+        weekStartsOn,
+        weekAnchor,
+        selectingTarget,
+      );
+      if (
+        isWeekSelectionDisabled(
+          coordinate,
+          disabled,
+          adapter,
+          weekStartsOn,
+          weekAnchor,
+          selectingTarget,
+          displayTimezone,
+        )
+      )
+        return;
       const week: DateRange = {
         start: displayTimezone ? civilMidnightFromUtcDay(weekStart, displayTimezone) : weekStart,
-        end: displayTimezone ? civilMidnightFromUtcDay(weekEnd, displayTimezone) : weekEnd,
+        end: displayTimezone
+          ? civilMidnightFromUtcDay(weekEnd, displayTimezone)
+          : weekAnchor === 'calendar'
+            ? adapter.endOfWeek(coordinate, weekStartsOn)
+            : weekEnd,
       };
-      if (
-        (week.start && isDateDisabled(week.start, disabled, adapter, displayTimezone)) ||
-        (week.end && isDateDisabled(week.end, disabled, adapter, displayTimezone))
-      ) {
-        return;
-      }
       if (!isControlled) setUncontrolledValue(week);
       onChange?.(week);
       setIsOpen(false);
@@ -187,7 +191,20 @@ export function useWeekPicker(options: UseWeekPickerOptions = {}): UseWeekPicker
     disabled,
     range: currentValue,
     timezone: displayTimezone,
-  });
+  }).map((week) =>
+    week.map((day) => ({
+      ...day,
+      isDisabled: isWeekSelectionDisabled(
+        day.isoString,
+        disabled,
+        adapter,
+        weekStartsOn,
+        weekAnchor,
+        selectingTarget,
+        displayTimezone,
+      ),
+    })),
+  );
 
   return {
     value: currentValue,

@@ -214,6 +214,20 @@ type CivilDateTime = {
   seconds: number;
 };
 
+function assertTimePartial(partial: { hours?: number; minutes?: number; seconds?: number }): void {
+  for (const [field, value, max] of [
+    ['hours', partial.hours, 23],
+    ['minutes', partial.minutes, 59],
+    ['seconds', partial.seconds, 59],
+  ] as const) {
+    if (value !== undefined && (!Number.isInteger(value) || value < 0 || value > max)) {
+      throw new RangeError(
+        `[setTimeInTimezone] ${field} must be an integer in [0, ${max}], got ${value}`,
+      );
+    }
+  }
+}
+
 function resolveCivilDateTime(target: CivilDateTime, timeZone: string): ISODateString {
   const civilEpoch = Date.UTC(
     target.year,
@@ -285,6 +299,7 @@ export function setTimeInTimezone(
   partial: { hours?: number; minutes?: number; seconds?: number },
   timeZone: string,
 ): ISODateString {
+  assertTimePartial(partial);
   const p = partsInTimezone(new Date(iso), timeZone);
   return resolveCivilDateTime(
     {

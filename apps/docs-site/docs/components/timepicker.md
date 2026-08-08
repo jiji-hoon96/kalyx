@@ -253,6 +253,17 @@ function Example() {
 }
 ```
 
+## Native form submission
+
+Pass `name` to `TimePicker.Input` to submit the complete UTC-ISO value through a
+hidden field; the visible `HH:mm` text is not submitted under that name.
+
+```tsx
+<TimePicker defaultValue="2026-01-15T14:30:00.000Z">
+  <TimePicker.Input name="appointmentTime" />
+</TimePicker>
+```
+
 ## Related
 
 - [DateTimePicker →](./datetimepicker.md)

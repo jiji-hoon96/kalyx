@@ -325,6 +325,18 @@ function RangeWithPresets() {
 | `onOpenChange` | `(isOpen: boolean) => void` | The popover opens or closes. Not fired on initial mount. |
 | `onCalendarNavigate` | `(viewMonth: ISODateString) => void` | The calendar view moves to a different month. Not fired on initial mount. |
 
+## Native form submission
+
+Give each endpoint input a `name`. The visible formatted fields remain unnamed,
+and hidden fields submit the corresponding UTC-ISO values.
+
+```tsx
+<RangePicker defaultValue={range}>
+  <RangePicker.Input part="start" name="startDate" />
+  <RangePicker.Input part="end" name="endDate" />
+</RangePicker>
+```
+
 ## Related
 
 - [DatePicker →](./datepicker.md)

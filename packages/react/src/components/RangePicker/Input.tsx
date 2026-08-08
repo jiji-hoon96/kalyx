@@ -13,6 +13,8 @@ export interface RangePickerInputProps extends Omit<
   part: RangeInputPart;
   /** Date display format (defaults to parent's displayFormat) */
   format?: string;
+  /** Form field name for a hidden input containing this endpoint's ISO value. */
+  name?: string;
 }
 
 /**
@@ -23,7 +25,7 @@ export interface RangePickerInputProps extends Omit<
  * select via the calendar.
  */
 export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputProps>(
-  function RangePickerInput({ part, format: formatProp, onClick, onKeyDown, ...props }, ref) {
+  function RangePickerInput({ part, format: formatProp, name, onClick, onKeyDown, ...props }, ref) {
     const ctx = useRangePickerContext('RangePicker.Input');
     const displayFormat = formatProp ?? ctx.displayFormat;
 
@@ -81,29 +83,32 @@ export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputPro
     const calendarId = `${ctx.pickerId}-calendar`;
 
     return (
-      <input
-        ref={(node) => {
-          // Use the first Input (start) as the reference
-          if (part === 'start' && node) ctx.referenceRef.current = node;
-          if (typeof ref === 'function') ref(node);
-          else if (ref) ref.current = node;
-        }}
-        type="text"
-        role="combobox"
-        readOnly
-        aria-expanded={ctx.isOpen}
-        aria-haspopup="dialog"
-        aria-controls={ctx.isOpen ? calendarId : undefined}
-        aria-autocomplete="none"
-        aria-label={part === 'start' ? ctx.labels.startInput : ctx.labels.endInput}
-        autoComplete="off"
-        value={displayValue}
-        disabled={ctx.isDisabled || props.disabled}
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        data-part={part}
-        {...props}
-      />
+      <>
+        <input
+          ref={(node) => {
+            // Use the first Input (start) as the reference
+            if (part === 'start' && node) ctx.referenceRef.current = node;
+            if (typeof ref === 'function') ref(node);
+            else if (ref) ref.current = node;
+          }}
+          type="text"
+          role="combobox"
+          readOnly
+          aria-expanded={ctx.isOpen}
+          aria-haspopup="dialog"
+          aria-controls={ctx.isOpen ? calendarId : undefined}
+          aria-autocomplete="none"
+          aria-label={part === 'start' ? ctx.labels.startInput : ctx.labels.endInput}
+          autoComplete="off"
+          value={displayValue}
+          disabled={ctx.isDisabled || props.disabled}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          data-part={part}
+          {...props}
+        />
+        {name ? <input type="hidden" name={name} value={value ?? ''} /> : null}
+      </>
     );
   },
 );

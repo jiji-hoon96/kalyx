@@ -41,8 +41,9 @@ function validManifest(overrides = {}) {
   return {
     name: '@kalyx/core',
     version: '1.0.0',
+    license: 'MIT',
     scripts: { build: 'tsup' },
-    files: ['dist'],
+    files: ['dist', 'LICENSE'],
     exports: { '.': './dist/index.js' },
     publishConfig: { access: 'public', provenance: true },
     ...overrides,
@@ -63,6 +64,13 @@ describe('discoverPublishablePackages', () => {
 });
 
 describe('validatePublishablePackages', () => {
+  it('rejects a package whose advertised LICENSE file is absent', async () => {
+    const packagesDirectory = await createPackages({ public: validManifest() });
+    const packages = discoverPublishablePackages(packagesDirectory);
+
+    expect(validatePublishablePackages(packages)).toContain('@kalyx/core: LICENSE file is missing');
+  });
+
   it('reports every missing release invariant', () => {
     const problems = validatePublishablePackages([
       {
@@ -75,6 +83,7 @@ describe('validatePublishablePackages', () => {
     expect(problems).toEqual([
       '@kalyx/broken: missing scripts.build',
       '@kalyx/broken: files must be a non-empty array',
+      '@kalyx/broken: LICENSE file is missing',
       '@kalyx/broken: exports must be a non-empty object',
       '@kalyx/broken: publishConfig.access must be public',
       '@kalyx/broken: publishConfig.provenance must be true',

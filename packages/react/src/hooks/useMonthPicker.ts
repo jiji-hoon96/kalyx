@@ -100,6 +100,7 @@ export function useMonthPicker(options: UseMonthPickerOptions = {}): UseMonthPic
 
   const selectMonth = useCallback(
     (iso: ISODateString) => {
+      if (!usableDate(iso, adapter)) return;
       // Same predicate the grid uses for `isDisabled`, so a cell the grid renders
       // as unselectable cannot be committed programmatically either. Deliberately
       // not `isDateDisabled`: a month is disabled only when *fully* excluded, so a

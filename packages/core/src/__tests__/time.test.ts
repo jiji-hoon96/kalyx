@@ -36,6 +36,15 @@ describe('setTime', () => {
     });
     expect(result).toBe('2026-01-15T14:30:45.000Z');
   });
+
+  it.each([
+    [{ hours: 24 }, 'hours'],
+    [{ hours: -1 }, 'hours'],
+    [{ minutes: 60 }, 'minutes'],
+    [{ seconds: 1.5 }, 'seconds'],
+  ])('rejects an out-of-range programmatic partial %o', (partial, field) => {
+    expect(() => setTime('2026-01-15T00:00:00.000Z', partial)).toThrow(new RegExp(field));
+  });
 });
 
 describe('getTime', () => {

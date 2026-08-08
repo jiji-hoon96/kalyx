@@ -197,6 +197,7 @@ export function DateTimePickerRoot({
     (next: ISODateString | null): boolean => {
       if (isDisabled || readOnly) return false;
       if (next) {
+        if (!usableDate(next, adapter)) return false;
         if (isDateDisabled(next, disabledRules, adapter, displayTimezone)) return false;
         const finalTime = displayTimezone
           ? getTimeInTimezone(next, displayTimezone)
@@ -231,6 +232,7 @@ export function DateTimePickerRoot({
         updateValue(null);
         return;
       }
+      if (!usableDate(newDateIso, adapter)) return;
       // Map UTC-grid ISO to civil-midnight in display timezone when set
       const normalizedDate = displayTimezone
         ? civilMidnightFromUtcDay(newDateIso, displayTimezone)
@@ -241,7 +243,7 @@ export function DateTimePickerRoot({
         : setTimeOnIso(normalizedDate, currentTime);
       updateValue(merged);
     },
-    [currentTime, updateValue, displayTimezone],
+    [currentTime, updateValue, displayTimezone, adapter],
   );
 
   /**

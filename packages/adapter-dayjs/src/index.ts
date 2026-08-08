@@ -145,11 +145,25 @@ export const DayjsAdapter: DateAdapter = {
 
   isValid(value: string): boolean {
     if (!value) return false;
-    // dayjs parsing is lenient without customParseFormat strict mode (e.g.
-    // "2026-02-30" rolls over rather than failing). That's acceptable here —
-    // the DateAdapter contract only requires rejecting empty / unparseable
-    // input, which this satisfies.
-    return d(normalize(value)).isValid();
+    const parsed = d(normalize(value));
+    if (!parsed.isValid()) return false;
+
+    // Dayjs rolls impossible ISO calendar dates forward by default
+    // (`2026-02-30` becomes March 2). Validate the ISO date fields separately
+    // so picker text parsing has the same reject-invalid contract as the other
+    // official adapters, including for datetime strings with an offset.
+    const calendar = /^(\d{4})-(\d{2})-(\d{2})(?:$|T)/.exec(value);
+    if (!calendar) return true;
+    const [, yearText, monthText, dayText] = calendar;
+    const year = Number(yearText);
+    const month = Number(monthText);
+    const day = Number(dayText);
+    const probe = new Date(Date.UTC(year, month - 1, day));
+    return (
+      probe.getUTCFullYear() === year &&
+      probe.getUTCMonth() === month - 1 &&
+      probe.getUTCDate() === day
+    );
   },
 
   getYear(iso: string): number {

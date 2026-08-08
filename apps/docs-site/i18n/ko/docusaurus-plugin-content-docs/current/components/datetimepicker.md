@@ -137,6 +137,11 @@ DateTimePicker는 DatePicker와 TimePicker의 서브 컴포넌트를 한 네임�
 </DateTimePicker>
 ```
 
+## 네이티브 폼 제출
+
+`DateTimePicker.Input`에 `name`을 지정하면 화면용 포맷 문자열 대신 전체
+UTC-ISO 값이 hidden input으로 제출됩니다.
+
 ## 관련
 
 - [DatePicker →](./datepicker.md)

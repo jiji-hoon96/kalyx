@@ -7,7 +7,10 @@ import { usableDate } from '../../internal/usableDate.js';
 export interface DateTimePickerInputProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'value' | 'onChange' | 'type'
-> {}
+> {
+  /** Form field name for a hidden input containing the selected ISO value. */
+  name?: string;
+}
 
 /**
  * DateTimePicker.Input — Displays date and time combined.
@@ -16,7 +19,7 @@ export interface DateTimePickerInputProps extends Omit<
  * The input is read-only — use Calendar/TimePicker sub-components to select values.
  */
 export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerInputProps>(
-  function DateTimePickerInput({ onClick, onKeyDown, ...props }, ref) {
+  function DateTimePickerInput({ name, onClick, onKeyDown, ...props }, ref) {
     const ctx = useDatePickerContext('DateTimePicker.Input');
 
     // Combine the date portion (yyyy-MM-dd) and the time portion (HH:mm)
@@ -69,27 +72,30 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
     const calendarId = `${ctx.pickerId}-calendar`;
 
     return (
-      <input
-        ref={(node) => {
-          ctx.referenceRef.current = node;
-          if (typeof ref === 'function') ref(node);
-          else if (ref) ref.current = node;
-        }}
-        type="text"
-        role="combobox"
-        readOnly
-        aria-label={ctx.labels.dateTimeInput ?? 'Date and time'}
-        aria-expanded={ctx.isOpen}
-        aria-haspopup="dialog"
-        aria-controls={ctx.isOpen ? calendarId : undefined}
-        aria-autocomplete="none"
-        autoComplete="off"
-        value={displayValue}
-        disabled={ctx.isDisabled || props.disabled}
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        {...props}
-      />
+      <>
+        <input
+          ref={(node) => {
+            ctx.referenceRef.current = node;
+            if (typeof ref === 'function') ref(node);
+            else if (ref) ref.current = node;
+          }}
+          type="text"
+          role="combobox"
+          readOnly
+          aria-label={ctx.labels.dateTimeInput ?? 'Date and time'}
+          aria-expanded={ctx.isOpen}
+          aria-haspopup="dialog"
+          aria-controls={ctx.isOpen ? calendarId : undefined}
+          aria-autocomplete="none"
+          autoComplete="off"
+          value={displayValue}
+          disabled={ctx.isDisabled || props.disabled}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          {...props}
+        />
+        {name ? <input type="hidden" name={name} value={ctx.value ?? ''} /> : null}
+      </>
     );
   },
 );

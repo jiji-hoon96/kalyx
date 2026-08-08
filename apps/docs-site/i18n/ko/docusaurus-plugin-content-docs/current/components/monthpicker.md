@@ -84,7 +84,7 @@ Month names follow the `locale` prop (BCP 47). The built-in `getMonthName` helpe
 
 ## Disabled rules
 
-Restrict selectable months using the same `DisabledRule` syntax as `DatePicker`. Rules are evaluated against the first day of each month.
+`DatePicker`와 같은 `DisabledRule` 문법으로 선택 가능한 월을 제한합니다. 규칙이 그 달의 모든 날짜를 제외할 때만 월 전체가 비활성화됩니다. 첫날 하나만 막는 규칙은 나머지 날짜까지 비활성화하지 않습니다.
 
 ```tsx
 <MonthPicker
@@ -108,16 +108,16 @@ For simple forms where you don't need React state:
 
 ```tsx
 <MonthPicker defaultValue="2026-04-01T00:00:00.000Z">
-  <MonthPicker.Input />
+  <MonthPicker.Input name="billingMonth" />
   <MonthPicker.Popover>
     <MonthPicker.Grid />
   </MonthPicker.Popover>
 </MonthPicker>
 ```
 
-`DatePicker` 와 달리 이 피커는 네이티브 폼 제출을 지원하지 않는다 — `name` prop 이
-없고 hidden input 도 렌더하지 않는다. 값을 제출하려면 `onChange` 로 상태에 담아
-직접 `<input type="hidden">` 을 렌더한다.
+`MonthPicker.Input`은 `DatePicker.Input`의 네이티브 폼 계약을 그대로 상속합니다.
+`name`을 넘기면 월 시작 UTC ISO 값을 담은 hidden input이 렌더링되며, 화면에 보이는
+포맷된 입력값은 그 이름으로 제출되지 않습니다.
 
 ## Event callbacks
 

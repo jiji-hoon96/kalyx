@@ -121,6 +121,7 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
 
   const updateValue = useCallback(
     (next: ISODateString | null) => {
+      if (next && !usableDate(next, adapter)) return false;
       if (next && isDateDisabled(next, disabled, adapter, displayTimezone)) return false;
       if (next) {
         const finalTime = displayTimezone
@@ -141,6 +142,7 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
         updateValue(null);
         return;
       }
+      if (!usableDate(iso, adapter)) return;
       const normalizedDate = displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
       const time = currentValue
         ? displayTimezone
@@ -152,7 +154,7 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
         : setTimeOnIso(normalizedDate, time);
       updateValue(merged);
     },
-    [currentValue, currentTime, updateValue, displayTimezone],
+    [currentValue, currentTime, updateValue, displayTimezone, adapter],
   );
 
   const setTime = useCallback(

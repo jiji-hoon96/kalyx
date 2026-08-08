@@ -105,9 +105,8 @@ Restrict selectable weeks. Any `DisabledRule` that matches at least one day in a
 </WeekPicker>
 ```
 
-`DatePicker` 와 달리 이 피커는 네이티브 폼 제출을 지원하지 않는다 — `name` prop 이
-없고 hidden input 도 렌더하지 않는다. 값을 제출하려면 `onChange` 로 상태에 담아
-직접 `<input type="hidden">` 을 렌더한다.
+네이티브 폼 제출에는 시작 또는 종료 입력에 `name`을 지정합니다. 화면용 입력에는
+이름을 붙이지 않고, hidden input이 해당 끝점의 UTC-ISO 값을 제출합니다.
 
 ## Timezone
 

@@ -12,6 +12,7 @@ import {
 import type { DateAdapter, ISODateString, TimeValue } from '@kalyx/core';
 import type { TimePickerFormat } from '../context/TimePickerContext.js';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
+import { getUsableDate, isUsableDate } from '../internal/usableDate.js';
 
 export interface UseTimePickerOptions {
   /** Selected time (controlled mode) */
@@ -105,10 +106,15 @@ export function useTimePicker(options: UseTimePickerOptions = {}): UseTimePicker
   );
 
   const currentValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
-  const baseIso = currentValue ?? adapter.today(displayTimezone);
+  const baseIso = getUsableDate(currentValue, adapter, () => adapter.today(displayTimezone));
   const currentTime = useMemo(
-    () => (displayTimezone ? getTimeInTimezone(baseIso, displayTimezone) : getTime(baseIso)),
-    [baseIso, displayTimezone],
+    () =>
+      isUsableDate(currentValue, adapter)
+        ? displayTimezone
+          ? getTimeInTimezone(baseIso, displayTimezone)
+          : getTime(baseIso)
+        : { hours: 0, minutes: 0, seconds: 0 },
+    [currentValue, adapter, baseIso, displayTimezone],
   );
 
   const setTime = useCallback(

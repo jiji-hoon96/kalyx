@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { render, renderHook } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { act, render, renderHook } from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
 import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 import { DatePicker } from '../DatePicker/index.js';
@@ -368,6 +368,31 @@ describe('the fallback seeds the view to today, and the input still shows the ra
       </DatePicker>,
     );
     expect((screenInput() as HTMLInputElement).value).toBe('not-a-date');
+  });
+});
+
+describe('malformed programmatic mutations', () => {
+  it('rejects every invalid ISO candidate without firing a callback or throwing', () => {
+    const callbacks = Array.from({ length: 6 }, () => vi.fn());
+    const date = renderHook(() => useDatePicker({ onChange: callbacks[0] }));
+    const range = renderHook(() => useRangePicker({ onChange: callbacks[1] }));
+    const week = renderHook(() => useWeekPicker({ onChange: callbacks[2] }));
+    const month = renderHook(() => useMonthPicker({ onChange: callbacks[3] }));
+    const year = renderHook(() => useYearPicker({ onChange: callbacks[4] }));
+    const datetime = renderHook(() => useDateTimePicker({ onChange: callbacks[5] }));
+
+    expect(() => {
+      act(() => {
+        date.result.current.selectDate('not-a-date');
+        range.result.current.setRange({ start: 'not-a-date', end: null });
+        week.result.current.selectWeek('not-a-date');
+        month.result.current.selectMonth('not-a-date');
+        year.result.current.selectYear('not-a-date');
+        datetime.result.current.selectDate('not-a-date');
+      });
+    }).not.toThrow();
+
+    for (const callback of callbacks) expect(callback).not.toHaveBeenCalled();
   });
 });
 

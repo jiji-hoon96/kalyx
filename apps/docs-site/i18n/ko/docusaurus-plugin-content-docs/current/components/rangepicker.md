@@ -200,6 +200,18 @@ type PresetKey =
 </RangePicker>
 ```
 
+## 네이티브 폼 제출
+
+각 입력에 `name`을 지정하면 화면에는 포맷된 날짜를 표시하되, hidden input이
+각 시작·종료 값을 UTC-ISO 문자열로 제출합니다.
+
+```tsx
+<RangePicker defaultValue={range}>
+  <RangePicker.Input part="start" name="startDate" />
+  <RangePicker.Input part="end" name="endDate" />
+</RangePicker>
+```
+
 ## 관련
 
 - [DatePicker →](./datepicker.md)

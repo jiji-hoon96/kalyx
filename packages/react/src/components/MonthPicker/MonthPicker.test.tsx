@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import type { DisabledRule } from '@kalyx/core';
@@ -78,6 +78,14 @@ describe('MonthPicker — basic interactions', () => {
 
     await user.click(screen.getByRole('combobox'));
     await user.click(screen.getByRole('gridcell', { name: 'June' }));
+
+    expect(onChange).toHaveBeenCalledWith('2026-06-01T00:00:00.000Z');
+  });
+
+  it('commits the month-start ISO when a full date is typed', () => {
+    const { onChange } = renderMonthPicker({ defaultValue: '2026-04-01T00:00:00.000Z' });
+
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: '2026-06-15' } });
 
     expect(onChange).toHaveBeenCalledWith('2026-06-01T00:00:00.000Z');
   });

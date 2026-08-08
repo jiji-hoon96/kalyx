@@ -117,6 +117,7 @@ export function useDatePicker(options: UseDatePickerOptions = {}): UseDatePicker
 
   const selectDate = useCallback(
     (iso: ISODateString | null) => {
+      if (iso && !usableDate(iso, adapter)) return;
       const normalized =
         iso && displayTimezone ? civilMidnightFromUtcDay(iso, displayTimezone) : iso;
       if (normalized && isDateDisabled(normalized, disabled, adapter, displayTimezone)) return;
