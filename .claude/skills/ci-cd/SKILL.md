@@ -1,16 +1,6 @@
 ---
 name: ci-cd
-version: 1.0.0
-description: |
-  GitHub Actions CI/CD 파이프라인 완전 가이드.
-  PR 검증, 자동 릴리즈, 번들 크기 게이팅, 문서 배포까지 실제 YAML 포함.
-triggers:
-  - "CI/CD 파이프라인을 설정할 때"
-  - "GitHub Actions 워크플로우를 만들 때"
-  - "자동 배포를 구성할 때"
-  - "번들 크기를 CI에서 체크하고 싶을 때"
-  - "테스트를 자동화할 때"
-external_reference: engineering/ci-cd-pipeline-builder (alirezarezvani/claude-skills)
+description: GitHub Actions CI/CD 파이프라인 완전 가이드.
 ---
 
 # Skill: CI/CD 파이프라인
@@ -509,3 +499,10 @@ act pull_request --job bundle-size
 # 특정 workflow 전체 실행
 act -W .github/workflows/pr-check.yml
 ```
+
+---
+
+## 출처
+
+- 버전: 1.0.0
+- 참고: engineering/ci-cd-pipeline-builder (alirezarezvani/claude-skills)

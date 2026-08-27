@@ -1,13 +1,6 @@
 ---
 name: testing
-version: 1.0.0
-description: DatePicker 테스트 전략. 단위→통합→접근성→SSR 순으로 계층화된 테스트.
-triggers:
-  - "테스트를 작성할 때"
-  - "테스트가 실패했을 때"
-  - "커버리지를 확인할 때"
-  - "새 컴포넌트의 테스트 파일을 만들 때"
-external_reference: engineering-team/senior-qa (alirezarezvani/claude-skills)
+description: 'DatePicker 테스트 전략. 단위→통합→접근성→SSR 순으로 계층화된 테스트. 다음 상황에서 사용한다: "테스트를 작성할 때", "테스트가 실패했을 때", "커버리지를 확인할 때", "새 컴포넌트의 테스트 파일을 만들 때"'
 ---
 
 # Skill: 테스트 전략
@@ -383,3 +376,10 @@ import { expect } from 'vitest';
 import { toHaveNoViolations } from 'jest-axe';
 expect.extend(toHaveNoViolations);
 ```
+
+---
+
+## 출처
+
+- 버전: 1.0.0
+- 참고: engineering-team/senior-qa (alirezarezvani/claude-skills)

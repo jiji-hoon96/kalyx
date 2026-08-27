@@ -1,18 +1,6 @@
 ---
 name: accessibility
-version: 1.0.0
-description: DatePicker 접근성 구현 기준. WCAG 2.2, WAI-ARIA Calendar 패턴 기반.
-triggers:
-  - "ARIA 속성을 추가할 때"
-  - "키보드 내비게이션을 구현할 때"
-  - "접근성 버그를 수정할 때"
-  - "axe 검사를 실행할 때"
-  - "스크린리더 지원을 구현할 때"
-standards:
-  - WCAG 2.2 AA
-  - WAI-ARIA 1.2
-  - APG DatePicker Dialog Pattern
-reference_url: https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/
+description: 'DatePicker 접근성 구현 기준. WCAG 2.2, WAI-ARIA Calendar 패턴 기반. 다음 상황에서 사용한다: "ARIA 속성을 추가할 때", "키보드 내비게이션을 구현할 때", "접근성 버그를 수정할 때", "axe 검사를 실행할 때", "스크린리더 지원을 구현할 때"'
 ---
 
 # Skill: 접근성 (Accessibility)
@@ -386,3 +374,11 @@ describe('접근성', () => {
 - [ ] Live region이 월 이동/날짜 선택을 알리는가?
 - [ ] axe 검사를 통과하는가?
 - [ ] 스크린리더 실제 테스트를 했는가? (VoiceOver on macOS)
+
+---
+
+## 출처
+
+- 버전: 1.0.0
+- 표준: ['WCAG 2.2 AA', 'WAI-ARIA 1.2', 'APG DatePicker Dialog Pattern']
+- 링크: https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/

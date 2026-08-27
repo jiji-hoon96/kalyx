@@ -1,14 +1,6 @@
 ---
 name: rc-announcement
-version: 1.3.0
-description: |
-  v1.0.0 Release Candidate 배포·공지 플레이북.
-  npm publish 검증, GitHub Release, docs 배너, README 배지, 소셜 초안까지 한 흐름으로 다룬다.
-triggers:
-  - "RC를 공지할 때"
-  - "v1.0.0-rc 배포 상태를 검증할 때"
-  - "프리릴리즈 공개 준비를 할 때"
-  - "RC에서 정식 릴리즈(1.0.0)로 졸업할 때"
+description: v1.0.0 Release Candidate 배포·공지 플레이북.
 ---
 
 # Skill: v1.0 RC 배포 및 공지
@@ -291,3 +283,9 @@ pnpm changeset version   # rc.N → 1.0.0
 - [ ] `pnpm --filter @kalyx/react build` — 실제 번들 크기 수치 확보
 - [ ] `ls .changeset/*.md | grep -v README` — 누적 changeset 잔량 (있으면 다음 RC 대기 중)
 - [ ] 위 5개 결과로 "어느 Step부터 이어서 할지" 판정
+
+---
+
+## 출처
+
+- 버전: 1.3.0

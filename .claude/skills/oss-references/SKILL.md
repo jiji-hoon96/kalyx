@@ -1,10 +1,6 @@
 ---
 name: oss-references
-version: 1.0.0
-description: 이 프로젝트에서 활용 가능한 외부 오픈소스 스킬 목록. alirezarezvani/claude-skills 기준.
-triggers:
-  - "외부 스킬을 참조해야 할 때"
-  - "어떤 스킬이 있는지 확인할 때"
+description: '이 프로젝트에서 활용 가능한 외부 오픈소스 스킬 목록. alirezarezvani/claude-skills 기준. 다음 상황에서 사용한다: "외부 스킬을 참조해야 할 때", "어떤 스킬이 있는지 확인할 때"'
 ---
 
 # Skill: 외부 오픈소스 스킬 참조
@@ -150,3 +146,9 @@ const DatePicker = Object.assign(DatePickerRoot, {
   Popover: DatePickerPopover,
 });
 ```
+
+---
+
+## 출처
+
+- 버전: 1.0.0
