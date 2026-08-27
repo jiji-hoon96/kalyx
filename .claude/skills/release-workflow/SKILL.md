@@ -1,6 +1,6 @@
 ---
 name: release-workflow
-description: 버전 관리, 릴리즈, npm 배포 전체 워크플로우.
+description: '버전 관리, 릴리즈, npm 배포 전체 워크플로우. Changesets 기반 모노레포 버전 관리부터 npm publish까지 A-Z. 다음 상황에서 사용한다: "버전을 올려야 할 때", "npm에 배포할 때", "CHANGELOG를 작성할 때", "pre-release를 만들 때", "Breaking change를 처리할 때", "패키지 설정을 확인할 때"'
 ---
 
 # Skill: 릴리즈 워크플로우

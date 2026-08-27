@@ -1,6 +1,6 @@
 ---
 name: rc-announcement
-description: v1.0.0 Release Candidate 배포·공지 플레이북.
+description: 'v1.0.0 Release Candidate 배포·공지 플레이북. npm publish 검증, GitHub Release, docs 배너, README 배지, 소셜 초안까지 한 흐름으로 다룬다. 다음 상황에서 사용한다: "RC를 공지할 때", "v1.0.0-rc 배포 상태를 검증할 때", "프리릴리즈 공개 준비를 할 때", "RC에서 정식 릴리즈(1.0.0)로 졸업할 때"'
 ---
 
 # Skill: v1.0 RC 배포 및 공지
