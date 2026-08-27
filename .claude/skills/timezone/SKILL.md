@@ -1,13 +1,6 @@
 ---
 name: timezone
-version: 1.0.0
-description: DatePicker의 timezone 처리 원칙과 Adapter 구현. react-datepicker #1018 버그를 설계 시점에 방지한다.
-triggers:
-  - "날짜 값을 처리할 때"
-  - "timezone 관련 코드를 작성할 때"
-  - "Date 객체를 다룰 때"
-  - "서버-클라이언트 날짜 동기화 문제"
-  - "displayTimezone prop을 구현할 때"
+description: 'DatePicker의 timezone 처리 원칙과 Adapter 구현. react-datepicker. 다음 상황에서 사용한다: "날짜 값을 처리할 때", "timezone 관련 코드를 작성할 때", "Date 객체를 다룰 때", "서버-클라이언트 날짜 동기화 문제", "displayTimezone prop을 구현할 때"'
 ---
 
 # Skill: Timezone 처리
@@ -328,3 +321,9 @@ describe('timezone 처리', () => {
 - [ ] 포맷팅에 adapter.format(iso, format, timezone)을 쓰는가?
 - [ ] UTC+9, UTC+0, UTC-5 환경에서 테스트했는가?
 - [ ] DST 전환일 테스트가 있는가?
+
+---
+
+## 출처
+
+- 버전: 1.0.0

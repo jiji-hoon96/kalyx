@@ -1,17 +1,6 @@
 ---
 name: release-workflow
-version: 1.0.0
-description: |
-  버전 관리, 릴리즈, npm 배포 전체 워크플로우.
-  Changesets 기반 모노레포 버전 관리부터 npm publish까지 A-Z.
-triggers:
-  - "버전을 올려야 할 때"
-  - "npm에 배포할 때"
-  - "CHANGELOG를 작성할 때"
-  - "pre-release를 만들 때"
-  - "Breaking change를 처리할 때"
-  - "패키지 설정을 확인할 때"
-external_reference: engineering/release-manager (alirezarezvani/claude-skills)
+description: 버전 관리, 릴리즈, npm 배포 전체 워크플로우.
 ---
 
 # Skill: 릴리즈 워크플로우
@@ -382,3 +371,10 @@ v1.x.x  — Stable: minor는 새 기능만, breaking은 major만
 1. minor 버전에서 `@deprecated` JSDoc + 콘솔 경고 추가
 2. 다음 major 버전에서 제거
 3. 최소 1개 minor 버전 주기(약 1-2개월) 유지
+
+---
+
+## 출처
+
+- 버전: 1.0.0
+- 참고: engineering/release-manager (alirezarezvani/claude-skills)

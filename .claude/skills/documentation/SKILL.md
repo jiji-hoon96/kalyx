@@ -1,13 +1,6 @@
 ---
 name: documentation
-version: 1.0.0
-description: 코드 문서화 기준. JSDoc, README, 예제, CHANGELOG 작성 규칙.
-triggers:
-  - "JSDoc 주석을 작성할 때"
-  - "README를 업데이트할 때"
-  - "예제 코드를 작성할 때"
-  - "CHANGELOG를 작성할 때"
-  - "릴리즈 노트를 만들 때"
+description: '코드 문서화 기준. JSDoc, README, 예제, CHANGELOG 작성 규칙. 다음 상황에서 사용한다: "JSDoc 주석을 작성할 때", "README를 업데이트할 때", "예제 코드를 작성할 때", "CHANGELOG를 작성할 때", "릴리즈 노트를 만들 때"'
 ---
 
 # Skill: 문서화
@@ -288,3 +281,9 @@ export function DatePicker({ timezone, displayTimezone, ...props }) {
   }
 }
 ```
+
+---
+
+## 출처
+
+- 버전: 1.0.0

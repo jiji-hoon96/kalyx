@@ -1,15 +1,6 @@
 ---
 name: adapter-extraction
-version: 1.0.0
-description: |
-  date-fns 의존성을 @kalyx/core에서 제거하고 dayjs/luxon 등 다른 날짜 라이브러리로 확장 가능하게 만드는
-  "Option C — Hybrid(이중 엔트리)" 실행 플레이북. C1 진단 결과 + C2 구현 계획 포함.
-triggers:
-  - "core에서 date-fns 의존성을 제거할 때"
-  - "dayjs/luxon 어댑터를 추가할 때"
-  - "@kalyx/react/headless 엔트리를 설계할 때"
-  - "Kalyx를 어댑터 중립(neutral core) 구조로 만들 때"
-external_reference: engineering/dependency-auditor (alirezarezvani/claude-skills)
+description: date-fns 의존성을 @kalyx/core에서 제거하고 dayjs/luxon 등 다른 날짜 라이브러리로 확장 가능하게 만드는
 ---
 
 # Skill: 다중 어댑터 추출 (Option C — Hybrid)
@@ -351,3 +342,10 @@ node scripts/verify-entry-split.mjs
 - [ ] 위 "C1 재검증 체크리스트" 실행
 - [ ] 상태에 따라 Commit 1~4 중 어디서 이어갈지 판정
 - [ ] 새 worktree 또는 branch (`feat/adapter-extraction`) 분리 후 진행
+
+---
+
+## 출처
+
+- 버전: 1.0.0
+- 참고: engineering/dependency-auditor (alirezarezvani/claude-skills)

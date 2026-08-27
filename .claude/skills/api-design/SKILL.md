@@ -1,13 +1,6 @@
 ---
 name: api-design
-version: 1.0.0
-description: DatePicker 컴포넌트 API 설계 원칙. 새 컴포넌트나 prop을 추가할 때 참조한다.
-triggers:
-  - "새 컴포넌트를 만들 때"
-  - "prop 설계를 고민할 때"
-  - "API 리뷰를 할 때"
-  - "컴포넌트 인터페이스를 정의할 때"
-external_reference: engineering/api-design-reviewer (alirezarezvani/claude-skills)
+description: 'DatePicker 컴포넌트 API 설계 원칙. 새 컴포넌트나 prop을 추가할 때 참조한다. 다음 상황에서 사용한다: "새 컴포넌트를 만들 때", "prop 설계를 고민할 때", "API 리뷰를 할 때", "컴포넌트 인터페이스를 정의할 때"'
 ---
 
 # Skill: API 설계
@@ -259,3 +252,10 @@ if (!context) {
 - [alirezarezvani/claude-skills: engineering/api-design-reviewer](https://github.com/alirezarezvani/claude-skills/tree/main/engineering) — REST API 설계 원칙 (컴포넌트 API에도 적용 가능)
 - [Radix UI 설계 철학](https://www.radix-ui.com/primitives/docs/guides/composition) — asChild 패턴 기준
 - [TanStack Form API 설계](https://tanstack.com/form) — Composition API 실제 사례
+
+---
+
+## 출처
+
+- 버전: 1.0.0
+- 참고: engineering/api-design-reviewer (alirezarezvani/claude-skills)

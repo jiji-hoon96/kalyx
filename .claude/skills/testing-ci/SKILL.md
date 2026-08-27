@@ -1,16 +1,6 @@
 ---
 name: testing-ci
-version: 1.0.0
-description: |
-  CI 환경에서의 테스트 자동화. 커버리지 게이팅, 병렬 테스트, 
-  E2E 테스트 (Playwright), 시각적 회귀 테스트까지.
-triggers:
-  - "CI 테스트를 설정할 때"
-  - "E2E 테스트를 추가할 때"
-  - "커버리지가 낮을 때"
-  - "테스트가 느릴 때"
-  - "Playwright 테스트를 작성할 때"
-external_reference: engineering-team/playwright-pro (alirezarezvani/claude-skills)
+description: CI 환경에서의 테스트 자동화. 커버리지 게이팅, 병렬 테스트,
 ---
 
 # Skill: CI 테스트 자동화
@@ -460,3 +450,10 @@ pnpm test:ui
 # Playwright 디버그 모드
 PWDEBUG=1 npx playwright test
 ```
+
+---
+
+## 출처
+
+- 버전: 1.0.0
+- 참고: engineering-team/playwright-pro (alirezarezvani/claude-skills)
