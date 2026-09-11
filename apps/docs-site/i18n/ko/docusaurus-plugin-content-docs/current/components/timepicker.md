@@ -40,7 +40,39 @@ function Example() {
 
 값은 여전히 ISO 8601 UTC 문자열 — 날짜 부분은 placeholder 역할. 시/분만 필요하면 `@kalyx/core`의 `getTime(iso)`를 쓰세요.
 
-## 직접 사용해보기
+### 직접 사용해보기
+
+> 라이브 에디터는 `React` 와 모든 Kalyx 컴포넌트를 스코프에 두고 실행되므로 `import` 줄을 생략했습니다. 프로젝트로 옮길 때 채워 넣으세요. 전체 import 는 위의 일반 코드 블록에 있습니다.
+
+```jsx live
+function Basic24h() {
+  const [time, setTime] = React.useState(null);
+  return (
+    <TimePicker value={time} onChange={setTime} format="24h" step={15}>
+      <TimePicker.Input className="kx-live-input" style={{ minWidth: '8rem' }} />
+      <div className="kx-live-row" style={{ marginTop: 8 }}>
+        <TimePicker.HourList
+          classNames={{
+            root: 'kx-live-list',
+            option: 'kx-live-option',
+            optionSelected: 'kx-live-option-selected',
+          }}
+        />
+        <TimePicker.MinuteList
+          classNames={{
+            root: 'kx-live-list',
+            option: 'kx-live-option',
+            optionSelected: 'kx-live-option-selected',
+          }}
+        />
+      </div>
+      <div className="kx-live-value" style={{ marginTop: 8 }}>
+        선택됨: <code>{time ?? 'null'}</code>
+      </div>
+    </TimePicker>
+  );
+}
+```
 
 <StackBlitzEmbed id="timepicker-12h" />
 
@@ -101,6 +133,8 @@ type TimePickerHourListClassNames = {
 - `format="24h"` → `0–23`
 - `format="12h"` → `1–12` (`<AmPmToggle>`로 오전/오후 관리)
 
+각 옵션은 현재 시일 때 `data-selected` 를 갖습니다. `MinuteList` 와 `AmPmToggle` 의 옵션도 같은 `data-selected` 플래그를 내보냅니다. [스타일링](../concepts/styling.md) 참고.
+
 ## `<TimePicker.MinuteList>`
 
 `step`으로 필터된 분 목록 (`role="listbox"`).
@@ -140,12 +174,60 @@ type TimePickerAmPmToggleClassNames = {
 </TimePicker>
 ```
 
+```jsx live
+function TwelveHour() {
+  const [time, setTime] = React.useState(null);
+  return (
+    <TimePicker value={time} onChange={setTime} format="12h" step={15}>
+      <TimePicker.Input className="kx-live-input" style={{ minWidth: '8rem' }} />
+      <div className="kx-live-row" style={{ marginTop: 8 }}>
+        <TimePicker.HourList
+          classNames={{
+            root: 'kx-live-list',
+            option: 'kx-live-option',
+            optionSelected: 'kx-live-option-selected',
+          }}
+        />
+        <TimePicker.MinuteList
+          classNames={{
+            root: 'kx-live-list',
+            option: 'kx-live-option',
+            optionSelected: 'kx-live-option-selected',
+          }}
+        />
+        <TimePicker.AmPmToggle
+          classNames={{
+            root: 'kx-live-ampm',
+            option: 'kx-live-ampm-btn',
+            optionSelected: 'kx-live-ampm-selected',
+          }}
+        />
+      </div>
+    </TimePicker>
+  );
+}
+```
+
 ### 초 포함
 
 ```tsx
 <TimePicker value={time} onChange={setTime} withSeconds>
   <TimePicker.Input />
 </TimePicker>
+```
+
+```jsx live
+function WithSeconds() {
+  const [time, setTime] = React.useState(null);
+  return (
+    <TimePicker value={time} onChange={setTime} withSeconds>
+      <TimePicker.Input className="kx-live-input" style={{ minWidth: '8rem' }} />
+      <div className="kx-live-value" style={{ marginTop: 8 }}>
+        선택됨: <code>{time ?? 'null'}</code>
+      </div>
+    </TimePicker>
+  );
+}
 ```
 
 ### `TimeValue` 추출해 로직에 쓰기

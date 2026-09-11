@@ -55,7 +55,42 @@ function Example() {
 
 기본 `displayFormat` 은 `"yyyy"` 입니다.
 
-## 직접 사용해보기
+### 직접 사용해보기
+
+> 라이브 에디터에는 `React` 와 모든 Kalyx 컴포넌트가 이미 스코프에 들어 있어서 `import` 줄을 생략했습니다. 여러분의 프로젝트로 옮길 때는 직접 넣으세요. 전체 import 는 위의 일반 코드 블록에 있습니다.
+
+```jsx live
+function BasicYearPicker() {
+  const [year, setYear] = React.useState(null);
+  const headerCls = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+  };
+  return (
+    <YearPicker value={year} onChange={setYear}>
+      <div className="kx-live-row">
+        <YearPicker.Input className="kx-live-input" placeholder="YYYY" />
+        <YearPicker.Trigger className="kx-live-trigger" aria-label="연도 선택기 열기" />
+      </div>
+      <YearPicker.Popover className="kx-live-popover">
+        <YearPicker.Grid
+          classNames={{
+            ...headerCls,
+            grid: 'kx-live-year-grid',
+            year: 'kx-live-my-cell',
+            yearSelected: 'kx-live-my-selected',
+            yearCurrent: 'kx-live-my-current',
+          }}
+        />
+      </YearPicker.Popover>
+      <div className="kx-live-value">
+        선택됨: <code>{year ?? 'null'}</code>
+      </div>
+    </YearPicker>
+  );
+}
+```
 
 <StackBlitzEmbed id="datepicker-basic" />
 
@@ -87,6 +122,47 @@ function Example() {
 ## 비활성화 규칙
 
 규칙이 해당 연도의 모든 날짜를 제외할 때만 연도 전체가 비활성화됩니다. 1월 1일 하나만 막는 규칙은 나머지 날짜까지 비활성화하지 않습니다.
+
+```jsx live
+function DisabledYearPicker() {
+  const [year, setYear] = React.useState(null);
+  const headerCls = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+  };
+  return (
+    <YearPicker
+      value={year}
+      onChange={setYear}
+      disabled={[
+        { before: '2020-01-01T00:00:00.000Z' },
+        { after: '2030-01-01T00:00:00.000Z' },
+      ]}
+    >
+      <div className="kx-live-row">
+        <YearPicker.Input className="kx-live-input" placeholder="2020–2030" />
+        <YearPicker.Trigger className="kx-live-trigger" aria-label="연도 선택기 열기" />
+      </div>
+      <YearPicker.Popover className="kx-live-popover">
+        <YearPicker.Grid
+          classNames={{
+            ...headerCls,
+            grid: 'kx-live-year-grid',
+            year: 'kx-live-my-cell',
+            yearSelected: 'kx-live-my-selected',
+            yearCurrent: 'kx-live-my-current',
+            yearDisabled: 'kx-live-disabled',
+          }}
+        />
+      </YearPicker.Popover>
+      <div className="kx-live-value">
+        선택됨: <code>{year ?? 'null'}</code>
+      </div>
+    </YearPicker>
+  );
+}
+```
 
 ```tsx
 <YearPicker
@@ -149,6 +225,8 @@ function Example() {
   }}
 />
 ```
+
+각 연도 셀은 `data-selected`, `data-current`, `data-focused`(활성 셀에만) 를 내보냅니다. [스타일링](../concepts/styling.md) 을 참고하세요.
 
 ## 관련
 
