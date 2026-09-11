@@ -249,6 +249,20 @@ function resolveCivilDateTime(target: CivilDateTime, timeZone: string): ISODateS
   const offset2 = getTimezoneOffsetMinutes(probe2, timeZone);
   const realEpoch2 = civilEpoch - offset2 * 60_000;
 
+  // Both probes agreed, so the two candidates are the same instant: `civilMatches`
+  // would receive the same argument twice, and every branch below (`min`, either
+  // single match, `max`) collapses to that instant. Skip the classification —
+  // each `civilMatches` call costs an `Intl.DateTimeFormat.formatToParts`, and the
+  // calendar grid runs this path once per cell (42×).
+  //
+  // Only a spring-forward gap makes the probes disagree: the civil-as-UTC reading
+  // sits on the pre-transition side while the resolved instant sits after it. An
+  // ambiguous fall-back hour converges here instead (America/New_York 2026-11-01
+  // 01:30 reads -240 at both probes) and returns the same instant the `match1 &&
+  // match2 → min` branch produced, so the documented `disambiguation: 'earlier'`
+  // policy is unchanged.
+  if (realEpoch1 === realEpoch2) return new Date(realEpoch1).toISOString();
+
   const civilMatches = (epoch: number) => {
     const actual = partsInTimezone(new Date(epoch), timeZone);
     return (
