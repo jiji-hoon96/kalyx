@@ -20,6 +20,7 @@ import type {
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 import { resolveEnabledCalendarFocus, resolveMonthNavigation } from '../internal/calendarFocus.js';
 import { usableDate } from '../internal/usableDate.js';
+import { NO_DISABLED_RULES } from '../internal/constants.js';
 
 export interface UseDateTimePickerOptions {
   /** Selected datetime (controlled, ISO 8601 UTC — date and time) */
@@ -81,7 +82,7 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
     value: controlledValue,
     defaultValue,
     onChange,
-    disabled = [],
+    disabled = NO_DISABLED_RULES,
     weekStartsOn = 0,
     adapter: adapterProp,
     displayTimezone,
@@ -199,15 +200,21 @@ export function useDateTimePicker(options: UseDateTimePickerOptions = {}): UseDa
     });
   }, [adapter, disabled, displayTimezone]);
 
-  const calendar = getCalendarDays(viewMonth, adapter, {
-    weekStartsOn,
-    selected: currentValue,
-    focusedDate: displayTimezone
-      ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
-      : focusedDate,
-    disabled,
-    timezone: displayTimezone,
-  });
+  // Memoized so an unrelated re-render in the consumer doesn't rebuild the
+  // 42-cell grid. Mirrors DatePicker.Calendar, which has always done this.
+  const calendar = useMemo(
+    () =>
+      getCalendarDays(viewMonth, adapter, {
+        weekStartsOn,
+        selected: currentValue,
+        focusedDate: displayTimezone
+          ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
+          : focusedDate,
+        disabled,
+        timezone: displayTimezone,
+      }),
+    [viewMonth, adapter, weekStartsOn, currentValue, focusedDate, disabled, displayTimezone],
+  );
 
   return {
     value: currentValue,

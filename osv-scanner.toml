@@ -6,7 +6,7 @@
 
 [[IgnoredVulns]]
 id = "GHSA-5p2g-fcmc-qvqq"
-ignoreUntil = 2026-11-07
+ignoreUntil = 2027-02-07
 reason = """
 image-size 2.0.2: denial of service via infinite loops in the JXL and HEIF
 parsers (CVE-2025-71329, HIGH). No fixed version exists — OSV reports
@@ -21,11 +21,19 @@ this repository and waiting for a docs build to hang — a self-inflicted CI
 outage, not exposure for library consumers.
 
 Revisit when image-size ships a fix or Docusaurus moves off it.
+
+Re-verified 2026-09-11, expiry extended 2026-11-07 -> 2027-02-07. Nothing
+changed upstream: npm `latest` is still 2.0.2 (the only other dist-tag is
+`legacy` 1.2.1, and the advisory's range is `introduced: 0` with
+`last_affected: 2.0.2`, so every published version is affected — there is no
+downgrade either). The OSV record still carries no `fixed` event. And the
+upgrade escape is closed: @docusaurus/mdx-loader 3.10.2, the newest release,
+still declares `image-size: ^2.0.2`, so bumping Docusaurus would not drop it.
 """
 
 [[IgnoredVulns]]
 id = "GHSA-w3rx-r6r6-pgpr"
-ignoreUntil = 2026-11-07
+ignoreUntil = 2027-02-07
 reason = """
 image-size 2.0.2: denial of service via an infinite loop in the ICNS parser
 (CVE-2025-71330, HIGH). Same dependency, same reachability and same absence of a

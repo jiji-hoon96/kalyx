@@ -4,6 +4,7 @@ import type { DateAdapter, DisabledRule, ISODateString } from '@kalyx/core';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 import { isRangeFullyDisabled } from '../components/_shared/grid-keyboard.js';
 import { usableDate } from '../internal/usableDate.js';
+import { NO_DISABLED_RULES } from '../internal/constants.js';
 
 export interface UseMonthPickerOptions {
   /** Selected month (controlled mode), stored as the month-start ISO string */
@@ -70,7 +71,7 @@ export function useMonthPicker(options: UseMonthPickerOptions = {}): UseMonthPic
     value: controlledValue,
     defaultValue,
     onChange,
-    disabled = [],
+    disabled = NO_DISABLED_RULES,
     adapter: adapterProp,
     displayTimezone,
     locale = 'en-US',

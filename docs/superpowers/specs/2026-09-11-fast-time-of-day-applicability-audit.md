@@ -115,7 +115,7 @@ if (realEpoch1 === realEpoch2) return new Date(realEpoch1).toISOString();
 
 게이트가 재는 `@kalyx/react` 번들은 변하지 않는다. tsup 이 `dependencies` 를 자동 외부화하므로 `@kalyx/core` 는 react 번들에 포함되지 않기 때문이다. core 자체는 +9 B 이고, 주석은 빌드에서 제거되므로 비용에 들어가지 않는다.
 
-### 후보 B: 훅 4종의 `getCalendarDays` 메모이제이션 누락
+### 후보 B: 훅의 메모이제이션 누락 (적용 완료)
 
 `components/DatePicker/Calendar.tsx:83` 과 `components/RangePicker/Calendar.tsx:118` 은 `useMemo` 로 감싸고 있다. 반면 훅 경로는 감싸지 않는다.
 
@@ -126,7 +126,31 @@ if (realEpoch1 === realEpoch2) return new Date(realEpoch1).toISOString();
 
 훅 소비자는 부모가 리렌더될 때마다 42셀 그리드를 다시 만든다. 비용은 UTC 290µs, `displayTimezone` 1171µs 다. 무관한 입력 필드 타이핑 한 번마다 1.1ms 가 나가는 구조다.
 
-이건 측정된 비용이지 확정된 결함은 아니다. 훅은 `/headless` 소비자가 직접 렌더 제어를 갖는 경로라서, 메모를 훅 안에 둘지 소비자에게 맡길지는 API 판단이 필요하다. 두 컴포넌트가 이미 훅이 아니라 컴포넌트 쪽에서 메모하고 있다는 점이 이 설계 질문을 그대로 드러낸다.
+조사해 보니 결함이 하나가 아니라 **둘**이었다.
+
+**B-1. grid 훅 4종에 memo 자체가 없다.** 위 네 곳이 그대로 해당한다.
+
+**B-2. `disabled` 기본값이 매 렌더 새 배열이다.** 6개 훅 전부 `disabled = []` 로 구조분해 기본값을 쓴다. 리터럴이므로 렌더마다 새 식별자다. 그래서 이를 의존성에 나열한 memo 는 규칙을 넘기지 않는 기본 사용에서 **매번 빗나간다**. `useMonthPicker.months` 와 `useYearPicker.years` 는 이미 `useMemo` 로 감싸져 있었지만 이 때문에 실제로는 죽어 있었다. `previousMonth` / `nextMonth` 의 `useCallback` 도 같은 이유로 매 렌더 새로 만들어지고 있었다.
+
+컴포넌트 경로에는 이 문제가 없다. `DatePickerRoot` 는 `useMemo(() => Array.isArray(disabled) ? disabled : [], [disabled])` 로 기본값을 안정화해 두었다. 훅만 어긋나 있었다.
+
+조치:
+
+1. `internal/constants.ts` 에 `NO_DISABLED_RULES` 를 두고 6개 훅의 기본값을 이것으로 교체
+2. grid 훅 4종의 `getCalendarDays` 를 `useMemo` 로 감쌈
+
+검증 순서가 결함이 실재했음을 보여준다. `hooks/memoization.test.tsx` 6케이스는 수정 전 **6/6 실패**했고, B-2 만 고친 시점에 `useMonthPicker` / `useYearPicker` **2건이 통과**했으며(죽은 memo 가 되살아난 것), B-1 까지 고치고 6/6 통과했다.
+
+번들 비용:
+
+| 산출물 | 전 | 후 | 델타 | 남은 여유 |
+|---|---|---|---|---|
+| index ESM | 19628 B | 19719 B | +91 B | 761 B |
+| index CJS | 19884 B | 20003 B | +119 B | 477 B |
+| headless ESM | 20919 B | 21028 B | +109 B | 1500 B |
+| headless CJS | 21209 B | 21317 B | +108 B | 1211 B |
+
+한 가지 한계가 있다. controlled `useRangePicker` 소비자가 `value={{ start, end }}` 를 JSX 에 인라인으로 쓰면 매 렌더 새 객체를 넘기는 것이라 memo 가 걸리지 않는다. 훅이 고칠 수 있는 종류가 아니고, `RangePicker.Calendar` 도 같은 조건이다.
 
 ## 하지 않기로 한 것
 

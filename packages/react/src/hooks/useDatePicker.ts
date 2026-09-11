@@ -1,4 +1,4 @@
-import { useCallback, useId, useRef, useState } from 'react';
+import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import {
   calendarDayFromInstant,
   civilMidnightFromUtcDay,
@@ -15,6 +15,7 @@ import type {
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 import { resolveEnabledCalendarFocus, resolveMonthNavigation } from '../internal/calendarFocus.js';
 import { usableDate } from '../internal/usableDate.js';
+import { NO_DISABLED_RULES } from '../internal/constants.js';
 
 export interface UseDatePickerOptions {
   /** Selected date (controlled mode) */
@@ -85,7 +86,7 @@ export function useDatePicker(options: UseDatePickerOptions = {}): UseDatePicker
     value: controlledValue,
     defaultValue,
     onChange,
-    disabled = [],
+    disabled = NO_DISABLED_RULES,
     weekStartsOn = 0,
     adapter: adapterProp,
     displayTimezone,
@@ -162,15 +163,21 @@ export function useDatePicker(options: UseDatePickerOptions = {}): UseDatePicker
     setFocusedDate(next.focusedDate);
   }, [adapter, viewMonth, disabled, displayTimezone]);
 
-  const calendar = getCalendarDays(viewMonth, adapter, {
-    weekStartsOn,
-    selected: currentValue,
-    focusedDate: displayTimezone
-      ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
-      : focusedDate,
-    disabled,
-    timezone: displayTimezone,
-  });
+  // Memoized so an unrelated re-render in the consumer doesn't rebuild the
+  // 42-cell grid. Mirrors DatePicker.Calendar, which has always done this.
+  const calendar = useMemo(
+    () =>
+      getCalendarDays(viewMonth, adapter, {
+        weekStartsOn,
+        selected: currentValue,
+        focusedDate: displayTimezone
+          ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
+          : focusedDate,
+        disabled,
+        timezone: displayTimezone,
+      }),
+    [viewMonth, adapter, weekStartsOn, currentValue, focusedDate, disabled, displayTimezone],
+  );
 
   return {
     value: currentValue,
