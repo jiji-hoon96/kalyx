@@ -2,6 +2,7 @@
 id: troubleshooting
 title: Troubleshooting
 sidebar_position: 8
+description: 'Kalyx 의 흔한 문제와 해결책. 하루 어긋남, 번들 크기, 어댑터 에러, hydration 경고.'
 ---
 
 # Troubleshooting

@@ -2,6 +2,7 @@
 id: use-month-picker
 title: useMonthPicker
 sidebar_position: 4
+description: 'Build a custom MonthPicker UI. Exported from @kalyx/react/headless only.'
 ---
 
 # useMonthPicker

@@ -2,6 +2,7 @@
 id: rangepicker
 title: RangePicker
 sidebar_position: 2
+description: 'hover 미리보기, 빠른 범위 preset, 주 선택 모드를 갖춘 날짜 범위 피커.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';

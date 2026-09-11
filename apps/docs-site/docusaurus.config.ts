@@ -19,10 +19,15 @@ const config: Config = {
   organizationName: 'jiji-hoon96',
   projectName: 'kalyx',
 
-  onBrokenLinks: 'warn',
+  // 'throw' rather than 'warn': there are currently zero broken links, so this
+  // gates the state we are in instead of letting rot accumulate silently.
+  onBrokenLinks: 'throw',
+  // Heading translations change a page's anchor slugs, so a KO in-page link can
+  // silently stop resolving. This gates that class of breakage.
+  onBrokenAnchors: 'throw',
   markdown: {
     hooks: {
-      onBrokenMarkdownLinks: 'warn',
+      onBrokenMarkdownLinks: 'throw',
     },
   },
 

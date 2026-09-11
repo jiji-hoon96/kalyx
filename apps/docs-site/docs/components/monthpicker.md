@@ -2,6 +2,7 @@
 id: monthpicker
 title: MonthPicker
 sidebar_position: 5
+description: 'Month-granularity picker with a 3x4 month grid and a YYYY-MM input.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';

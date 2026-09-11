@@ -2,6 +2,7 @@
 id: use-range-picker
 title: useRangePicker
 sidebar_position: 2
+description: 'hover 미리보기와 선택 대상 상태를 포함해 완전히 커스텀한 RangePicker UI 를 만듭니다.'
 ---
 
 # useRangePicker

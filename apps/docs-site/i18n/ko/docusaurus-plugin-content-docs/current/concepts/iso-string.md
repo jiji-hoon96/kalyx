@@ -2,6 +2,7 @@
 id: iso-string
 title: ISO 8601 UTC string
 sidebar_position: 2
+description: 'Kalyx 는 Date 객체가 아니라 ISO 8601 UTC 문자열을 주고받습니다. 이 계약이 보장하는 것과 예외를 설명합니다.'
 ---
 
 # ISO 8601 UTC string

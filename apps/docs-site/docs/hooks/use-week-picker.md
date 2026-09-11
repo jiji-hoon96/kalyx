@@ -2,6 +2,7 @@
 id: use-week-picker
 title: useWeekPicker
 sidebar_position: 6
+description: 'Build a custom WeekPicker UI, including the weekAnchor behaviour. Exported from @kalyx/react/headless only.'
 ---
 
 # useWeekPicker

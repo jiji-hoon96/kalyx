@@ -2,6 +2,7 @@
 id: use-cases
 title: Use-case recipes
 sidebar_position: 0
+description: 'Ready-made patterns: birthday fields, hotel booking ranges and timezone-aware meeting times.'
 ---
 
 # Use-case recipes

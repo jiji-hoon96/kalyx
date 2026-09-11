@@ -2,6 +2,7 @@
 id: react-hook-form
 title: React Hook Form
 sidebar_position: 3
+description: 'Wire Kalyx into React Hook Form with Controller, or submit natively with a hidden input.'
 ---
 
 # React Hook Form

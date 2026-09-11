@@ -2,6 +2,7 @@
 id: use-time-picker
 title: useTimePicker
 sidebar_position: 3
+description: 'Build a fully custom TimePicker UI: hour and minute lists, 12/24-hour handling and slot filtering.'
 ---
 
 # useTimePicker

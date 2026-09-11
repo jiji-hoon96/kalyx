@@ -2,6 +2,7 @@
 id: ssr
 title: SSR safety
 sidebar_position: 3
+description: 'Kalyx renders on the server without hydration mismatches. What it avoids, and how it works with the Next.js App Router and RSC.'
 ---
 
 # SSR safety

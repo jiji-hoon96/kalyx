@@ -2,6 +2,7 @@
 id: use-range-picker
 title: useRangePicker
 sidebar_position: 2
+description: 'Build a fully custom RangePicker UI, including hover preview and selection target state.'
 ---
 
 # useRangePicker

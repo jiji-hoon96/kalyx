@@ -2,6 +2,7 @@
 id: datepicker
 title: DatePicker
 sidebar_position: 1
+description: 'Single-date picker: Root, Input, Trigger, Popover, Calendar, MonthGrid, YearGrid and Presets, with the full props reference.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';

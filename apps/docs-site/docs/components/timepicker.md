@@ -2,6 +2,7 @@
 id: timepicker
 title: TimePicker
 sidebar_position: 3
+description: 'Time picker with 12/24-hour modes, minute steps, per-slot filtering and an optional popover.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';

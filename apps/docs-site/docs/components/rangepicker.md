@@ -2,6 +2,7 @@
 id: rangepicker
 title: RangePicker
 sidebar_position: 2
+description: 'Date-range picker with hover preview, quick-range presets and week selection mode.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';

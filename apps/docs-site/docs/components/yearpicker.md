@@ -2,6 +2,7 @@
 id: yearpicker
 title: YearPicker
 sidebar_position: 6
+description: 'Year-granularity picker with a paginated year grid and a YYYY input.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';

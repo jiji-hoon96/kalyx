@@ -2,6 +2,7 @@
 id: use-date-time-picker
 title: useDateTimePicker
 sidebar_position: 7
+description: '하나의 값으로 날짜와 시간을 함께 다루는 커스텀 DateTimePicker UI 를 만듭니다. @kalyx/react/headless 에서만 제공됩니다.'
 ---
 
 # useDateTimePicker

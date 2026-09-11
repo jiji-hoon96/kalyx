@@ -2,6 +2,7 @@
 id: timezone
 title: Timezone (displayTimezone)
 sidebar_position: 3
+description: 'displayTimezone prop, DST gap 과 모호한 시각, 그리고 ISO 문자열이 캘린더 좌표가 아니라 instant 인 이유.'
 ---
 
 # Timezone 지원

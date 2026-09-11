@@ -2,6 +2,7 @@
 id: styling
 title: Styling
 sidebar_position: 2
+description: 'Style Kalyx with your own CSS: the classNames slots and the data-* state attributes every part emits.'
 ---
 
 # Styling

@@ -2,6 +2,7 @@
 id: timepicker
 title: TimePicker
 sidebar_position: 3
+description: '12/24시간 모드, 분 간격, 슬롯별 필터링, 선택적 popover 를 갖춘 시간 피커.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';

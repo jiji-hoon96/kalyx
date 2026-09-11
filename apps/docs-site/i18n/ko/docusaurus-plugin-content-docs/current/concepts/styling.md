@@ -2,6 +2,7 @@
 id: styling
 title: 스타일링
 sidebar_position: 2
+description: '직접 쓴 CSS 로 Kalyx 를 스타일링합니다. classNames 슬롯과 각 파츠가 내보내는 data-* 상태 속성을 다룹니다.'
 ---
 
 # 스타일링

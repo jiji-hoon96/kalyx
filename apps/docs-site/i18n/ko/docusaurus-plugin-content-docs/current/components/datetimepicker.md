@@ -2,6 +2,7 @@
 id: datetimepicker
 title: DateTimePicker
 sidebar_position: 4
+description: '날짜와 시간을 하나의 값으로. 공유 컨텍스트 아래에서 DatePicker 와 TimePicker 파츠를 재사용합니다.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';

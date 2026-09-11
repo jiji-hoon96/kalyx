@@ -2,6 +2,7 @@
 id: shadcn
 title: shadcn/ui
 sidebar_position: 2
+description: 'shadcn/ui 의 class variant 를 빌려 같은 외형을 만들고, shadcn Popover 안에 Kalyx 를 조합합니다.'
 ---
 
 # shadcn/ui

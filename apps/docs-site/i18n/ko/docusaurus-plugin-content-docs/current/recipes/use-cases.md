@@ -2,6 +2,7 @@
 id: use-cases
 title: 유스케이스 레시피
 sidebar_position: 0
+description: '바로 쓰는 패턴. 생년월일 필드, 호텔 예약 범위, 타임존 인식 회의 시간.'
 ---
 
 # 유스케이스 레시피

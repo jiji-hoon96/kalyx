@@ -2,6 +2,7 @@
 id: testing
 title: Testing
 sidebar_position: 4
+description: 'Query, click and keyboard-drive Kalyx in Testing Library, and check accessibility with jest-axe.'
 ---
 
 # Testing

@@ -2,6 +2,7 @@
 id: composition
 title: Composition API
 sidebar_position: 1
+description: 'Kalyx 가 prop 백 개 대신 dot notation 서브 컴포넌트를 쓰는 이유와, 필요한 파츠만 조합하는 방법.'
 ---
 
 # Composition API

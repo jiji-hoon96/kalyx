@@ -2,6 +2,7 @@
 id: use-year-picker
 title: useYearPicker
 sidebar_position: 5
+description: 'Build a custom YearPicker UI. Exported from @kalyx/react/headless only.'
 ---
 
 # useYearPicker
