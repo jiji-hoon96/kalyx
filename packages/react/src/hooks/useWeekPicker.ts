@@ -1,4 +1,4 @@
-import { useCallback, useId, useRef, useState } from 'react';
+import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import { calendarDayFromInstant, civilMidnightFromUtcDay, getCalendarDays } from '@kalyx/core';
 import type {
   CalendarGrid,
@@ -11,6 +11,7 @@ import type {
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 import { resolveEnabledCalendarFocus, resolveMonthNavigation } from '../internal/calendarFocus.js';
 import { usableDate } from '../internal/usableDate.js';
+import { NO_DISABLED_RULES } from '../internal/constants.js';
 import { getWeekCoordinateRange, isWeekSelectionDisabled } from '../components/_shared/week.js';
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
@@ -74,7 +75,7 @@ export function useWeekPicker(options: UseWeekPickerOptions = {}): UseWeekPicker
     value: controlledValue,
     defaultValue,
     onChange,
-    disabled = [],
+    disabled = NO_DISABLED_RULES,
     weekStartsOn = 0,
     adapter: adapterProp,
     displayTimezone,
@@ -183,27 +184,44 @@ export function useWeekPicker(options: UseWeekPickerOptions = {}): UseWeekPicker
     });
   }, [adapter, disabled, displayTimezone]);
 
-  const calendar = getCalendarDays(viewMonth, adapter, {
-    weekStartsOn,
-    focusedDate: displayTimezone
-      ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
-      : focusedDate,
-    disabled,
-    range: currentValue,
-    timezone: displayTimezone,
-  }).map((week) =>
-    week.map((day) => ({
-      ...day,
-      isDisabled: isWeekSelectionDisabled(
-        day.isoString,
-        disabled,
-        adapter,
+  // Memoized so an unrelated re-render in the consumer doesn't rebuild the
+  // 42-cell grid — doubly worth it here, since every cell is then re-mapped
+  // through `isWeekSelectionDisabled`.
+  const calendar = useMemo(
+    () =>
+      getCalendarDays(viewMonth, adapter, {
         weekStartsOn,
-        weekAnchor,
-        selectingTarget,
-        displayTimezone,
+        focusedDate: displayTimezone
+          ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
+          : focusedDate,
+        disabled,
+        range: currentValue,
+        timezone: displayTimezone,
+      }).map((week) =>
+        week.map((day) => ({
+          ...day,
+          isDisabled: isWeekSelectionDisabled(
+            day.isoString,
+            disabled,
+            adapter,
+            weekStartsOn,
+            weekAnchor,
+            selectingTarget,
+            displayTimezone,
+          ),
+        })),
       ),
-    })),
+    [
+      viewMonth,
+      adapter,
+      weekStartsOn,
+      focusedDate,
+      disabled,
+      currentValue,
+      weekAnchor,
+      selectingTarget,
+      displayTimezone,
+    ],
   );
 
   return {

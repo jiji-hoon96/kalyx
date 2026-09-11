@@ -1,4 +1,4 @@
-import { useCallback, useId, useRef, useState } from 'react';
+import { useCallback, useId, useMemo, useRef, useState } from 'react';
 import {
   calendarDayFromInstant,
   civilMidnightFromUtcDay,
@@ -17,6 +17,7 @@ import type { RangeSelectingTarget } from '../context/RangePickerContext.js';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 import { resolveEnabledCalendarFocus, resolveMonthNavigation } from '../internal/calendarFocus.js';
 import { usableDate } from '../internal/usableDate.js';
+import { NO_DISABLED_RULES } from '../internal/constants.js';
 
 const EMPTY_RANGE: DateRange = { start: null, end: null };
 
@@ -92,7 +93,7 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
     value: controlledValue,
     defaultValue,
     onChange,
-    disabled = [],
+    disabled = NO_DISABLED_RULES,
     weekStartsOn = 0,
     adapter: adapterProp,
     displayTimezone,
@@ -208,16 +209,32 @@ export function useRangePicker(options: UseRangePickerOptions = {}): UseRangePic
     setFocusedDate(next.focusedDate);
   }, [adapter, viewMonth, disabled, displayTimezone]);
 
-  const calendar = getCalendarDays(viewMonth, adapter, {
-    weekStartsOn,
-    focusedDate: displayTimezone
-      ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
-      : focusedDate,
-    disabled,
-    range: currentValue,
-    rangeHover: hoverDate,
-    timezone: displayTimezone,
-  });
+  // Memoized so an unrelated re-render in the consumer doesn't rebuild the
+  // 42-cell grid. Mirrors RangePicker.Calendar, which has always done this.
+  // `hoverDate` is a real dependency: the hover preview is part of the grid.
+  const calendar = useMemo(
+    () =>
+      getCalendarDays(viewMonth, adapter, {
+        weekStartsOn,
+        focusedDate: displayTimezone
+          ? civilMidnightFromUtcDay(focusedDate, displayTimezone)
+          : focusedDate,
+        disabled,
+        range: currentValue,
+        rangeHover: hoverDate,
+        timezone: displayTimezone,
+      }),
+    [
+      viewMonth,
+      adapter,
+      weekStartsOn,
+      focusedDate,
+      disabled,
+      currentValue,
+      hoverDate,
+      displayTimezone,
+    ],
+  );
 
   return {
     value: currentValue,

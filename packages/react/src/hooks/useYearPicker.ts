@@ -4,6 +4,7 @@ import type { DateAdapter, DisabledRule, ISODateString } from '@kalyx/core';
 import { getDefaultAdapter, resolveAdapter } from '../internal/defaultAdapter.js';
 import { isRangeFullyDisabled } from '../components/_shared/grid-keyboard.js';
 import { usableDate } from '../internal/usableDate.js';
+import { NO_DISABLED_RULES } from '../internal/constants.js';
 
 export interface UseYearPickerOptions {
   /** Selected year (controlled mode), stored as the year-start ISO string */
@@ -64,7 +65,7 @@ export function useYearPicker(options: UseYearPickerOptions = {}): UseYearPicker
     value: controlledValue,
     defaultValue,
     onChange,
-    disabled = [],
+    disabled = NO_DISABLED_RULES,
     adapter: adapterProp,
     displayTimezone,
   } = options;
