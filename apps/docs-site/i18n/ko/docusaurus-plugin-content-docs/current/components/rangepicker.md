@@ -57,7 +57,47 @@ function Example() {
 
 **선택 흐름:** 첫 클릭이 `start`를, 두 번째가 `end`를 설정합니다. 두 번째 클릭이 더 이르면 자동으로 위치가 교환됩니다.
 
-## 직접 사용해보기
+### 직접 사용해보기
+
+> 라이브 에디터는 `React` 와 모든 Kalyx 컴포넌트가 이미 스코프에 있는 상태로 실행되므로 `import` 문을 생략했습니다. 실제 프로젝트로 옮길 때는 import 를 채워 넣으세요. 전체 import 는 위의 일반 코드 블록에 있습니다.
+
+```jsx live
+function BasicRange() {
+  const [range, setRange] = React.useState({ start: null, end: null });
+  return (
+    <RangePicker value={range} onChange={setRange}>
+      <div className="kx-live-row">
+        <RangePicker.Input part="start" className="kx-live-input" placeholder="시작" />
+        <span aria-hidden>→</span>
+        <RangePicker.Input part="end" className="kx-live-input" placeholder="종료" />
+      </div>
+      <RangePicker.Popover className="kx-live-popover">
+        <RangePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'kx-live-day-range',
+            dayRangeStart: 'kx-live-range-start',
+            dayRangeEnd: 'kx-live-range-end',
+            dayInRange: 'kx-live-inrange',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+            dayDisabled: 'kx-live-disabled',
+          }}
+        />
+      </RangePicker.Popover>
+      <div className="kx-live-value">
+        <code>{range.start?.slice(0, 10) ?? 'null'}</code> →
+        <code>{range.end?.slice(0, 10) ?? 'null'}</code>
+      </div>
+    </RangePicker>
+  );
+}
+```
 
 <StackBlitzEmbed id="rangepicker-presets" />
 
@@ -137,6 +177,19 @@ type RangePickerCalendarClassNames = {
 };
 ```
 
+### `data-*` 어트리뷰트
+
+날짜 버튼은 범위를 인식하는 상태 어트리뷰트를 방출합니다(활성일 때만 존재). [스타일링](../concepts/styling.md) 참고.
+
+| 어트리뷰트 | 활성 조건 |
+| --- | --- |
+| `data-range-start` | 날짜가 범위의 시작일. |
+| `data-range-end` | 날짜가 범위의 종료일. |
+| `data-in-range` | 날짜가 시작과 종료 사이(배타적)에 있음. |
+| `data-today` | 날짜가 오늘. |
+| `data-focused` | 날짜가 키보드 포커스를 가짐. |
+| `data-outside-month` | 날짜가 인접한 월에 속함. |
+
 ## `<RangePicker.Presets>`
 
 빠른 선택 버튼 컨테이너.
@@ -199,6 +252,53 @@ type PresetKey =
     <RangePicker.Calendar />
   </RangePicker.Popover>
 </RangePicker>
+```
+
+```jsx live
+function RangeWithPresets() {
+  const [range, setRange] = React.useState({ start: null, end: null });
+  return (
+    <RangePicker value={range} onChange={setRange}>
+      <div className="kx-live-row">
+        <RangePicker.Input part="start" className="kx-live-input" placeholder="시작" />
+        <RangePicker.Input part="end" className="kx-live-input" placeholder="종료" />
+      </div>
+      <RangePicker.Popover className="kx-live-popover kx-live-popover--split">
+        <RangePicker.Presets
+          classNames={{
+            root: 'kx-live-presets',
+            preset: 'kx-live-preset',
+            presetActive: 'kx-live-preset-active',
+          }}
+        >
+          <RangePicker.Preset value="today">오늘</RangePicker.Preset>
+          <RangePicker.Preset value="yesterday">어제</RangePicker.Preset>
+          <RangePicker.Preset value="last7days">지난 7일</RangePicker.Preset>
+          <RangePicker.Preset value="last30days">지난 30일</RangePicker.Preset>
+          <RangePicker.Preset value="thisMonth">이번 달</RangePicker.Preset>
+          <RangePicker.Preset value="lastMonth">지난달</RangePicker.Preset>
+        </RangePicker.Presets>
+        <RangePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'kx-live-day-range',
+            dayRangeStart: 'kx-live-range-start',
+            dayRangeEnd: 'kx-live-range-end',
+            dayInRange: 'kx-live-inrange',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+            dayDisabled: 'kx-live-disabled',
+          }}
+        />
+      </RangePicker.Popover>
+    </RangePicker>
+  );
+}
 ```
 
 ### 커스텀 프리셋

@@ -61,7 +61,58 @@ function Example() {
 
 일자를 고른 뒤에도 **popover가 닫히지 않습니다** — 이어서 시간을 조정하세요. 닫기는 자체 버튼이나 바깥 클릭으로 처리합니다.
 
-## 직접 사용해보기
+### 직접 사용해보기
+
+> 라이브 에디터에는 `React` 와 모든 Kalyx 컴포넌트가 이미 스코프에 들어 있어서 `import` 줄을 생략했습니다. 실제 프로젝트로 옮길 때는 import 를 채워 넣으세요. 전체 import 는 위의 일반 코드 블록에 있습니다.
+
+```jsx live
+function BasicDateTime() {
+  const [dt, setDt] = React.useState(null);
+  return (
+    <DateTimePicker value={dt} onChange={setDt} format="24h" step={15}>
+      <DateTimePicker.Input className="kx-live-input" style={{ minWidth: '14rem' }} />
+      <DateTimePicker.Popover className="kx-live-popover">
+        <DateTimePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+        <div
+          className="kx-live-row"
+          style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--kalyx-border)' }}
+        >
+          <DateTimePicker.HourList
+            classNames={{
+              root: 'kx-live-list',
+              option: 'kx-live-option',
+              optionSelected: 'kx-live-option-selected',
+            }}
+          />
+          <DateTimePicker.MinuteList
+            classNames={{
+              root: 'kx-live-list',
+              option: 'kx-live-option',
+              optionSelected: 'kx-live-option-selected',
+            }}
+          />
+        </div>
+      </DateTimePicker.Popover>
+      <div className="kx-live-value" style={{ marginTop: 8 }}>
+        선택됨: <code>{dt ?? 'null'}</code>
+      </div>
+    </DateTimePicker>
+  );
+}
+```
 
 <StackBlitzEmbed id="datetimepicker-timezone" />
 
@@ -104,6 +155,8 @@ DateTimePicker는 DatePicker와 TimePicker의 서브 컴포넌트를 한 네임�
 
 모든 `classNames` 타입이 재export됩니다 — [DatePicker](./datepicker.md)와 [TimePicker](./timepicker.md) 참고.
 
+서브 컴포넌트는 원래 picker 와 동일한 `data-*` 상태 속성을 그대로 내보냅니다. 캘린더 날짜에는 `data-selected` / `data-today` / `data-focused`, 시간 옵션에는 `data-selected` 가 붙습니다. [스타일링](../concepts/styling.md) 참고.
+
 ## 패턴
 
 ### 12시간제 datetime
@@ -120,6 +173,59 @@ DateTimePicker는 DatePicker와 TimePicker의 서브 컴포넌트를 한 네임�
     </div>
   </DateTimePicker.Popover>
 </DateTimePicker>
+```
+
+```jsx live
+function TwelveHourDateTime() {
+  const [dt, setDt] = React.useState(null);
+  return (
+    <DateTimePicker value={dt} onChange={setDt} format="12h" step={30}>
+      <DateTimePicker.Input className="kx-live-input" style={{ minWidth: '14rem' }} />
+      <DateTimePicker.Popover className="kx-live-popover">
+        <DateTimePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+        <div
+          className="kx-live-row"
+          style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--kalyx-border)' }}
+        >
+          <DateTimePicker.HourList
+            classNames={{
+              root: 'kx-live-list',
+              option: 'kx-live-option',
+              optionSelected: 'kx-live-option-selected',
+            }}
+          />
+          <DateTimePicker.MinuteList
+            classNames={{
+              root: 'kx-live-list',
+              option: 'kx-live-option',
+              optionSelected: 'kx-live-option-selected',
+            }}
+          />
+          <DateTimePicker.AmPmToggle
+            classNames={{
+              root: 'kx-live-ampm',
+              option: 'kx-live-ampm-btn',
+              optionSelected: 'kx-live-ampm-selected',
+            }}
+          />
+        </div>
+      </DateTimePicker.Popover>
+    </DateTimePicker>
+  );
+}
 ```
 
 ### 정해진 슬롯 스케줄링
@@ -158,6 +264,71 @@ DateTimePicker는 DatePicker와 TimePicker의 서브 컴포넌트를 한 네임�
     <DateTimePicker.MinuteList />
   </DateTimePicker.Popover>
 </DateTimePicker>
+```
+
+```jsx live
+function BookingFlow() {
+  const [dt, setDt] = React.useState(null);
+  const today = new Date().toISOString();
+  return (
+    <DateTimePicker
+      value={dt}
+      onChange={setDt}
+      format="12h"
+      step={30}
+      disabled={[{ dayOfWeek: [0, 6] }, { before: today }]}
+    >
+      <DateTimePicker.Input
+        className="kx-live-input"
+        style={{ minWidth: '16rem' }}
+        placeholder="평일 슬롯만 선택 가능"
+      />
+      <DateTimePicker.Popover className="kx-live-popover">
+        <DateTimePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayToday: 'live-day-today',
+            dayDisabled: 'kx-live-disabled',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+        <div
+          className="kx-live-row"
+          style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--kalyx-border)' }}
+        >
+          <DateTimePicker.HourList
+            classNames={{
+              root: 'kx-live-list',
+              option: 'kx-live-option',
+              optionSelected: 'kx-live-option-selected',
+            }}
+          />
+          <DateTimePicker.MinuteList
+            classNames={{
+              root: 'kx-live-list',
+              option: 'kx-live-option',
+              optionSelected: 'kx-live-option-selected',
+            }}
+          />
+          <DateTimePicker.AmPmToggle
+            classNames={{
+              root: 'kx-live-ampm',
+              option: 'kx-live-ampm-btn',
+              optionSelected: 'kx-live-ampm-selected',
+            }}
+          />
+        </div>
+      </DateTimePicker.Popover>
+    </DateTimePicker>
+  );
+}
 ```
 
 ## 네이티브 폼 제출

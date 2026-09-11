@@ -55,7 +55,42 @@ function Example() {
 
 `displayFormat` 의 기본값은 `"yyyy-MM"` 입니다. 다른 표기를 쓰고 싶다면 재정의하세요(예: `"April 2026"` 처럼 보이려면 `"MMMM yyyy"`).
 
-## 직접 사용해보기
+### 직접 사용해보기
+
+> 라이브 에디터에는 `React` 와 Kalyx 컴포넌트가 모두 스코프에 들어 있어서 `import` 줄을 생략했습니다. 프로젝트로 옮길 때는 위쪽 일반 코드 블록에 있는 전체 import 를 그대로 가져오세요.
+
+```jsx live
+function BasicMonthPicker() {
+  const [month, setMonth] = React.useState(null);
+  const headerCls = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+  };
+  return (
+    <MonthPicker value={month} onChange={setMonth}>
+      <div className="kx-live-row">
+        <MonthPicker.Input className="kx-live-input" placeholder="YYYY-MM" />
+        <MonthPicker.Trigger className="kx-live-trigger" aria-label="월 선택기 열기" />
+      </div>
+      <MonthPicker.Popover className="kx-live-popover">
+        <MonthPicker.Grid
+          classNames={{
+            ...headerCls,
+            grid: 'kx-live-month-grid',
+            month: 'kx-live-my-cell',
+            monthSelected: 'kx-live-my-selected',
+            monthCurrent: 'kx-live-my-current',
+          }}
+        />
+      </MonthPicker.Popover>
+      <div className="kx-live-value">
+        선택값: <code>{month ?? 'null'}</code>
+      </div>
+    </MonthPicker>
+  );
+}
+```
 
 <StackBlitzEmbed id="datepicker-basic" />
 
@@ -100,6 +135,47 @@ function Example() {
 ## 비활성화 규칙
 
 `DatePicker`와 같은 `DisabledRule` 문법으로 선택 가능한 월을 제한합니다. 규칙이 그 달의 모든 날짜를 제외할 때만 월 전체가 비활성화됩니다. 첫날 하나만 막는 규칙은 나머지 날짜까지 비활성화하지 않습니다.
+
+```jsx live
+function DisabledMonthPicker() {
+  const [month, setMonth] = React.useState(null);
+  const headerCls = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+  };
+  return (
+    <MonthPicker
+      value={month}
+      onChange={setMonth}
+      disabled={[
+        { before: '2026-01-01T00:00:00.000Z' },
+        { after: '2026-12-31T00:00:00.000Z' },
+      ]}
+    >
+      <div className="kx-live-row">
+        <MonthPicker.Input className="kx-live-input" placeholder="2026년만" />
+        <MonthPicker.Trigger className="kx-live-trigger" aria-label="월 선택기 열기" />
+      </div>
+      <MonthPicker.Popover className="kx-live-popover">
+        <MonthPicker.Grid
+          classNames={{
+            ...headerCls,
+            grid: 'kx-live-month-grid',
+            month: 'kx-live-my-cell',
+            monthSelected: 'kx-live-my-selected',
+            monthCurrent: 'kx-live-my-current',
+            monthDisabled: 'kx-live-disabled',
+          }}
+        />
+      </MonthPicker.Popover>
+      <div className="kx-live-value">
+        선택값: <code>{month ?? 'null'}</code>
+      </div>
+    </MonthPicker>
+  );
+}
+```
 
 ```tsx
 <MonthPicker
@@ -164,6 +240,8 @@ React 상태가 필요 없는 단순한 폼에서는 이렇게 씁니다.
   }}
 />
 ```
+
+각 월 셀은 `data-selected`, `data-current`, `data-focused`(활성 셀에만) 속성을 내보냅니다. [스타일링](../concepts/styling.md) 참고.
 
 ## 관련
 

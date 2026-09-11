@@ -40,7 +40,75 @@ function Example() {
 }
 ```
 
-## 직접 사용해보기
+### 직접 사용해보기
+
+> 라이브 에디터는 `React` 와 모든 Kalyx 컴포넌트가 이미 스코프에 들어 있는 상태로 실행되므로 `import` 줄을 생략했습니다. 여러분의 프로젝트로 옮길 때는 import 를 함께 적어 주세요. 전체 import 는 위의 라이브가 아닌 블록에 있습니다.
+
+```jsx live
+function BasicDatePicker() {
+  const [date, setDate] = React.useState(null);
+  const [view, setView] = React.useState('days');
+  const headerCls = {
+    header: 'kx-live-header',
+    title: 'kx-live-title',
+    navButton: 'kx-live-nav',
+  };
+  return (
+    <DatePicker value={date} onChange={setDate}>
+      <div className="kx-live-row">
+        <DatePicker.Input className="kx-live-input" placeholder="YYYY-MM-DD" />
+        <DatePicker.Trigger className="kx-live-trigger" aria-label="캘린더 열기" />
+      </div>
+      <DatePicker.Popover className="kx-live-popover">
+        {view === 'days' && (
+          <DatePicker.Calendar
+            onTitleClick={() => setView('months')}
+            classNames={{
+              ...headerCls,
+              grid: 'kx-live-grid',
+              gridCell: 'kx-live-cell',
+              weekdayHeader: 'kx-live-weekday',
+              day: 'live-day',
+              daySelected: 'live-day-selected',
+              dayToday: 'live-day-today',
+              dayDisabled: 'kx-live-disabled',
+              dayOutsideMonth: 'kx-live-outside',
+            }}
+          />
+        )}
+        {view === 'months' && (
+          <DatePicker.MonthGrid
+            onSelect={() => setView('days')}
+            onTitleClick={() => setView('years')}
+            classNames={{
+              ...headerCls,
+              grid: 'kx-live-month-grid',
+              month: 'kx-live-my-cell',
+              monthSelected: 'kx-live-my-selected',
+              monthCurrent: 'kx-live-my-current',
+            }}
+          />
+        )}
+        {view === 'years' && (
+          <DatePicker.YearGrid
+            onSelect={() => setView('months')}
+            classNames={{
+              ...headerCls,
+              grid: 'kx-live-year-grid',
+              year: 'kx-live-my-cell',
+              yearSelected: 'kx-live-my-selected',
+              yearCurrent: 'kx-live-my-current',
+            }}
+          />
+        )}
+      </DatePicker.Popover>
+      <div className="kx-live-value">
+        선택된 값: <code>{date ?? 'null'}</code>. 월 타이틀을 클릭하면 월 / 연도 뷰로 넘어갑니다.
+      </div>
+    </DatePicker>
+  );
+}
+```
 
 <StackBlitzEmbed id="datepicker-basic" />
 
@@ -86,6 +154,39 @@ type DisabledRule =
     <DatePicker.Calendar />
   </DatePicker.Popover>
 </DatePicker>
+```
+
+```jsx live
+function WeekdayOnly() {
+  const [date, setDate] = React.useState(null);
+  const today = new Date().toISOString();
+  return (
+    <DatePicker
+      value={date}
+      onChange={setDate}
+      disabled={[{ dayOfWeek: [0, 6] }, { before: today }]}
+    >
+      <DatePicker.Input className="kx-live-input" placeholder="오늘부터, 평일만" />
+      <DatePicker.Popover className="kx-live-popover">
+        <DatePicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'live-day',
+            daySelected: 'live-day-selected',
+            dayToday: 'live-day-today',
+            dayDisabled: 'kx-live-disabled',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </DatePicker.Popover>
+    </DatePicker>
+  );
+}
 ```
 
 ## `<DatePicker.Input>`
@@ -155,6 +256,19 @@ type DatePickerCalendarClassNames = {
 };
 ```
 
+### `data-*` 속성
+
+각 날짜 버튼은 스타일링에 쓸 수 있는 상태 속성을 내보냅니다(Tailwind 의 `data-[selected]:`, 일반 CSS 의 `[data-selected]`). 이 속성은 상태가 활성일 때만 붙습니다. 전체 계약은 [스타일링](../concepts/styling.md) 을 참고하세요.
+
+| 속성 | 활성 조건 |
+| --- | --- |
+| `data-selected` | 날짜가 선택된 날짜임. |
+| `data-today` | 날짜가 오늘임. |
+| `data-focused` | 날짜가 키보드 포커스를 가짐. |
+| `data-outside-month` | 날짜가 인접한 달에 속함. |
+
+비활성 날짜는 네이티브 `disabled` 속성과 `aria-disabled` 를 사용합니다(`:disabled` 또는 `dayDisabled` 슬롯으로 스타일링하세요).
+
 ## `<DatePicker.MonthGrid>` (선택)
 
 3×4 월 그리드. 월 바로 이동이 필요할 때 mount.
@@ -178,6 +292,8 @@ type DatePickerMonthGridClassNames = {
 };
 ```
 
+각 월 버튼은 `data-selected`(선택된 월), `data-current`(현재 월), `data-focused`(키보드 포커스)를 내보냅니다. [스타일링](../concepts/styling.md) 참고.
+
 ## `<DatePicker.YearGrid>` (선택)
 
 페이지네이션되는 연도 그리드 (12년 단위).
@@ -199,6 +315,8 @@ type DatePickerYearGridClassNames = {
   yearCurrent?: string;
 };
 ```
+
+각 연도 버튼은 `data-selected`, `data-current`, `data-focused` 를 내보냅니다. `MonthGrid` 와 같은 계약입니다.
 
 ## 패턴
 
@@ -231,6 +349,8 @@ function WithJump() {
   );
 }
 ```
+
+이 페이지 위쪽의 "직접 사용해보기" 예제가 이미 이 흐름을 연결해 둔 것입니다. 월 타이틀을 누르면 `MonthGrid`, 연도를 누르면 `YearGrid` 가 열립니다.
 
 ### 비제어 + 폼 제출
 

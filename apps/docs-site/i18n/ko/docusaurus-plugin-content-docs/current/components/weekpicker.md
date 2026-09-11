@@ -55,7 +55,48 @@ function Example() {
 }
 ```
 
-## 직접 사용해보기
+### 직접 사용해보기
+
+> 라이브 에디터는 `React` 와 Kalyx 컴포넌트 전부가 스코프에 들어간 상태로 실행되므로 `import` 줄을 생략했다. 프로젝트로 옮길 때는 직접 채워 넣는다. 전체 import 는 위의 일반 코드 블록을 참고한다.
+
+```jsx live
+function BasicWeekPicker() {
+  const [week, setWeek] = React.useState({ start: null, end: null });
+  const label = week.start && week.end
+    ? `${week.start.slice(0, 10)} → ${week.end.slice(0, 10)}`
+    : 'null';
+  return (
+    <WeekPicker value={week} onChange={setWeek}>
+      <div className="kx-live-row">
+        <WeekPicker.Input part="start" className="kx-live-input" placeholder="시작" />
+        <span aria-hidden>→</span>
+        <WeekPicker.Input part="end" className="kx-live-input" placeholder="종료" />
+      </div>
+      <WeekPicker.Popover className="kx-live-popover">
+        <WeekPicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'kx-live-day-range',
+            dayInRange: 'kx-live-inrange',
+            dayRangeStart: 'kx-live-range-start',
+            dayRangeEnd: 'kx-live-range-end',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </WeekPicker.Popover>
+      <div className="kx-live-value">
+        선택된 주: <code>{label}</code>
+      </div>
+    </WeekPicker>
+  );
+}
+```
 
 <StackBlitzEmbed id="datepicker-basic" />
 
@@ -74,6 +115,45 @@ function Example() {
 ## weekStartsOn
 
 `weekStartsOn` prop (`RangePicker.Root` 에서 상속)은 주가 어느 요일에 시작하는지를 정한다. `0` 은 일요일, `1` 은 월요일이다. 생략하면 `locale` 에서 추론하고(`en-US` → `0`, `de-DE` → `1`), 명시한 prop 이 항상 우선한다.
+
+```jsx live
+function MondayStartWeekPicker() {
+  const [week, setWeek] = React.useState({ start: null, end: null });
+  const label = week.start && week.end
+    ? `${week.start.slice(0, 10)} → ${week.end.slice(0, 10)}`
+    : 'null';
+  return (
+    <WeekPicker value={week} onChange={setWeek} weekStartsOn={1}>
+      <div className="kx-live-row">
+        <WeekPicker.Input part="start" className="kx-live-input" placeholder="월요일 시작" />
+        <span aria-hidden>→</span>
+        <WeekPicker.Input part="end" className="kx-live-input" placeholder="일요일 종료" />
+      </div>
+      <WeekPicker.Popover className="kx-live-popover">
+        <WeekPicker.Calendar
+          classNames={{
+            header: 'kx-live-header',
+            title: 'kx-live-title',
+            navButton: 'kx-live-nav',
+            grid: 'kx-live-grid',
+            gridCell: 'kx-live-cell',
+            weekdayHeader: 'kx-live-weekday',
+            day: 'kx-live-day-range',
+            dayInRange: 'kx-live-inrange',
+            dayRangeStart: 'kx-live-range-start',
+            dayRangeEnd: 'kx-live-range-end',
+            dayToday: 'live-day-today',
+            dayOutsideMonth: 'kx-live-outside',
+          }}
+        />
+      </WeekPicker.Popover>
+      <div className="kx-live-value">
+        선택된 주: <code>{label}</code>
+      </div>
+    </WeekPicker>
+  );
+}
+```
 
 ```tsx
 <WeekPicker weekStartsOn={1} value={week} onChange={setWeek}>
@@ -163,6 +243,8 @@ function Example() {
   }}
 />
 ```
+
+`WeekPicker.Calendar` 는 `RangePicker.Calendar` 를 감싼 것이므로, 날짜 셀은 똑같이 `data-range-start` / `data-range-end` / `data-in-range` / `data-today` / `data-focused` / `data-outside-month` 속성을 내보낸다. 확정된 주 전체가 start → end 로 이어진다. [스타일링](../concepts/styling.md) 을 참고한다.
 
 ## 관련
 
