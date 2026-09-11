@@ -109,7 +109,7 @@ function BasicRange() {
 | `onChange` | `(range: DateRange) => void` | — | Fires on every change (including partial). |
 | `disabled` | `DisabledRule[] \| boolean` | `false` | Disable rules or entire picker. |
 | `readOnly` | `boolean` | `false` | Prevents changes. |
-| `weekStartsOn` | `0 \| 1` | `0` | Week start. |
+| `weekStartsOn` | `0 \| 1` | inferred from `locale` | Week start. Inferred from `locale` when omitted; an explicit prop wins. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | Format string. |
 | `locale` | `string` | `'en-US'` | BCP 47 locale. |
 | `dir` | `'ltr' \| 'rtl'` | `'ltr'` | Layout direction. In `'rtl'` the calendar grid carries `dir="rtl"` and ArrowLeft/ArrowRight are mirrored (WAI-ARIA grid pattern). See [Internationalization](../concepts/internationalization.md#right-to-left-rtl). |
@@ -161,12 +161,15 @@ type RangePickerCalendarClassNames = {
   gridRow?: string;
   gridCell?: string;
   day?: string;
-  daySelected?: string;      // start or end day
+  dayRangeStart?: string;    // the range's start day
+  dayRangeEnd?: string;      // the range's end day
   dayInRange?: string;       // days between start and end
   dayToday?: string;
   dayDisabled?: string;
   dayOutsideMonth?: string;
   weekdayHeader?: string;
+  weekNumberHeader?: string; // only rendered when showWeekNumber is set
+  weekNumber?: string;       // only rendered when showWeekNumber is set
 };
 ```
 

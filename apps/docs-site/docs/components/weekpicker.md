@@ -101,7 +101,7 @@ function BasicWeekPicker() {
 
 ## weekStartsOn
 
-The `weekStartsOn` prop (inherited from `RangePicker.Root`) controls which day the week begins on — `0` for Sunday (default), `1` for Monday.
+The `weekStartsOn` prop (inherited from `RangePicker.Root`) controls which day the week begins on — `0` for Sunday, `1` for Monday. When you omit it, the value is inferred from `locale` (`en-US` → `0`, `de-DE` → `1`); an explicit prop always wins.
 
 ```jsx live
 function MondayStartWeekPicker() {

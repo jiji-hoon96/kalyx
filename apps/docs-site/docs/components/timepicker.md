@@ -24,9 +24,11 @@ import { TimePicker } from '@kalyx/react';
 ```tsx
 <TimePicker>            {/* Root — holds the time value (ISO string) */}
   <TimePicker.Input /> {/* combobox <input>, parses "HH:mm" */}
-  <TimePicker.HourList /> {/* role="listbox" of selectable hours */}
-  <TimePicker.MinuteList /> {/* role="listbox" of selectable minutes */}
-  <TimePicker.AmPmToggle /> {/* AM/PM switch (12-hour mode only) */}
+  <TimePicker.Popover>  {/* optional role="dialog"; omit to render inline */}
+    <TimePicker.HourList /> {/* role="listbox" of selectable hours */}
+    <TimePicker.MinuteList /> {/* role="listbox" of selectable minutes */}
+    <TimePicker.AmPmToggle /> {/* AM/PM switch (12-hour mode only) */}
+  </TimePicker.Popover>
 </TimePicker>
 ```
 
@@ -102,6 +104,8 @@ function Basic24h() {
 | `disabled` | `boolean` | `false` | Disable the whole picker. |
 | `readOnly` | `boolean` | `false` | Prevent changes. |
 | `filterTime` | `(hours: number, minutes: number) => boolean` | — | Per-slot disable predicate. Return `true` to make a slot **unselectable** (same polarity as MUI X's `shouldDisableTime` — note this is the **inverse** of react-datepicker's `filterTime`, which returns `true` to *keep* a slot). An hour is disabled only when every `step` minute within it returns `true`. Always receives 24-hour values, regardless of `format`. |
+| `locale` | `string` | `'en-US'` | BCP 47 locale used to localize the AM/PM labels (`ko-KR` renders 오전 / 오후). Does not change ARIA labels — use `labels` for those. |
+| `onOpenChange` | `(isOpen: boolean) => void` | — | Fires when `TimePicker.Popover` opens or closes. |
 | `labels` | `Partial<TimePickerLabels>` | — | Override ARIA labels. Keys: `timeInput`, `hourList`, `minuteList`, `amPmToggle`, `hourOption(h)`, `minuteOption(m)`. |
 | `children` | `ReactNode` | — | Sub-components. |
 
@@ -110,7 +114,17 @@ function Basic24h() {
 A text input showing `HH:MM` (or `HH:MM:SS` when `withSeconds`). Parses on Enter / blur.
 
 - Extends `<input>` attributes except `value`, `onChange`, `type`.
-- `aria-label` defaults to `"Time input"`.
+- `aria-label` defaults to `"Time"` (override via the Root's `labels.timeInput`).
+
+## `<TimePicker.Popover>`
+
+Optional floating container, `role="dialog"`. Omit it to render the lists inline.
+`TimePicker.Input` opens it on click and on ArrowDown, and closes it on Escape.
+Use the Root's `onOpenChange` to observe the transition.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `classNames` | `TimePickerPopoverClassNames` | Styling slots. |
 
 ## `<TimePicker.HourList>`
 
@@ -154,8 +168,8 @@ A `role="radiogroup"` with two `role="radio"` buttons — only renders in `forma
 ```ts
 type TimePickerAmPmToggleClassNames = {
   root?: string;
-  button?: string;
-  buttonSelected?: string;
+  option?: string;
+  optionSelected?: string;
 };
 ```
 
@@ -198,8 +212,8 @@ function TwelveHour() {
         <TimePicker.AmPmToggle
           classNames={{
             root: 'kx-live-ampm',
-            button: 'kx-live-ampm-btn',
-            buttonSelected: 'kx-live-ampm-selected',
+            option: 'kx-live-ampm-btn',
+            optionSelected: 'kx-live-ampm-selected',
           }}
         />
       </div>

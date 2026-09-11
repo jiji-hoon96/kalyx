@@ -1,9 +1,9 @@
 # @kalyx/react
 
-> The headless React DatePicker, finally complete. Zero CSS · SSR-safe · ~18.5 KB gzip (≤ 20 KB ceiling).
+> The headless React DatePicker, finally complete. Zero CSS · SSR-safe · ~19.5 KB gzip (≤ 20 KB ceiling).
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-~18.5KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip-~19.5KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/jiji-hoon96/kalyx/blob/main/LICENSE)
 
@@ -73,7 +73,7 @@ import {
 - **SSR-safe** — tested on Next.js App Router.
 - **ISO 8601 UTC strings** — eliminates `Date`-object footguns.
 - **Accessible** — ARIA roles, keyboard navigation, axe-clean.
-- **Per-picker tree-shaking** — `sideEffects: false` plus pure-annotated exports, so unused pickers are eliminated. Measured: TimePicker alone ~16.2 KB vs ~25.0 KB for all seven. Run `pnpm check-tree-shaking` for the current numbers.
+- **Per-picker tree-shaking** — `sideEffects: false` plus pure-annotated exports, so unused pickers are eliminated. Measured: TimePicker alone ~16.39 KB vs ~25.69 KB for all seven pickers plus the three main-entry hooks. These are consumer-bundle figures with dependencies resolved, so they are larger than the ~19.5 KB artifact number above. Run `pnpm check-tree-shaking` for the current numbers.
 - **TypeScript strict** — no `any`, full type exports.
 
 ## Styling

@@ -27,7 +27,7 @@ function useTimePicker(options?: UseTimePickerOptions): UseTimePickerReturn;
 | `onChange` | `(value: ISODateString \| null) => void` | — | 변경 콜백. |
 | `format` | `'12h' \| '24h'` | `'24h'` | 시간 포맷. |
 | `step` | `number` | `1` | 분 간격. |
-| `withSeconds` | `boolean` | `false` | 초 포함. |
+| `withSeconds` | `boolean` | `false` | `TimePicker.Root` 와 형태를 맞추려고 받아두지만 **훅은 이 값을 읽지 않는다**. `currentTime` 에는 항상 `seconds` 가 있고 `setSecond` 도 항상 동작한다. 초를 그릴지는 UI 가 정한다. |
 
 ### 반환값
 
@@ -36,7 +36,7 @@ function useTimePicker(options?: UseTimePickerOptions): UseTimePickerReturn;
 | `value` | `ISODateString \| null` | 현재 값. |
 | `currentTime` | `TimeValue` | `{ hours, minutes, seconds }`. |
 | `setTime` | `(partial: Partial<TimeValue>) => void` | 부분 업데이트 병합. |
-| `setHour` | `(hour: number) => void` | 시 지정 (24h). |
+| `setHour` | `(hour: number) => void` | 시 지정. `12h` 모드에서는 **1~12**, `24h` 모드에서는 0~23 을 받는다. 범위를 벗어나면 `RangeError` 가 발생한다. |
 | `setMinute` | `(minute: number) => void` | 분 지정. |
 | `setSecond` | `(second: number) => void` | 초 지정. |
 | `setPeriod` | `(period: 'AM' \| 'PM') => void` | AM/PM 변경 (12h). |

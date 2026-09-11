@@ -57,6 +57,8 @@ function Example() {
 | `disabled` | `boolean` | `false` | 전체 비활성. |
 | `readOnly` | `boolean` | `false` | 변경 방지. |
 | `filterTime` | `(hours: number, minutes: number) => boolean` | — | 슬롯별 비활성 predicate. `true`를 반환하면 해당 슬롯을 **선택 불가**로 만든다 (MUI X의 `shouldDisableTime`과 같은 극성 — react-datepicker의 `filterTime`(슬롯을 *유지*하려면 `true`)과는 **반대**). 시(hour)는 해당 시의 모든 `step` 분이 `true`일 때만 비활성. `format`과 무관하게 항상 24시간 값을 받는다. |
+| `locale` | `string` | `'en-US'` | AM/PM 라벨을 지역화하는 BCP 47 locale (`ko-KR` 이면 오전 / 오후). ARIA 라벨은 바뀌지 않는다. 그쪽은 `labels` 로 지정한다. |
+| `onOpenChange` | `(isOpen: boolean) => void` | — | `TimePicker.Popover` 가 열리거나 닫힐 때 호출된다. |
 | `labels` | `Partial<TimePickerLabels>` | — | ARIA 라벨 재정의. 키: `timeInput`, `hourList`, `minuteList`, `amPmToggle`, `hourOption(h)`, `minuteOption(m)`. |
 | `children` | `ReactNode` | — | 서브 컴포넌트. |
 
@@ -65,7 +67,17 @@ function Example() {
 `HH:MM` (또는 `withSeconds` 시 `HH:MM:SS`)을 표시하는 텍스트 입력. Enter/blur에서 파싱.
 
 - `value`, `onChange`, `type` 제외한 `<input>` 속성 확장.
-- `aria-label` 기본값 `"시간 입력"`.
+- `aria-label` 기본값은 영어 `"Time"` 이다. `locale="ko-KR"` 을 줘도 ARIA 라벨은 바뀌지 않는다. 한국어로 바꾸려면 Root 에 `labels={{ timeInput: '시간 입력' }}` 을 넘긴다.
+
+## `<TimePicker.Popover>`
+
+선택적으로 쓰는 부유 컨테이너, `role="dialog"`. 생략하면 리스트가 인라인으로 렌더된다.
+`TimePicker.Input` 이 클릭과 ArrowDown 으로 열고 Escape 로 닫는다.
+열림/닫힘을 관찰하려면 Root 의 `onOpenChange` 를 쓴다.
+
+| Prop | 타입 | 설명 |
+| --- | --- | --- |
+| `classNames` | `TimePickerPopoverClassNames` | 스타일 슬롯. |
 
 ## `<TimePicker.HourList>`
 
@@ -107,8 +119,8 @@ AM/PM 두 라디오 버튼 (`role="radiogroup"`) — `format="12h"`에서만 렌
 ```ts
 type TimePickerAmPmToggleClassNames = {
   root?: string;
-  button?: string;
-  buttonSelected?: string;
+  option?: string;
+  optionSelected?: string;
 };
 ```
 

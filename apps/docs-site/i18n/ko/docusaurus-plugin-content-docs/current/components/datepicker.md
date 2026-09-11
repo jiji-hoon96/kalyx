@@ -54,7 +54,7 @@ function Example() {
 | `onChange` | `(value: ISODateString \| null) => void` | — | 선택 또는 초기화 시 호출. |
 | `disabled` | `DisabledRule[] \| boolean` | `false` | 특정 날짜 비활성화 또는 전체 비활성. |
 | `readOnly` | `boolean` | `false` | 변경 방지, 표시용으로 선택 가능. |
-| `weekStartsOn` | `0 \| 1` | `0` | `0` = 일요일, `1` = 월요일. |
+| `weekStartsOn` | `0 \| 1` | `locale` 에서 추론 | `0` = 일요일, `1` = 월요일. 생략하면 `locale` 에서 추론한다(`en-US` → `0`, `de-DE` → `1`). 명시한 prop 이 항상 우선한다. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | date-fns 포맷 문자열. |
 | `locale` | `string` | `'en-US'` | BCP 47 로케일 태그. |
 | `dir` | `'ltr' \| 'rtl'` | `'ltr'` | 레이아웃 방향. `'rtl'`이면 캘린더 그리드에 `dir="rtl"`이 붙고 ArrowLeft/ArrowRight가 시각적 레이아웃을 따르도록 반전된다(WAI-ARIA grid 패턴). ArrowUp/Down, PageUp/Down, Home/End는 논리적 방향을 유지한다. [국제화](../concepts/internationalization.md#오른쪽-왼쪽-rtl) 참고. |

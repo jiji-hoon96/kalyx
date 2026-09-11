@@ -41,7 +41,7 @@ function useDatePicker(options?: UseDatePickerOptions): UseDatePickerReturn;
 | `selectDate` | `(iso: ISODateString \| null) => void` | 프로그래매틱 값 지정. |
 | `viewMonth` | `ISODateString` | 보이는 월의 1일 (UTC). |
 | `setViewMonth` | `(iso: ISODateString) => void` | 월 점프. |
-| `calendar` | `CalendarGrid` | 6×7 `CalendarDay` 그리드. |
+| `calendar` | `CalendarGrid` | `CalendarDay` 주 배열. 4~6행 × 7일이다. 훅은 `fixedWeeks` 를 넘기지 않으므로 행 수가 달마다 달라진다. |
 | `focusedDate` | `ISODateString` | 키보드 포커스 위치. |
 | `setFocusedDate` | `(iso: ISODateString) => void` | 포커스 이동. |
 | `previousMonth` | `() => void` | `setViewMonth(prev)` 단축. |

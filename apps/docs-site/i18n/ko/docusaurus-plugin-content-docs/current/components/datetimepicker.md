@@ -55,12 +55,16 @@ function Example() {
 | `onChange` | `(value: ISODateString \| null) => void` | — | 날짜 또는 시간 변경 시 호출. |
 | `format` | `'12h' \| '24h'` | `'24h'` | 시간 포맷. |
 | `step` | `number` | `1` | 분 간격. |
+| `withSeconds` | `boolean` | `false` | 표시와 입력에 초를 포함한다. |
+| `filterTime` | `(hours: number, minutes: number) => boolean` | — | 슬롯별 비활성 predicate. `true` 를 반환하면 해당 슬롯이 **선택 불가**가 된다. `format` 과 무관하게 항상 24시간 값을 받는다. [`TimePicker` 의 `filterTime`](./timepicker.md) 과 같은 규칙이다. |
 | `disabled` | `DisabledRule[] \| boolean` | `false` | 날짜 비활성 규칙. |
 | `readOnly` | `boolean` | `false` | 변경 방지. |
 | `weekStartsOn` | `0 \| 1` | `0` | 주 시작. |
 | `displayFormat` | `string` | `'yyyy-MM-dd HH:mm'` | date-fns 포맷. |
 | `locale` | `string` | `'en-US'` | BCP 47 로케일. |
 | `dir` | `'ltr' \| 'rtl'` | `'ltr'` | 레이아웃 방향. 캘린더 그리드로 전달된다. `'rtl'`이면 ArrowLeft/ArrowRight가 반전된다(WAI-ARIA grid 패턴). [국제화](../concepts/internationalization.md#오른쪽-왼쪽-rtl) 참고. |
+| `displayTimezone` | `string` | — | IANA 타임존. 설정하면 캘린더와 시간 컨트롤이 이 타임존 기준으로 읽고 쓴다 (DST 인식). [Timezone](../concepts/timezone.md) 참고. |
+| `labels` | `Partial<DateTimePickerLabels>` | — | ARIA 라벨 재정의. |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | 커스텀 어댑터. |
 | `children` | `ReactNode` | — | 서브 컴포넌트. |
 

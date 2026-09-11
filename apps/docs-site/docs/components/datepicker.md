@@ -143,7 +143,7 @@ Holds state and provides context to sub-components. Controlled when `value` is p
 | `onChange` | `(value: ISODateString \| null) => void` | — | Fires when a date is selected or cleared. |
 | `disabled` | `DisabledRule[] \| boolean` | `false` | Disable specific dates, or disable the whole picker. |
 | `readOnly` | `boolean` | `false` | Prevents changes; still selectable visually for form display. |
-| `weekStartsOn` | `0 \| 1` | `0` | `0` = Sunday, `1` = Monday. |
+| `weekStartsOn` | `0 \| 1` | inferred from `locale` | `0` = Sunday, `1` = Monday. When omitted it is inferred from `locale` (`en-US` → `0`, `de-DE` → `1`); an explicit prop always wins. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | date-fns format string. |
 | `locale` | `string` | `'en-US'` | BCP 47 locale tag. |
 | `dir` | `'ltr' \| 'rtl'` | `'ltr'` | Layout direction. In `'rtl'` the calendar grid carries `dir="rtl"` and ArrowLeft/ArrowRight are mirrored to follow the visual layout (WAI-ARIA grid pattern); ArrowUp/Down, PageUp/Down, and Home/End keep their logical direction. See [Internationalization](../concepts/internationalization.md#right-to-left-rtl). |

@@ -54,7 +54,7 @@ function Example() {
 | `onChange` | `(range: DateRange) => void` | — | 모든 변경(부분 포함)에 호출. |
 | `disabled` | `DisabledRule[] \| boolean` | `false` | 비활성 규칙 또는 전체 비활성. |
 | `readOnly` | `boolean` | `false` | 변경 방지. |
-| `weekStartsOn` | `0 \| 1` | `0` | 주 시작. |
+| `weekStartsOn` | `0 \| 1` | `locale` 에서 추론 | 주 시작. 생략하면 `locale` 에서 추론하고, 명시한 prop 이 우선한다. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | 포맷 문자열. |
 | `locale` | `string` | `'en-US'` | BCP 47 로케일. |
 | `dir` | `'ltr' \| 'rtl'` | `'ltr'` | 레이아웃 방향. `'rtl'`이면 캘린더 그리드에 `dir="rtl"`이 붙고 ArrowLeft/ArrowRight가 반전된다(WAI-ARIA grid 패턴). [국제화](../concepts/internationalization.md#오른쪽-왼쪽-rtl) 참고. |
@@ -104,12 +104,15 @@ type RangePickerCalendarClassNames = {
   gridRow?: string;
   gridCell?: string;
   day?: string;
-  daySelected?: string;      // 시작 또는 끝 날짜
+  dayRangeStart?: string;    // 범위의 시작 날짜
+  dayRangeEnd?: string;      // 범위의 끝 날짜
   dayInRange?: string;       // 시작과 끝 사이 날짜
   dayToday?: string;
   dayDisabled?: string;
   dayOutsideMonth?: string;
   weekdayHeader?: string;
+  weekNumberHeader?: string; // showWeekNumber 를 켰을 때만 렌더된다
+  weekNumber?: string;       // showWeekNumber 를 켰을 때만 렌더된다
 };
 ```
 
