@@ -2,6 +2,7 @@
 id: testing
 title: 테스트
 sidebar_position: 4
+description: 'Testing Library 에서 Kalyx 를 쿼리하고 클릭·키보드로 조작하며, jest-axe 로 접근성을 검사합니다.'
 ---
 
 # 테스트

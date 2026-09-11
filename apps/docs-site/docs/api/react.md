@@ -2,6 +2,7 @@
 id: react
 title: '@kalyx/react'
 sidebar_position: 2
+description: 'Full API reference for @kalyx/react: every export from the main and /headless entries, plus bundle size figures.'
 ---
 
 # @kalyx/react

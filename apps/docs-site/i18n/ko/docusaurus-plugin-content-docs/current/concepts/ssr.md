@@ -2,6 +2,7 @@
 id: ssr
 title: SSR 안전
 sidebar_position: 3
+description: 'Kalyx 는 hydration 불일치 없이 서버에서 렌더됩니다. 무엇을 피하는지, Next.js App Router 와 RSC 에서 어떻게 동작하는지.'
 ---
 
 # SSR 안전

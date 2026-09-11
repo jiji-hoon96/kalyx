@@ -2,6 +2,7 @@
 id: use-date-picker
 title: useDatePicker
 sidebar_position: 1
+description: '완전히 커스텀한 DatePicker UI 를 만듭니다. 마크업 없이 상태, 캘린더 그리드, 핸들러만 제공합니다.'
 ---
 
 # useDatePicker

@@ -2,6 +2,7 @@
 id: shadcn
 title: shadcn/ui
 sidebar_position: 2
+description: 'Match the shadcn/ui look by borrowing its class variants, and compose Kalyx inside a shadcn Popover.'
 ---
 
 # shadcn/ui

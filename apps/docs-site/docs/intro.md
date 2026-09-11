@@ -3,6 +3,7 @@ id: intro
 title: Introduction
 sidebar_position: 1
 slug: /intro
+description: 'Kalyx is a headless React date-picker library: seven pickers, zero CSS, SSR-safe, ISO 8601 UTC strings in and out, ~19.5 KB gzip.'
 ---
 
 # Kalyx

@@ -2,24 +2,39 @@
 id: weekpicker
 title: WeekPicker
 sidebar_position: 7
+description: '주 피커. 클릭 한 번으로 주 전체가 확정되며, 캘린더 정렬 또는 클릭 기준 주 경계를 고를 수 있습니다.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 # WeekPicker
 
-Week selector. A single click commits the entire week containing the clicked day, based on `weekStartsOn`. The value is a `DateRange` spanning all seven days.
+주 단위 선택기. 클릭 한 번으로 클릭한 날이 속한 주 전체가 `weekStartsOn` 기준으로 확정된다. 값은 그 7일을 모두 담은 `DateRange` 다.
 
 <figure>
   <img src="/img/demos/weekpicker.avif" alt="WeekPicker 데모: 한 번의 클릭으로 한 주 전체 선택" width="640" loading="lazy" />
-  <figcaption><em>화면의 스타일은 데모용입니다 — Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
+  <figcaption><em>화면의 스타일은 데모용입니다. Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
 </figure>
 
 ```tsx
 import { WeekPicker, type DateRange } from '@kalyx/react';
 ```
 
-## Basic usage
+## 구조
+
+```tsx
+<WeekPicker>            {/* Root — value = { start, end } of the week */}
+  <WeekPicker.Input part="start" /> {/* week-start combobox input */}
+  <WeekPicker.Input part="end" />   {/* week-end combobox input */}
+  <WeekPicker.Popover> {/* Floating-UI portal, role="dialog" */}
+    <WeekPicker.Calendar /> {/* week-highlighting month grid */}
+  </WeekPicker.Popover>
+</WeekPicker>
+```
+
+`Input` 과 `Popover` 는 `RangePicker` 에서 재노출된 것이다. `WeekPicker.Calendar` 를 한 번 클릭하면 클릭한 날이 속한 주 전체가 (`weekStartsOn` 기준으로) 확정된다.
+
+## 기본 사용
 
 ```tsx
 import { useState } from 'react';
@@ -58,38 +73,41 @@ function Example() {
 
 ## weekStartsOn
 
-The `weekStartsOn` prop (inherited from `RangePicker.Root`) controls which day the week begins on — `0` for Sunday, `1` for Monday. When you omit it, the value is inferred from `locale` (`en-US` → `0`, `de-DE` → `1`); an explicit prop always wins.
+`weekStartsOn` prop (`RangePicker.Root` 에서 상속)은 주가 어느 요일에 시작하는지를 정한다. `0` 은 일요일, `1` 은 월요일이다. 생략하면 `locale` 에서 추론하고(`en-US` → `0`, `de-DE` → `1`), 명시한 prop 이 항상 우선한다.
 
 ```tsx
 <WeekPicker weekStartsOn={1} value={week} onChange={setWeek}>
-  {/* ... */}
+  <WeekPicker.Input part="start" />
+  <WeekPicker.Popover>
+    <WeekPicker.Calendar />
+  </WeekPicker.Popover>
 </WeekPicker>
 ```
 
-With `weekStartsOn={1}`, clicking any date in, for example, April 14 2026 (Tuesday) commits the range Apr 13 (Mon) → Apr 19 (Sun).
+`weekStartsOn={1}` 이면 예컨대 2026년 4월 14일(화요일)을 클릭했을 때 4월 13일(월) → 4월 19일(일) 범위가 확정된다.
 
-## Parts
+## 구성 요소
 
-| Part | Source | Purpose |
+| 파트 | 출처 | 역할 |
 |------|--------|---------|
-| `WeekPicker.Root` | wraps `RangePicker.Root` | controlled/uncontrolled `DateRange`, `displayTimezone`, `disabled` rules, `dir` (RTL mirrors the calendar grid) |
-| `WeekPicker.Input` | = `RangePicker.Input` | start/end text inputs (`part="start" \| "end"`) |
-| `WeekPicker.Popover` | = `RangePicker.Popover` | Floating UI positioning |
-| **`WeekPicker.Calendar`** | wraps `RangePicker.Calendar` with `selectionMode="week"` | single-click selects the full week |
+| `WeekPicker.Root` | `RangePicker.Root` 를 감쌈 | 제어/비제어 `DateRange`, `displayTimezone`, `disabled` 규칙, `dir` (RTL 이면 캘린더 그리드를 미러링) |
+| `WeekPicker.Input` | = `RangePicker.Input` | 시작/종료 텍스트 입력 (`part="start" \| "end"`) |
+| `WeekPicker.Popover` | = `RangePicker.Popover` | Floating UI 포지셔닝 |
+| **`WeekPicker.Calendar`** | `selectionMode="week"` 를 고정해 `RangePicker.Calendar` 를 감쌈 | 클릭 한 번으로 주 전체를 선택 |
 
-Because `WeekPicker.Calendar` is implemented via the shared `selectionMode="week"` prop on `RangePicker.Calendar`, keyboard navigation (arrow keys, Home/End, Page Up/Down) behaves the same as `RangePicker` — pressing Enter or Space on the focused day commits the full week containing it.
+`WeekPicker.Calendar` 는 `RangePicker.Calendar` 가 공유하는 `selectionMode="week"` prop 으로 구현돼 있다. 그래서 키보드 내비게이션(화살표 키, Home/End, Page Up/Down)이 `RangePicker` 와 똑같이 동작한다. 포커스된 날에서 Enter 나 Space 를 누르면 그 날이 속한 주 전체가 확정된다.
 
-## Keyboard
+## 키보드
 
-- **Arrow keys** — move the focused day.
-- **Home / End** — jump to the first / last day of the currently-focused week.
-- **Page Up / Page Down** — previous / next month. Shift + Page Up/Down — previous / next year.
-- **Enter / Space** — commit the full week containing the focused day.
-- **Escape** — close the popover without committing.
+- **화살표 키.** 포커스된 날을 옮긴다.
+- **Home / End.** 현재 포커스된 주의 첫날 / 마지막 날로 이동한다.
+- **Page Up / Page Down.** 이전 달 / 다음 달. Shift + Page Up/Down 은 이전 해 / 다음 해.
+- **Enter / Space.** 포커스된 날이 속한 주 전체를 확정한다.
+- **Escape.** 확정하지 않고 popover 를 닫는다.
 
-## Disabled rules
+## 비활성 규칙
 
-Restrict selectable weeks. Any `DisabledRule` that matches at least one day in a week disables the entire week.
+선택 가능한 주를 제한한다. 한 주 안의 하루라도 `DisabledRule` 에 걸리면 그 주 전체가 비활성화된다.
 
 ```tsx
 <WeekPicker
@@ -105,7 +123,7 @@ Restrict selectable weeks. Any `DisabledRule` that matches at least one day in a
 </WeekPicker>
 ```
 
-## Uncontrolled
+## 비제어
 
 ```tsx
 <WeekPicker defaultValue={{ start: '2026-04-13T00:00:00.000Z', end: '2026-04-19T00:00:00.000Z' }}>
@@ -122,15 +140,15 @@ Restrict selectable weeks. Any `DisabledRule` that matches at least one day in a
 
 ## Timezone
 
-Inherited from `RangePicker.Root`. With `displayTimezone` set, the start and end of the week are emitted as civil midnight in that zone (UTC-ISO form).
+`RangePicker.Root` 에서 상속된다. `displayTimezone` 을 설정하면 주의 시작과 끝이 해당 존의 civil 자정으로(UTC-ISO 형태로) 나간다.
 
 ## Props
 
-`WeekPicker` Root accepts the same props as `RangePicker.Root`. See [RangePicker](./rangepicker.md) for the full reference.
+`WeekPicker` Root 는 `RangePicker.Root` 와 같은 prop 을 받는다. 전체 레퍼런스는 [RangePicker](./rangepicker.md) 를 참고한다.
 
 ### Calendar classNames
 
-Same shape as `RangePicker.Calendar` classNames, with an extra `dayInRange` modifier that styles every cell of the selected week:
+`RangePicker.Calendar` 의 classNames 와 같은 모양이고, 선택된 주의 모든 셀을 스타일링하는 `dayInRange` 수식자가 하나 더 있다.
 
 ```tsx
 <WeekPicker.Calendar
@@ -146,8 +164,8 @@ Same shape as `RangePicker.Calendar` classNames, with an extra `dayInRange` modi
 />
 ```
 
-## Related
+## 관련
 
 - [RangePicker →](./rangepicker.md)
 - [DatePicker →](./datepicker.md)
-- [Accessibility →](../concepts/accessibility.md)
+- [접근성 →](../concepts/accessibility.md)

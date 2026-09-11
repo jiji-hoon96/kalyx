@@ -2,6 +2,7 @@
 id: datetimepicker
 title: DateTimePicker
 sidebar_position: 4
+description: 'Date and time in one value: reuses the DatePicker and TimePicker parts under a shared context.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';

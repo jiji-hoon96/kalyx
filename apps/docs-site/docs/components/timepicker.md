@@ -2,6 +2,7 @@
 id: timepicker
 title: TimePicker
 sidebar_position: 3
+description: 'Time picker with 12/24-hour modes, minute steps, per-slot filtering and an optional popover.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
@@ -256,7 +257,7 @@ function Example() {
   useEffect(() => {
     if (!time) return;
     const { hours, minutes } = getTime(time); // { hours: 9, minutes: 30, seconds: 0 }
-    analytics.track('time_set', { hours, minutes });
+    console.log('time_set', { hours, minutes });
   }, [time]);
 
   return (

@@ -2,6 +2,7 @@
 id: timezone
 title: Timezone (displayTimezone)
 sidebar_position: 3
+description: 'The displayTimezone prop, DST gaps and ambiguous hours, and why an ISO string is an instant rather than a calendar coordinate.'
 ---
 
 # Timezone support

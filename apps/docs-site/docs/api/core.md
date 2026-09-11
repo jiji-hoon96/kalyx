@@ -2,6 +2,7 @@
 id: core
 title: '@kalyx/core'
 sidebar_position: 1
+description: 'Full API reference for @kalyx/core: calendar, date, time, locale and timezone utilities plus the shared types.'
 ---
 
 # @kalyx/core

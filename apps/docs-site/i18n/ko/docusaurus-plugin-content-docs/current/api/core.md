@@ -2,6 +2,7 @@
 id: core
 title: '@kalyx/core'
 sidebar_position: 1
+description: '@kalyx/core 전체 API 레퍼런스. 캘린더·날짜·시간·locale·timezone 유틸과 공용 타입.'
 ---
 
 # @kalyx/core

@@ -2,6 +2,7 @@
 id: timezone
 title: Timezone (displayTimezone)
 sidebar_position: 3
+description: 'displayTimezone prop, DST gap 과 모호한 시각, 그리고 ISO 문자열이 캘린더 좌표가 아니라 instant 인 이유.'
 ---
 
 # Timezone 지원
@@ -16,7 +17,7 @@ sidebar_position: 3
 
 ```ts
 const picked = new Date(2026, 3, 15); // UTC+9 → "2026-04-14T15:00:00.000Z"
-await save(picked.toISOString());     // 서버에는 4월 14일이 저장된다
+await save(picked.toISOString());     // server stores April 14
 ```
 
 `displayTimezone`을 쓰면 같은 클릭이 언제나 같은 *civil* 날짜를 저장합니다.
@@ -28,8 +29,8 @@ await save(picked.toISOString());     // 서버에는 4월 14일이 저장된다
     <DatePicker.Calendar />
   </DatePicker.Popover>
 </DatePicker>
-// "4월 15일" 클릭 → onChange("2026-04-14T15:00:00.000Z")
-// 이 값은 정확히 서울의 4월 15일 00:00 을 가리킨다
+// click "April 15" → onChange("2026-04-14T15:00:00.000Z")
+// which represents Seoul April 15 00:00 exactly
 ```
 
 ISO string은 여전히 UTC입니다 — 다만 서버 런타임 존의 civil 자정이 아니라, **표시 존의 civil 자정과 같은 UTC instant** 입니다.
@@ -48,9 +49,9 @@ ISO string은 여전히 UTC입니다 — 다만 서버 런타임 존의 civil �
 
 ```tsx
 <DatePicker displayTimezone="Asia/Seoul" value={iso} onChange={setIso}>
-  <DatePicker.Input />           {/* `iso` 를 서울 기준으로 포매팅 */}
+  <DatePicker.Input />           {/* formats `iso` as seen in Seoul */}
   <DatePicker.Popover>
-    <DatePicker.Calendar />      {/* today/selected 를 서울 civil 날짜로 하이라이트 */}
+    <DatePicker.Calendar />      {/* highlights today/selected by civil Seoul day */}
   </DatePicker.Popover>
 </DatePicker>
 ```
@@ -67,12 +68,12 @@ ISO string은 여전히 UTC입니다 — 다만 서버 런타임 존의 civil �
 Kalyx는 offset 조회를 `Intl.DateTimeFormat`에 위임하므로 모든 IANA 존의 전환이 올바르게 처리됩니다.
 
 ```ts
-// America/New_York 의 2026-03-08 spring forward: 02:00 EST → 03:00 EDT
+// Spring forward 2026-03-08 in America/New_York: 02:00 EST → 03:00 EDT
 startOfDayInTimezone('2026-03-08T12:00:00.000Z', 'America/New_York');
-// → '2026-03-08T05:00:00.000Z'  (EST — 자정은 아직 전환 이전)
+// → '2026-03-08T05:00:00.000Z'  (EST — midnight is still pre-transition)
 
 startOfDayInTimezone('2026-03-09T12:00:00.000Z', 'America/New_York');
-// → '2026-03-09T04:00:00.000Z'  (EDT — 하루 전체가 서머타임)
+// → '2026-03-09T04:00:00.000Z'  (EDT — full day in daylight time)
 ```
 
 ## 저수준 헬퍼
@@ -81,9 +82,9 @@ startOfDayInTimezone('2026-03-09T12:00:00.000Z', 'America/New_York');
 
 ```ts
 import {
-  civilMidnightFromUtcDay,  // 캘린더 셀 UTC iso → 해당 존의 civil 자정 ISO
-  getTimeInTimezone,         // UTC iso → 해당 존에서 관측되는 { hours, minutes, seconds }
-  setTimeInTimezone,         // UTC iso + TimeValue → 해당 존에서 시각이 바뀐 UTC iso
+  civilMidnightFromUtcDay,  // Calendar-cell UTC iso → civil midnight ISO in tz
+  getTimeInTimezone,         // UTC iso → { hours, minutes, seconds } as seen in tz
+  setTimeInTimezone,         // UTC iso + TimeValue → UTC iso with new time in tz
   formatInTimezone,
   startOfDayInTimezone,
   isSameDayInTimezone,

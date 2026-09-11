@@ -2,6 +2,7 @@
 id: installation
 title: Installation
 sidebar_position: 1
+description: 'Install @kalyx/react, check the React 19 peer requirement, and see which packages come with it.'
 ---
 
 # Installation

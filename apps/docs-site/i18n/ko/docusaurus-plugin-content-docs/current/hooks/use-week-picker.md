@@ -2,6 +2,7 @@
 id: use-week-picker
 title: useWeekPicker
 sidebar_position: 6
+description: 'weekAnchor 동작을 포함해 커스텀 WeekPicker UI 를 만듭니다. @kalyx/react/headless 에서만 제공됩니다.'
 ---
 
 # useWeekPicker

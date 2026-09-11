@@ -2,6 +2,7 @@
 id: migration
 title: Migration guide
 sidebar_position: 20
+description: 'Move from react-datepicker or react-day-picker to Kalyx, with a prop-by-prop mapping table.'
 ---
 
 # Migration guide

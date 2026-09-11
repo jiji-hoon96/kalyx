@@ -2,6 +2,7 @@
 id: troubleshooting
 title: Troubleshooting
 sidebar_position: 8
+description: 'Common Kalyx problems and their fixes: off-by-one days, bundle size, adapter errors and hydration warnings.'
 ---
 
 # Troubleshooting

@@ -2,6 +2,7 @@
 id: use-time-picker
 title: useTimePicker
 sidebar_position: 3
+description: '시·분 리스트, 12/24시간 처리, 슬롯 필터링을 포함해 완전히 커스텀한 TimePicker UI 를 만듭니다.'
 ---
 
 # useTimePicker

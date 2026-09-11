@@ -2,6 +2,7 @@
 id: tailwind
 title: Tailwind CSS
 sidebar_position: 1
+description: 'classNames 슬롯이나 data-* variant 로 Kalyx 를 Tailwind 로 스타일링합니다. 완성된 테마 예제를 포함합니다.'
 ---
 
 # Tailwind CSS

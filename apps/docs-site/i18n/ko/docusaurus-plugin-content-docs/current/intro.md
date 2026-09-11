@@ -3,6 +3,7 @@ id: intro
 title: 소개
 sidebar_position: 1
 slug: /intro
+description: 'Kalyx 는 headless React 날짜 피커 라이브러리입니다. 피커 7종, CSS 없음, SSR 안전, ISO 8601 UTC 문자열 입출력, gzip 약 19.5 KB.'
 ---
 
 # Kalyx

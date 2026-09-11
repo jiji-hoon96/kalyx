@@ -2,6 +2,7 @@
 id: iso-string
 title: ISO 8601 UTC strings
 sidebar_position: 2
+description: 'Kalyx takes and returns ISO 8601 UTC strings, never Date objects. What that contract guarantees and where it bends.'
 ---
 
 # ISO 8601 UTC strings

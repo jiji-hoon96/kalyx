@@ -2,6 +2,7 @@
 id: internationalization
 title: 다국어 (i18n)
 sidebar_position: 6
+description: 'locale 로 월·요일 이름을 지역화하고, 모든 ARIA 라벨을 재정의하고, RTL 언어에서 캘린더를 미러링합니다.'
 ---
 
 # 다국어 (i18n)

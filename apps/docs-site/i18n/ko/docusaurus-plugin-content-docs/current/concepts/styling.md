@@ -2,6 +2,7 @@
 id: styling
 title: 스타일링
 sidebar_position: 2
+description: '직접 쓴 CSS 로 Kalyx 를 스타일링합니다. classNames 슬롯과 각 파츠가 내보내는 data-* 상태 속성을 다룹니다.'
 ---
 
 # 스타일링
@@ -44,7 +45,7 @@ Tailwind(`data-[selected]:…`)나 일반 CSS 어트리뷰트 셀렉터를 쓰�
 ```
 
 ```tsx
-/* Tailwind v3.1+ data 변형 — classNames 불필요 */
+/* Tailwind v3.1+ data variants — no classNames needed */
 <DatePicker.Calendar
   classNames={{
     day: 'rounded p-2 data-[selected]:bg-blue-600 data-[selected]:text-white data-[today]:ring-1',

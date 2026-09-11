@@ -1,16 +1,16 @@
 ---
-title: Date adapters & the headless entry
+title: 날짜 어댑터와 headless 엔트리
 sidebar_position: 1
+description: '@kalyx/react/headless 엔트리로 date-fns 를 Day.js 나 Luxon 으로 바꾸고, conformance suite 로 커스텀 어댑터를 검증합니다.'
 ---
 
-# Date adapters & the `/headless` entry
+# 날짜 어댑터와 `/headless` 엔트리
 
-`@kalyx/react` ships with `date-fns` wired up out of the box. If you're starting
-fresh, you don't need to think about adapters — install, import, render, done.
+`@kalyx/react`는 `date-fns`가 이미 연결된 상태로 배포됩니다. 새로 시작하는
+경우라면 어댑터를 신경 쓸 필요가 없습니다. 설치하고, import 하고, 렌더하면 끝입니다.
 
-This guide is for the second case: you already ship `dayjs`, `luxon`, or
-`Temporal` in your app, and you'd rather not bundle a second date library just
-because Kalyx is here.
+이 가이드는 두 번째 경우를 위한 것입니다. 앱에 이미 `dayjs`, `luxon`, `Temporal`을
+싣고 있고, Kalyx 때문에 날짜 라이브러리를 하나 더 번들에 넣고 싶지는 않은 경우입니다.
 
 ## 미리 만들어진 어댑터 패키지
 
@@ -43,11 +43,11 @@ import { LuxonAdapter } from '@kalyx/adapter-luxon';
 셋 모두 모든 연산을 UTC로 수행해 동일한 ISO 8601(`...Z`) 시맨틱을 지키며,
 timezone 관련 작업은 `@kalyx/core`에 위임합니다. 정확성 로직은 각 어댑터가
 아니라 core에 있습니다. 백엔드가 맞는 게 없으면
-[아래 인터페이스](#writing-your-own-adapter)로 직접 작성하세요.
+[아래 인터페이스](#직접-어댑터-작성하기)로 직접 작성하세요.
 
 ---
 
-## Default (date-fns)
+## 기본값 (date-fns)
 
 ```bash npm2yarn
 npm install @kalyx/react
@@ -68,32 +68,31 @@ import { DatePicker } from '@kalyx/react';
 소비자 그래프에 포함되고 캘린더가 즉시 동작합니다. 정확한 비용은 주변
 의존성 그래프에 따라 달라지므로 애플리케이션 번들러로 측정하세요.
 
-This is the right choice for **most** apps. Keep reading only if you have a
-reason to switch.
+**대부분의** 앱에는 이쪽이 맞는 선택입니다. 바꿔야 할 이유가 있을 때만 계속
+읽으세요.
 
 ---
 
-## Why would I switch?
+## 왜 바꾸나요?
 
-You should switch to the `/headless` entry when:
+다음 경우에는 `/headless` 엔트리로 바꾸는 게 좋습니다.
 
-- **You already ship `dayjs` / `luxon` / `Temporal`.** Bundling `date-fns`
-  alongside is dead weight — a second parser, a second arithmetic engine,
-  a second formatter.
-- **You need a date library Kalyx doesn't bundle.** Pass your own adapter and
-  Kalyx will route every date operation through it.
-- **You need a deterministic clock for tests.** A stub adapter whose `today()`
-  always returns the same ISO string makes calendar snapshots stable.
+- **이미 `dayjs` / `luxon` / `Temporal`을 싣고 있다.** 여기에 `date-fns`까지
+  더하면 순수한 짐입니다. 파서도 둘, 산술 엔진도 둘, 포매터도 둘이 됩니다.
+- **Kalyx가 번들하지 않는 날짜 라이브러리가 필요하다.** 직접 만든 어댑터를
+  넘기면 Kalyx가 모든 날짜 연산을 그쪽으로 보냅니다.
+- **테스트에 결정론적인 시계가 필요하다.** `today()`가 항상 같은 ISO string을
+  돌려주는 스텁 어댑터를 쓰면 캘린더 스냅샷이 안정됩니다.
 
-If none of these apply, stay on the default — switching costs more bytes of
-your attention than it saves of your bundle.
+어느 쪽에도 해당하지 않는다면 기본값에 머무르세요. 바꾸는 데 드는 주의력이
+번들에서 아끼는 바이트보다 큽니다.
 
 ---
 
-## Using a custom adapter
+## 커스텀 어댑터 사용하기
 
-Import from `@kalyx/react/headless` and pass an `adapter` prop. The component
-surface is otherwise identical to `@kalyx/react`:
+`@kalyx/react/headless`에서 import 하고 `adapter` prop을 넘기세요. 그 밖의
+컴포넌트 표면은 `@kalyx/react`와 완전히 같습니다.
 
 ```tsx
 import { DatePicker } from '@kalyx/react/headless';
@@ -109,15 +108,15 @@ import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 </DatePicker>
 ```
 
-Every Root component (`DatePicker`, `RangePicker`, `TimePicker`,
-`DateTimePicker`, `MonthPicker`, `YearPicker`, `WeekPicker`) accepts the same
-`adapter` prop. All seven hooks accept an `adapter` option — `useDatePicker`,
-`useRangePicker` and `useTimePicker` from the main entry, plus `useMonthPicker`,
-`useYearPicker`, `useWeekPicker` and `useDateTimePicker`, which the `/headless`
-entry exports exclusively.
+모든 Root 컴포넌트(`DatePicker`, `RangePicker`, `TimePicker`,
+`DateTimePicker`, `MonthPicker`, `YearPicker`, `WeekPicker`)가 같은 `adapter`
+prop을 받습니다. hook 7종도 전부 `adapter` 옵션을 받습니다. 메인 엔트리의
+`useDatePicker`, `useRangePicker`, `useTimePicker`와 `/headless` 엔트리만
+내보내는 `useMonthPicker`, `useYearPicker`, `useWeekPicker`,
+`useDateTimePicker`입니다.
 
-If you forget the `adapter` prop on the headless entry, the Root throws a
-clear error at render time:
+headless 엔트리에서 `adapter` prop을 빠뜨리면, Root가 렌더 시점에 명확한
+에러를 던집니다.
 
 ```
 [@kalyx/react/headless] DatePicker requires an adapter.
@@ -125,27 +124,25 @@ Pass one via <DatePicker adapter={...}>.
 If you don't need a custom adapter, import from '@kalyx/react' instead.
 ```
 
-This is intentional — catching the mistake at render is much friendlier than
-crashing later inside a `addMonths` call with a stack trace pointing at the
-Calendar grid.
+이건 의도된 동작입니다. 나중에 `addMonths` 호출 안에서 Calendar grid를 가리키는
+스택 트레이스와 함께 터지는 것보다, 렌더 시점에 실수를 잡아 주는 편이 훨씬
+친절합니다.
 
-### Mixing entries
+### 두 엔트리 섞어 쓰기
 
-You can use `@kalyx/react` (with the default adapter) for most of your app and
-`@kalyx/react/headless` (with a custom adapter) for the one screen that needs
-it. They compose freely — the component implementations are the same code,
-only the default-adapter installation differs.
+앱 대부분은 `@kalyx/react`(기본 어댑터)로 쓰고, 필요한 화면 하나만
+`@kalyx/react/headless`(커스텀 어댑터)로 쓸 수 있습니다. 둘은 자유롭게 함께
+씁니다. 컴포넌트 구현은 같은 코드이고, 기본 어댑터를 주입하느냐만 다릅니다.
 
 ---
 
-## Writing your own adapter
+## 직접 어댑터 작성하기
 
-If your date library isn't already covered by a prebuilt package
-(date-fns, dayjs, luxon, see the section above), implement the `DateAdapter`
-interface yourself. It has
-**21 methods**. All of them take ISO 8601 UTC
-strings as input and return either ISO strings, booleans, or numbers. Native
-`Date` objects never cross the boundary.
+쓰려는 날짜 라이브러리를 이미 만들어진 패키지가 다루지 않는다면
+(date-fns, dayjs, luxon은 위 절 참고), `DateAdapter` 인터페이스를 직접
+구현하세요. 메서드는 **21개**입니다. 전부 ISO 8601 UTC string을 입력으로 받고
+ISO string, boolean, 숫자 중 하나를 돌려줍니다. 네이티브 `Date` 객체는 이
+경계를 넘지 않습니다.
 
 ```ts
 import type { DateAdapter } from '@kalyx/react/headless';
@@ -188,11 +185,11 @@ interface DateAdapter {
 }
 ```
 
-### dayjs reference implementation
+### dayjs 참조 구현
 
-Sketch — works for most non-DST-edge use cases. Install
+스케치입니다. DST 경계를 건드리지 않는 대부분의 용례에서 동작합니다.
 `dayjs`, `dayjs/plugin/utc`, `dayjs/plugin/timezone`,
-`dayjs/plugin/customParseFormat`.
+`dayjs/plugin/customParseFormat`을 설치하세요.
 
 ```ts
 import dayjs from 'dayjs';
@@ -273,7 +270,7 @@ export const DayjsAdapter: DateAdapter = {
 };
 ```
 
-Then:
+그다음:
 
 ```tsx
 import { DatePicker } from '@kalyx/react/headless';
@@ -284,30 +281,29 @@ import { DayjsAdapter } from './my-dayjs-adapter';
 </DatePicker>
 ```
 
-### Things to get right
+### 꼭 맞춰야 할 것
 
-- **Always return ISO 8601 UTC strings** (ending in `Z`). Local-time strings
-  will silently drift on the next operation.
-- **`getMonth` is 0-indexed.** Match `Date.getUTCMonth()`. luxon's `.month`
-  is 1-indexed — subtract 1.
-- **`startOfDay` / `today` take a timezone**. When provided, return the
-  civil-midnight instant *of that zone*, not UTC midnight. Without it, return
-  UTC midnight of the same calendar day. The TimePicker and Calendar both
-  rely on this distinction across DST boundaries.
-- **`format` tokens follow date-fns** (`yyyy`, `MM`, `dd`, `HH`, `mm`). If
-  your library uses different tokens, translate at the adapter boundary as
-  shown above.
+- **언제나 ISO 8601 UTC string을 돌려주세요**(`Z`로 끝나는 값). 로컬 시각
+  문자열은 다음 연산에서 조용히 어긋납니다.
+- **`getMonth`는 0-indexed 입니다.** `Date.getUTCMonth()`에 맞추세요. luxon의
+  `.month`는 1-indexed 이므로 1을 빼야 합니다.
+- **`startOfDay` / `today`는 timezone을 받습니다**. 값이 주어지면 UTC 자정이
+  아니라 *그 존의* civil 자정 instant를 돌려주세요. 값이 없으면 같은 캘린더
+  날짜의 UTC 자정을 돌려줍니다. TimePicker와 Calendar 모두 DST 경계에서 이
+  구분에 의존합니다.
+- **`format` 토큰은 date-fns를 따릅니다**(`yyyy`, `MM`, `dd`, `HH`, `mm`).
+  라이브러리가 다른 토큰을 쓴다면 위 예시처럼 어댑터 경계에서 변환하세요.
 
-### Testing your adapter
+### 어댑터 테스트하기
 
-The fastest sanity check is to render `<DatePicker.Calendar />` with the
-adapter and step through a month with arrow keys. If the dates align with
-what your library reports, the contract holds.
+가장 빠른 점검은 그 어댑터로 `<DatePicker.Calendar />`를 렌더한 뒤 화살표
+키로 한 달을 훑어 보는 것입니다. 날짜가 라이브러리가 보고하는 값과 맞으면
+계약이 지켜지고 있는 것입니다.
 
-For full confidence, run the shared conformance suite. `@kalyx/core/test-helpers`
-exports `runAdapterConformanceTests`, the exact suite the prebuilt adapters are
-validated against. It covers leap years, DST transitions, end-of-month
-rollover, and the weekday / month-index conventions:
+확실히 하려면 공유 conformance 스위트를 돌리세요. `@kalyx/core/test-helpers`가
+`runAdapterConformanceTests`를 내보내는데, 미리 만들어진 어댑터들이 검증받는
+바로 그 스위트입니다. 윤년, DST 전환, 월말 롤오버, 요일 및 월 인덱스 규약을
+다룹니다.
 
 ```ts
 import { describe, it, expect } from 'vitest';
@@ -317,13 +313,13 @@ import { MyAdapter } from './my-adapter';
 runAdapterConformanceTests(MyAdapter, { describe, it, expect });
 ```
 
-If every case passes, your adapter satisfies the same contract as
-`@kalyx/adapter-date-fns`, `@kalyx/adapter-dayjs`, and `@kalyx/adapter-luxon`.
+모든 케이스가 통과하면, 그 어댑터는 `@kalyx/adapter-date-fns`,
+`@kalyx/adapter-dayjs`, `@kalyx/adapter-luxon`과 같은 계약을 만족합니다.
 
 ---
 
-## Next
+## 다음 단계
 
-- [ISO strings →](../concepts/iso-string.md)
-- [Timezone handling →](../concepts/timezone.md)
-- [Core API reference →](../api/core.md)
+- [ISO string →](../concepts/iso-string.md)
+- [Timezone 처리 →](../concepts/timezone.md)
+- [Core API 레퍼런스 →](../api/core.md)

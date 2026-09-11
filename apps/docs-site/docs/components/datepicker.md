@@ -2,6 +2,7 @@
 id: datepicker
 title: DatePicker
 sidebar_position: 1
+description: 'Single-date picker: Root, Input, Trigger, Popover, Calendar, MonthGrid, YearGrid and Presets, with the full props reference.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
@@ -29,7 +30,7 @@ Compose the parts you need. Every part below is optional except `DatePicker` (Ro
   <DatePicker.Trigger /> {/* button that toggles the popover */}
   <DatePicker.Popover> {/* Floating-UI portal, role="dialog" */}
     <DatePicker.Presets> {/* role="group" of quick-select buttons */}
-      <DatePicker.Preset /> {/* one quick-select toggle button */}
+      <DatePicker.Preset value="today">Today</DatePicker.Preset> {/* one quick-select toggle */}
     </DatePicker.Presets>
     <DatePicker.Calendar /> {/* month grid, role="grid" */}
     <DatePicker.MonthGrid /> {/* 3×4 month jump grid (optional view) */}
@@ -373,10 +374,13 @@ All `DatePicker.Root` callbacks are optional. Neither of the two newer ones fire
 <DatePicker
   value={date}
   onChange={setDate}
-  onOpenChange={(open) => analytics.track('picker_toggle', { open })}
-  onCalendarNavigate={(month) => prefetchEventsForMonth(month)}
+  onOpenChange={(open) => console.log('picker_toggle', open)}
+  onCalendarNavigate={(month) => console.log('navigated to', month)}
 >
-  {/* ... */}
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
 </DatePicker>
 ```
 

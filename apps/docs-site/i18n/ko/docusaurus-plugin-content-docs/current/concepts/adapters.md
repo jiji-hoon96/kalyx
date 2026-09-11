@@ -2,6 +2,7 @@
 id: adapters
 title: 날짜 어댑터
 sidebar_position: 4
+description: 'Kalyx 는 DateAdapter 를 통해 날짜 라이브러리와 대화합니다. 배포된 date-fns·Day.js·Luxon 어댑터를 쓰거나 직접 만들 수 있습니다.'
 ---
 
 # 날짜 어댑터

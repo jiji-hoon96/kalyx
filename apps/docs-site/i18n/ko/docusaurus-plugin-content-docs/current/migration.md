@@ -2,6 +2,7 @@
 id: migration
 title: 마이그레이션 가이드
 sidebar_position: 20
+description: 'react-datepicker 나 react-day-picker 에서 Kalyx 로 옮깁니다. prop 단위 대응표를 제공합니다.'
 ---
 
 # 마이그레이션 가이드

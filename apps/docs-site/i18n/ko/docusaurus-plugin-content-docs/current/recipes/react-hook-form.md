@@ -2,6 +2,7 @@
 id: react-hook-form
 title: React Hook Form
 sidebar_position: 3
+description: 'Controller 로 Kalyx 를 React Hook Form 에 연결하거나, hidden input 으로 네이티브 제출합니다.'
 ---
 
 # React Hook Form

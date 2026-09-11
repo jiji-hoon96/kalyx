@@ -2,6 +2,7 @@
 id: weekpicker
 title: WeekPicker
 sidebar_position: 7
+description: 'Week picker: one click commits the whole week, with calendar-aligned or click-anchored week boundaries.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
@@ -156,7 +157,10 @@ function MondayStartWeekPicker() {
 
 ```tsx
 <WeekPicker weekStartsOn={1} value={week} onChange={setWeek}>
-  {/* ... */}
+  <WeekPicker.Input part="start" />
+  <WeekPicker.Popover>
+    <WeekPicker.Calendar />
+  </WeekPicker.Popover>
 </WeekPicker>
 ```
 

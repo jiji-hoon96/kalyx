@@ -2,6 +2,7 @@
 id: datetimepicker
 title: DateTimePicker
 sidebar_position: 4
+description: '날짜와 시간을 하나의 값으로. 공유 컨텍스트 아래에서 DatePicker 와 TimePicker 파츠를 재사용합니다.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
@@ -18,6 +19,24 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 ```tsx
 import { DateTimePicker } from '@kalyx/react';
 ```
+
+## 구조
+
+```tsx
+<DateTimePicker>            {/* Root — one ISO string for date + time */}
+  <DateTimePicker.Input /> {/* combobox <input>, parses date + time */}
+  <DateTimePicker.Popover> {/* Floating-UI portal, role="dialog" */}
+    <DateTimePicker.Calendar /> {/* month grid (reuses DatePicker.Calendar) */}
+    <DateTimePicker.MonthGrid /> {/* optional month jump view */}
+    <DateTimePicker.YearGrid /> {/* optional year jump view */}
+    <DateTimePicker.HourList /> {/* hour listbox (reuses TimePicker.HourList) */}
+    <DateTimePicker.MinuteList /> {/* minute listbox */}
+    <DateTimePicker.AmPmToggle /> {/* AM/PM switch (12-hour mode only) */}
+  </DateTimePicker.Popover>
+</DateTimePicker>
+```
+
+Calendar·MonthGrid·YearGrid 는 `DatePicker` 에서, HourList·MinuteList·AmPmToggle 은 `TimePicker` 에서 재노출된 것이다. 공유된 `DateTimePicker` 컨텍스트를 읽으므로 값 하나가 양쪽을 모두 움직인다. `DateTimePicker.Presets` / `.Preset` 은 [`@kalyx/react/headless`](../guides/adapters.md) 엔트리에서 제공된다.
 
 ## 기본 사용
 
@@ -129,8 +148,8 @@ DateTimePicker는 DatePicker와 TimePicker의 서브 컴포넌트를 한 네임�
   value={dt}
   onChange={setDt}
   disabled={[
-    { dayOfWeek: [0, 6] },                           // 주말 제외
-    { before: new Date().toISOString() },            // 과거 제외
+    { dayOfWeek: [0, 6] },                           // weekends off
+    { before: new Date().toISOString() },            // no past
   ]}>
   <DateTimePicker.Input />
   <DateTimePicker.Popover>

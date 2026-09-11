@@ -2,6 +2,7 @@
 id: accessibility
 title: Accessibility
 sidebar_position: 5
+description: 'WAI-ARIA roles, keyboard navigation, and focus management across all seven Kalyx pickers.'
 ---
 
 # Accessibility

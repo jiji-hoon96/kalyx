@@ -2,6 +2,7 @@
 id: internationalization
 title: Internationalization (i18n)
 sidebar_position: 6
+description: 'Localize month and weekday names with locale, override every ARIA label, and mirror the calendar for right-to-left languages.'
 ---
 
 # Internationalization (i18n)

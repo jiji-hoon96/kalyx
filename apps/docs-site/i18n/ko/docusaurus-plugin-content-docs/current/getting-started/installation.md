@@ -2,6 +2,7 @@
 id: installation
 title: 설치
 sidebar_position: 1
+description: '@kalyx/react 설치, React 19 peer 요구사항, 함께 설치되는 패키지를 정리합니다.'
 ---
 
 # 설치

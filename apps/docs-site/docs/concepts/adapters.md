@@ -2,6 +2,7 @@
 id: adapters
 title: Date adapters
 sidebar_position: 4
+description: 'Kalyx talks to date libraries through a DateAdapter. Use the published date-fns, Day.js or Luxon adapter, or write your own.'
 ---
 
 # Date adapters

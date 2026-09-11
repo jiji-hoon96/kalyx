@@ -2,6 +2,7 @@
 id: rangepicker
 title: RangePicker
 sidebar_position: 2
+description: 'hover 미리보기, 빠른 범위 preset, 주 선택 모드를 갖춘 날짜 범위 피커.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
@@ -17,6 +18,21 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 ```tsx
 import { RangePicker } from '@kalyx/react';
+```
+
+## 구조
+
+```tsx
+<RangePicker>            {/* Root — holds the { start, end } range */}
+  <RangePicker.Input part="start" /> {/* start-date combobox input */}
+  <RangePicker.Input part="end" />   {/* end-date combobox input */}
+  <RangePicker.Popover> {/* Floating-UI portal, role="dialog" */}
+    <RangePicker.Presets> {/* role="group" of quick-range buttons */}
+      <RangePicker.Preset value="today">Today</RangePicker.Preset> {/* one quick-range toggle */}
+    </RangePicker.Presets>
+    <RangePicker.Calendar /> {/* range-aware month grid */}
+  </RangePicker.Popover>
+</RangePicker>
 ```
 
 ## 기본 사용

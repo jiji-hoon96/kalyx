@@ -2,6 +2,7 @@
 id: rangepicker
 title: RangePicker
 sidebar_position: 2
+description: 'Date-range picker with hover preview, quick-range presets and week selection mode.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
@@ -27,7 +28,7 @@ import { RangePicker } from '@kalyx/react';
   <RangePicker.Input part="end" />   {/* end-date combobox input */}
   <RangePicker.Popover> {/* Floating-UI portal, role="dialog" */}
     <RangePicker.Presets> {/* role="group" of quick-range buttons */}
-      <RangePicker.Preset /> {/* one quick-range toggle button */}
+      <RangePicker.Preset value="today">Today</RangePicker.Preset> {/* one quick-range toggle */}
     </RangePicker.Presets>
     <RangePicker.Calendar /> {/* range-aware month grid */}
   </RangePicker.Popover>

@@ -2,6 +2,7 @@
 id: use-date-picker
 title: useDatePicker
 sidebar_position: 1
+description: 'Build a fully custom DatePicker UI: the state, calendar grid and handlers without any markup.'
 ---
 
 # useDatePicker

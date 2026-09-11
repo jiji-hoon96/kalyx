@@ -2,6 +2,7 @@
 id: datepicker
 title: DatePicker
 sidebar_position: 1
+description: '단일 날짜 피커. Root, Input, Trigger, Popover, Calendar, MonthGrid, YearGrid, Presets 와 전체 props 레퍼런스.'
 ---
 
 import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';

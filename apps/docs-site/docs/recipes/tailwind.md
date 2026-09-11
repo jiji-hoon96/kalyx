@@ -2,6 +2,7 @@
 id: tailwind
 title: Tailwind CSS
 sidebar_position: 1
+description: 'Style Kalyx with Tailwind using classNames slots or data-* variants, with a complete themed example.'
 ---
 
 # Tailwind CSS

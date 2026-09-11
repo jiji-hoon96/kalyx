@@ -2,6 +2,7 @@
 id: composition
 title: Composition API
 sidebar_position: 1
+description: 'Why Kalyx uses dot-notation sub-components instead of a hundred props, and how to compose only the parts you need.'
 ---
 
 # Composition API

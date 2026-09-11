@@ -2,6 +2,7 @@
 id: react
 title: '@kalyx/react'
 sidebar_position: 2
+description: '@kalyx/react 전체 API 레퍼런스. 메인과 /headless 엔트리의 모든 export 와 번들 크기 수치.'
 ---
 
 # @kalyx/react

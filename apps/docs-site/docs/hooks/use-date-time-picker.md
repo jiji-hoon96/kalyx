@@ -2,6 +2,7 @@
 id: use-date-time-picker
 title: useDateTimePicker
 sidebar_position: 7
+description: 'Build a custom DateTimePicker UI driving date and time from one value. Exported from @kalyx/react/headless only.'
 ---
 
 # useDateTimePicker

@@ -1,6 +1,7 @@
 ---
 title: Date adapters & the headless entry
 sidebar_position: 1
+description: 'Swap date-fns for Day.js or Luxon using the @kalyx/react/headless entry, and verify a custom adapter with the conformance suite.'
 ---
 
 # Date adapters & the `/headless` entry

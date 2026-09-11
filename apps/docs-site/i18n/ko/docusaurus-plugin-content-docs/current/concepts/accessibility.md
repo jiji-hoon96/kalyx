@@ -2,6 +2,7 @@
 id: accessibility
 title: 접근성
 sidebar_position: 5
+description: 'Kalyx 피커 7종의 WAI-ARIA role, 키보드 내비게이션, 포커스 관리.'
 ---
 
 # 접근성
