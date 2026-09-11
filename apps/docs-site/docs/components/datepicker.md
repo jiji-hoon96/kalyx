@@ -168,8 +168,12 @@ Disable all weekends and any date before today:
 <DatePicker
   value={iso}
   onChange={setIso}
-  disabled={[{ dayOfWeek: [0, 6] }, { before: new Date().toISOString() }]}
-/>
+  disabled={[{ dayOfWeek: [0, 6] }, { before: new Date().toISOString() }]}>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
 ```
 
 ```jsx live
@@ -250,6 +254,7 @@ Renders the month grid. Fully keyboard navigable (see [Accessibility](../concept
 | `classNames` | `DatePickerCalendarClassNames` | Styling for internal slots. |
 | `onTitleClick` | `() => void` | Fires when the month/year title is clicked — wire to `MonthGrid` / `YearGrid`. |
 | `fixedWeeks` | `boolean` (default `false`) | Always render 6 week rows. Without it the grid is 4–6 rows, so the popover changes height from month to month. |
+| `showWeekNumber` | `boolean` (default `false`) | Render an ISO 8601 week-number column (1–53) on the left of the grid. The column is a `<th scope="row">` outside the WAI-ARIA grid data region, so keyboard navigation across date cells is unaffected. Style it with the `weekNumberHeader` / `weekNumber` `classNames` keys. |
 
 ### `classNames` keys
 
@@ -434,8 +439,12 @@ There's no `minDate` / `maxDate` prop — express the same rule with `disabled`:
     { after: '2026-12-31T00:00:00.000Z' },
   ]}
   value={iso}
-  onChange={setIso}
-/>
+  onChange={setIso}>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
 ```
 
 :::caution Pair `disabled` boundaries with `displayTimezone`
@@ -455,8 +464,12 @@ const tz = 'Asia/Seoul';
   displayTimezone={tz}
   disabled={[{ before: civilMidnightFromUtcDay('2026-01-01T00:00:00.000Z', tz) }]}
   value={iso}
-  onChange={setIso}
-/>;
+  onChange={setIso}>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
 ```
 
 The same rule applies when calling [`isDateDisabled`](../api/core.md#isdatedisablediso-rules-adapter-timezone) yourself. For per-cell state inside a custom grid, prefer the precomputed `isDisabled` flag from `getCalendarDays` — it already normalizes each cell.

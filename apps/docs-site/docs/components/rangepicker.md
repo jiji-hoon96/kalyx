@@ -149,7 +149,10 @@ Month grid with range highlighting.
 | Prop | Type | Description |
 | --- | --- | --- |
 | `classNames` | `RangePickerCalendarClassNames` | Styling. |
+| `selectionMode` | `'range' \| 'week'` (default `'range'`) | `'week'` selects a whole week per click. `WeekPicker.Calendar` is this component with `selectionMode` pinned to `'week'`. |
+| `weekAnchor` | `'calendar' \| 'clicked'` (default `'calendar'`) | Only with `selectionMode="week"`. `'calendar'` snaps to the `weekStartsOn`-aligned boundary; `'clicked'` takes the 7-day span anchored on the clicked day. |
 | `fixedWeeks` | `boolean` (default `false`) | Always render 6 week rows. Without it the grid is 4–6 rows, so the popover changes height from month to month. |
+| `showWeekNumber` | `boolean` (default `false`) | Render an ISO 8601 week-number column (1–53) on the left of the grid. The column is a `<th scope="row">` outside the WAI-ARIA grid data region, so keyboard navigation across date cells is unaffected. Style it with the `weekNumberHeader` / `weekNumber` `classNames` keys. |
 
 ```ts
 type RangePickerCalendarClassNames = {

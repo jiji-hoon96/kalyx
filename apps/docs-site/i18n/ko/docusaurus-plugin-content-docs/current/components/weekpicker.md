@@ -44,6 +44,18 @@ function Example() {
 
 <StackBlitzEmbed id="datepicker-basic" />
 
+## `<WeekPicker.Calendar>`
+
+`selectionMode` 를 `'week'` 으로 고정한 `RangePicker.Calendar` 다. 따라서
+`RangePicker.Calendar` 의 나머지 prop 이 그대로 적용된다.
+
+| Prop | 타입 | 설명 |
+| --- | --- | --- |
+| `classNames` | `WeekPickerCalendarClassNames` | 스타일 슬롯. |
+| `weekAnchor` | `'calendar' \| 'clicked'` (기본 `'calendar'`) | 클릭한 날을 어떤 주로 볼지 정한다. `'calendar'` 는 `weekStartsOn` 경계로 스냅한다(흔히 말하는 "몇째 주"). `'clicked'` 는 클릭한 날에 고정된 7일 구간을 쓰며, 이는 주의 정의 자체가 다르다. |
+| `showWeekNumber` | `boolean` (기본 `false`) | 그리드 왼쪽에 ISO 8601 주차 열(1~53)을 렌더한다. |
+| `fixedWeeks` | `boolean` (기본 `false`) | 항상 6주 행을 렌더. 지정하지 않으면 4~6행이라 달마다 popover 높이가 바뀐다. |
+
 ## weekStartsOn
 
 The `weekStartsOn` prop (inherited from `RangePicker.Root`) controls which day the week begins on — `0` for Sunday, `1` for Monday. When you omit it, the value is inferred from `locale` (`en-US` → `0`, `de-DE` → `1`); an explicit prop always wins.
