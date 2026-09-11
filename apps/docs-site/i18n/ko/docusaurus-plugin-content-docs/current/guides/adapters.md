@@ -111,8 +111,10 @@ import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 
 Every Root component (`DatePicker`, `RangePicker`, `TimePicker`,
 `DateTimePicker`, `MonthPicker`, `YearPicker`, `WeekPicker`) accepts the same
-`adapter` prop. Every hook (`useDatePicker`, `useRangePicker`,
-`useTimePicker`) accepts an `adapter` option.
+`adapter` prop. All seven hooks accept an `adapter` option — `useDatePicker`,
+`useRangePicker` and `useTimePicker` from the main entry, plus `useMonthPicker`,
+`useYearPicker`, `useWeekPicker` and `useDateTimePicker`, which the `/headless`
+entry exports exclusively.
 
 If you forget the `adapter` prop on the headless entry, the Root throws a
 clear error at render time:

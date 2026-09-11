@@ -50,12 +50,25 @@ The value is UTC. **Display** is a rendering concern — handled by `displayForm
 <DatePicker
   value={iso}
   onChange={setIso}
-  displayFormat="MMM d, yyyy"
+  displayFormat="yyyy-MM-dd"
   locale="en-US"
-/>
+>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
 ```
 
-Under the hood, the adapter formats the UTC instant using the requested locale.
+`displayFormat` is **not** a full date-fns format string. The adapter does a literal
+token substitution over exactly eight tokens — `yyyy`, `MM`, `dd`, `HH`, `mm`, `ss`,
+`M`, `d` — and leaves everything else untouched. Month names are not among them:
+`"MMM d, yyyy"` renders `"044 15, 2026"`, because `MM` and `M` each match inside
+`MMM`. All three shipped adapters share this limit. For a localized month name,
+format the value yourself with `Intl.DateTimeFormat` and render your own trigger text.
+
+`locale` drives the calendar's month and weekday names (and the AM/PM labels on
+`TimePicker`), not `displayFormat`.
 
 ## Converting to and from `Date`
 

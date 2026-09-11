@@ -15,8 +15,8 @@ shadcn은 DatePicker를 직접 제공하지 않습니다 — 튜토리얼에서 
 
 import { useState } from 'react';
 import { DatePicker, type ISODateString } from '@kalyx/react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { buttonVariants } from '@/components/ui/button';
+import { inputVariants } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 export function ShadcnDatePicker() {
@@ -25,11 +25,11 @@ export function ShadcnDatePicker() {
   return (
     <DatePicker value={date} onChange={setDate}>
       <div className="flex items-center gap-2">
-        <DatePicker.Input asChild>
-          <Input placeholder="YYYY-MM-DD" className="w-44" />
-        </DatePicker.Input>
-        <DatePicker.Trigger asChild>
-          <Button variant="outline" size="icon">📅</Button>
+        {/* Kalyx 에는 `asChild` 가 없다. `.Input` 은 실제 <input>, `.Trigger` 는 실제
+            <button> 을 렌더하므로 shadcn 의 엘리먼트가 아니라 클래스를 빌려 쓴다. */}
+        <DatePicker.Input placeholder="YYYY-MM-DD" className={cn(inputVariants(), 'w-44')} />
+        <DatePicker.Trigger className={cn(buttonVariants({ variant: 'outline', size: 'icon' }))}>
+          📅
         </DatePicker.Trigger>
       </div>
 
@@ -77,7 +77,7 @@ Kalyx popover 대신 shadcn `Popover`를 쓰는 버전:
 import { useState } from 'react';
 import { RangePicker, type DateRange } from '@kalyx/react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 
 export function ShadcnRange() {
   const [range, setRange] = useState<DateRange>({ start: null, end: null });

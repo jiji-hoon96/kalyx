@@ -120,15 +120,13 @@ function TailwindRange() {
           <RangePicker.Presets
             classNames={{
               root: 'flex flex-col gap-0.5 border-r border-neutral-200 pr-4 text-sm min-w-[7.5rem] dark:border-neutral-800',
-              preset: 'rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800',
-              presetActive: '!bg-indigo-50 !text-indigo-700 !font-medium dark:!bg-indigo-950/60 dark:!text-indigo-300',
             }}
           >
-            <RangePicker.Preset value="today">Today</RangePicker.Preset>
-            <RangePicker.Preset value="last7days">Last 7 days</RangePicker.Preset>
-            <RangePicker.Preset value="last30days">Last 30 days</RangePicker.Preset>
-            <RangePicker.Preset value="thisMonth">This month</RangePicker.Preset>
-            <RangePicker.Preset value="lastMonth">Last month</RangePicker.Preset>
+            <RangePicker.Preset value="today" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">Today</RangePicker.Preset>
+            <RangePicker.Preset value="last7days" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">Last 7 days</RangePicker.Preset>
+            <RangePicker.Preset value="last30days" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">Last 30 days</RangePicker.Preset>
+            <RangePicker.Preset value="thisMonth" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">This month</RangePicker.Preset>
+            <RangePicker.Preset value="lastMonth" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">Last month</RangePicker.Preset>
           </RangePicker.Presets>
 
           <RangePicker.Calendar
@@ -174,14 +172,12 @@ function TailwindRange() {
     <RangePicker.Presets
       classNames={{
         root: 'flex flex-col gap-0.5 border-r pr-3 text-sm',
-        preset: 'rounded px-2 py-1 text-left hover:bg-neutral-100',
-        presetActive: '!bg-indigo-50 !text-indigo-700 font-medium',
       }}>
-      <RangePicker.Preset value="today">Today</RangePicker.Preset>
-      <RangePicker.Preset value="last7days">Last 7 days</RangePicker.Preset>
-      <RangePicker.Preset value="last30days">Last 30 days</RangePicker.Preset>
-      <RangePicker.Preset value="thisMonth">This month</RangePicker.Preset>
-      <RangePicker.Preset value="lastMonth">Last month</RangePicker.Preset>
+      <RangePicker.Preset value="today" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">Today</RangePicker.Preset>
+      <RangePicker.Preset value="last7days" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">Last 7 days</RangePicker.Preset>
+      <RangePicker.Preset value="last30days" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">Last 30 days</RangePicker.Preset>
+      <RangePicker.Preset value="thisMonth" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">This month</RangePicker.Preset>
+      <RangePicker.Preset value="lastMonth" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">Last month</RangePicker.Preset>
     </RangePicker.Presets>
 
     <RangePicker.Calendar

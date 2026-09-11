@@ -50,10 +50,25 @@ Kalyx가 보장하는 것:
 <DatePicker
   value={iso}
   onChange={setIso}
-  displayFormat="MMM d, yyyy"
+  displayFormat="yyyy-MM-dd"
   locale="en-US"
-/>
+>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>
 ```
+
+`displayFormat` 은 date-fns 포맷 문자열이 아니다. 어댑터는 정확히 여덟 개 토큰
+(`yyyy`, `MM`, `dd`, `HH`, `mm`, `ss`, `M`, `d`)만 문자열 치환하고 나머지는 그대로 둔다.
+월 이름 토큰은 없다. `"MMM d, yyyy"` 는 `"044 15, 2026"` 이 된다. `MMM` 안에서
+`MM` 과 `M` 이 각각 치환되기 때문이다. 배포된 어댑터 3종 모두 같은 제약을 공유한다.
+지역화된 월 이름이 필요하면 `Intl.DateTimeFormat` 으로 직접 포맷해 트리거 텍스트를
+그리는 편이 낫다.
+
+`locale` 이 결정하는 것은 캘린더의 월·요일 이름(그리고 `TimePicker` 의 AM/PM 라벨)이지
+`displayFormat` 이 아니다.
 
 내부적으로 어댑터가 요청된 locale로 UTC instant를 포매팅합니다.
 

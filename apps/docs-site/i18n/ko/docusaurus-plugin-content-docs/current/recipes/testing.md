@@ -104,9 +104,12 @@ test('can select a date with keyboard only', async () => {
 
   // 캘린더 안에서 화살표 키로 이동한다
   const grid = screen.getByRole('grid');
-  await user.type(grid, '{ArrowDown}');   // 다음 주로 이동
-  await user.type(grid, '{ArrowRight}');  // 다음 날로 이동
-  await user.type(grid, '{Enter}');       // 선택 확정
+  // `user.type(grid, …)` 이 아니라 `user.keyboard` 를 쓴다. `type` 은 대상을 먼저
+  // 클릭하는데, 포커스를 받을 수 없는 <table role="grid"> 을 클릭하면 포커스된
+  // 날짜에서 포커스가 빠져서 화살표 키가 grid 핸들러에 닿지 않는다. 아무것도 확정되지 않는다.
+  await user.keyboard('{ArrowDown}');   // 다음 주로 이동
+  await user.keyboard('{ArrowRight}');  // 다음 날로 이동
+  await user.keyboard('{Enter}');       // 선택 확정
 
   expect(handleChange).toHaveBeenCalledTimes(1);
 });
@@ -173,9 +176,11 @@ test('selects a date range', async () => {
   await user.click(screen.getByPlaceholderText('Start'));
 
   // 시작일 클릭
-  await user.click(screen.getByRole('button', { name: /10/ }));
+  // 날짜 버튼 라벨에는 연도까지 들어간다(예: "2026년 4월 10일 금요일").
+  // 그래서 /20/ 같은 짧은 패턴은 모든 셀의 연도에도 걸린다. 패턴을 고정한다.
+  await user.click(screen.getByRole('button', { name: /2026년 4월 10일/ }));
   // 종료일 클릭
-  await user.click(screen.getByRole('button', { name: /20/ }));
+  await user.click(screen.getByRole('button', { name: /2026년 4월 20일/ }));
 
   expect(handleChange).toHaveBeenCalledWith(
     expect.objectContaining({

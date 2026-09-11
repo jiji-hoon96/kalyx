@@ -14,27 +14,36 @@ Kalyx doesn't hard-wire a date library. Everything goes through a `DateAdapter` 
 import type { DateAdapter, ISODateString } from '@kalyx/react';
 
 interface DateAdapter {
-  parse(value: string, format: string): Date | null;
-  format(iso: ISODateString, format: string, locale?: string): string;
-  addDays(iso: ISODateString, amount: number): ISODateString;
-  addMonths(iso: ISODateString, amount: number): ISODateString;
-  addYears(iso: ISODateString, amount: number): ISODateString;
-  isBefore(a: ISODateString, b: ISODateString): boolean;
-  isAfter(a: ISODateString, b: ISODateString): boolean;
-  isSameDay(a: ISODateString, b: ISODateString): boolean;
-  isSameMonth(a: ISODateString, b: ISODateString): boolean;
-  startOfDay(iso: ISODateString): ISODateString;
-  startOfMonth(iso: ISODateString): ISODateString;
-  endOfMonth(iso: ISODateString): ISODateString;
-  startOfWeek(iso: ISODateString, weekStartsOn: 0 | 1): ISODateString;
-  endOfWeek(iso: ISODateString, weekStartsOn: 0 | 1): ISODateString;
-  now(): ISODateString;
-  today(): ISODateString;
+  /** Any format → ISO 8601 UTC string. `format` is a parsing hint, not required. */
+  parse(value: string, format?: string): string;
+
+  /** ISO string → display string. The third argument is an IANA timezone, not a locale. */
+  format(iso: string, formatStr: string, timezone?: string): string;
+
+  addDays(iso: string, n: number): string;
+  addMonths(iso: string, n: number): string;
+  addYears(iso: string, n: number): string;
+
+  isBefore(a: string, b: string): boolean;
+  isAfter(a: string, b: string): boolean;
+  isSameDay(a: string, b: string, timezone?: string): boolean;
+  isSameMonth(a: string, b: string): boolean;
+
+  startOfDay(iso: string, timezone?: string): string;
+  startOfMonth(iso: string): string;
+  endOfMonth(iso: string): string;
+  startOfWeek(iso: string, weekStartsOn?: 0 | 1): string;
+  endOfWeek(iso: string, weekStartsOn?: 0 | 1): string;
+
+  now(): string;
+  today(timezone?: string): string;
+
   isValid(value: string): boolean;
-  getYear(iso: ISODateString): number;
-  getMonth(iso: ISODateString): number;
-  getDate(iso: ISODateString): number;
-  getDay(iso: ISODateString): number;
+
+  getYear(iso: string): number;
+  getMonth(iso: string): number;
+  getDate(iso: string): number;
+  getDay(iso: string): number;
 }
 ```
 
@@ -66,53 +75,53 @@ import { DatePicker, DateFnsAdapter } from '@kalyx/react';
 - **Shrink bundles for niche use cases.** Teams using Luxon or Day.js can provide their own adapter and avoid shipping date-fns.
 - **Test with a frozen clock.** A stub adapter that returns a fixed `today()` makes calendar tests deterministic.
 
-## Writing a custom adapter
+## Using a non-default adapter
 
-Any object satisfying the `DateAdapter` type works. A minimal Day.js-backed sketch:
+Day.js and Luxon do not need a hand-written adapter any more. Both ship as published
+packages, so the supported path is to install one and pass it to the `/headless` entry:
 
-```ts
-import dayjs from 'dayjs';
-import type { DateAdapter, ISODateString } from '@kalyx/react';
-
-export const DayjsAdapter: DateAdapter = {
-  parse: (value, format) => {
-    const d = dayjs(value, format);
-    return d.isValid() ? d.toDate() : null;
-  },
-  format: (iso, fmt) => dayjs.utc(iso).format(fmt),
-  addDays: (iso, n) => dayjs.utc(iso).add(n, 'day').toISOString(),
-  addMonths: (iso, n) => dayjs.utc(iso).add(n, 'month').toISOString(),
-  addYears: (iso, n) => dayjs.utc(iso).add(n, 'year').toISOString(),
-  isBefore: (a, b) => dayjs.utc(a).isBefore(dayjs.utc(b)),
-  isAfter: (a, b) => dayjs.utc(a).isAfter(dayjs.utc(b)),
-  isSameDay: (a, b) => dayjs.utc(a).isSame(dayjs.utc(b), 'day'),
-  isSameMonth: (a, b) => dayjs.utc(a).isSame(dayjs.utc(b), 'month'),
-  startOfDay: (iso) => dayjs.utc(iso).startOf('day').toISOString(),
-  startOfMonth: (iso) => dayjs.utc(iso).startOf('month').toISOString(),
-  endOfMonth: (iso) => dayjs.utc(iso).endOf('month').toISOString(),
-  startOfWeek: (iso, w) => dayjs.utc(iso).startOf('week').add(w, 'day').toISOString(),
-  endOfWeek: (iso, w) => dayjs.utc(iso).endOf('week').add(w, 'day').toISOString(),
-  now: () => dayjs.utc().toISOString(),
-  today: () => dayjs.utc().startOf('day').toISOString(),
-  isValid: (v) => dayjs(v).isValid(),
-  getYear: (iso) => dayjs.utc(iso).year(),
-  getMonth: (iso) => dayjs.utc(iso).month(),
-  getDate: (iso) => dayjs.utc(iso).date(),
-  getDay: (iso) => dayjs.utc(iso).day(),
-};
+```bash npm2yarn
+npm install @kalyx/react @kalyx/adapter-dayjs dayjs
 ```
-
-Pass it via the `adapter` prop:
 
 ```tsx
+import { DatePicker } from '@kalyx/react/headless';
+import { DayjsAdapter } from '@kalyx/adapter-dayjs';
+
 <DatePicker adapter={DayjsAdapter} value={iso} onChange={setIso}>
-  <DatePicker.Calendar />
-</DatePicker>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>;
 ```
 
-:::warning
-Day.js support is an *example*, not an officially supported adapter. Keep all arithmetic in UTC — Kalyx assumes ISO strings end in `Z`.
-:::
+`@kalyx/adapter-luxon` works the same way with `LuxonAdapter`. The `/headless` entry
+ships no adapter of its own, so `adapter` is required there — omitting it throws at
+render time with a message naming the component.
+
+## Writing your own adapter
+
+Write one only for a backend Kalyx does not publish. The contract is the `DateAdapter`
+interface above; three details are easy to get wrong:
+
+- `parse` returns an **ISO string**, not a `Date`. Its `format` argument is an optional hint.
+- `format`'s third argument is an **IANA timezone**, not a locale.
+- `isSameDay`, `startOfDay`, and `today` all take an optional `timezone`. Ignoring it
+  breaks `displayTimezone` for every picker.
+
+Keep all arithmetic in UTC — Kalyx assumes ISO strings end in `Z`.
+
+Do not hand-verify the result. `@kalyx/core/test-helpers` exports the same conformance
+suite the three official adapters run, and it is the definition of "correct" here:
+
+```ts
+import { describe, it, expect } from 'vitest';
+import { runAdapterConformanceTests } from '@kalyx/core/test-helpers';
+import { MyAdapter } from './my-adapter';
+
+runAdapterConformanceTests(MyAdapter, { describe, it, expect });
+```
 
 ## Dependency note
 

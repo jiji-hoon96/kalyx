@@ -41,7 +41,7 @@ The React ecosystem in 2026 has two extremes — and nothing in between:
 
 | Option | What it offers | What it doesn't |
 | --- | --- | --- |
-| **react-day-picker** | Headless, accessible calendar grid | No input, no time, no range out of the box |
+| **react-day-picker** | Headless, accessible calendar grid, range mode | No input, no time picker |
 | **react-datepicker** | All-in-one features | 60 KB, required CSS, Date-object API, timezone pitfalls |
 | **Ark UI / React Aria** | Composition patterns | No TimePicker (Ark), heavy dependencies (Aria) |
 
@@ -50,7 +50,7 @@ Kalyx fills the gap:
 - **Headless philosophy** — no stylesheets, no classes you must override.
 - **Integrated primitives** — 7 pickers (DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker) share one context model.
 - **Composition first** — Radix-style dot notation. No 100-prop monoliths.
-- **~18.5 KB gzip (≤ 20 KB ceiling)** — measured, enforced in CI.
+- **~19.5 KB gzip (≤ 20 KB ceiling)** — measured, enforced in CI.
 - **SSR-safe** — tested with Next.js App Router.
 - **ISO 8601 UTC strings** as the value contract — no Date-object footguns.
 - **Timezone-aware** — opt-in `displayTimezone` prop handles DST and civil-day semantics without changing the UTC storage contract. See the [Timezone concept page](./concepts/timezone).
@@ -58,24 +58,27 @@ Kalyx fills the gap:
 ## Who it's for
 
 - Teams already using **Tailwind**, **shadcn/ui**, **Chakra**, or their own design system, who want date UI that obeys their tokens.
-- Apps that care about **bundle size** — the whole set of pickers lands in roughly the space one competitor's single picker takes, under a CI-enforced ceiling, and unused pickers are eliminated (TimePicker alone ~16.2 KB vs ~25.0 KB for all seven). See [Troubleshooting → bundle size](./troubleshooting.md#bundle-size-seems-larger-than-expected).
+- Apps that care about **bundle size** — the whole set of pickers lands in roughly the space one competitor's single picker takes, under a CI-enforced ceiling, and unused pickers are eliminated (TimePicker alone ~16.39 KB vs ~25.69 KB for all seven plus the three main-entry hooks). See [Troubleshooting → bundle size](./troubleshooting.md#bundle-size-seems-larger-than-expected).
 - Anything running on **Next.js**, **Remix**, or other SSR/RSC environments.
 
 ## What's in the box
 
 ```
-@kalyx/react                @kalyx/core
-─────────────────────       ─────────────────────
-<DatePicker>                DateFnsAdapter
-<RangePicker>               getCalendarDays
-<TimePicker>                isDateDisabled
-<DateTimePicker>            setTime / getTime
-<MonthPicker>               formatInTimezone
-<YearPicker>                getMonthName
-<WeekPicker>                parseInputValue
-useDatePicker               normalizeISO
-useRangePicker              DEFAULT_*_LABELS
-useTimePicker               …and more
+@kalyx/react                @kalyx/core                 @kalyx/adapter-date-fns
+─────────────────────       ─────────────────────       ───────────────────────
+<DatePicker>                getCalendarDays             DateFnsAdapter
+<RangePicker>               isDateDisabled
+<TimePicker>                setTime / getTime           (also published:
+<DateTimePicker>            formatInTimezone             @kalyx/adapter-dayjs
+<MonthPicker>               getMonthName                 @kalyx/adapter-luxon)
+<YearPicker>                parseInputValue
+<WeekPicker>                normalizeISO
+useDatePicker               DEFAULT_*_LABELS
+useRangePicker              …and more
+useTimePicker
+
+@kalyx/react/headless — the same components without the bundled adapter,
+plus useMonthPicker / useYearPicker / useWeekPicker / useDateTimePicker.
 ```
 
 ## Next steps
