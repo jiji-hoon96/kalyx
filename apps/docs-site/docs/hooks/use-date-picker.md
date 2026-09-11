@@ -42,7 +42,7 @@ function useDatePicker(options?: UseDatePickerOptions): UseDatePickerReturn;
 | `selectDate` | `(iso: ISODateString \| null) => void` | Set value programmatically. |
 | `viewMonth` | `ISODateString` | First-day-of-visible-month. |
 | `setViewMonth` | `(iso: ISODateString) => void` | Jump to a month. |
-| `calendar` | `CalendarGrid` | 6×7 grid of `CalendarDay`s. |
+| `calendar` | `CalendarGrid` | Weeks of `CalendarDay`s, 4–6 rows × 7 days. The hooks never set `fixedWeeks`, so the row count varies by month. |
 | `focusedDate` | `ISODateString` | Currently keyboard-focused day. |
 | `setFocusedDate` | `(iso: ISODateString) => void` | Move focus. |
 | `previousMonth` | `() => void` | Shorthand for `setViewMonth(prev)`. |

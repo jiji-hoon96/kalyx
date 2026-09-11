@@ -206,9 +206,13 @@ import { DatePicker } from '@kalyx/react';
 
 ```tsx
 // 비제어 (폼 제출용)
-// `name` 은 Root 가 아니라 Input 에 붙는다 — hidden input 을 렌더하는 건 Input 이고,
+// `name` 은 Root 가 아니라 Input 에 붙는다. hidden input 을 렌더하는 건 Input 이고,
 // Root 에는 name prop 이 없다. `children` 도 필수라 self-closing 은 타입 에러다.
-// 폼 제출을 지원하는 건 DatePicker.Input 뿐이다 (Month/Year/Week/Range/DateTime 은 미지원).
+// 폼 제출은 7개 피커 전부 지원한다. 실제 Input 구현은 4개뿐이고
+// (DatePicker/RangePicker/TimePicker/DateTimePicker) 나머지 3개는 이들을 재사용한다.
+// MonthPicker.Input·YearPicker.Input = DatePickerInput, WeekPicker.Input = RangePickerInput.
+// RangePicker/WeekPicker 는 part="start"|"end" 로 양끝을 각각 제출한다.
+// 근거: packages/react/src/components/__tests__/form-submission.test.tsx
 <DatePicker defaultValue="1990-01-01T00:00:00.000Z">
   <DatePicker.Input name="birthDate" />
 </DatePicker>

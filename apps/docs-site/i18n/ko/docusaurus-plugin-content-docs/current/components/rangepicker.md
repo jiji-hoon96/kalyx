@@ -54,10 +54,12 @@ function Example() {
 | `onChange` | `(range: DateRange) => void` | — | 모든 변경(부분 포함)에 호출. |
 | `disabled` | `DisabledRule[] \| boolean` | `false` | 비활성 규칙 또는 전체 비활성. |
 | `readOnly` | `boolean` | `false` | 변경 방지. |
-| `weekStartsOn` | `0 \| 1` | `0` | 주 시작. |
+| `weekStartsOn` | `0 \| 1` | `locale` 에서 추론 | 주 시작. 생략하면 `locale` 에서 추론하고, 명시한 prop 이 우선한다. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | 포맷 문자열. |
 | `locale` | `string` | `'en-US'` | BCP 47 로케일. |
 | `dir` | `'ltr' \| 'rtl'` | `'ltr'` | 레이아웃 방향. `'rtl'`이면 캘린더 그리드에 `dir="rtl"`이 붙고 ArrowLeft/ArrowRight가 반전된다(WAI-ARIA grid 패턴). [국제화](../concepts/internationalization.md#오른쪽-왼쪽-rtl) 참고. |
+| `displayTimezone` | `string` | — | IANA 타임존. 설정하면 Input 포맷·Calendar 하이라이트·`onChange` 값이 모두 이 타임존의 civil day 기준이 된다. [Timezone](../concepts/timezone.md) 참고. |
+| `labels` | `Partial<RangePickerLabels>` | — | ARIA 라벨 재정의(기본값은 영어). |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | 커스텀 어댑터. |
 | `children` | `ReactNode` | — | 서브 컴포넌트. |
 
@@ -92,7 +94,10 @@ type DateRange = {
 | Prop | 타입 | 설명 |
 | --- | --- | --- |
 | `classNames` | `RangePickerCalendarClassNames` | 스타일. |
+| `selectionMode` | `'range' \| 'week'` (기본 `'range'`) | `'week'` 이면 클릭 한 번에 주 전체를 선택한다. `WeekPicker.Calendar` 가 바로 이 컴포넌트에 `selectionMode` 를 `'week'` 으로 고정한 것이다. |
+| `weekAnchor` | `'calendar' \| 'clicked'` (기본 `'calendar'`) | `selectionMode="week"` 일 때만 유효하다. `'calendar'` 는 `weekStartsOn` 경계로 스냅하고, `'clicked'` 는 클릭한 날에 고정된 7일 구간을 쓴다. |
 | `fixedWeeks` | `boolean` (기본 `false`) | 항상 6주 행을 렌더. 지정하지 않으면 4~6행이라 달마다 popover 높이가 바뀐다. |
+| `showWeekNumber` | `boolean` (기본 `false`) | 그리드 왼쪽에 ISO 8601 주차 열(1~53)을 렌더한다. 이 열은 WAI-ARIA grid 데이터 영역 밖의 `<th scope="row">` 라 날짜 셀 키보드 내비게이션에 영향을 주지 않는다. `classNames` 의 `weekNumberHeader` / `weekNumber` 키로 스타일링한다. |
 
 ```ts
 type RangePickerCalendarClassNames = {
@@ -104,12 +109,15 @@ type RangePickerCalendarClassNames = {
   gridRow?: string;
   gridCell?: string;
   day?: string;
-  daySelected?: string;      // 시작 또는 끝 날짜
+  dayRangeStart?: string;    // 범위의 시작 날짜
+  dayRangeEnd?: string;      // 범위의 끝 날짜
   dayInRange?: string;       // 시작과 끝 사이 날짜
   dayToday?: string;
   dayDisabled?: string;
   dayOutsideMonth?: string;
   weekdayHeader?: string;
+  weekNumberHeader?: string; // showWeekNumber 를 켰을 때만 렌더된다
+  weekNumber?: string;       // showWeekNumber 를 켰을 때만 렌더된다
 };
 ```
 

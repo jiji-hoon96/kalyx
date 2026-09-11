@@ -99,9 +99,21 @@ function BasicWeekPicker() {
 
 <StackBlitzEmbed id="datepicker-basic" />
 
+## `<WeekPicker.Calendar>`
+
+`RangePicker.Calendar` with `selectionMode` pinned to `'week'`, so every other
+`RangePicker.Calendar` prop applies here too.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `classNames` | `WeekPickerCalendarClassNames` | Styling slots. |
+| `weekAnchor` | `'calendar' \| 'clicked'` (default `'calendar'`) | How a clicked day becomes a week. `'calendar'` snaps to the `weekStartsOn`-aligned boundary — the usual "week of" behaviour. `'clicked'` instead takes the 7-day span anchored on the clicked day itself, which is a different notion of "week". |
+| `showWeekNumber` | `boolean` (default `false`) | Render an ISO 8601 week-number column (1–53) on the left of the grid. |
+| `fixedWeeks` | `boolean` (default `false`) | Always render 6 week rows. Without it the grid is 4–6 rows, so the popover changes height from month to month. |
+
 ## weekStartsOn
 
-The `weekStartsOn` prop (inherited from `RangePicker.Root`) controls which day the week begins on — `0` for Sunday (default), `1` for Monday.
+The `weekStartsOn` prop (inherited from `RangePicker.Root`) controls which day the week begins on — `0` for Sunday, `1` for Monday. When you omit it, the value is inferred from `locale` (`en-US` → `0`, `de-DE` → `1`); an explicit prop always wins.
 
 ```jsx live
 function MondayStartWeekPicker() {

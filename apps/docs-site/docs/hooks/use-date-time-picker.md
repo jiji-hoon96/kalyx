@@ -46,7 +46,7 @@ function useDateTimePicker(options?: UseDateTimePickerOptions): UseDateTimePicke
 | `currentTime` | `TimeValue` | Time portion of the value (in `displayTimezone` when set). |
 | `viewMonth` | `ISODateString` | First-day-of-visible-month. |
 | `setViewMonth` | `(iso: ISODateString) => void` | Jump to a month. |
-| `calendar` | `CalendarGrid` | 6×7 grid of `CalendarDay`s. |
+| `calendar` | `CalendarGrid` | Weeks of `CalendarDay`s, 4–6 rows × 7 days. The hooks never set `fixedWeeks`, so the row count varies by month. |
 | `focusedDate` | `ISODateString` | Keyboard-focused day. |
 | `setFocusedDate` | `(iso: ISODateString) => void` | Move focus. |
 | `previousMonth` / `nextMonth` | `() => void` | Month navigation shorthands. |

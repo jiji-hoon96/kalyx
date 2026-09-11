@@ -212,9 +212,9 @@ non-default backend): `@kalyx/adapter-dayjs`, `@kalyx/adapter-luxon`.
 
 ## Bundle size
 
-Gzipped default-entry artifact: **~18.5 KB** (7 components, CI ceiling 20 KB). The headless ESM and CJS artifacts have their own CI gate at 22 KB — that entry ships the same components plus all seven hooks and `DateTimePicker.Presets`, so it is budgeted separately rather than sharing the default entry's number.
+Gzipped default-entry artifact: **~19.5 KB** (7 components, CI ceiling 20 KB). The headless ESM and CJS artifacts have their own CI gate at 22 KB — that entry ships the same components plus all seven hooks and `DateTimePicker.Presets`, so it is budgeted separately rather than sharing the default entry's number.
 
-That figure measures the artifact with its dependencies external. What your application ships is larger, because the bundler also resolves `@kalyx/core`, `@kalyx/adapter-date-fns`, and `@floating-ui/react` — the repository's consumer harness measures **~24 KB** gzipped. `sideEffects: false` is declared and the dot-notation exports are pure-annotated, so pickers you don't import are eliminated — TimePicker alone measures ~16.2 KB, the heaviest single picker ~19.9 KB, against ~25.0 KB for all seven plus the hooks. The pickers share a large base, so the saving is real but well short of linear. Measure your production bundle for your exact imports, and see [Troubleshooting → bundle size](../troubleshooting.md#bundle-size-seems-larger-than-expected) for the full reconciliation.
+That figure measures the artifact with its dependencies external. What your application ships is larger, because the bundler also resolves `@kalyx/core`, `@kalyx/adapter-date-fns`, and `@floating-ui/react`. `sideEffects: false` is declared and the dot-notation exports are pure-annotated, so pickers you don't import are eliminated — TimePicker alone measures ~16.39 KB, the heaviest single picker (DateTimePicker) ~20.19 KB, against ~25.69 KB for all seven plus the three main-entry hooks. Run `pnpm check-tree-shaking` for the full scenario table. The pickers share a large base, so the saving is real but well short of linear. Measure your production bundle for your exact imports, and see [Troubleshooting → bundle size](../troubleshooting.md#bundle-size-seems-larger-than-expected) for the full reconciliation.
 
 ## See also
 

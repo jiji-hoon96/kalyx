@@ -27,7 +27,7 @@ function useTimePicker(options?: UseTimePickerOptions): UseTimePickerReturn;
 | `onChange` | `(value: ISODateString \| null) => void` | — | Change callback. |
 | `format` | `'12h' \| '24h'` | `'24h'` | Time format. |
 | `step` | `number` | `1` | Minute granularity. |
-| `withSeconds` | `boolean` | `false` | Include seconds. |
+| `withSeconds` | `boolean` | `false` | Accepted for parity with `TimePicker.Root`, but **the hook ignores it** — `currentTime` always carries `seconds` and `setSecond` always works. Rendering seconds is your UI's decision. |
 | `displayTimezone` | `string` | — | IANA zone. When set, `currentTime` / `setHour` / `setMinute` read and write time-of-day as observed in this zone (DST-aware). See [Timezone](../concepts/timezone.md). |
 
 ### Return
@@ -37,7 +37,7 @@ function useTimePicker(options?: UseTimePickerOptions): UseTimePickerReturn;
 | `value` | `ISODateString \| null` | Current value. |
 | `currentTime` | `TimeValue` | `{ hours, minutes, seconds }`. |
 | `setTime` | `(partial: Partial<TimeValue>) => void` | Merge an update. |
-| `setHour` | `(hour: number) => void` | Set hour only (24h). |
+| `setHour` | `(hour: number) => void` | Set the hour. Takes **1–12 in `12h` mode** and 0–23 in `24h` mode; an out-of-range value throws `RangeError`. |
 | `setMinute` | `(minute: number) => void` | Set minute only. |
 | `setSecond` | `(second: number) => void` | Set second only. |
 | `setPeriod` | `(period: 'AM' \| 'PM') => void` | Change AM/PM (12h only). |

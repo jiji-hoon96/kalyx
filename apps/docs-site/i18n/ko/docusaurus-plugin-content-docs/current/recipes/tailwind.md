@@ -67,14 +67,12 @@ import { DatePicker } from '@kalyx/react';
     <RangePicker.Presets
       classNames={{
         root: 'flex flex-col gap-0.5 border-r pr-3 text-sm',
-        preset: 'rounded px-2 py-1 text-left hover:bg-neutral-100',
-        presetActive: '!bg-indigo-50 !text-indigo-700 font-medium',
       }}>
-      <RangePicker.Preset value="today">오늘</RangePicker.Preset>
-      <RangePicker.Preset value="last7days">지난 7일</RangePicker.Preset>
-      <RangePicker.Preset value="last30days">지난 30일</RangePicker.Preset>
-      <RangePicker.Preset value="thisMonth">이번 달</RangePicker.Preset>
-      <RangePicker.Preset value="lastMonth">지난 달</RangePicker.Preset>
+      <RangePicker.Preset value="today" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">오늘</RangePicker.Preset>
+      <RangePicker.Preset value="last7days" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">지난 7일</RangePicker.Preset>
+      <RangePicker.Preset value="last30days" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">지난 30일</RangePicker.Preset>
+      <RangePicker.Preset value="thisMonth" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">이번 달</RangePicker.Preset>
+      <RangePicker.Preset value="lastMonth" className="rounded-md px-2.5 py-1.5 text-left text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">지난 달</RangePicker.Preset>
     </RangePicker.Presets>
 
     <RangePicker.Calendar

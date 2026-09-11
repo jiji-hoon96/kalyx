@@ -124,6 +124,8 @@ function BasicDateTime() {
 | `onChange` | `(value: ISODateString \| null) => void` | — | Fires on any date or time change. |
 | `format` | `'12h' \| '24h'` | `'24h'` | Time format. |
 | `step` | `number` | `1` | Minute granularity. |
+| `withSeconds` | `boolean` | `false` | Show seconds in the display and the input. |
+| `filterTime` | `(hours: number, minutes: number) => boolean` | — | Per-slot disable predicate. Return `true` to make a slot **unselectable**. Always receives 24-hour values, regardless of `format`. Same semantics as [`TimePicker`'s `filterTime`](./timepicker.md). |
 | `disabled` | `DisabledRule[] \| boolean` | `false` | Date disable rules. |
 | `readOnly` | `boolean` | `false` | Prevent changes. |
 | `weekStartsOn` | `0 \| 1` | `0` | Week start. |
@@ -214,8 +216,8 @@ function TwelveHourDateTime() {
           <DateTimePicker.AmPmToggle
             classNames={{
               root: 'kx-live-ampm',
-              button: 'kx-live-ampm-btn',
-              buttonSelected: 'kx-live-ampm-selected',
+              option: 'kx-live-ampm-btn',
+              optionSelected: 'kx-live-ampm-selected',
             }}
           />
         </div>
@@ -317,8 +319,8 @@ function BookingFlow() {
           <DateTimePicker.AmPmToggle
             classNames={{
               root: 'kx-live-ampm',
-              button: 'kx-live-ampm-btn',
-              buttonSelected: 'kx-live-ampm-selected',
+              option: 'kx-live-ampm-btn',
+              optionSelected: 'kx-live-ampm-selected',
             }}
           />
         </div>

@@ -60,15 +60,20 @@ export default function Page() {
 
 ## RSC (React Server Components)
 
-Kalyx components themselves are client components — the `'use client'` boundary belongs in your wrapper, not in Kalyx. Typical pattern:
+Kalyx components are client components, and **the published bundle already carries the
+`'use client'` directive** — `packages/react/tsup.config.ts` prepends it to every built
+entry (`dist/index.js`, `dist/index.cjs`, `dist/headless.js`, `dist/headless.cjs`). You
+can import a picker directly inside a Server Component file's module graph without
+writing a boundary of your own.
+
+A wrapper module is therefore optional. It is still worth writing when you want to
+co-locate app-specific defaults:
 
 ```tsx
 // components/ui/date-field.tsx
 'use client';
 export { DatePicker } from '@kalyx/react';
 ```
-
-Import from your own boundary module to keep the `'use client'` directive consolidated.
 
 ## Uncontrolled rendering on the server
 

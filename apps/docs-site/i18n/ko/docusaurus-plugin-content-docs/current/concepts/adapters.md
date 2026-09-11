@@ -14,27 +14,36 @@ Kalyx는 특정 날짜 라이브러리에 박제돼 있지 않습니다. 모든 
 import type { DateAdapter, ISODateString } from '@kalyx/react';
 
 interface DateAdapter {
-  parse(value: string, format: string): Date | null;
-  format(iso: ISODateString, format: string, locale?: string): string;
-  addDays(iso: ISODateString, amount: number): ISODateString;
-  addMonths(iso: ISODateString, amount: number): ISODateString;
-  addYears(iso: ISODateString, amount: number): ISODateString;
-  isBefore(a: ISODateString, b: ISODateString): boolean;
-  isAfter(a: ISODateString, b: ISODateString): boolean;
-  isSameDay(a: ISODateString, b: ISODateString): boolean;
-  isSameMonth(a: ISODateString, b: ISODateString): boolean;
-  startOfDay(iso: ISODateString): ISODateString;
-  startOfMonth(iso: ISODateString): ISODateString;
-  endOfMonth(iso: ISODateString): ISODateString;
-  startOfWeek(iso: ISODateString, weekStartsOn: 0 | 1): ISODateString;
-  endOfWeek(iso: ISODateString, weekStartsOn: 0 | 1): ISODateString;
-  now(): ISODateString;
-  today(): ISODateString;
+  /** Any format → ISO 8601 UTC string. `format` is a parsing hint, not required. */
+  parse(value: string, format?: string): string;
+
+  /** ISO string → display string. The third argument is an IANA timezone, not a locale. */
+  format(iso: string, formatStr: string, timezone?: string): string;
+
+  addDays(iso: string, n: number): string;
+  addMonths(iso: string, n: number): string;
+  addYears(iso: string, n: number): string;
+
+  isBefore(a: string, b: string): boolean;
+  isAfter(a: string, b: string): boolean;
+  isSameDay(a: string, b: string, timezone?: string): boolean;
+  isSameMonth(a: string, b: string): boolean;
+
+  startOfDay(iso: string, timezone?: string): string;
+  startOfMonth(iso: string): string;
+  endOfMonth(iso: string): string;
+  startOfWeek(iso: string, weekStartsOn?: 0 | 1): string;
+  endOfWeek(iso: string, weekStartsOn?: 0 | 1): string;
+
+  now(): string;
+  today(timezone?: string): string;
+
   isValid(value: string): boolean;
-  getYear(iso: ISODateString): number;
-  getMonth(iso: ISODateString): number;
-  getDate(iso: ISODateString): number;
-  getDay(iso: ISODateString): number;
+
+  getYear(iso: string): number;
+  getMonth(iso: string): number;
+  getDate(iso: string): number;
+  getDay(iso: string): number;
 }
 ```
 
@@ -66,58 +75,52 @@ import { DatePicker, DateFnsAdapter } from '@kalyx/react';
 - **특수 용도의 번들 축소.** Luxon, Day.js를 쓰는 팀은 자체 어댑터로 date-fns를 제외할 수 있습니다.
 - **고정 시계로 테스트.** `today()`를 고정 반환하는 스텁 어댑터면 캘린더 테스트가 결정적이 됩니다.
 
-## 커스텀 어댑터 작성
+## 기본이 아닌 어댑터 쓰기
 
-직접 만들기 전에, Kalyx가 이미 제공하는 어댑터가 있는지 확인하세요.
-`@kalyx/adapter-dayjs`(dayjs)와 `@kalyx/adapter-luxon`(luxon)은 공유
-conformance 스위트로 검증된 drop-in 어댑터라 직접 작성할 필요가 없습니다.
-자세한 사용법은 [어댑터 가이드](../guides/adapters.md) 참고.
+Day.js 와 Luxon 은 더 이상 손으로 어댑터를 쓸 필요가 없다. 둘 다 패키지로 배포돼 있으므로,
+설치해서 `/headless` 엔트리에 넘기는 것이 지원되는 경로다.
 
-백엔드가 맞는 게 없다면, `DateAdapter` 타입을 만족하는 객체면 됩니다. Day.js 기반 간단 예시:
-
-```ts
-import dayjs from 'dayjs';
-import type { DateAdapter, ISODateString } from '@kalyx/react';
-
-export const DayjsAdapter: DateAdapter = {
-  parse: (value, format) => {
-    const d = dayjs(value, format);
-    return d.isValid() ? d.toDate() : null;
-  },
-  format: (iso, fmt) => dayjs.utc(iso).format(fmt),
-  addDays: (iso, n) => dayjs.utc(iso).add(n, 'day').toISOString(),
-  addMonths: (iso, n) => dayjs.utc(iso).add(n, 'month').toISOString(),
-  addYears: (iso, n) => dayjs.utc(iso).add(n, 'year').toISOString(),
-  isBefore: (a, b) => dayjs.utc(a).isBefore(dayjs.utc(b)),
-  isAfter: (a, b) => dayjs.utc(a).isAfter(dayjs.utc(b)),
-  isSameDay: (a, b) => dayjs.utc(a).isSame(dayjs.utc(b), 'day'),
-  isSameMonth: (a, b) => dayjs.utc(a).isSame(dayjs.utc(b), 'month'),
-  startOfDay: (iso) => dayjs.utc(iso).startOf('day').toISOString(),
-  startOfMonth: (iso) => dayjs.utc(iso).startOf('month').toISOString(),
-  endOfMonth: (iso) => dayjs.utc(iso).endOf('month').toISOString(),
-  startOfWeek: (iso, w) => dayjs.utc(iso).startOf('week').add(w, 'day').toISOString(),
-  endOfWeek: (iso, w) => dayjs.utc(iso).endOf('week').add(w, 'day').toISOString(),
-  now: () => dayjs.utc().toISOString(),
-  today: () => dayjs.utc().startOf('day').toISOString(),
-  isValid: (v) => dayjs(v).isValid(),
-  getYear: (iso) => dayjs.utc(iso).year(),
-  getMonth: (iso) => dayjs.utc(iso).month(),
-  getDate: (iso) => dayjs.utc(iso).date(),
-  getDay: (iso) => dayjs.utc(iso).day(),
-};
+```bash npm2yarn
+npm install @kalyx/react @kalyx/adapter-dayjs dayjs
 ```
-
-`adapter` prop으로 전달:
 
 ```tsx
+import { DatePicker } from '@kalyx/react/headless';
+import { DayjsAdapter } from '@kalyx/adapter-dayjs';
+
 <DatePicker adapter={DayjsAdapter} value={iso} onChange={setIso}>
-  <DatePicker.Calendar />
-</DatePicker>
+  <DatePicker.Input />
+  <DatePicker.Popover>
+    <DatePicker.Calendar />
+  </DatePicker.Popover>
+</DatePicker>;
 ```
 
-:::warning
-Day.js 지원은 *예시*이지 공식 지원 어댑터가 아닙니다. 모든 산술은 UTC로 유지하세요 — Kalyx는 ISO 문자열이 `Z`로 끝난다고 가정합니다.
-:::
+`@kalyx/adapter-luxon` 도 `LuxonAdapter` 로 같은 방식이다. `/headless` 엔트리는 어댑터를
+싣지 않으므로 `adapter` 가 필수다. 생략하면 렌더 시점에 컴포넌트 이름이 담긴 에러가 난다.
+
+## 직접 어댑터 작성
+
+Kalyx 가 배포하지 않는 백엔드를 쓸 때만 직접 쓴다. 계약은 위의 `DateAdapter` 인터페이스이고,
+틀리기 쉬운 지점이 셋 있다.
+
+- `parse` 는 `Date` 가 아니라 **ISO 문자열**을 반환한다. `format` 인자는 선택적 힌트다.
+- `format` 의 세 번째 인자는 locale 이 아니라 **IANA 타임존**이다.
+- `isSameDay`, `startOfDay`, `today` 는 모두 선택적 `timezone` 을 받는다. 이걸 무시하면
+  모든 피커에서 `displayTimezone` 이 깨진다.
+
+모든 계산은 UTC 로 한다. Kalyx 는 ISO 문자열이 `Z` 로 끝난다고 가정한다.
+
+결과를 손으로 확인하지 않는다. `@kalyx/core/test-helpers` 가 공식 어댑터 3종이 돌리는 것과
+같은 conformance suite 를 export 하며, 여기서는 그것이 "맞다"의 정의다.
+
+```ts
+import { describe, it, expect } from 'vitest';
+import { runAdapterConformanceTests } from '@kalyx/core/test-helpers';
+import { MyAdapter } from './my-adapter';
+
+runAdapterConformanceTests(MyAdapter, { describe, it, expect });
+```
 
 ## 의존성 관련 참고
 

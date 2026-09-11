@@ -46,7 +46,7 @@ function useDateTimePicker(options?: UseDateTimePickerOptions): UseDateTimePicke
 | `currentTime` | `TimeValue` | 값의 시각 부분(설정 시 `displayTimezone` 기준). |
 | `viewMonth` | `ISODateString` | 표시 중인 달의 1일. |
 | `setViewMonth` | `(iso: ISODateString) => void` | 특정 달로 점프. |
-| `calendar` | `CalendarGrid` | 6×7 `CalendarDay` 그리드. |
+| `calendar` | `CalendarGrid` | `CalendarDay` 주 배열. 4~6행 × 7일이다. 훅은 `fixedWeeks` 를 넘기지 않으므로 행 수가 달마다 달라진다. |
 | `focusedDate` | `ISODateString` | 키보드 포커스된 날. |
 | `setFocusedDate` | `(iso: ISODateString) => void` | 포커스 이동. |
 | `previousMonth` / `nextMonth` | `() => void` | 달 내비게이션 단축. |

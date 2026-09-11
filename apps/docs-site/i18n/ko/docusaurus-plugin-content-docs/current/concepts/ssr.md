@@ -60,15 +60,18 @@ export default function Page() {
 
 ## RSC (React Server Components)
 
-Kalyx 컴포넌트 자체는 client component입니다 — `'use client'` 경계는 Kalyx 안이 아니라 여러분의 래퍼에 있어야 합니다. 보통은:
+Kalyx 컴포넌트는 client component 이고, **배포되는 번들에 `'use client'` 지시문이 이미 들어 있습니다.**
+`packages/react/tsup.config.ts` 가 빌드된 모든 엔트리(`dist/index.js`, `dist/index.cjs`,
+`dist/headless.js`, `dist/headless.cjs`)의 맨 앞에 이 지시문을 붙입니다. 따라서 경계 모듈을
+직접 만들지 않아도 Server Component 의 모듈 그래프 안에서 피커를 바로 import 할 수 있습니다.
+
+래퍼 모듈은 선택 사항입니다. 앱 고유의 기본값을 한곳에 모으고 싶을 때는 여전히 유용합니다.
 
 ```tsx
 // components/ui/date-field.tsx
 'use client';
 export { DatePicker } from '@kalyx/react';
 ```
-
-이렇게 경계 모듈을 하나 두고 거기서만 import하면 `'use client'` 지시문을 한 곳에 모을 수 있습니다.
 
 ## 서버에서 비제어 렌더링
 

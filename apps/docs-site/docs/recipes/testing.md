@@ -102,11 +102,13 @@ test('can select a date with keyboard only', async () => {
   const input = screen.getByPlaceholderText('Pick a date');
   await user.click(input);
 
-  // Navigate with arrow keys inside the calendar
-  const grid = screen.getByRole('grid');
-  await user.type(grid, '{ArrowDown}');   // move to next week
-  await user.type(grid, '{ArrowRight}');  // move to next day
-  await user.type(grid, '{Enter}');       // commit selection
+  // Navigate with arrow keys. Use `user.keyboard`, not `user.type(grid, …)`:
+  // `type` clicks its target first, and clicking the non-focusable
+  // <table role="grid"> pulls focus off the focused day, so the arrow keys
+  // never reach the grid handler and nothing is committed.
+  await user.keyboard('{ArrowDown}');   // move to next week
+  await user.keyboard('{ArrowRight}');  // move to next day
+  await user.keyboard('{Enter}');       // commit selection
 
   expect(handleChange).toHaveBeenCalledTimes(1);
 });
@@ -172,10 +174,12 @@ test('selects a date range', async () => {
 
   await user.click(screen.getByPlaceholderText('Start'));
 
+  // Day buttons are labelled with the full date, e.g. "Friday, April 10, 2026",
+  // so a bare /20/ also matches the year in every single cell. Anchor the match.
   // Click start date
-  await user.click(screen.getByRole('button', { name: /10/ }));
+  await user.click(screen.getByRole('button', { name: /April 10, 2026/ }));
   // Click end date
-  await user.click(screen.getByRole('button', { name: /20/ }));
+  await user.click(screen.getByRole('button', { name: /April 20, 2026/ }));
 
   expect(handleChange).toHaveBeenCalledWith(
     expect.objectContaining({
