@@ -159,7 +159,7 @@ function Example() {
   useEffect(() => {
     if (!time) return;
     const { hours, minutes } = getTime(time); // { hours: 9, minutes: 30, seconds: 0 }
-    analytics.track('time_set', { hours, minutes });
+    console.log('time_set', { hours, minutes });
   }, [time]);
 
   return (

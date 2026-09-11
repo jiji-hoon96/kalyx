@@ -44,7 +44,7 @@ Tailwind(`data-[selected]:…`)나 일반 CSS 어트리뷰트 셀렉터를 쓰�
 ```
 
 ```tsx
-/* Tailwind v3.1+ data 변형 — classNames 불필요 */
+/* Tailwind v3.1+ data variants — no classNames needed */
 <DatePicker.Calendar
   classNames={{
     day: 'rounded p-2 data-[selected]:bg-blue-600 data-[selected]:text-white data-[today]:ring-1',

@@ -46,6 +46,12 @@ const KO_DOCS_ROOT = 'apps/docs-site/i18n/ko/docusaurus-plugin-content-docs/curr
 
 // Compiled in EN and KO, with byte-exact fence parity enforced between them.
 const CHECKED_DOCUMENTS = [
+  'components/weekpicker.md',
+  'concepts/timezone.md',
+  'concepts/styling.md',
+  'components/datetimepicker.md',
+  'components/monthpicker.md',
+  'components/yearpicker.md',
   'api/core.md',
   'api/react.md',
   'getting-started/installation.md',
@@ -56,24 +62,19 @@ const CHECKED_DOCUMENTS = [
 // EN/KO fence parity, so the KO page is not compiled and may have drifted.
 // Bringing one of these into CHECKED_DOCUMENTS means reconciling its KO fences.
 const EN_ONLY_DOCUMENTS = [
-  ['components/datetimepicker.md', 'KO has one fewer executable fence'],
-  ['concepts/styling.md', 'KO fence content has drifted from EN'],
-  ['concepts/timezone.md', 'KO fence content has drifted from EN'],
-  ['recipes/use-cases.md', 'KO fence content has drifted from EN'],
-  ['recipes/tailwind.md', 'KO fence content has drifted from EN'],
-  ['components/monthpicker.md', 'KO has one fewer executable fence'],
-  ['components/yearpicker.md', 'KO has one fewer executable fence'],
+  ['components/datepicker.md', 'KO translates placeholders and preset labels, which are user-visible strings'],
+  ['components/rangepicker.md', 'KO translates placeholders, preset labels and a range title, which are user-visible strings'],
+  ['components/timepicker.md', 'KO translates placeholders and option labels, which are user-visible strings'],
+  ['recipes/tailwind.md', 'KO translates the preset button labels, which are user-visible strings'],
+  ['recipes/use-cases.md', 'KO translates placeholders and preset labels, which are user-visible strings'],
 ];
 
 // Not compiled, with the reason each one fails. This list is the difference
 // between "the documentation is verified" and what this script actually proves,
 // so keep it accurate — and prefer fixing an entry to explaining it.
 const UNCHECKED_DOCUMENTS = [
-  ['components/weekpicker.md', 'a fence uses `{/* ... */}` as children, which JSX treats as none'],
   // Anatomy trees render `<DatePicker.Preset />` and `<RangePicker.Preset />`
   // self-closing, but `children` is required on both.
-  ['components/datepicker.md', 'anatomy fences self-close components whose `children` is required'],
-  ['components/rangepicker.md', 'anatomy fences self-close components whose `children` is required'],
   // Signature-only fences: `function useX(options?): Return;` has no body. An
   // ambient `declare function` would compile without being checked against the
   // real export, so it is left alone rather than made vacuously green.
@@ -85,7 +86,6 @@ const UNCHECKED_DOCUMENTS = [
   ['hooks/use-week-picker.md', 'signature-only fence has no implementation'],
   ['hooks/use-year-picker.md', 'signature-only fence has no implementation'],
   // Fences that reference an app-specific value the docs never define.
-  ['components/timepicker.md', 'references an undefined `analytics` service'],
   ['concepts/internationalization.md', 'self-closing Root, and a partial labels object'],
   // Deliberately non-compiling by design.
   ['troubleshooting.md', 'fences show broken code beside its fix, so they must not compile'],

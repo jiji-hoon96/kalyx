@@ -19,6 +19,20 @@ Month selector. The value is the first day of the selected month in UTC-ISO form
 import { MonthPicker } from '@kalyx/react';
 ```
 
+## 구조
+
+```tsx
+<MonthPicker>            {/* Root — value = first day of month, UTC */}
+  <MonthPicker.Input /> {/* combobox <input>, parses "YYYY-MM" */}
+  <MonthPicker.Trigger /> {/* button that toggles the popover */}
+  <MonthPicker.Popover> {/* Floating-UI portal, role="dialog" */}
+    <MonthPicker.Grid /> {/* 3×4 grid of months, role="grid" */}
+  </MonthPicker.Popover>
+</MonthPicker>
+```
+
+`Input` 과 `Trigger` 는 `DatePicker` 에서 재노출된 것이고 `MonthPicker` 컨텍스트를 읽는다.
+
 ## Basic usage
 
 ```tsx

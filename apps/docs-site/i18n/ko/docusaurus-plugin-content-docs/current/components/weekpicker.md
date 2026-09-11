@@ -19,6 +19,20 @@ Week selector. A single click commits the entire week containing the clicked day
 import { WeekPicker, type DateRange } from '@kalyx/react';
 ```
 
+## 구조
+
+```tsx
+<WeekPicker>            {/* Root — value = { start, end } of the week */}
+  <WeekPicker.Input part="start" /> {/* week-start combobox input */}
+  <WeekPicker.Input part="end" />   {/* week-end combobox input */}
+  <WeekPicker.Popover> {/* Floating-UI portal, role="dialog" */}
+    <WeekPicker.Calendar /> {/* week-highlighting month grid */}
+  </WeekPicker.Popover>
+</WeekPicker>
+```
+
+`Input` 과 `Popover` 는 `RangePicker` 에서 재노출된 것이다. `WeekPicker.Calendar` 를 한 번 클릭하면 클릭한 날이 속한 주 전체가 (`weekStartsOn` 기준으로) 확정된다.
+
 ## Basic usage
 
 ```tsx
@@ -62,7 +76,10 @@ The `weekStartsOn` prop (inherited from `RangePicker.Root`) controls which day t
 
 ```tsx
 <WeekPicker weekStartsOn={1} value={week} onChange={setWeek}>
-  {/* ... */}
+  <WeekPicker.Input part="start" />
+  <WeekPicker.Popover>
+    <WeekPicker.Calendar />
+  </WeekPicker.Popover>
 </WeekPicker>
 ```
 

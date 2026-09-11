@@ -19,6 +19,20 @@ Year selector. The value is January 1 of the selected year in UTC-ISO form — f
 import { YearPicker } from '@kalyx/react';
 ```
 
+## 구조
+
+```tsx
+<YearPicker>            {/* Root — value = Jan 1 of the year, UTC */}
+  <YearPicker.Input /> {/* combobox <input>, parses "YYYY" */}
+  <YearPicker.Trigger /> {/* button that toggles the popover */}
+  <YearPicker.Popover> {/* Floating-UI portal, role="dialog" */}
+    <YearPicker.Grid /> {/* paginated grid of years, role="grid" */}
+  </YearPicker.Popover>
+</YearPicker>
+```
+
+`Input` 과 `Trigger` 는 `DatePicker` 에서 재노출된 것이고 `YearPicker` 컨텍스트를 읽는다.
+
 ## Basic usage
 
 ```tsx
