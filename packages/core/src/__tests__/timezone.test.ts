@@ -93,14 +93,35 @@ describe('DST transition — America/New_York fall back 2026-11-01', () => {
 
   it('setTimeInTimezone picks the earlier offset for an ambiguous fall-back hour', () => {
     // 2026-11-01 01:30 America/New_York occurs twice — once in EDT (UTC-4) and
-    // once in EST (UTC-5). The documented policy is `disambiguation: 'earlier'`
-    // (matches @internationalized/date + TC39 Temporal default): pick the EDT
-    // occurrence. Base 2026-11-01T12:00:00.000Z is far from the transition
-    // window so the choice isn't driven by the base's own offset.
+    // once in EST (UTC-5). The documented policy resolves ambiguity to the
+    // earlier instant (TC39 Temporal's default `disambiguation: 'compatible'`,
+    // also @internationalized/date): pick the EDT occurrence. Base
+    // 2026-11-01T12:00:00.000Z is far from the transition window so the choice
+    // isn't driven by the base's own offset.
     const base = '2026-11-01T12:00:00.000Z';
     const result = setTimeInTimezone(base, { hours: 1, minutes: 30 }, 'America/New_York');
     expect(result).toBe('2026-11-01T05:30:00.000Z');
   });
+});
+
+// Zones whose post-transition offset is >= 0. Reading the offset at "civil-as-UTC"
+// lands after the transition there, so an implementation that derives both
+// candidates from that reading only ever sees the later offset and resolves the
+// ambiguous hour to the LATER instant. New York (above) passes either way, because a
+// negative offset puts civil-as-UTC before the transition.
+describe('setTimeInTimezone — fall-back ambiguity resolves to the earlier instant in every zone', () => {
+  it.each([
+    // zone, base (noon of the civil day), hours, minutes, earlier instant
+    ['Europe/London', '2026-10-25T12:00:00.000Z', 1, 30, '2026-10-25T00:30:00.000Z'], // BST, not GMT 01:30Z
+    ['Australia/Sydney', '2026-04-05T02:00:00.000Z', 2, 30, '2026-04-04T15:30:00.000Z'], // AEDT, not AEST 16:30Z
+    ['Australia/Lord_Howe', '2026-04-05T01:30:00.000Z', 1, 45, '2026-04-04T14:45:00.000Z'], // 30-minute shift
+    ['Australia/Adelaide', '2026-04-05T02:30:00.000Z', 2, 30, '2026-04-04T16:00:00.000Z'], // half-hour zone
+  ])(
+    '%s: base %s set to %i:%i picks the earlier occurrence',
+    (zone, base, hours, minutes, expected) => {
+      expect(setTimeInTimezone(base, { hours, minutes }, zone)).toBe(expected);
+    },
+  );
 });
 
 describe('DST transition — Europe/London spring forward 2026-03-29', () => {
@@ -297,12 +318,12 @@ describe('setTimeInTimezone', () => {
 
   it('snaps forward when the civil time falls in a spring-forward gap (DST gap)', () => {
     // 2026-03-08 02:30 in America/New_York doesn't exist — clocks jump
-    // 02:00 EST → 03:00 EDT. Without explicit handling, the two-pass offset
-    // algorithm lands on the pre-transition reading (01:30 EST = 06:30 UTC),
-    // silently corrupting the user's intent. The documented policy is
-    // snap-forward: return the equivalent post-transition instant
-    // (03:30 EDT = 07:30 UTC). This matches @internationalized/date and the
-    // TC39 Temporal default disambiguation behavior for non-existent times.
+    // 02:00 EST → 03:00 EDT. Without explicit handling, a naive offset
+    // lookup lands on the pre-transition reading (01:30 EST = 06:30 UTC),
+    // silently corrupting the user's intent. The documented policy shifts the
+    // wall-clock time forward by the length of the gap (02:30 + 1h = 03:30 EDT
+    // = 07:30 UTC). This matches @internationalized/date and TC39 Temporal's
+    // default `disambiguation: 'compatible'` for non-existent times.
     const base = '2026-03-08T12:00:00.000Z';
     const result = setTimeInTimezone(base, { hours: 2, minutes: 30 }, 'America/New_York');
     expect(result).toBe('2026-03-08T07:30:00.000Z');

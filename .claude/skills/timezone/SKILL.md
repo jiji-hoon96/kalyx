@@ -264,7 +264,8 @@ const safeIso = setTimeInTimezone(
   { hours: 2, minutes: 30 },
   'America/New_York'
 );
-// gap 시간은 앞으로 snap — 03:30 으로 조정된다 (정책: disambiguation 'earlier')
+// gap 시간은 gap 길이만큼 앞으로 밀려 03:30 이 된다. 겹치는 시각(fall back)은 이른 instant 를 고른다.
+// 둘을 합치면 Temporal 기본값 disambiguation: 'compatible' 이다. ('earlier' 는 gap 을 뒤로 민다)
 
 // 캘린더에서 날짜 선택 시 항상 어댑터를 통해 처리
 const selectedIso = adapter.startOfDay(iso, 'America/New_York');
