@@ -717,7 +717,7 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 | A1 | Escape 소비 + 이중 핸들러 수정 | A-D1, A-D2 | `usePopover.ts:92-96`, `Calendar.tsx:198-200` |
 | A2 | Popover 닫힐 때 focus restore | A-D3 | `usePopover.ts:58` guard 제거 (코멘트가 틀림) |
 | A3 | DST gap-time `setTimeInTimezone` snap-forward + JSDoc + 테스트 | T-D1 | `timezone.ts:199-225` |
-| A4 | DST ambiguous-time 명시 (이른 instant 선택, Temporal `disambiguation: 'compatible'`) + strict 테스트. 2026-09 에 offset >= 0 존에서 늦은 instant 를 고르던 결함을 고치고 전 존 oracle sweep 추가 | T-D2 | `timezone.test.ts:93-122`, `timezone.dst-oracle.test.ts` |
+| A4 | DST ambiguous-time 명시 (이른 instant 선택, Temporal `disambiguation: 'compatible'`) + strict 테스트. 2026-09 에 offset >= 0 존에서 늦은 instant 를 고르던 결함을 고치고 전 존 oracle sweep 추가 | T-D2 | `timezone.test.ts` 의 New York fall back 과 `fall-back ambiguity resolves to the earlier instant` describe, `timezone.dst-oracle.test.ts` |
 | A5 | `verify-entry-split.mjs` PR check 통합 | B-D1 | `/headless` date-fns 부재 회귀 가드 |
 | A6 | gzip 측정 한 곳으로 통일 (Node `gzipSync`) | B-R1 | tsup / script / CI 한 소스 |
 | A7 | RangePicker hover preview 회귀 테스트 | TC-H1 | 0건 → 최소 1건 |
