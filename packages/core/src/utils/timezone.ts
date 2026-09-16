@@ -106,13 +106,13 @@ export function getTimezoneOffsetMinutes(iso: ISODateString, timeZone: string): 
  */
 export function startOfDayInTimezone(iso: ISODateString, timeZone: string): ISODateString {
   // Civil midnight of the input's civil day. Delegates to setTimeInTimezone so it
-  // reuses the two-pass DST disambiguation: a single offset probe taken at
+  // reuses its DST disambiguation: a single offset probe taken at
   // "civil-midnight-as-UTC" can land on the wrong side of a DST transition and be
   // off by one hour. Example (the bug this replaced): Australia/Sydney on a
   // spring-forward Oct 1 — 00:00 local is still AEST (+10), but 00:00 UTC reads as
   // post-transition AEDT (+11), so the naive probe produced 23:00 of the prior day.
   // For midnight-DST zones where 00:00 itself doesn't exist, setTimeInTimezone's
-  // gap policy snaps forward to the first valid instant.
+  // gap policy shifts it forward by the gap length.
   return setTimeInTimezone(iso, { hours: 0, minutes: 0, seconds: 0 }, timeZone);
 }
 
@@ -238,30 +238,25 @@ function resolveCivilDateTime(target: CivilDateTime, timeZone: string): ISODateS
     target.seconds,
   );
 
-  // Two-pass offset resolution: probe at civil-as-UTC, then re-probe at the
-  // first-pass result so the second probe sees the offset that actually applies
-  // at the resolved instant. The two candidate UTC instants are then classified
-  // by whether their civil round-trip in the target zone matches the request.
-  const probe1 = new Date(civilEpoch).toISOString();
-  const offset1 = getTimezoneOffsetMinutes(probe1, timeZone);
-  const realEpoch1 = civilEpoch - offset1 * 60_000;
-  const probe2 = new Date(realEpoch1).toISOString();
-  const offset2 = getTimezoneOffsetMinutes(probe2, timeZone);
-  const realEpoch2 = civilEpoch - offset2 * 60_000;
-
-  // Both probes agreed, so the two candidates are the same instant: `civilMatches`
-  // would receive the same argument twice, and every branch below (`min`, either
-  // single match, `max`) collapses to that instant. Skip the classification —
-  // each `civilMatches` call costs an `Intl.DateTimeFormat.formatToParts`, and the
-  // calendar grid runs this path once per cell (42×).
+  // Candidate offsets come from instants one day either side of civil-as-UTC. Real
+  // offsets are within ±14h, so the two readings bracket any transition near the
+  // requested wall-clock time: one is the offset in force before it, the other the
+  // offset after it. This is how Temporal's GetPossibleEpochNanoseconds does it, and
+  // it assumes at most one transition inside that 48h window.
   //
-  // Only a spring-forward gap makes the probes disagree: the civil-as-UTC reading
-  // sits on the pre-transition side while the resolved instant sits after it. An
-  // ambiguous fall-back hour converges here instead (America/New_York 2026-11-01
-  // 01:30 reads -240 at both probes) and returns the same instant the `match1 &&
-  // match2 → min` branch produced, so the documented `disambiguation: 'earlier'`
-  // policy is unchanged.
-  if (realEpoch1 === realEpoch2) return new Date(realEpoch1).toISOString();
+  // Probing at civil-as-UTC itself is not enough. In zones whose offset is >= 0 that
+  // reading already sits past a fall-back transition, so every probe saw the later
+  // offset and an ambiguous hour resolved to the later instant (Europe/London
+  // 2026-10-25 01:30 gave 01:30Z instead of 00:30Z).
+  const candidate = (probeEpoch: number) =>
+    civilEpoch - getTimezoneOffsetMinutes(new Date(probeEpoch).toISOString(), timeZone) * 60_000;
+  const epochBefore = candidate(civilEpoch - 86_400_000);
+  const epochAfter = candidate(civilEpoch + 86_400_000);
+
+  // No transition nearby, so there is a single candidate. Skipping the civil
+  // round-trip keeps this path at two `Intl.DateTimeFormat.formatToParts` calls; the
+  // calendar grid runs it once per cell (42×).
+  if (epochBefore === epochAfter) return new Date(epochBefore).toISOString();
 
   const civilMatches = (epoch: number) => {
     const actual = partsInTimezone(new Date(epoch), timeZone);
@@ -274,13 +269,14 @@ function resolveCivilDateTime(target: CivilDateTime, timeZone: string): ISODateS
       actual.second === target.seconds
     );
   };
-  const match1 = civilMatches(realEpoch1);
-  const match2 = civilMatches(realEpoch2);
-
-  if (match1 && match2) return new Date(Math.min(realEpoch1, realEpoch2)).toISOString();
-  if (match1) return new Date(realEpoch1).toISOString();
-  if (match2) return new Date(realEpoch2).toISOString();
-  return new Date(Math.max(realEpoch1, realEpoch2)).toISOString();
+  // A larger offset gives an earlier instant. Fall-back (the offset shrinks): both
+  // candidates match and `epochBefore` is the earlier one. Spring-forward gap (the
+  // offset grows): neither matches, and `epochBefore` applies the pre-transition
+  // offset, which shifts the wall-clock time forward by the gap length. Outside both
+  // windows exactly one candidate matches.
+  return new Date(
+    civilMatches(epochBefore) || !civilMatches(epochAfter) ? epochBefore : epochAfter,
+  ).toISOString();
 }
 
 /**
@@ -290,7 +286,8 @@ function resolveCivilDateTime(target: CivilDateTime, timeZone: string): ISODateS
  *
  * Implementation note: the civil target (Y,M,D,H,m,s) is first mapped to a UTC epoch as if
  * the wall-clock reading lived in UTC; then we subtract the timezone offset at that instant
- * to recover the real UTC instant. The offset is refined once to absorb DST transitions.
+ * to recover the real UTC instant. Near a DST transition the offsets on both sides are
+ * tried and the policy below picks between them.
  *
  * @example
  * // In Asia/Seoul (UTC+9): set the hour to 10
@@ -299,14 +296,17 @@ function resolveCivilDateTime(target: CivilDateTime, timeZone: string): ISODateS
  *
  * DST disambiguation policy:
  *
- * - **Spring-forward gaps** (non-existent civil time): the requested civil time
- *   is snapped forward to the first valid instant past the gap. Asking for
- *   2026-03-08 02:30 America/New_York — which doesn't exist because clocks
- *   jump 02:00 EST → 03:00 EDT — returns 03:30 EDT (= 2026-03-08T07:30:00.000Z).
- * - **Fall-back ambiguity** (civil time occurs twice): the earlier offset
- *   (e.g. EDT before EST in US Eastern, BST before GMT in Europe/London) is
- *   chosen, matching `@internationalized/date` and the TC39 Temporal default
- *   (`disambiguation: 'earlier'`).
+ * - **Spring-forward gaps** (non-existent civil time): the wall-clock time is
+ *   shifted forward by the length of the gap. Asking for 2026-03-08 02:30
+ *   America/New_York, which doesn't exist because clocks jump 02:00 EST → 03:00
+ *   EDT, returns 03:30 EDT (= 2026-03-08T07:30:00.000Z).
+ * - **Fall-back ambiguity** (civil time occurs twice): the earlier instant is
+ *   chosen (EDT before EST in US Eastern, BST before GMT in Europe/London, AEDT
+ *   before AEST in Australia/Sydney).
+ *
+ * Together this is TC39 Temporal's default `disambiguation: 'compatible'` (later
+ * for gaps, earlier for ambiguities, the same as `Date`), which
+ * `@internationalized/date` also uses.
  */
 export function setTimeInTimezone(
   iso: ISODateString,

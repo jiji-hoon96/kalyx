@@ -63,7 +63,8 @@
 	},
 	"devDependencies": {
 		"@kalyx/adapter-date-fns": "workspace:*",
-		"fast-check": "^3.23.2"
+		"fast-check": "^3.23.2",
+		"temporal-polyfill": "^1.0.5"
 	},
 	"engines": {
 		"node": ">=20.0.0"
