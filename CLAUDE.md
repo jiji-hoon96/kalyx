@@ -34,15 +34,16 @@
 
 ### 해결하는 문제
 
-2026년 React 생태계의 DatePicker는 두 극단만 존재한다:
+Input·Calendar·TimePicker·RangePicker 를 Headless Composition API 로 한 패키지에 묶는다.
+다른 라이브러리와 크기·기능을 수치로 비교하는 문장은 쓰지 않는다. 레포 안에 같은 조건으로 잰 근거가 없다.
+차별점으로 내세우는 것은 레포에서 확인되는 셋뿐이다.
 
-- **react-day-picker (41.7M/week, ~22KB gzip)**: Headless지만 Calendar Grid만. Input·TimePicker 없음. v9에서도 개발자가 3개 컴포넌트를 직접 조합해야 함.
-- **react-datepicker (4.7M/week, ~40-60KB gzip)**: 통합됐지만 CSS 필수 import, timezone 이슈(#1018, native Date 의존), Props 100개 이상.
-- **Ark UI**: Composition 패턴이지만 **standalone TimePicker 없음** — 시간은 `@internationalized/date`의 `CalendarDateTime`을 통해 DatePicker 내부에서만 다룬다. 45개 이상 컴포넌트의 범용 UI 라이브러리.
-- **React Aria**: 기능 완전하지만 복잡하고, `@internationalized/date` 의존 강제 (date-fns 비호환).
-- **Headless UI**: DatePicker 구현 거부 ("유지보수가 너무 큼").
+- **ISO 값 모델**: 입출력은 ISO 8601 UTC string 하나다 (원칙 3). native Date 를 값으로 쓰지 않는다.
+- **목록형 TimePicker**: 시·분을 listbox 목록으로 고르는 standalone TimePicker·DateTimePicker.
+- **월·연·주 피커**: MonthPicker·YearPicker·WeekPicker.
 
-**우리가 채우는 공백:** Headless + Input·Calendar·TimePicker·RangePicker 통합 + date-fns 호환 + SSR 안전 + ≤ 20KB (기본 엔트리)
+그 밖의 전제: date-fns 호환(Adapter 패턴), SSR 안전(picker 마다 `renderToString` 테스트),
+배포 파일 `dist/index.js` gzip ≤ 20KB (기본 엔트리, `pnpm check-bundle` 게이트).
 
 ### 포지셔닝
 
@@ -53,7 +54,7 @@ react-datepicker의 통합 기능
       +
 shadcn의 Composition 패턴 & Tailwind 친화성
       +
-Ark UI가 포기한 TimePicker 통합
+목록형 TimePicker·월·연·주 피커 통합
 ```
 
 ---
@@ -69,7 +70,7 @@ Ark UI가 포기한 TimePicker 통합
 | 스타일링 | Zero CSS (Headless) | CSS 충돌 원천 차단 |
 | 날짜 코어 | Adapter 패턴 — `@kalyx/adapter-date-fns` 기본 (분리 완료), `@kalyx/adapter-dayjs`·`@kalyx/adapter-luxon` 공식 어댑터 npm 배포됨 | Temporal API 전환 대비, 사용자가 dayjs/luxon 선택 가능 |
 | 포지셔닝 | Floating UI | 3KB, SSR 안전, Popper.js 후계자 |
-| 번들 목표 | **기본 엔트리 ≤ 20KB gzip · `/headless` ≤ 22KB** (단일 소스 `scripts/bundle-policy.js`) | react-datepicker 62KB 대비. RC 단계 12 → 13KB 상향(commit e93d082), v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향, v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향, v1.0-rc.8 TimePicker `filterTime` 프로그래밍 콜백 추가하면서 15 → 16KB 상향, v1.1 B10 a11y announce() 패리티(A-G1 — DatePicker/DateTimePicker Root live-region) 추가하면서 16 → 17KB 상향, 2026-08 timezone/constraint 정확성 전면 수정(negative-offset 셀 배치 P0 + 전 mutation 경계 parity)으로 17 → 20KB 상향 — 정확성 우선 결정. 2026-08 **`/headless` 만 20 → 22KB 분리** — headless 는 index 와 같은 컴포넌트에 훅 7종 전부 + `DateTimePicker.Presets` 를 더 싣는데 천장이 같아서, 코드를 더 많이 싣는 쪽의 여유가 더 적은 역전이 있었다(index 1.4KB 남을 때 headless 200B 미만). 기본 엔트리 20KB 는 공개 수치라 불변 |
+| 번들 목표 | **배포 파일(`dist/index.*`·`dist/headless.*` ESM·CJS, 의존성 external) gzip 기준 상한: 기본 엔트리 ≤ 20KB · `/headless` ≤ 22KB** (단일 소스 `scripts/bundle-policy.js`, 게이트 `pnpm check-bundle`). 의존성 포함 소비자 번들(`pnpm check-tree-shaking`)은 별도 수치이며 게이트가 아니다 | RC 단계 12 → 13KB 상향(commit e93d082), v1.0-rc.3 grid 키보드 내비게이션 추가하면서 13 → 14KB 상향, v1.0-rc.4 MonthPicker/YearPicker disabled month/year 추가하면서 14 → 15KB 상향, v1.0-rc.8 TimePicker `filterTime` 프로그래밍 콜백 추가하면서 15 → 16KB 상향, v1.1 B10 a11y announce() 패리티(A-G1 — DatePicker/DateTimePicker Root live-region) 추가하면서 16 → 17KB 상향, 2026-08 timezone/constraint 정확성 전면 수정(negative-offset 셀 배치 P0 + 전 mutation 경계 parity)으로 17 → 20KB 상향 — 정확성 우선 결정. 2026-08 **`/headless` 만 20 → 22KB 분리** — headless 는 index 와 같은 컴포넌트에 훅 7종 전부 + `DateTimePicker.Presets` 를 더 싣는데 천장이 같아서, 코드를 더 많이 싣는 쪽의 여유가 더 적은 역전이 있었다(index 1.4KB 남을 때 headless 200B 미만). 기본 엔트리 20KB 는 공개 수치라 불변 |
 | 테스트 | Vitest + Testing Library + jest-axe | |
 | 빌드 | tsup (ESM + CJS 이중 출력) | |
 | 모노레포 | pnpm workspaces | |
@@ -767,7 +768,7 @@ audit 결함 카탈로그 기준. 공개 API 변경 없음, 번들 50바이트 �
 ### 카피 정정 (낮은 우선순위)
 
 - ~~**§1**: "Ark UI: TimePicker를 버그로 제거함" 문구~~ → **이 spec과 함께 정정 완료**: "standalone TimePicker 없음 — 시간은 `@internationalized/date`의 `CalendarDateTime`을 통해 DatePicker 내부에서만". 추가 README 정리는 README 다음 패스에서.
-- comparison.md / 마케팅: Adobe의 `@internationalized/date` 8KB/2.8KB는 Brotli이고 Kalyx 15.78KB는 gzip — 직접 비교 금지. 마케팅 카피에는 "~4× smaller than MUI X" (58.2/15.78 ≈ 3.7×) 정도가 정직한 한계.
+- comparison.md / 마케팅: 경쟁 라이브러리 크기 비교 카피는 쓰지 않는다 (2026-09 PR #240 기준). 같은 조건 측정 근거가 레포에 없고, 압축 방식(Brotli·gzip)과 의존성 포함 여부도 제각각이다. §1 의 경쟁사 목록도 같은 기준으로 뺐다.
 
 > 이전 RC 단계의 `.claude/skills/rc-announcement.md` 와 `.claude/skills/adapter-extraction.md` 는 회고 자료로 보존.
 

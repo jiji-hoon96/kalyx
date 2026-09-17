@@ -6,8 +6,7 @@ export default function DateTimePickerPage() {
 			<h1>DateTimePicker</h1>
 			<p>
 				날짜와 시간을 함께 선택하는 통합 컴포넌트. Context Bridging 패턴으로
-				기존 Calendar + TimePicker를 100% 재사용하며, 코드 추가는 0.44KB에
-				불과.
+				기존 Calendar + TimePicker를 재사용한다.
 			</p>
 
 			<h2>예제</h2>

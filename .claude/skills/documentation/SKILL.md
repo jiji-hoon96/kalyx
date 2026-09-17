@@ -175,12 +175,10 @@ function ReservationForm() {
 
 ## 왜 이 라이브러리를?
 
-| | react-datepicker | react-day-picker | [이름] |
-|---|---|---|---|
-| Headless | ❌ CSS 강제 | ✅ | ✅ |
-| TimePicker | ✅ | ❌ | ✅ |
-| SSR 안전 | ❌ | ✅ | ✅ |
-| 번들 크기 | 62KB | 25KB | ~16.6KB |
+다른 라이브러리와의 크기·기능 비교표는 넣지 않는다. 레포 안에 같은 조건으로 잰 근거가 없다.
+차별점은 레포에서 확인되는 것만 쓴다: ISO 값 모델, 목록형 TimePicker, 월·연·주 피커.
+크기는 무엇을 쟀는지 붙인다: 의존성 포함·React 제외·gzip(`pnpm check-tree-shaking`),
+또는 배포 파일 gzip(`pnpm check-bundle`).
 
 ## 설치
 
