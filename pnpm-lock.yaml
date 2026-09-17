@@ -203,7 +203,7 @@ importers:
   examples/datepicker-basic:
     dependencies:
       '@kalyx/react':
-        specifier: workspace:*
+        specifier: ^1.4.7
         version: link:../../packages/react
       react:
         specifier: ^19.0.0
@@ -231,7 +231,7 @@ importers:
   examples/datepicker-rhf:
     dependencies:
       '@kalyx/react':
-        specifier: workspace:*
+        specifier: ^1.4.7
         version: link:../../packages/react
       react:
         specifier: ^19.0.0
@@ -262,7 +262,7 @@ importers:
   examples/datepicker-shadcn:
     dependencies:
       '@kalyx/react':
-        specifier: workspace:*
+        specifier: ^1.4.7
         version: link:../../packages/react
       clsx:
         specifier: ^2.1.0
@@ -296,7 +296,7 @@ importers:
   examples/datepicker-tailwind:
     dependencies:
       '@kalyx/react':
-        specifier: workspace:*
+        specifier: ^1.4.7
         version: link:../../packages/react
       react:
         specifier: ^19.0.0
@@ -330,7 +330,7 @@ importers:
   examples/datetimepicker-timezone:
     dependencies:
       '@kalyx/react':
-        specifier: workspace:*
+        specifier: ^1.4.7
         version: link:../../packages/react
       react:
         specifier: ^19.0.0
@@ -358,7 +358,7 @@ importers:
   examples/rangepicker-presets:
     dependencies:
       '@kalyx/react':
-        specifier: workspace:*
+        specifier: ^1.4.7
         version: link:../../packages/react
       react:
         specifier: ^19.0.0
@@ -386,7 +386,7 @@ importers:
   examples/timepicker-12h:
     dependencies:
       '@kalyx/react':
-        specifier: workspace:*
+        specifier: ^1.4.7
         version: link:../../packages/react
       react:
         specifier: ^19.0.0

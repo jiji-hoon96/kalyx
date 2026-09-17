@@ -2,3 +2,6 @@ packages:
   - 'packages/*'
   - 'apps/*'
   - 'examples/*'
+# examples/* 는 StackBlitz 가 npm 으로 설치하므로 workspace: 대신 semver 범위를 쓴다.
+# 이 설정이 그 범위를 로컬 packages/* 에 계속 링크한다.
+linkWorkspacePackages: true
