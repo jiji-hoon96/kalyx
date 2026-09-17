@@ -13,7 +13,6 @@
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
 [![CI](https://github.com/jiji-hoon96/kalyx/actions/workflows/pr-check.yml/badge.svg)](https://github.com/jiji-hoon96/kalyx/actions/workflows/pr-check.yml)
-[![codecov](https://codecov.io/gh/jiji-hoon96/kalyx/graph/badge.svg)](https://codecov.io/gh/jiji-hoon96/kalyx)
 [![npm downloads](https://img.shields.io/npm/dw/%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
 [![Bundle](https://img.shields.io/badge/gzip-~19.5KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
@@ -116,12 +115,11 @@ React 19+ · all modern browsers · SSR: Next.js App Router / Pages Router / Rem
 
 ## Roadmap
 
-Recent highlights (1.4.x line): day.js & Luxon adapters, the four `/headless` hooks, `Presets` API, IANA `displayTimezone`, RTL + `Intl`-based i18n.
+Shipped since 1.0: day.js & Luxon adapters, the four `/headless` hooks, `Presets` API, IANA `displayTimezone`, RTL + `Intl`-based i18n, property-based tests (`fast-check`) across `@kalyx/core`.
 
 **Next up**
 
-- Experimental `@kalyx/adapter-temporal` (behind a flag)
-- Property-based testing (`fast-check`) for `@kalyx/core` date math
+- Clearer `DisabledRule` semantics per picker (which rule shapes each picker honors)
 - Per-dependency bundle-size report
 - Broader e2e coverage: mid-flight prop changes, locale switching
 
@@ -131,7 +129,7 @@ Recent highlights (1.4.x line): day.js & Luxon adapters, the four `/headless` ho
 - React Native adapter
 - Visual-regression / Storybook harness
 
-Direction is steered by real usage — [open an issue](https://github.com/jiji-hoon96/kalyx/issues) or [start a Discussion](https://github.com/jiji-hoon96/kalyx/discussions).
+Direction is steered by real usage. [Open an issue](https://github.com/jiji-hoon96/kalyx/issues) or [start a Discussion](https://github.com/jiji-hoon96/kalyx/discussions).
 
 ## Contributing
 
