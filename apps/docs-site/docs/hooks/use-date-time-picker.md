@@ -27,13 +27,13 @@ function useDateTimePicker(options?: UseDateTimePickerOptions): UseDateTimePicke
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | Controlled datetime (date + time, UTC). |
-| `defaultValue` | `ISODateString` | — | Uncontrolled initial datetime. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | Fires when the datetime changes. |
+| `value` | `ISODateString \| null` | - | Controlled datetime (date + time, UTC). |
+| `defaultValue` | `ISODateString` | - | Uncontrolled initial datetime. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | Fires when the datetime changes. |
 | `disabled` | `DisabledRule[]` | `[]` | Disable rules (applied to days). |
 | `weekStartsOn` | `0 \| 1` | `0` | Day the week starts on. |
-| `adapter` | `DateAdapter` | — | Date adapter (required on `/headless`). |
-| `displayTimezone` | `string` | — | IANA zone. `currentTime` is reported in this zone. See [Timezone](../concepts/timezone.md). |
+| `adapter` | `DateAdapter` | - | Date adapter (required on `/headless`). |
+| `displayTimezone` | `string` | - | IANA zone. `currentTime` is reported in this zone. See [Timezone](../concepts/timezone.md). |
 
 ### Return
 
@@ -47,7 +47,7 @@ function useDateTimePicker(options?: UseDateTimePickerOptions): UseDateTimePicke
 | `currentTime` | `TimeValue` | Time portion of the value (in `displayTimezone` when set). |
 | `viewMonth` | `ISODateString` | First-day-of-visible-month. |
 | `setViewMonth` | `(iso: ISODateString) => void` | Jump to a month. |
-| `calendar` | `CalendarGrid` | Weeks of `CalendarDay`s, 4–6 rows × 7 days. The hooks never set `fixedWeeks`, so the row count varies by month. |
+| `calendar` | `CalendarGrid` | Weeks of `CalendarDay`s, 4-6 rows × 7 days. The hooks never set `fixedWeeks`, so the row count varies by month. |
 | `focusedDate` | `ISODateString` | Keyboard-focused day. |
 | `setFocusedDate` | `(iso: ISODateString) => void` | Move focus. |
 | `previousMonth` / `nextMonth` | `() => void` | Month navigation shorthands. |
@@ -58,9 +58,9 @@ function useDateTimePicker(options?: UseDateTimePickerOptions): UseDateTimePicke
 
 ```ts
 type TimeValue = {
-  hours: number;   // 0–23
-  minutes: number; // 0–59
-  seconds: number; // 0–59
+  hours: number;   // 0-23
+  minutes: number; // 0-59
+  seconds: number; // 0-59
 };
 ```
 

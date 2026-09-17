@@ -7,18 +7,18 @@ description: 'WAI-ARIA roles, keyboard navigation, and focus management across a
 
 # Accessibility
 
-Every Kalyx component ships with WAI-ARIA roles, full keyboard support, and passes automated axe checks in our test suite. You don't *add* accessibility — you'd have to *remove* it.
+Every Kalyx component ships with WAI-ARIA roles, full keyboard support, and passes automated axe checks in our test suite. You don't *add* accessibility; you'd have to *remove* it.
 
 ## Standards & conformance
 
 Kalyx implements the relevant [W3C WAI-ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) patterns:
 
-- **Date Picker Dialog** — [APG pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/) for the calendar popover (`role="dialog"` + a `role="grid"` calendar).
-- **Combobox** — [APG pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) for the text inputs that open a popover.
-- **Listbox** — [APG pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/) for the TimePicker hour / minute lists.
-- **Radio Group** — [APG pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/) for the AM/PM toggle.
+- **Date Picker Dialog**: [APG pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/) for the calendar popover (`role="dialog"` + a `role="grid"` calendar).
+- **Combobox**: [APG pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) for the text inputs that open a popover.
+- **Listbox**: [APG pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/) for the TimePicker hour / minute lists.
+- **Radio Group**: [APG pattern](https://www.w3.org/WAI/ARIA/apg/patterns/radio/) for the AM/PM toggle.
 
-**Conformance target:** structure, roles, names, and keyboard operation aim for **WCAG 2.1 Level AA**. Because Kalyx ships zero colors, the color-contrast success criteria (1.4.3, 1.4.11) depend on *your* CSS — see [Color contrast](#color-contrast) below.
+**Conformance target:** structure, roles, names, and keyboard operation aim for **WCAG 2.1 Level AA**. Because Kalyx ships zero colors, the color-contrast success criteria (1.4.3, 1.4.11) depend on *your* CSS. See [Color contrast](#color-contrast) below.
 
 ## ARIA roles at a glance
 
@@ -32,9 +32,9 @@ Kalyx implements the relevant [W3C WAI-ARIA Authoring Practices Guide (APG)](htt
 | `TimePicker.HourList` / `.MinuteList` | `role="listbox"` with `role="option"` children |
 | `TimePicker.AmPmToggle` | `role="radiogroup"` with `role="radio"` children |
 
-All roles are present on the rendered DOM — no JS needed for screen readers to announce them.
+All roles are present on the rendered DOM; no JS needed for screen readers to announce them.
 
-## Keyboard — DatePicker.Calendar
+## Keyboard: DatePicker.Calendar
 
 | Key | Action |
 | --- | --- |
@@ -46,9 +46,9 @@ All roles are present on the rendered DOM — no JS needed for screen readers to
 | `Enter` / `Space` | Select focused date |
 | `Escape` | Close popover, restore focus to input |
 
-Focused dates have `tabIndex=0`; all other days have `tabIndex=-1` — a single tab stop.
+Focused dates have `tabIndex=0`; all other days have `tabIndex=-1`, a single tab stop.
 
-## Keyboard — TimePicker lists
+## Keyboard: TimePicker lists
 
 | Key | Action |
 | --- | --- |
@@ -56,7 +56,7 @@ Focused dates have `tabIndex=0`; all other days have `tabIndex=-1` — a single 
 | `Home` / `End` | First / last option |
 | `Enter` / `Space` | Select option |
 
-## Keyboard — MonthGrid / YearGrid
+## Keyboard: MonthGrid / YearGrid
 
 The month-jump and year-jump grids (`DatePicker.MonthGrid`, `DatePicker.YearGrid`, `MonthPicker.Grid`, `YearPicker.Grid`) share one roving-focus model:
 
@@ -69,11 +69,11 @@ The month-jump and year-jump grids (`DatePicker.MonthGrid`, `DatePicker.YearGrid
 | `Enter` / `Space` | Select focused month / year |
 | `Escape` | Close popover, restore focus |
 
-## Keyboard — RangePicker / WeekPicker calendar
+## Keyboard: RangePicker / WeekPicker calendar
 
 Same grid keys as `DatePicker.Calendar` above. For RangePicker, the first `Enter` / click sets `start`, the second sets `end` (auto-swapping if reversed). For WeekPicker, a single `Enter` / click commits the entire week containing the focused day.
 
-## Keyboard — Trigger and Input
+## Keyboard: Trigger and Input
 
 - `Tab` moves through `Input → Trigger` in order.
 - From the `Input`, `↓` opens the popover and moves focus to the selected (or today's) date.
@@ -83,7 +83,7 @@ Same grid keys as `DatePicker.Calendar` above. For RangePicker, the first `Enter
 
 - Opening the popover moves focus inside the calendar grid.
 - Closing (by `Escape`, clicking outside, or selecting a date) restores focus to the element that opened it.
-- The popover is **not** a focus trap — by design — to support pattern combinations with form submit buttons.
+- The popover is **not** a focus trap (by design) to support pattern combinations with form submit buttons.
 
 ## Screen reader labelling
 
@@ -127,11 +127,11 @@ See the full key reference in the [Internationalization guide →](./internation
 
 ## Color contrast
 
-Kalyx ships zero colors. **You own the palette** — which means you also own the contrast. A minimum of WCAG AA (4.5:1 for text, 3:1 for large text and focus indicators) is your responsibility. A few places to double-check:
+Kalyx ships zero colors. **You own the palette**, which means you also own the contrast. A minimum of WCAG AA (4.5:1 for text, 3:1 for large text and focus indicators) is your responsibility. A few places to double-check:
 
-- `daySelected` vs `dayToday` — users must distinguish both from unselected days.
-- Disabled days — keep contrast above 3:1 for readability, but visibly dimmed.
-- Focus outline — never remove `:focus-visible` styling.
+- `daySelected` vs `dayToday`: users must distinguish both from unselected days.
+- Disabled days: keep contrast above 3:1 for readability, but visibly dimmed.
+- Focus outline: never remove `:focus-visible` styling.
 
 ## Testing your styling
 

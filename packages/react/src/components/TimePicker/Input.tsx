@@ -12,7 +12,7 @@ export interface TimePickerInputProps extends Omit<
 }
 
 /**
- * TimePicker.Input — Text input for HH:MM or HH:MM:SS format.
+ * TimePicker.Input: Text input for HH:MM or HH:MM:SS format.
  * Supports direct typing by the user.
  */
 export const TimePickerInput = forwardRef<HTMLInputElement, TimePickerInputProps>(
@@ -23,7 +23,7 @@ export const TimePickerInput = forwardRef<HTMLInputElement, TimePickerInputProps
     // Drop stale typed text when the value changes from outside (parent re-sets,
     // HourList/MinuteList click, AM/PM toggle) so the input reflects the new time
     // instead of holding the user's earlier half-typed string. Time inputs are
-    // numeric — no IME composition to worry about.
+    // numeric, so there is no IME composition to worry about.
     useEffect(() => {
       setInputText(null);
     }, [ctx.value]);

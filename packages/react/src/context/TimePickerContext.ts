@@ -34,7 +34,7 @@ export interface TimePickerContextValue {
   labels: TimePickerLabels;
   /**
    * Programmatic per-slot disable predicate. Returns `true` for any (hour, minute) pair that
-   * should be unselectable — same polarity as MUI X's `shouldDisableTime`, the **inverse** of
+   * should be unselectable. Same polarity as MUI X's `shouldDisableTime`, the **inverse** of
    * react-datepicker's `filterTime` (which returns `true` to *keep* a slot). Use cases:
    * business hours, lunch breaks, blackout slots. The hour-list disables a row only when the
    * predicate returns `true` for *every* step in that hour.

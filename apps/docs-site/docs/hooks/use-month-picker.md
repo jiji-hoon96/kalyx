@@ -27,12 +27,12 @@ function useMonthPicker(options?: UseMonthPickerOptions): UseMonthPickerReturn;
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | Controlled month (stored as month-start ISO). |
-| `defaultValue` | `ISODateString` | — | Uncontrolled initial month. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | Fires when the month changes. |
+| `value` | `ISODateString \| null` | - | Controlled month (stored as month-start ISO). |
+| `defaultValue` | `ISODateString` | - | Uncontrolled initial month. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | Fires when the month changes. |
 | `disabled` | `DisabledRule[]` | `[]` | A month is disabled only when fully excluded. |
-| `adapter` | `DateAdapter` | — | Date adapter (required on `/headless`). |
-| `displayTimezone` | `string` | — | IANA zone for civil-day comparison. See [Timezone](../concepts/timezone.md). |
+| `adapter` | `DateAdapter` | - | Date adapter (required on `/headless`). |
+| `displayTimezone` | `string` | - | IANA zone for civil-day comparison. See [Timezone](../concepts/timezone.md). |
 | `locale` | `string` | `'en-US'` | BCP 47 locale for month names. |
 
 ### Return

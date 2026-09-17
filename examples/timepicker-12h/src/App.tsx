@@ -6,7 +6,7 @@ export default function App() {
 
   return (
     <div style={{ padding: 32, fontFamily: 'sans-serif' }}>
-      <h1>Kalyx — TimePicker (12h)</h1>
+      <h1>Kalyx: TimePicker (12h)</h1>
       <TimePicker value={iso} onChange={setIso} format="12h" step={15}>
         <TimePicker.Input />
         <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>

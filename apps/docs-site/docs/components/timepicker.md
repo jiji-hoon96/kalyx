@@ -13,7 +13,7 @@ Hour + minute (+ optional seconds) selection. 12- or 24-hour mode.
 
 <figure>
   <img src="/img/demos/timepicker.avif" alt="TimePicker demo: choosing hour, minute, and AM/PM" width="640" loading="lazy" />
-  <figcaption><em>Styling shown is demo-only — Kalyx ships zero CSS.</em></figcaption>
+  <figcaption><em>Styling shown is demo-only. Kalyx ships zero CSS.</em></figcaption>
 </figure>
 
 ```tsx
@@ -23,7 +23,7 @@ import { TimePicker } from '@kalyx/react';
 ## Anatomy
 
 ```tsx
-<TimePicker>            {/* Root — holds the time value (ISO string) */}
+<TimePicker>            {/* Root: holds the time value (ISO string) */}
   <TimePicker.Input /> {/* combobox <input>, parses "HH:mm" */}
   <TimePicker.Popover>  {/* optional role="dialog"; omit to render inline */}
     <TimePicker.HourList /> {/* role="listbox" of selectable hours */}
@@ -53,11 +53,11 @@ function Example() {
 }
 ```
 
-The value is still an ISO 8601 UTC string — the date part acts as a placeholder. Use `getTime(iso)` from `@kalyx/core` if you need just the hours/minutes.
+The value is still an ISO 8601 UTC string; the date part acts as a placeholder. Use `getTime(iso)` from `@kalyx/core` if you need just the hours/minutes.
 
 ### Try it live
 
-> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project; see the full imports in the non-live blocks above.
 
 ```jsx live
 function Basic24h() {
@@ -95,20 +95,20 @@ function Basic24h() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | Controlled time. |
-| `defaultValue` | `ISODateString` | — | Uncontrolled initial value. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | Fires on any hour / minute / period change. |
+| `value` | `ISODateString \| null` | - | Controlled time. |
+| `defaultValue` | `ISODateString` | - | Uncontrolled initial value. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | Fires on any hour / minute / period change. |
 | `format` | `'12h' \| '24h'` | `'24h'` | Time format. |
 | `step` | `number` | `1` | Minute granularity (e.g. `5`, `15`, `30`). |
 | `withSeconds` | `boolean` | `false` | Show seconds in display + input. |
-| `displayTimezone` | `string` | — | IANA zone. When set, the hour/minute controls read and write time as observed in this zone (DST-aware). See [Timezone](../concepts/timezone.md). |
+| `displayTimezone` | `string` | - | IANA zone. When set, the hour/minute controls read and write time as observed in this zone (DST-aware). See [Timezone](../concepts/timezone.md). |
 | `disabled` | `boolean` | `false` | Disable the whole picker. |
 | `readOnly` | `boolean` | `false` | Prevent changes. |
-| `filterTime` | `(hours: number, minutes: number) => boolean` | — | Per-slot disable predicate. Return `true` to make a slot **unselectable** (same polarity as MUI X's `shouldDisableTime` — note this is the **inverse** of react-datepicker's `filterTime`, which returns `true` to *keep* a slot). An hour is disabled only when every `step` minute within it returns `true`. Always receives 24-hour values, regardless of `format`. |
-| `locale` | `string` | `'en-US'` | BCP 47 locale used to localize the AM/PM labels (`ko-KR` renders 오전 / 오후). Does not change ARIA labels — use `labels` for those. |
-| `onOpenChange` | `(isOpen: boolean) => void` | — | Fires when `TimePicker.Popover` opens or closes. |
-| `labels` | `Partial<TimePickerLabels>` | — | Override ARIA labels. Keys: `timeInput`, `hourList`, `minuteList`, `amPmToggle`, `hourOption(h)`, `minuteOption(m)`. |
-| `children` | `ReactNode` | — | Sub-components. |
+| `filterTime` | `(hours: number, minutes: number) => boolean` | - | Per-slot disable predicate. Return `true` to make a slot **unselectable** (same polarity as MUI X's `shouldDisableTime`; note this is the **inverse** of react-datepicker's `filterTime`, which returns `true` to *keep* a slot). An hour is disabled only when every `step` minute within it returns `true`. Always receives 24-hour values, regardless of `format`. |
+| `locale` | `string` | `'en-US'` | BCP 47 locale used to localize the AM/PM labels (`ko-KR` renders 오전 / 오후). Does not change ARIA labels; use `labels` for those. |
+| `onOpenChange` | `(isOpen: boolean) => void` | - | Fires when `TimePicker.Popover` opens or closes. |
+| `labels` | `Partial<TimePickerLabels>` | - | Override ARIA labels. Keys: `timeInput`, `hourList`, `minuteList`, `amPmToggle`, `hourOption(h)`, `minuteOption(m)`. |
+| `children` | `ReactNode` | - | Sub-components. |
 
 ## `<TimePicker.Input>`
 
@@ -145,8 +145,8 @@ type TimePickerHourListClassNames = {
 
 Hour set:
 
-- `format="24h"` → `0–23`
-- `format="12h"` → `1–12` (AM/PM managed by `<AmPmToggle>`)
+- `format="24h"` → `0-23`
+- `format="12h"` → `1-12` (AM/PM managed by `<AmPmToggle>`)
 
 Each option emits `data-selected` when it is the current hour. `MinuteList` and `AmPmToggle` options emit the same `data-selected` flag. See [Styling](../concepts/styling.md).
 
@@ -160,7 +160,7 @@ A `role="listbox"` of minutes, filtered by `step`.
 
 ## `<TimePicker.AmPmToggle>`
 
-A `role="radiogroup"` with two `role="radio"` buttons — only renders in `format="12h"`.
+A `role="radiogroup"` with two `role="radio"` buttons. Only renders in `format="12h"`.
 
 | Prop | Type | Description |
 | --- | --- | --- |

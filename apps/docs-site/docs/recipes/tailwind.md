@@ -7,7 +7,7 @@ description: 'Style Kalyx with Tailwind using classNames slots or data-* variant
 
 # Tailwind CSS
 
-Kalyx has no built-in styles — Tailwind is a natural pairing. Every component exposes either a `classNames` slot map or forwards `className` directly.
+Kalyx has no built-in styles, so Tailwind is a natural pairing. Every component exposes either a `classNames` slot map or forwards `className` directly.
 
 ## Live preview
 
@@ -264,9 +264,9 @@ function TailwindTime() {
 
 ## Design-token tips
 
-- Use `!` modifiers sparingly — only where Kalyx applies defaults that compete (e.g., `daySelected`).
+- Use `!` modifiers sparingly, only where Kalyx applies defaults that compete (e.g., `daySelected`).
 - Prefer semantic tokens (`bg-primary`, `text-on-primary`) over raw colors so both themes follow automatically.
-- Kalyx passes ARIA attributes on every slot — target them directly instead of adding extra classes:
+- Kalyx passes ARIA attributes on every slot; target them directly instead of adding extra classes:
 
 ```css
 [aria-selected='true'] { @apply bg-indigo-600 text-white; }

@@ -16,7 +16,7 @@ import type { DateTimePickerRootProps } from './Root.js';
 import type { DateTimePickerInputProps } from './Input.js';
 
 /**
- * DateTimePicker — Combined component for selecting both date and time.
+ * DateTimePicker: Combined component for selecting both date and time.
  *
  * Manages a single ISO datetime as the source of truth while providing both
  * DatePickerContext and TimePickerContext internally. This lets existing

@@ -7,14 +7,14 @@ export interface TimePickerPopoverProps extends Omit<HTMLAttributes<HTMLDivEleme
 }
 
 /**
- * TimePicker.Popover — optional floating container for the Hour/Minute/AmPm controls.
+ * TimePicker.Popover: optional floating container for the Hour/Minute/AmPm controls.
  *
  * TimePicker can be used two ways:
  * - Inline (no Popover): the Hour/Minute lists are always visible.
  * - Popover: wrap the controls in `TimePicker.Popover` so they only appear after
  *   the user opens the picker (click / ArrowDown on `TimePicker.Input`).
  *
- * Mirrors DatePicker.Popover — same Floating UI positioning, outside-click,
+ * Mirrors DatePicker.Popover: same Floating UI positioning, outside-click,
  * Escape, and focus restoration via the shared `usePopover` hook.
  */
 export function TimePickerPopover({ children, ...props }: TimePickerPopoverProps) {

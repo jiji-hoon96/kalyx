@@ -23,9 +23,9 @@ function useDatePicker(options?: UseDatePickerOptions): UseDatePickerReturn;
 
 | 필드 | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | 제어 값. |
-| `defaultValue` | `ISODateString` | — | 비제어 초기값. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | 변경 콜백. |
+| `value` | `ISODateString \| null` | - | 제어 값. |
+| `defaultValue` | `ISODateString` | - | 비제어 초기값. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | 변경 콜백. |
 | `disabled` | `DisabledRule[]` | `[]` | 비활성 규칙. |
 | `weekStartsOn` | `0 \| 1` | `0` | 주 시작. |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | 커스텀 어댑터. |
@@ -55,7 +55,7 @@ function useDatePicker(options?: UseDatePickerOptions): UseDatePickerReturn;
 ```ts
 type CalendarDay = {
   isoString: ISODateString;
-  dayNumber: number;           // 1–31
+  dayNumber: number;           // 1~31
   isCurrentMonth: boolean;
   isToday: boolean;
   isSelected: boolean;
@@ -67,7 +67,7 @@ type CalendarDay = {
 };
 ```
 
-## 예시 — 커스텀 그리드
+## 예시: 커스텀 그리드
 
 ```tsx
 import { useDatePicker } from '@kalyx/react';

@@ -13,7 +13,7 @@ Combined date + time, one popover, one ISO string.
 
 <figure>
   <img src="/img/demos/datetimepicker.avif" alt="DateTimePicker demo: picking a date then a time in one popover" width="640" loading="lazy" />
-  <figcaption><em>Styling shown is demo-only — Kalyx ships zero CSS.</em></figcaption>
+  <figcaption><em>Styling shown is demo-only. Kalyx ships zero CSS.</em></figcaption>
 </figure>
 
 ```tsx
@@ -23,7 +23,7 @@ import { DateTimePicker } from '@kalyx/react';
 ## Anatomy
 
 ```tsx
-<DateTimePicker>            {/* Root — one ISO string for date + time */}
+<DateTimePicker>            {/* Root: one ISO string for date + time */}
   <DateTimePicker.Input /> {/* combobox <input>, parses date + time */}
   <DateTimePicker.Popover> {/* Floating-UI portal, role="dialog" */}
     <DateTimePicker.Calendar /> {/* month grid (reuses DatePicker.Calendar) */}
@@ -36,7 +36,7 @@ import { DateTimePicker } from '@kalyx/react';
 </DateTimePicker>
 ```
 
-The Calendar/MonthGrid/YearGrid parts are re-exported from `DatePicker`, and HourList/MinuteList/AmPmToggle from `TimePicker` — they read the shared `DateTimePicker` context, so a single value drives both halves. `DateTimePicker.Presets` / `.Preset` are available from the [`@kalyx/react/headless`](../guides/adapters.md) entry.
+The Calendar/MonthGrid/YearGrid parts are re-exported from `DatePicker`, and HourList/MinuteList/AmPmToggle from `TimePicker`. They read the shared `DateTimePicker` context, so a single value drives both halves. `DateTimePicker.Presets` / `.Preset` are available from the [`@kalyx/react/headless`](../guides/adapters.md) entry.
 
 ## Basic usage
 
@@ -59,11 +59,11 @@ function Example() {
 }
 ```
 
-Selecting a day **does not close the popover** — time can be adjusted after. Use your own close button or outside-click to confirm.
+Selecting a day **does not close the popover**; time can be adjusted after. Use your own close button or outside-click to confirm.
 
 ### Try it live
 
-> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project; see the full imports in the non-live blocks above.
 
 ```jsx live
 function BasicDateTime() {
@@ -120,23 +120,23 @@ function BasicDateTime() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | Controlled datetime. |
-| `defaultValue` | `ISODateString` | — | Uncontrolled initial value. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | Fires on any date or time change. |
+| `value` | `ISODateString \| null` | - | Controlled datetime. |
+| `defaultValue` | `ISODateString` | - | Uncontrolled initial value. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | Fires on any date or time change. |
 | `format` | `'12h' \| '24h'` | `'24h'` | Time format. |
 | `step` | `number` | `1` | Minute granularity. |
 | `withSeconds` | `boolean` | `false` | Show seconds in the display and the input. |
-| `filterTime` | `(hours: number, minutes: number) => boolean` | — | Per-slot disable predicate. Return `true` to make a slot **unselectable**. Always receives 24-hour values, regardless of `format`. Same semantics as [`TimePicker`'s `filterTime`](./timepicker.md). |
+| `filterTime` | `(hours: number, minutes: number) => boolean` | - | Per-slot disable predicate. Return `true` to make a slot **unselectable**. Always receives 24-hour values, regardless of `format`. Same semantics as [`TimePicker`'s `filterTime`](./timepicker.md). |
 | `disabled` | `DisabledRule[] \| boolean` | `false` | Date disable rules. |
 | `readOnly` | `boolean` | `false` | Prevent changes. |
 | `weekStartsOn` | `0 \| 1` | `0` | Week start. |
 | `displayFormat` | `string` | `'yyyy-MM-dd HH:mm'` | date-fns format. |
 | `locale` | `string` | `'en-US'` | BCP 47 locale. |
 | `dir` | `'ltr' \| 'rtl'` | `'ltr'` | Layout direction, forwarded to the calendar grid. In `'rtl'` ArrowLeft/ArrowRight are mirrored (WAI-ARIA grid pattern). See [Internationalization](../concepts/internationalization.md#right-to-left-rtl). |
-| `displayTimezone` | `string` | — | IANA zone. Calendar highlights by civil day in this zone, TimePicker reads/writes time-of-day in this zone, and `onChange` emits the UTC instant that corresponds to the zone-local date+time. See [Timezone](../concepts/timezone.md). |
+| `displayTimezone` | `string` | - | IANA zone. Calendar highlights by civil day in this zone, TimePicker reads/writes time-of-day in this zone, and `onChange` emits the UTC instant that corresponds to the zone-local date+time. See [Timezone](../concepts/timezone.md). |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom adapter. |
-| `labels` | `Partial<DateTimePickerLabels>` | — | Override ARIA labels. Union of DatePicker + TimePicker label keys, plus `dateTimeInput`. |
-| `children` | `ReactNode` | — | Sub-components. |
+| `labels` | `Partial<DateTimePickerLabels>` | - | Override ARIA labels. Union of DatePicker + TimePicker label keys, plus `dateTimeInput`. |
+| `children` | `ReactNode` | - | Sub-components. |
 
 ## Sub-components
 
@@ -144,7 +144,7 @@ DateTimePicker re-exports sub-components from both DatePicker and TimePicker und
 
 | Name | Behavior |
 | --- | --- |
-| `.Input` | Combined date + time input — parses both. |
+| `.Input` | Combined date + time input. Parses both. |
 | `.Popover` | Same as DatePicker.Popover. |
 | `.Calendar` | Month grid (stays open on select). Takes the same props as `DatePicker.Calendar`, including `fixedWeeks`. |
 | `.MonthGrid` | Optional month jump. |
@@ -153,7 +153,7 @@ DateTimePicker re-exports sub-components from both DatePicker and TimePicker und
 | `.MinuteList` | Same as TimePicker.MinuteList. |
 | `.AmPmToggle` | Same as TimePicker.AmPmToggle (12h mode only). |
 
-All `classNames` types are re-exported — see [DatePicker](./datepicker.md) and [TimePicker](./timepicker.md).
+All `classNames` types are re-exported. See [DatePicker](./datepicker.md) and [TimePicker](./timepicker.md).
 
 Sub-components emit the same `data-*` state attributes as their source picker (`data-selected` / `data-today` / `data-focused` on calendar days, `data-selected` on time options). See [Styling](../concepts/styling.md).
 

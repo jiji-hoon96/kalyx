@@ -86,7 +86,7 @@ export default function App() {`;
   const footer = `}`;
   const wrapperOpen = `  return (
     <div style={{ padding: 32, fontFamily: 'sans-serif' }}>
-      <h1>Kalyx — ${importName}</h1>
+      <h1>Kalyx: ${importName}</h1>
       <p>Locale: ${locale} · Timezone: ${tz}</p>`;
   const wrapperClose = `    </div>
   );`;
@@ -213,7 +213,7 @@ export function buildSeed(
   timezone: Timezone,
 ): Seed {
   return {
-    title: `Kalyx Playground — ${pickerId}`,
+    title: `Kalyx Playground: ${pickerId}`,
     template: 'node',
     files: {
       'package.json': PACKAGE_JSON,

@@ -11,7 +11,7 @@ How to move to Kalyx from the three libraries you're most likely coming from.
 
 ## From `react-datepicker`
 
-`react-datepicker` uses a single component with dozens of props — Kalyx splits each into a sub-component.
+`react-datepicker` uses a single component with dozens of props; Kalyx splits each into a sub-component.
 
 ### Before
 
@@ -60,7 +60,7 @@ Key translations:
 | `showYearDropdown` | Mount `<DatePicker.YearGrid>` |
 | `dateFormat` | `displayFormat` |
 | `locale` | `locale` (BCP 47 tag) |
-| CSS import | Remove — no stylesheet needed |
+| CSS import | Remove. No stylesheet needed |
 
 ### TimePicker translation
 
@@ -83,7 +83,7 @@ Key translations:
 
 ## From `react-day-picker`
 
-Already composition-based — the mapping is mostly renames.
+Already composition-based; the mapping is mostly renames.
 
 | `react-day-picker` | Kalyx |
 | --- | --- |
@@ -91,10 +91,10 @@ Already composition-based — the mapping is mostly renames.
 | `<DayPicker mode="range">` | `<RangePicker>` + `<RangePicker.Calendar>` |
 | `selected` (`Date`) | `value` (`ISODateString`) |
 | `onSelect` | `onChange` |
-| `disabled` matcher | `DisabledRule[]` — same shape for `before`/`after`/`dayOfWeek` |
+| `disabled` matcher | `DisabledRule[]`, same shape for `before`/`after`/`dayOfWeek` |
 | `classNames` | `classNames` (different keys, see [DatePicker](./components/datepicker.md)) |
 
-`react-day-picker` doesn't ship Input/TimePicker — that's the gap Kalyx fills. If you were pairing `react-day-picker` with a separate text input and a time component, you can collapse both into `<DatePicker.Input>` for dates or move to `<DateTimePicker>` for combined date + time.
+`react-day-picker` doesn't ship Input/TimePicker; that's the gap Kalyx fills. If you were pairing `react-day-picker` with a separate text input and a time component, you can collapse both into `<DatePicker.Input>` for dates or move to `<DateTimePicker>` for combined date + time.
 
 ## From React Aria's `DatePicker`
 
@@ -103,7 +103,7 @@ React Aria is the closest in philosophy but forces `@internationalized/date` thr
 | React Aria | Kalyx |
 | --- | --- |
 | `CalendarDate`, `DateValue` | `ISODateString` |
-| `useDatePicker` | `useDatePicker` (different return shape — see [hook docs](./hooks/use-date-picker.md)) |
+| `useDatePicker` | `useDatePicker` (different return shape; see [hook docs](./hooks/use-date-picker.md)) |
 | `<DatePicker>` + `<Group>` + `<DateInput>` + `<Popover>` + `<Calendar>` | `<DatePicker>` + `<DatePicker.Input>` + `<DatePicker.Popover>` + `<DatePicker.Calendar>` |
 
 Conversion shim:
@@ -118,7 +118,7 @@ const toISO = (cal: CalendarDate | null): ISODateString | null =>
   cal ? new Date(Date.UTC(cal.year, cal.month - 1, cal.day)).toISOString() : null;
 ```
 
-## v0.2 → v0.3 — ARIA labels i18n
+## v0.2 → v0.3: ARIA labels i18n
 
 v0.3 changes the default ARIA labels from Korean to English. If your app targets Korean users, restore the labels with the `labels` prop.
 
@@ -151,13 +151,13 @@ All hardcoded Korean aria-labels (`"캘린더 열기"`, `"이전 달"`, etc.) ar
 </DatePicker>
 ```
 
-You only need to override the keys you care about — unspecified keys keep the English defaults.
+You only need to override the keys you care about; unspecified keys keep the English defaults.
 
 For the full key reference and reusable locale presets, see the [Internationalization guide](./concepts/internationalization.md).
 
-## v0.3 → v0.4 — adding `displayTimezone`
+## v0.3 → v0.4: adding `displayTimezone`
 
-v0.4 introduces `displayTimezone` on all four pickers (plus the matching hooks). No breaking changes — omitting the prop keeps v0.3 semantics. Adopt it when the user's displayed zone differs from the server runtime, or when you want an explicit barrier against "day off by one" bugs.
+v0.4 introduces `displayTimezone` on all four pickers (plus the matching hooks). No breaking changes: omitting the prop keeps v0.3 semantics. Adopt it when the user's displayed zone differs from the server runtime, or when you want an explicit barrier against "day off by one" bugs.
 
 ### Before (v0.3, implicit UTC / runtime local)
 
@@ -192,7 +192,7 @@ The ISO contract does not change. What *does* change with the prop set:
 - `onChange` on a calendar click now emits the civil midnight of the clicked day *in the zone* (not UTC midnight of the clicked cell).
 - `TimePicker` / `DateTimePicker` hour+minute controls read and write time-of-day as observed in the zone, DST-aware.
 
-Custom `DateAdapter` implementations should honor the `timezone?: string` argument on `format`, `isSameDay`, `startOfDay`, and `today` — the built-in `DateFnsAdapter` already does.
+Custom `DateAdapter` implementations should honor the `timezone?: string` argument on `format`, `isSameDay`, `startOfDay`, and `today`; the built-in `DateFnsAdapter` already does.
 
 See the [Timezone concept page](./concepts/timezone.md) for the full story.
 
@@ -205,7 +205,7 @@ When migrating:
 3. Translate feature flags into mounted sub-components.
 4. Copy custom styling onto `classNames` slot maps.
 5. Test SSR rendering and form submission.
-6. Run axe against the new component — styling changes can regress contrast.
+6. Run axe against the new component; styling changes can regress contrast.
 
 ## Getting help
 

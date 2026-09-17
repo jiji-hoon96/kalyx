@@ -2,7 +2,7 @@
  * Central selector + config module.
  *
  * Every selector the demo depends on lives here so that if the Kalyx docs site
- * DOM changes, you only edit this one file — the recording flow in `demo.ts`
+ * DOM changes, you only edit this one file; the recording flow in `demo.ts`
  * stays untouched.
  *
  * These were verified against the live playground at
@@ -53,7 +53,7 @@ export const CONFIG = {
   slowMo: Number(process.env.SLOWMO ?? 120),
   /** Base pause between demo steps (ms). Override with STEP_MS. */
   stepMs: Number(process.env.STEP_MS ?? 700),
-  /** Steps used when tweening the cursor between targets — higher = smoother. */
+  /** Steps used when tweening the cursor between targets. Higher = smoother. */
   mouseSteps: Number(process.env.MOUSE_STEPS ?? 25),
   /** Record one picker only (its id) instead of all seven. Set via ONLY. */
   only: (process.env.ONLY as PickerId | undefined) || undefined,

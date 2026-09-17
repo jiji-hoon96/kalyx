@@ -25,7 +25,7 @@ export default function StaticHero() {
       <img
         className={styles.staticHero}
         src="/img/hero-light.webp"
-        alt="Kalyx — DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker"
+        alt="Kalyx: DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker"
         width={960}
         height={540}
         loading="eager"

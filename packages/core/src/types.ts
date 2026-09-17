@@ -117,12 +117,12 @@ export interface CalendarOptions {
   rangeHover?: ISODateString | null;
   /**
    * IANA timezone. When set, `isSameDay` comparisons for today/selected/range flags are
-   * evaluated in this zone — required when the picker stores values in display-tz civil
+   * evaluated in this zone. Required when the picker stores values in display-tz civil
    * midnight form while the grid iterates in UTC.
    */
   timezone?: string;
   /**
-   * Always emit exactly six weeks (42 days). The default (`false`) emits 4–6 weeks
+   * Always emit exactly six weeks (42 days). The default (`false`) emits 4-6 weeks
    * depending on the month, breaking after the last week containing a current-month day.
    * Setting `true` is useful for layouts that need a fixed-height grid.
    */

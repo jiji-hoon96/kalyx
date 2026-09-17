@@ -23,9 +23,9 @@ function useTimePicker(options?: UseTimePickerOptions): UseTimePickerReturn;
 
 | 필드 | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | 제어 값. |
-| `defaultValue` | `ISODateString` | — | 비제어 초기값. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | 변경 콜백. |
+| `value` | `ISODateString \| null` | - | 제어 값. |
+| `defaultValue` | `ISODateString` | - | 비제어 초기값. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | 변경 콜백. |
 | `format` | `'12h' \| '24h'` | `'24h'` | 시간 포맷. |
 | `step` | `number` | `1` | 분 간격. |
 | `withSeconds` | `boolean` | `false` | `TimePicker.Root` 와 형태를 맞추려고 받아두지만 **훅은 이 값을 읽지 않는다**. `currentTime` 에는 항상 `seconds` 가 있고 `setSecond` 도 항상 동작한다. 초를 그릴지는 UI 가 정한다. |
@@ -52,13 +52,13 @@ function useTimePicker(options?: UseTimePickerOptions): UseTimePickerReturn;
 
 ```ts
 type TimeValue = {
-  hours: number;     // 0–23
-  minutes: number;   // 0–59
-  seconds: number;   // 0–59
+  hours: number;     // 0~23
+  minutes: number;   // 0~59
+  seconds: number;   // 0~59
 };
 ```
 
-## 예시 — 스크롤 휠
+## 예시: 스크롤 휠
 
 ```tsx
 import { useTimePicker } from '@kalyx/react';

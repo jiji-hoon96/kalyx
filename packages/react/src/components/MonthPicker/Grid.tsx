@@ -22,7 +22,7 @@ export interface MonthPickerGridProps extends Omit<HTMLAttributes<HTMLDivElement
 }
 
 /**
- * MonthPicker.Grid — 12-month commit grid. Clicking a month selects it and closes the popover.
+ * MonthPicker.Grid: 12-month commit grid. Clicking a month selects it and closes the popover.
  *
  * Unlike `DatePicker.MonthGrid` (drilldown), this component commits the month selection
  * via `ctx.selectDate`, emitting the month-start ISO string.

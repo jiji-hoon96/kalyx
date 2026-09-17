@@ -46,8 +46,8 @@ export function getCalendarDays(
     fixedWeeks = false,
   } = options;
 
-  // `selected` / `focusedDate` / `range` usually originate from consumer state — a form
-  // field or a database row — so an unparseable string is data rather than a programming
+  // `selected` / `focusedDate` / `range` usually originate from consumer state (a form
+  // field or a database row), so an unparseable string is data rather than a programming
   // error. They are only ever compared against grid cells, and a comparison that cannot be
   // computed is simply false, so drop them instead of letting `isSameDay` reach
   // `Intl.DateTimeFormat.formatToParts(Invalid Date)` and throw `RangeError` mid-render.
@@ -210,12 +210,12 @@ function computeRangeFlags(
 /**
  * Checks whether the given date matches any disable rule.
  *
- * `iso` is a point-in-time value (the date being tested) — not a hand-built
+ * `iso` is a point-in-time value (the date being tested), not a hand-built
  * UTC-midnight grid coordinate. When `timezone` is set, the day-granular rules
  * (`{ date }` and `{ dayOfWeek }`) are evaluated by the *civil day in that zone*,
  * so pass the same civil-midnight-in-timezone instants the pickers emit (via
  * `onChange` / {@link civilMidnightFromUtcDay}) rather than a raw `…T00:00:00Z`
- * coordinate — under a negative UTC offset the latter resolves to the previous
+ * coordinate: under a negative UTC offset the latter resolves to the previous
  * civil day. `{ before }` / `{ after }` are plain instant comparisons and are
  * timezone-independent. For rendering a calendar, prefer the precomputed
  * {@link getCalendarDays} `isDisabled` flag, which already normalizes each cell.

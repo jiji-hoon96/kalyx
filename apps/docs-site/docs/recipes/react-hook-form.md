@@ -11,7 +11,7 @@ Kalyx stores values as ISO strings, which map cleanly to any form library. Here'
 
 ## Live: the shape you submit
 
-`react-hook-form` isn't available in this live editor, so the example below uses `useState` to show the exact flow — `onChange` hands you an `ISODateString | null`, which is what RHF would store in `field.value`.
+`react-hook-form` isn't available in this live editor, so the example below uses `useState` to show the exact flow: `onChange` hands you an `ISODateString | null`, which is what RHF would store in `field.value`.
 
 ```jsx live
 function FormFlow() {

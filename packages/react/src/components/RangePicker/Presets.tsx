@@ -28,7 +28,7 @@ export interface RangePickerPresetsProps extends Omit<HTMLAttributes<HTMLDivElem
 }
 
 /**
- * RangePicker.Presets — Container that wraps preset buttons.
+ * RangePicker.Presets: Container that wraps preset buttons.
  * Place `RangePicker.Preset` buttons inside.
  *
  * @example
@@ -119,7 +119,7 @@ function resolvePreset(
 }
 
 /**
- * RangePicker.Preset — One-click preset button to select a date range.
+ * RangePicker.Preset: One-click preset button to select a date range.
  *
  * Pass either `value` (a preset key) or `range` (a direct range).
  *
@@ -140,7 +140,7 @@ export function RangePickerPreset({
 }: RangePickerPresetProps) {
   const ctx = useRangePickerContext('RangePicker.Preset');
 
-  // Resolve the preset once per render — previously `resolvePreset` + `adapter.today()`
+  // Resolve the preset once per render; previously `resolvePreset` + `adapter.today()`
   // ran twice per render per preset (in handleClick AND isActive), turning a 5-preset
   // row into 10 today() allocations per render.
   const resolved = useMemo<DateRange | null>(() => {

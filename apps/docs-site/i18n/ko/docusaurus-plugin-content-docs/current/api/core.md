@@ -79,7 +79,7 @@ type TimeValue = {
 
 ## `DateFnsAdapter`
 
-기본 어댑터입니다 — UTC 안전하며 date-fns v4 위에 구현돼 있습니다.
+기본 어댑터입니다. UTC 안전하며 date-fns v4 위에 구현돼 있습니다.
 
 ```ts
 import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
@@ -117,8 +117,8 @@ isDateDisabled(
 ); // → true (Saturday)
 
 // With `timezone`, `{ date }` / `{ dayOfWeek }` rules match by the civil day in
-// that zone. Pass the civil-midnight-in-timezone instant the pickers emit — the
-// same value `onChange` gives you — not a raw `…T00:00:00Z` grid coordinate:
+// that zone. Pass the civil-midnight-in-timezone instant the pickers emit (the
+// same value `onChange` gives you), not a raw `…T00:00:00Z` grid coordinate:
 isDateDisabled(
   '2026-01-15T05:00:00.000Z',            // civil Jan 15 in America/New_York
   [{ date: '2026-01-15T05:00:00.000Z' }],
@@ -127,7 +127,7 @@ isDateDisabled(
 ); // → true
 ```
 
-`iso`는 손으로 만든 UTC-자정 그리드 좌표가 아니라 **검사 대상이 되는 시점(instant)** 입니다. 음수 UTC offset 아래에서는 `2026-01-15T00:00:00.000Z`가 현지 기준으로는 여전히 14일입니다. `{ before }` / `{ after }`는 instant 비교이며 `timezone`을 무시합니다. 캘린더의 셀별 disabled 상태만 필요하다면 이 함수 대신 `getCalendarDays(...)`가 미리 계산해 둔 `isDisabled` 플래그를 읽으세요 — 셀마다 알아서 정규화해 줍니다.
+`iso`는 손으로 만든 UTC-자정 그리드 좌표가 아니라 **검사 대상이 되는 시점(instant)** 입니다. 음수 UTC offset 아래에서는 `2026-01-15T00:00:00.000Z`가 현지 기준으로는 여전히 14일입니다. `{ before }` / `{ after }`는 instant 비교이며 `timezone`을 무시합니다. 캘린더의 셀별 disabled 상태만 필요하다면 이 함수 대신 `getCalendarDays(...)`가 미리 계산해 둔 `isDisabled` 플래그를 읽으세요. 셀마다 알아서 정규화해 줍니다.
 
 ### `getISOWeekNumber(iso)`
 
@@ -161,7 +161,7 @@ minDate(
 
 ### `normalizeISO(value)`
 
-관대한 정규화 함수입니다 — `2026-04-15` 같은 날짜만 있는 값을 완전한 UTC-자정 ISO string으로 확장합니다. 완전한 ISO datetime과 인식하지 못한 문자열은 그대로 반환하며, 빈 문자열은 빈 문자열로 남습니다.
+관대한 정규화 함수입니다. `2026-04-15` 같은 날짜만 있는 값을 완전한 UTC-자정 ISO string으로 확장합니다. 완전한 ISO datetime과 인식하지 못한 문자열은 그대로 반환하며, 빈 문자열은 빈 문자열로 남습니다.
 
 ### `parseInputValue(input, adapter)`
 
@@ -254,11 +254,11 @@ formatFullDate('2026-04-15T00:00:00.000Z', 'en-US');
 
 ### `getWeekStartForLocale(locale?)`
 
-해당 locale이 관습적으로 쓰는 한 주의 첫 요일을 `WeekStartsOn` — `0`(일요일) 또는 `1`(월요일) — 로 좁혀서 반환합니다. `weekStartsOn`을 넘기지 않으면 `DatePicker`와 `RangePicker`가 이 함수를 호출합니다. 명시한 prop이 항상 우선합니다.
+해당 locale이 관습적으로 쓰는 한 주의 첫 요일을 `WeekStartsOn`(`0` 일요일 또는 `1` 월요일)으로 좁혀서 반환합니다. `weekStartsOn`을 넘기지 않으면 `DatePicker`와 `RangePicker`가 이 함수를 호출합니다. 명시한 prop이 항상 우선합니다.
 
 :::note 토요일·금요일 시작 locale 은 월요일로 보고됩니다
 
-런타임은 시작 요일을 둘보다 많이 구분합니다 — `Intl` 은 `ar-AF`·`fa-IR` 에 토요일, `dv-MV` 에 금요일을 보고합니다. 공개 타입 `WeekStartsOn` 이 `0 | 1` 이라 일요일이 아닌 결과는 전부 `1` 로 좁혀집니다. 따라서 이 locale 들은 관습적인 시작이 아니라 월요일 시작 그리드로 렌더됩니다. 정확한 시작 요일이 필요하면 `weekStartsOn` 을 명시하세요.
+런타임은 시작 요일을 둘보다 많이 구분합니다. `Intl` 은 `ar-AF`·`fa-IR` 에 토요일, `dv-MV` 에 금요일을 보고합니다. 공개 타입 `WeekStartsOn` 이 `0 | 1` 이라 일요일이 아닌 결과는 전부 `1` 로 좁혀집니다. 따라서 이 locale 들은 관습적인 시작이 아니라 월요일 시작 그리드로 렌더됩니다. 정확한 시작 요일이 필요하면 `weekStartsOn` 을 명시하세요.
 
 :::
 

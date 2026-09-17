@@ -9,8 +9,8 @@ description: 'Style Kalyx with your own CSS: the classNames slots and the data-*
 
 Kalyx ships **zero CSS**. Every part renders semantic, unstyled HTML and exposes two styling contracts:
 
-1. **`classNames` prop** — a typed map of slot names → class strings, on each sub-component.
-2. **`data-*` state attributes** — emitted on interactive elements so you can style by state in CSS / Tailwind without re-rendering.
+1. **`classNames` prop**: a typed map of slot names → class strings, on each sub-component.
+2. **`data-*` state attributes**: emitted on interactive elements so you can style by state in CSS / Tailwind without re-rendering.
 
 Either works alone; combine them when you want a stable class plus state-based variants.
 
@@ -31,11 +31,11 @@ Every sub-component accepts a `classNames` object keyed by internal slot. Pass o
 />
 ```
 
-Slot keys are documented per sub-component on each [component page](../components/datepicker.md). The state slots (`daySelected`, `dayToday`, …) are applied **in addition to** the base slot (`day`) when that state is active — so a selected day gets both `day` and `daySelected` classes.
+Slot keys are documented per sub-component on each [component page](../components/datepicker.md). The state slots (`daySelected`, `dayToday`, …) are applied **in addition to** the base slot (`day`) when that state is active, so a selected day gets both `day` and `daySelected` classes.
 
 ## 2. `data-*` state attributes
 
-For Tailwind (`data-[selected]:…`) or plain CSS attribute selectors, every stateful element also carries `data-*` attributes. They are **present only when the state is active** (omitted otherwise — never `data-selected="false"`), so `[data-selected]` is a reliable selector.
+For Tailwind (`data-[selected]:…`) or plain CSS attribute selectors, every stateful element also carries `data-*` attributes. They are **present only when the state is active** (omitted otherwise, never `data-selected="false"`), so `[data-selected]` is a reliable selector.
 
 ```css
 /* plain CSS */
@@ -45,7 +45,7 @@ For Tailwind (`data-[selected]:…`) or plain CSS attribute selectors, every sta
 ```
 
 ```tsx
-/* Tailwind v3.1+ data variants — no classNames needed */
+/* Tailwind v3.1+ data variants: no classNames needed */
 <DatePicker.Calendar
   classNames={{
     day: 'rounded p-2 data-[selected]:bg-blue-600 data-[selected]:text-white data-[today]:ring-1',
@@ -89,7 +89,7 @@ These are the attributes Kalyx emits. `disabled` days use the native `disabled` 
 | Attribute | Emitted by | Active when |
 | --- | --- | --- |
 | `data-active` | `DatePicker` / `RangePicker` / `DateTimePicker` `.Preset` | The preset's resolved date matches the current value. |
-| `data-part` | `RangePicker` / `WeekPicker` `.Input` | Always — value is `"start"` or `"end"`, to target each input. |
+| `data-part` | `RangePicker` / `WeekPicker` `.Input` | Always. Value is `"start"` or `"end"`, to target each input. |
 
 ## Which should I use?
 

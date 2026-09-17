@@ -23,13 +23,13 @@ function useRangePicker(options?: UseRangePickerOptions): UseRangePickerReturn;
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `DateRange` | — | Controlled range. |
-| `defaultValue` | `DateRange` | — | Uncontrolled initial range. |
-| `onChange` | `(range: DateRange) => void` | — | Fires on selection. |
+| `value` | `DateRange` | - | Controlled range. |
+| `defaultValue` | `DateRange` | - | Uncontrolled initial range. |
+| `onChange` | `(range: DateRange) => void` | - | Fires on selection. |
 | `disabled` | `DisabledRule[]` | `[]` | Disable rules. |
 | `weekStartsOn` | `0 \| 1` | `0` | Week start. |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom adapter. |
-| `displayTimezone` | `string` | — | IANA zone. Same semantics as [`useDatePicker#displayTimezone`](./use-date-picker.md); applies to both `start` and `end`. |
+| `displayTimezone` | `string` | - | IANA zone. Same semantics as [`useDatePicker#displayTimezone`](./use-date-picker.md); applies to both `start` and `end`. |
 
 ### Return (delta over `useDatePicker`)
 
@@ -46,7 +46,7 @@ All other fields (`isOpen`, `open`, `close`, `viewMonth`, `setViewMonth`, `calen
 
 The `calendar`'s `CalendarDay` values now carry meaningful `isRangeStart`, `isRangeEnd`, and `isInRange` flags.
 
-## Example — hoverable range grid
+## Example: hoverable range grid
 
 ```tsx
 import { useRangePicker } from '@kalyx/react';

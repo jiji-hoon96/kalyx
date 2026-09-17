@@ -21,13 +21,13 @@ pnpm build
 
 Pick any issue labeled [`good first issue`](https://github.com/jiji-hoon96/kalyx/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22). Current starters:
 
-- [#233 — Add CI + Codecov badges to the npm package README](https://github.com/jiji-hoon96/kalyx/issues/233)
-- [#234 — Chakra UI recipe (+ optional example)](https://github.com/jiji-hoon96/kalyx/issues/234)
-- [#235 — e2e: locale switching](https://github.com/jiji-hoon96/kalyx/issues/235)
-- [#236 — e2e: mid-flight prop changes](https://github.com/jiji-hoon96/kalyx/issues/236)
-- [#237 — State Gregorian-only support in the docs](https://github.com/jiji-hoon96/kalyx/issues/237)
+- [#233: Add CI + Codecov badges to the npm package README](https://github.com/jiji-hoon96/kalyx/issues/233)
+- [#234: Chakra UI recipe (+ optional example)](https://github.com/jiji-hoon96/kalyx/issues/234)
+- [#235: e2e: locale switching](https://github.com/jiji-hoon96/kalyx/issues/235)
+- [#236: e2e: mid-flight prop changes](https://github.com/jiji-hoon96/kalyx/issues/236)
+- [#237: State Gregorian-only support in the docs](https://github.com/jiji-hoon96/kalyx/issues/237)
 
-Comment on the issue before starting so we don't duplicate work — and feel free to ask questions there. This list is maintained; if a starter issue is already claimed, the label search will show the freshest set.
+Comment on the issue before starting so we don't duplicate work, and feel free to ask questions there. This list is maintained; if a starter issue is already claimed, the label search will show the freshest set.
 
 ## Development
 
@@ -53,27 +53,27 @@ pnpm check-bundle  # gzip size check (default ≤ 20 KB, headless ≤ 22 KB)
 
 ```
 packages/
-  core/             — Platform-independent date logic (calendar grid, utilities, DateAdapter contract)
-  react/            — React components (DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker)
-  adapter-date-fns/ — date-fns DateAdapter (default)
-  adapter-dayjs/    — dayjs DateAdapter
-  adapter-luxon/    — luxon DateAdapter
+  core/             # Platform-independent date logic (calendar grid, utilities, DateAdapter contract)
+  react/            # React components (DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker)
+  adapter-date-fns/ # date-fns DateAdapter (default)
+  adapter-dayjs/    # dayjs DateAdapter
+  adapter-luxon/    # luxon DateAdapter
 apps/
-  docs/    — Next.js demo site
-  docs-site/ — Docusaurus documentation
+  docs/    # Next.js demo site
+  docs-site/ # Docusaurus documentation
 ```
 
-- `@kalyx/core` has zero React dependency — pure functions and types.
+- `@kalyx/core` has zero React dependency: pure functions and types.
 - `@kalyx/react` depends on `@kalyx/core`, React 19+, Floating UI, and date-fns.
 
 ## Code Style
 
-- **TypeScript strict** — `any` is forbidden (`@typescript-eslint/no-explicit-any: error`).
-- **ISO 8601 UTC strings** — All date values are `string` (e.g., `"2026-01-15T00:00:00.000Z"`). Never use native `Date` objects as component values.
-- **Timezone awareness** — For display-zone-specific behavior, route through the `displayTimezone` prop or `@kalyx/core` helpers (`civilMidnightFromUtcDay`, `getTimeInTimezone`, `setTimeInTimezone`). Avoid ad-hoc `new Date()` math in features.
-- **Composition API** — Sub-components via Dot Notation (`DatePicker.Input`, `DatePicker.Calendar`), not props explosion.
-- **SSR safe** — No `window`/`document` outside `useEffect`. Use `useId()` for IDs.
-- **Headless** — Zero CSS. Styling is done via `classNames` prop and `data-*` attributes.
+- **TypeScript strict**: `any` is forbidden (`@typescript-eslint/no-explicit-any: error`).
+- **ISO 8601 UTC strings**: All date values are `string` (e.g., `"2026-01-15T00:00:00.000Z"`). Never use native `Date` objects as component values.
+- **Timezone awareness**: For display-zone-specific behavior, route through the `displayTimezone` prop or `@kalyx/core` helpers (`civilMidnightFromUtcDay`, `getTimeInTimezone`, `setTimeInTimezone`). Avoid ad-hoc `new Date()` math in features.
+- **Composition API**: Sub-components via Dot Notation (`DatePicker.Input`, `DatePicker.Calendar`), not props explosion.
+- **SSR safe**: No `window`/`document` outside `useEffect`. Use `useId()` for IDs.
+- **Headless**: Zero CSS. Styling is done via `classNames` prop and `data-*` attributes.
 
 ## Testing
 
@@ -116,7 +116,7 @@ Before opening a PR, verify:
 - [ ] `pnpm lint` passes
 - [ ] `pnpm test:run` passes
 - [ ] `pnpm build` succeeds
-- [ ] `pnpm check-bundle` — default entry ≤ 20 KB, headless ≤ 22 KB gzip
+- [ ] `pnpm check-bundle`: default entry ≤ 20 KB, headless ≤ 22 KB gzip
 - [ ] Changeset added if public API changed (`pnpm changeset`)
 - [ ] New public APIs have JSDoc comments
 

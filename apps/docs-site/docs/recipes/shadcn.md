@@ -7,11 +7,11 @@ description: 'Match the shadcn/ui look by borrowing its class variants, and comp
 
 # shadcn/ui
 
-shadcn doesn't ship a DatePicker — its tutorial advises pairing a headless library with a shadcn `Popover` shell. Kalyx slots in cleanly.
+shadcn doesn't ship a DatePicker; its tutorial advises pairing a headless library with a shadcn `Popover` shell. Kalyx slots in cleanly.
 
 ## Live preview
 
-A shadcn "new-york" approximation — slate palette, 6px radii, muted secondary text — wired to Kalyx's headless parts. The full source (with real shadcn `Button`, `Input`, and `cn`) follows below.
+A shadcn "new-york" approximation (slate palette, 6px radii, muted secondary text) wired to Kalyx's headless parts. The full source (with real shadcn `Button`, `Input`, and `cn`) follows below.
 
 ```jsx live
 function ShadcnDate() {
@@ -103,7 +103,7 @@ export function ShadcnDatePicker() {
 ```
 
 :::note
-Kalyx's `.Input` and `.Trigger` don't support `asChild` natively (they render actual `<input>` / `<button>`). If you need true `asChild`, wrap your shadcn primitive and pass the className — as above — or drop to `useDatePicker` and render the shadcn pieces directly.
+Kalyx's `.Input` and `.Trigger` don't support `asChild` natively (they render actual `<input>` / `<button>`). If you need true `asChild`, wrap your shadcn primitive and pass the className (as above) or drop to `useDatePicker` and render the shadcn pieces directly.
 :::
 
 ## RangePicker in a shadcn Popover
@@ -192,7 +192,7 @@ export function ShadcnRange() {
 
 ## Form integration
 
-Pair with `react-hook-form` — see the [React Hook Form recipe →](./react-hook-form.md).
+Pair with `react-hook-form`. See the [React Hook Form recipe →](./react-hook-form.md).
 
 ## Related
 

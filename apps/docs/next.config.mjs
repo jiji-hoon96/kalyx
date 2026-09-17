@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	reactStrictMode: true,
-	// GitHub Pages 배포를 위한 정적 Export
+	// 정적 Export. E2E(playwright.config.ts)가 apps/docs/out 을 서빙한다. 배포하지 않는다
 	output: 'export',
 	// 모노레포의 워크스페이스 패키지를 트랜스파일
 	transpilePackages: ['@kalyx/react', '@kalyx/core'],

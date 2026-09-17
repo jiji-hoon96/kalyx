@@ -6,7 +6,7 @@ export type Direction = 'ltr' | 'rtl';
  * order. When the calendar is laid out right-to-left (`dir="rtl"`), the visually
  * left cell is the *next* day and the visually right cell is the *previous* day,
  * so ArrowLeft/ArrowRight must be swapped. ArrowUp/ArrowDown (row movement) and
- * Home/End (start/end of the visual row) are unaffected — the grid still reads
+ * Home/End (start/end of the visual row) are unaffected; the grid still reads
  * top-to-bottom and Home/End map to the week's first/last day via `weekStartsOn`.
  *
  * Returns the day offset for the four horizontal-relevant keys, or `null` for

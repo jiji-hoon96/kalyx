@@ -41,15 +41,15 @@ export interface RangePickerCalendarClassNames {
 
 /**
  * Selection mode for the calendar grid.
- * - `'range'` (default): RangePicker behavior — two clicks (start, end) commit a custom range.
- * - `'week'`: WeekPicker behavior — a single click commits the entire week containing the clicked day.
+ * - `'range'` (default): RangePicker behavior: two clicks (start, end) commit a custom range.
+ * - `'week'`: WeekPicker behavior: a single click commits the entire week containing the clicked day.
  */
 export type RangePickerCalendarSelectionMode = 'range' | 'week';
 
 /**
  * How the selected week is anchored when `selectionMode="week"`.
  * - `'calendar'` (default): the calendar week containing the clicked day, aligned
- *   to `weekStartsOn` (e.g. Sunday–Saturday for en-US).
+ *   to `weekStartsOn` (e.g. Sunday to Saturday for en-US).
  * - `'clicked'`: a rolling 7-day span that *starts* on the clicked day
  *   (clicked day … clicked day + 6), regardless of `weekStartsOn`.
  */
@@ -65,7 +65,7 @@ export interface RangePickerCalendarProps extends Omit<HTMLAttributes<HTMLDivEle
    */
   weekAnchor?: RangePickerWeekAnchor;
   /**
-   * Render an ISO 8601 week-number column on the left of the grid (1–53).
+   * Render an ISO 8601 week-number column on the left of the grid (1-53).
    * The column is a `<th scope="row">`; it doesn't participate in the WAI-ARIA grid
    * data region, so keyboard navigation across the date cells is unaffected.
    */
@@ -76,7 +76,7 @@ export interface RangePickerCalendarProps extends Omit<HTMLAttributes<HTMLDivEle
   fixedWeeks?: boolean;
 }
 
-/** Safe wrapper for formatFullDate — falls back to ISO string on error */
+/** Safe wrapper for formatFullDate; falls back to ISO string on error */
 function safeFormatFullDate(iso: string, locale: string): string {
   try {
     return formatFullDate(iso, locale);
@@ -110,7 +110,7 @@ export function RangePickerCalendar({
 
   const { locale } = ctx;
   const dir = ctx.dir;
-  // Memoized — see DatePicker/Calendar.tsx for the rationale.
+  // Memoized; see DatePicker/Calendar.tsx for the rationale.
   const weekdays = useMemo(() => getWeekdayNames(locale, weekStartsOn), [locale, weekStartsOn]);
 
   const weeks = useMemo(
@@ -140,7 +140,7 @@ export function RangePickerCalendar({
     ],
   );
 
-  // ISO week number anchored to the row's Thursday — see DatePicker/Calendar.tsx for rationale.
+  // ISO week number anchored to the row's Thursday; see DatePicker/Calendar.tsx for rationale.
   const thursdayIndex = weekStartsOn === 0 ? 4 : 3;
 
   const year = adapter.getYear(viewMonth);
@@ -231,7 +231,7 @@ export function RangePickerCalendar({
             `${ctx.labels.rangeSelected}: ${safeFormatFullDate(start, locale)} – ${safeFormatFullDate(end, locale)}`,
           );
         } else {
-          // Safety: no previous start (e.g. preset cleared mid-flow) — fall back
+          // Safety: no previous start (e.g. preset cleared mid-flow): fall back
           // to a simple per-day announcement so the user still hears something.
           ctx.announce(formatted);
         }

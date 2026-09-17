@@ -9,7 +9,7 @@ const SameJsxDemo = lazy(() => import('./SameJsxDemo'));
 type VariantId = (typeof VARIANTS)[number]['id'];
 
 /**
- * "Same JSX, your styles" — an interactive style-switcher. The left column is
+ * "Same JSX, your styles": an interactive style-switcher. The left column is
  * a tab bar + the code for the active variant; the right column renders ONE
  * real <DatePicker> that actually re-skins as you switch tabs. Proves the
  * claim by demonstration rather than three static snippets side by side.

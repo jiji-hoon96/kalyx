@@ -22,7 +22,7 @@ import type {
 } from './Presets.js';
 
 /**
- * DatePicker — Headless, SSR-safe React DatePicker
+ * DatePicker: Headless, SSR-safe React DatePicker
  *
  * @example Basic
  * ```tsx

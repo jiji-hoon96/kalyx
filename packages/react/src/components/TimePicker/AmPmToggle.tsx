@@ -17,7 +17,7 @@ export interface TimePickerAmPmToggleProps extends Omit<
 }
 
 /**
- * TimePicker.AmPmToggle — AM/PM toggle shown only in 12-hour mode.
+ * TimePicker.AmPmToggle: AM/PM toggle shown only in 12-hour mode.
  * Returns null in 24-hour mode.
  *
  * Implements the WAI-ARIA radiogroup pattern: only the checked radio is in the

@@ -53,7 +53,7 @@ export interface UseYearPickerReturn {
 
 /**
  * Headless YearPicker state for fully custom UIs. DOM-free (preserves the
- * React Native seam) — exposes the 12-year decade grid and navigation.
+ * React Native seam): exposes the 12-year decade grid and navigation.
  *
  * @example
  * ```tsx

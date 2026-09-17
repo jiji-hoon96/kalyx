@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Fixes ship forward only — they land in a new release of the affected package
+Fixes ship forward only: they land in a new release of the affected package
 rather than being backported.
 
 | Version | Supported |
@@ -55,7 +55,7 @@ npm view @kalyx/react@1.4.3 dist.attestations
 ### Versions published without provenance
 
 Six versions predate the current setup and are **not** attested. They were
-uploaded from a maintainer's machine — every package's first publish must be
+uploaded from a maintainer's machine. Every package's first publish must be
 manual, because npm can only attach a Trusted Publisher to a package that
 already exists (see `RELEASING.md`). Nothing is wrong with these tarballs as far
 as we know, but their contents cannot be cryptographically traced to a commit,
@@ -71,7 +71,7 @@ so treat them as unverifiable rather than verified:
 
 `@kalyx/adapter-dayjs` and `@kalyx/adapter-luxon` have only ever published
 `0.1.0`, so **every currently released version of those two is unsigned.** Their
-next release is signed — the `publishConfig.provenance` flag and the Trusted
+next release is signed: the `publishConfig.provenance` flag and the Trusted
 Publisher registration are both already in place. They are not being republished
 to fix this, because reissuing an identical tarball under a new version number
 would be a change to the version history and not to the artifact.

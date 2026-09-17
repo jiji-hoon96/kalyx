@@ -5,7 +5,7 @@ export default function MonthPickerPage() {
 		<>
 			<h1>MonthPicker</h1>
 			<p>
-				월 단위 선택. 값은 해당 월의 첫 일(UTC-ISO)로 저장된다 — 예:{' '}
+				월 단위 선택. 값은 해당 월의 첫 일(UTC-ISO)로 저장된다. 예:{' '}
 				<code>&quot;2026-04-01T00:00:00.000Z&quot;</code>. 내부적으로 DatePicker 인프라를
 				재사용하고 새 primitive는 <code>MonthPicker.Grid</code> 하나뿐.
 			</p>

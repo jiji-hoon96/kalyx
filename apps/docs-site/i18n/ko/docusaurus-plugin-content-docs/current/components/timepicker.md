@@ -13,7 +13,7 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 <figure>
   <img src="/img/demos/timepicker.avif" alt="TimePicker 데모: 시, 분, AM/PM 선택" width="640" loading="lazy" />
-  <figcaption><em>화면의 스타일은 데모용입니다 — Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
+  <figcaption><em>화면의 스타일은 데모용입니다. Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
 </figure>
 
 ```tsx
@@ -38,7 +38,7 @@ function Example() {
 }
 ```
 
-값은 여전히 ISO 8601 UTC 문자열 — 날짜 부분은 placeholder 역할. 시/분만 필요하면 `@kalyx/core`의 `getTime(iso)`를 쓰세요.
+값은 여전히 ISO 8601 UTC 문자열이고, 날짜 부분은 placeholder 역할. 시/분만 필요하면 `@kalyx/core`의 `getTime(iso)`를 쓰세요.
 
 ### 직접 사용해보기
 
@@ -80,20 +80,20 @@ function Basic24h() {
 
 | Prop | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | 제어형 시간. |
-| `defaultValue` | `ISODateString` | — | 비제어 초기값. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | 시/분/AM·PM 변경 시 호출. |
+| `value` | `ISODateString \| null` | - | 제어형 시간. |
+| `defaultValue` | `ISODateString` | - | 비제어 초기값. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | 시/분/AM·PM 변경 시 호출. |
 | `format` | `'12h' \| '24h'` | `'24h'` | 시간 포맷. |
 | `step` | `number` | `1` | 분 간격 (예: `5`, `15`, `30`). |
 | `withSeconds` | `boolean` | `false` | 초 표시 (입력 + 리스트). |
-| `displayTimezone` | `string` | — | IANA 타임존. 설정 시 시/분 컨트롤이 이 타임존 기준으로 시간을 읽고 쓴다 (DST 인식). [Timezone](../concepts/timezone.md) 참고. |
+| `displayTimezone` | `string` | - | IANA 타임존. 설정 시 시/분 컨트롤이 이 타임존 기준으로 시간을 읽고 쓴다 (DST 인식). [Timezone](../concepts/timezone.md) 참고. |
 | `disabled` | `boolean` | `false` | 전체 비활성. |
 | `readOnly` | `boolean` | `false` | 변경 방지. |
-| `filterTime` | `(hours: number, minutes: number) => boolean` | — | 슬롯별 비활성 predicate. `true`를 반환하면 해당 슬롯을 **선택 불가**로 만든다 (MUI X의 `shouldDisableTime`과 같은 극성 — react-datepicker의 `filterTime`(슬롯을 *유지*하려면 `true`)과는 **반대**). 시(hour)는 해당 시의 모든 `step` 분이 `true`일 때만 비활성. `format`과 무관하게 항상 24시간 값을 받는다. |
+| `filterTime` | `(hours: number, minutes: number) => boolean` | - | 슬롯별 비활성 predicate. `true`를 반환하면 해당 슬롯을 **선택 불가**로 만든다 (MUI X의 `shouldDisableTime`과 같은 극성. react-datepicker의 `filterTime`(슬롯을 *유지*하려면 `true`)과는 **반대**). 시(hour)는 해당 시의 모든 `step` 분이 `true`일 때만 비활성. `format`과 무관하게 항상 24시간 값을 받는다. |
 | `locale` | `string` | `'en-US'` | AM/PM 라벨을 지역화하는 BCP 47 locale (`ko-KR` 이면 오전 / 오후). ARIA 라벨은 바뀌지 않는다. 그쪽은 `labels` 로 지정한다. |
-| `onOpenChange` | `(isOpen: boolean) => void` | — | `TimePicker.Popover` 가 열리거나 닫힐 때 호출된다. |
-| `labels` | `Partial<TimePickerLabels>` | — | ARIA 라벨 재정의. 키: `timeInput`, `hourList`, `minuteList`, `amPmToggle`, `hourOption(h)`, `minuteOption(m)`. |
-| `children` | `ReactNode` | — | 서브 컴포넌트. |
+| `onOpenChange` | `(isOpen: boolean) => void` | - | `TimePicker.Popover` 가 열리거나 닫힐 때 호출된다. |
+| `labels` | `Partial<TimePickerLabels>` | - | ARIA 라벨 재정의. 키: `timeInput`, `hourList`, `minuteList`, `amPmToggle`, `hourOption(h)`, `minuteOption(m)`. |
+| `children` | `ReactNode` | - | 서브 컴포넌트. |
 
 ## `<TimePicker.Input>`
 
@@ -130,8 +130,8 @@ type TimePickerHourListClassNames = {
 
 시 집합:
 
-- `format="24h"` → `0–23`
-- `format="12h"` → `1–12` (`<AmPmToggle>`로 오전/오후 관리)
+- `format="24h"` → `0~23`
+- `format="12h"` → `1~12` (`<AmPmToggle>`로 오전/오후 관리)
 
 각 옵션은 현재 시일 때 `data-selected` 를 갖습니다. `MinuteList` 와 `AmPmToggle` 의 옵션도 같은 `data-selected` 플래그를 내보냅니다. [스타일링](../concepts/styling.md) 참고.
 
@@ -145,7 +145,7 @@ type TimePickerHourListClassNames = {
 
 ## `<TimePicker.AmPmToggle>`
 
-AM/PM 두 라디오 버튼 (`role="radiogroup"`) — `format="12h"`에서만 렌더.
+AM/PM 두 라디오 버튼 (`role="radiogroup"`). `format="12h"`에서만 렌더.
 
 | Prop | 타입 | 설명 |
 | --- | --- | --- |

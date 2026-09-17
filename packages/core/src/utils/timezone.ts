@@ -3,7 +3,7 @@ import type { ISODateString } from '../types.js';
 // Inputs reaching this module are already validated ISO 8601 UTC strings (every
 // caller routes through `normalizeISO` or `DateAdapter.parse`), so native
 // `new Date(string)` is fully spec-defined here. Dropping the `date-fns` import
-// keeps `@kalyx/core` adapter-agnostic — see `.claude/skills/adapter-extraction.md`.
+// keeps `@kalyx/core` adapter-agnostic; see `.claude/skills/adapter-extraction.md`.
 
 // ── Intl formatter cache ──
 const formatterCache = new Map<string, Intl.DateTimeFormat>();
@@ -97,7 +97,7 @@ export function getTimezoneOffsetMinutes(iso: ISODateString, timeZone: string): 
 /**
  * Midnight of the civil date (as observed in `timeZone`) returned as a UTC ISO string.
  *
- * Across DST transitions this is the correct way to compute "start of day" — the offset
+ * Across DST transitions this is the correct way to compute "start of day": the offset
  * changes, so the UTC instant of midnight differs before and after the transition.
  *
  * @example
@@ -109,7 +109,7 @@ export function startOfDayInTimezone(iso: ISODateString, timeZone: string): ISOD
   // reuses its DST disambiguation: a single offset probe taken at
   // "civil-midnight-as-UTC" can land on the wrong side of a DST transition and be
   // off by one hour. Example (the bug this replaced): Australia/Sydney on a
-  // spring-forward Oct 1 — 00:00 local is still AEST (+10), but 00:00 UTC reads as
+  // spring-forward Oct 1: 00:00 local is still AEST (+10), but 00:00 UTC reads as
   // post-transition AEDT (+11), so the naive probe produced 23:00 of the prior day.
   // For midnight-DST zones where 00:00 itself doesn't exist, setTimeInTimezone's
   // gap policy shifts it forward by the gap length.

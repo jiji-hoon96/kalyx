@@ -24,7 +24,7 @@ export interface DatePickerMonthGridProps extends Omit<HTMLAttributes<HTMLDivEle
 }
 
 /**
- * DatePicker.MonthGrid — Quickly pick a month from a 12-month grid.
+ * DatePicker.MonthGrid: Quickly pick a month from a 12-month grid.
  * Click Calendar title -> MonthGrid -> click a month -> back to Calendar.
  *
  * @example

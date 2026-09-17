@@ -68,7 +68,7 @@ export interface DateTimePickerRootProps {
   withSeconds?: boolean;
   /**
    * Programmatic per-slot disable predicate for the time controls. Returns `true` for any
-   * `(hours, minutes)` pair that should be unselectable — same polarity as MUI X's
+   * `(hours, minutes)` pair that should be unselectable. Same polarity as MUI X's
    * `shouldDisableTime`, and the **inverse** of react-datepicker's `filterTime`. Always
    * receives 24-hour values.
    */
@@ -103,7 +103,7 @@ export interface DateTimePickerRootProps {
 }
 
 /**
- * DateTimePicker.Root — Combined DatePicker + TimePicker component.
+ * DateTimePicker.Root: Combined DatePicker + TimePicker component.
  *
  * Manages a single ISO datetime as the source of truth while providing both
  * DatePickerContext and TimePickerContext internally. This lets existing
@@ -159,7 +159,7 @@ export function DateTimePickerRoot({
   // Live-region announcement (mounted on Root so it survives Calendar unmount).
   const [announcement, setAnnouncement] = useState('');
   const announce = useCallback((message: string) => setAnnouncement(message), []);
-  // Lazy initializers — see DatePicker/Root.tsx for the SSR/hydration rationale.
+  // Lazy initializers; see DatePicker/Root.tsx for the SSR/hydration rationale.
   const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
     const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
@@ -183,7 +183,7 @@ export function DateTimePickerRoot({
     [disabled],
   );
 
-  // When value is null, use a stable {0,0,0} fallback for hydration safety —
+  // When value is null, use a stable {0,0,0} fallback for hydration safety:
   // avoid invoking adapter.today() during render to keep server/client output deterministic.
   // A malformed value takes the same fallback: `getTimeInTimezone` would otherwise hand an
   // Invalid Date to `Intl` and throw mid-render.

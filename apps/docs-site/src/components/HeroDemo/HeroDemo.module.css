@@ -57,7 +57,7 @@
   font-family: var(--ifm-font-family-base, sans-serif);
 }
 
-/* Composite layout helpers — HeroDemo passes structural classNames into
+/* Composite layout helpers. HeroDemo passes structural classNames into
  * each picker so the body uses the same Aurora .kx-live-* tokens as the
  * rest of the site. No selection styling lives here; it all comes from
  * apps/docs-site/src/css/custom.css. */

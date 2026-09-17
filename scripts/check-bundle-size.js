@@ -39,7 +39,6 @@ import {
 // B10 a11y polish — Root-level `announce()` live-region parity across
 // DatePicker/DateTimePicker (audit A-G1), so month-nav and date selection are
 // announced from a region that survives Calendar unmount, matching RangePicker.
-// Still ~3.5× smaller than react-datepicker (~40KB).
 export const TARGET_KB = REACT_GZIP_CEILING_KB;
 
 export const BUNDLES = [

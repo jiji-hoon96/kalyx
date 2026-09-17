@@ -101,7 +101,7 @@ SDD 진행 장부는 worktree의 git-ignored 경로에 있다.
 - 기존 목표: 각각 17 KB 이하
 - ESM은 통과, CJS는 439 B 초과
 
-헬퍼 추출 세 번은 raw size를 줄여도 gzip 반복 압축을 깨뜨려 17.49–17.52 KB로 악화돼 제거했다. 마지막으로 DateTime Root의 중복 시간 재계산/null 분기만 제거해 현재 수치를 얻었다. 빌드 설정이나 임계값은 변경하지 않았다.
+헬퍼 추출 세 번은 raw size를 줄여도 gzip 반복 압축을 깨뜨려 17.49~17.52 KB로 악화돼 제거했다. 마지막으로 DateTime Root의 중복 시간 재계산/null 분기만 제거해 현재 수치를 얻었다. 빌드 설정이나 임계값은 변경하지 않았다.
 
 ## 5. 아직 구현·검증하지 않은 작업
 
@@ -209,7 +209,7 @@ pnpm test:e2e
 
 - Core API 문서가 `DateFnsAdapter`를 잘못 `@kalyx/core`에서 import한다.
 - docs가 제거된 `date-fns-tz` 의존성을 여전히 안내한다.
-- `fixedWeeks`/`timezone` 옵션과 4–6주 grid 계약이 문서에 정확히 반영되지 않았다.
+- `fixedWeeks`/`timezone` 옵션과 4~6주 grid 계약이 문서에 정확히 반영되지 않았다.
 - docs-site typecheck가 JSX namespace 오류로 실패하며 CI는 이 script를 호출하지 않는다.
 - footer의 `pathname:///llms.txt`, 완화된 broken-link 설정, 오래된 SECURITY/RC/배포 문서가 남아 있다.
 

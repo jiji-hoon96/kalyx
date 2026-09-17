@@ -27,15 +27,15 @@ function useWeekPicker(options?: UseWeekPickerOptions): UseWeekPickerReturn;
 
 | 필드 | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
-| `value` | `DateRange` | — | controlled 주, `{ start, end }` 범위. |
-| `defaultValue` | `DateRange` | — | uncontrolled 초기 주. |
-| `onChange` | `(week: DateRange) => void` | — | 선택된 주가 바뀔 때 호출. |
+| `value` | `DateRange` | - | controlled 주, `{ start, end }` 범위. |
+| `defaultValue` | `DateRange` | - | uncontrolled 초기 주. |
+| `onChange` | `(week: DateRange) => void` | - | 선택된 주가 바뀔 때 호출. |
 | `disabled` | `DisabledRule[]` | `[]` | 비활성 규칙. |
 | `weekStartsOn` | `0 \| 1` | `0` | 주 시작 요일. |
 | `weekAnchor` | `'calendar' \| 'clicked'` | `'calendar'` | 클릭한 날을 어떤 주로 볼지 정한다. `'calendar'` 는 `weekStartsOn` 에 맞춘 주 경계로 스냅하고, `'clicked'` 는 클릭한 날에 고정된 7일 구간을 쓴다. |
 | `selectingTarget` | `'start' \| 'end'` | `'start'` | 클릭한 날이 7일 구간의 어느 쪽 끝이 되는지. `weekAnchor="clicked"` 일 때만 의미가 있다. |
-| `adapter` | `DateAdapter` | — | 날짜 어댑터 (`/headless`에서 필수). |
-| `displayTimezone` | `string` | — | civil-day 비교용 IANA 존. |
+| `adapter` | `DateAdapter` | - | 날짜 어댑터 (`/headless`에서 필수). |
+| `displayTimezone` | `string` | - | civil-day 비교용 IANA 존. |
 
 ### 반환
 

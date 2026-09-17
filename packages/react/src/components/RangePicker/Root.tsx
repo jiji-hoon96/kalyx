@@ -126,7 +126,7 @@ export function RangePickerRoot({
   const [announcement, setAnnouncement] = useState('');
   const announce = useCallback((message: string) => setAnnouncement(message), []);
 
-  // Lazy initializers — see DatePicker/Root.tsx for the SSR/hydration rationale.
+  // Lazy initializers; see DatePicker/Root.tsx for the SSR/hydration rationale.
   const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
     const target = usableDate(currentValue.start, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone

@@ -9,7 +9,7 @@ import type { RangePickerPopoverProps } from '../RangePicker/Popover.js';
 import type { WeekPickerCalendarProps, WeekPickerCalendarClassNames } from './Calendar.js';
 
 /**
- * WeekPicker — Headless week selector. Value is a `DateRange` spanning the entire week (start
+ * WeekPicker: Headless week selector. Value is a `DateRange` spanning the entire week (start
  * and end days inclusive, based on `weekStartsOn`). A single click selects the full week.
  *
  * Internally reuses `RangePicker` infrastructure (Root, Input, Popover). The only new primitive

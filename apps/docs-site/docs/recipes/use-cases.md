@@ -7,7 +7,7 @@ description: 'Ready-made patterns: birthday fields, hotel booking ranges and tim
 
 # Use-case recipes
 
-Copy-pasteable solutions to the date-picking problems people actually have. Each recipe is a complete, working component — try it live, then copy the source below it.
+Copy-pasteable solutions to the date-picking problems people actually have. Each recipe is a complete, working component. Try it live, then copy the source below it.
 
 These use Tailwind-style class names for brevity, but the only thing that matters is the **composition** and the **props**. Swap in your own classes or the [`classNames` styling contract](../concepts/styling.md).
 
@@ -15,7 +15,7 @@ These use Tailwind-style class names for brevity, but the only thing that matter
 
 ## Date of birth
 
-A birthday picker needs to jump across decades fast — nobody wants to click "previous month" 300 times. Wire `Calendar → MonthGrid → YearGrid` so the title is a drill-up control, and disable future dates.
+A birthday picker needs to jump across decades fast; nobody wants to click "previous month" 300 times. Wire `Calendar → MonthGrid → YearGrid` so the title is a drill-up control, and disable future dates.
 
 ```jsx live
 function DateOfBirth() {
@@ -56,7 +56,7 @@ function DateOfBirth() {
           />
         )}
       </DatePicker.Popover>
-      <div className="kx-live-value">Born: <code>{dob?.slice(0, 10) ?? 'null'}</code> — tap the title to jump by month / year.</div>
+      <div className="kx-live-value">Born: <code>{dob?.slice(0, 10) ?? 'null'}</code>. Tap the title to jump by month / year.</div>
     </DatePicker>
   );
 }
@@ -176,7 +176,7 @@ export function BookingRange() {
 
 ## DateTime with a fixed timezone
 
-Scheduling UIs must store an unambiguous instant while *showing* a specific civil time. Set `displayTimezone` — the Input and Calendar render in that zone, but `onChange` still emits a UTC instant.
+Scheduling UIs must store an unambiguous instant while *showing* a specific civil time. Set `displayTimezone`. The Input and Calendar render in that zone, but `onChange` still emits a UTC instant.
 
 ```jsx live
 function MeetingTime() {
@@ -235,6 +235,6 @@ export function MeetingTime() {
 
 ## More
 
-- [DatePicker patterns](../components/datepicker.md#patterns) — form submission, min/max via `disabled`.
-- [React Hook Form](./react-hook-form.md) — controlled integration with validation.
-- [Tailwind](./tailwind.md) / [shadcn](./shadcn.md) — full styling walkthroughs.
+- [DatePicker patterns](../components/datepicker.md#patterns): form submission, min/max via `disabled`.
+- [React Hook Form](./react-hook-form.md): controlled integration with validation.
+- [Tailwind](./tailwind.md) / [shadcn](./shadcn.md): full styling walkthroughs.

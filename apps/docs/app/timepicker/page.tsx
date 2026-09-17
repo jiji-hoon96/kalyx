@@ -39,21 +39,21 @@ function MyForm() {
 			<h2>특징</h2>
 			<ul>
 				<li>
-					<strong>12/24시간제 자동 전환</strong> — <code>format</code> prop 하나로
+					<strong>12/24시간제 자동 전환</strong>: <code>format</code> prop 하나로
 				</li>
 				<li>
-					<strong>분 step 지원</strong> — <code>step={'{15}'}</code> →{' '}
+					<strong>분 step 지원</strong>: <code>step={'{15}'}</code> →{' '}
 					<code>[0, 15, 30, 45]</code>만 표시
 				</li>
 				<li>
-					<strong>표준 ARIA listbox 패턴</strong> —{' '}
+					<strong>표준 ARIA listbox 패턴</strong>:{' '}
 					<code>{'<li role="option">'}</code> 직접 인터랙티브
 				</li>
 				<li>
-					<strong>키보드 완전 지원</strong> — ↑/↓, Home/End, Enter/Space
+					<strong>키보드 완전 지원</strong>: ↑/↓, Home/End, Enter/Space
 				</li>
 				<li>
-					<strong>AmPmToggle radiogroup</strong> — 12h 모드에서 자동 표시
+					<strong>AmPmToggle radiogroup</strong>: 12h 모드에서 자동 표시
 				</li>
 			</ul>
 		</>

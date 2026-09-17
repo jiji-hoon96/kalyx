@@ -23,9 +23,9 @@ function useRangePicker(options?: UseRangePickerOptions): UseRangePickerReturn;
 
 | 필드 | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
-| `value` | `DateRange` | — | 제어형 범위. |
-| `defaultValue` | `DateRange` | — | 비제어 초기 범위. |
-| `onChange` | `(range: DateRange) => void` | — | 선택 시 호출. |
+| `value` | `DateRange` | - | 제어형 범위. |
+| `defaultValue` | `DateRange` | - | 비제어 초기 범위. |
+| `onChange` | `(range: DateRange) => void` | - | 선택 시 호출. |
 | `disabled` | `DisabledRule[]` | `[]` | 비활성 규칙. |
 | `weekStartsOn` | `0 \| 1` | `0` | 주 시작. |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | 커스텀 어댑터. |
@@ -45,7 +45,7 @@ function useRangePicker(options?: UseRangePickerOptions): UseRangePickerReturn;
 
 `calendar`의 `CalendarDay` 값은 이제 의미 있는 `isRangeStart`, `isRangeEnd`, `isInRange` 플래그를 가집니다.
 
-## 예시 — 호버 가능한 범위 그리드
+## 예시: 호버 가능한 범위 그리드
 
 ```tsx
 import { useRangePicker } from '@kalyx/react';

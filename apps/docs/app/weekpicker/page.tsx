@@ -29,17 +29,17 @@ export default function WeekPickerPage() {
 			<h2>구성 요소</h2>
 			<ul>
 				<li>
-					<code>WeekPicker.Root</code> — RangePicker.Root 재사용
+					<code>WeekPicker.Root</code>: RangePicker.Root 재사용
 				</li>
 				<li>
-					<code>WeekPicker.Input</code> — RangePicker.Input 재사용 (
+					<code>WeekPicker.Input</code>: RangePicker.Input 재사용 (
 					<code>part=&quot;start&quot; | &quot;end&quot;</code>)
 				</li>
 				<li>
-					<code>WeekPicker.Popover</code> — RangePicker.Popover 재사용
+					<code>WeekPicker.Popover</code>: RangePicker.Popover 재사용
 				</li>
 				<li>
-					<code>WeekPicker.Calendar</code> — 단일 클릭으로 주 전체 커밋 (
+					<code>WeekPicker.Calendar</code>: 단일 클릭으로 주 전체 커밋 (
 					<code>selectionMode=&quot;week&quot;</code>)
 				</li>
 			</ul>

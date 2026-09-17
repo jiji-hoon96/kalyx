@@ -18,7 +18,7 @@ export interface TimePickerHourListProps extends Omit<
 }
 
 /**
- * TimePicker.HourList — `role="listbox"` pattern for hour selection.
+ * TimePicker.HourList: `role="listbox"` pattern for hour selection.
  * Renders differently depending on 12h/24h mode.
  *
  * ARIA-standard listbox: the <li role="option"> element itself is interactive.
@@ -28,7 +28,7 @@ export function TimePickerHourList({ classNames, ...props }: TimePickerHourListP
   const ctx = useTimePickerContext('TimePicker.HourList');
   const { format, step, currentTime, isDisabled, isReadOnly, filterTime } = ctx;
 
-  // Stable across renders unless `format` changes — useListboxNavigation
+  // Stable across renders unless `format` changes; useListboxNavigation
   // identity-compares its `items` array internally.
   const hours = useMemo(() => generateHours(format), [format]);
 

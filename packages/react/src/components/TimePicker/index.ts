@@ -13,7 +13,7 @@ import type { TimePickerMinuteListProps, TimePickerMinuteListClassNames } from '
 import type { TimePickerAmPmToggleProps, TimePickerAmPmToggleClassNames } from './AmPmToggle.js';
 
 /**
- * TimePicker — Headless time-picker component
+ * TimePicker: Headless time-picker component
  *
  * Can be used inline (Hour/Minute lists always visible) or in a popover: wrap
  * the controls in `TimePicker.Popover` so they appear only after the user opens

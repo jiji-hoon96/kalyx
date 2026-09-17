@@ -98,7 +98,7 @@ const FROZEN_TIME = '2026-06-15T14:30:00.000Z';
  * Returns the sequence with real render functions wired in. Memoised so we
  * don't recreate the picker JSX every state change.
  *
- * The kalyx pickers have no `defaultOpen` on the Popover — the Popover
+ * The kalyx pickers have no `defaultOpen` on the Popover; the Popover
  * renders null while `ctx.isOpen` is false, and there is no public API
  * to force-open from the outside. For the hero demo we side-step the
  * Popover wrapper entirely and render the body components (Calendar /

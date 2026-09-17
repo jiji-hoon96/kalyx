@@ -13,7 +13,7 @@ Single-date selection with an input, trigger, popover, and calendar grid.
 
 <figure>
   <img src="/img/demos/datepicker.avif" alt="DatePicker demo: opening the popover and selecting a day" width="640" loading="lazy" />
-  <figcaption><em>Styling shown is demo-only — Kalyx ships zero CSS.</em></figcaption>
+  <figcaption><em>Styling shown is demo-only. Kalyx ships zero CSS.</em></figcaption>
 </figure>
 
 ```tsx
@@ -22,10 +22,10 @@ import { DatePicker } from '@kalyx/react';
 
 ## Anatomy
 
-Compose the parts you need. Every part below is optional except `DatePicker` (Root) — drop in only what your UI requires.
+Compose the parts you need. Every part below is optional except `DatePicker` (Root). Drop in only what your UI requires.
 
 ```tsx
-<DatePicker>            {/* Root — holds state, provides context */}
+<DatePicker>            {/* Root: holds state, provides context */}
   <DatePicker.Input /> {/* combobox <input>, parses typed dates */}
   <DatePicker.Trigger /> {/* button that toggles the popover */}
   <DatePicker.Popover> {/* Floating-UI portal, role="dialog" */}
@@ -39,7 +39,7 @@ Compose the parts you need. Every part below is optional except `DatePicker` (Ro
 </DatePicker>
 ```
 
-`Calendar`, `MonthGrid`, and `YearGrid` are alternative views of the same popover — swap between them with `onTitleClick` (see [Month / Year navigation](#month--year-navigation)).
+`Calendar`, `MonthGrid`, and `YearGrid` are alternative views of the same popover. Swap between them with `onTitleClick` (see [Month / Year navigation](#month--year-navigation)).
 
 ## Basic usage
 
@@ -63,7 +63,7 @@ function Example() {
 
 ### Try it live
 
-> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project; see the full imports in the non-live blocks above.
 
 ```jsx live
 function BasicDatePicker() {
@@ -124,7 +124,7 @@ function BasicDatePicker() {
         )}
       </DatePicker.Popover>
       <div className="kx-live-value">
-        Selected: <code>{date ?? 'null'}</code> — click the month title to jump to Month / Year view.
+        Selected: <code>{date ?? 'null'}</code>. Click the month title to jump to Month / Year view.
       </div>
     </DatePicker>
   );
@@ -139,19 +139,19 @@ Holds state and provides context to sub-components. Controlled when `value` is p
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | Controlled selected date. |
-| `defaultValue` | `ISODateString` | — | Uncontrolled initial value. Ignored if `value` is set. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | Fires when a date is selected or cleared. |
+| `value` | `ISODateString \| null` | - | Controlled selected date. |
+| `defaultValue` | `ISODateString` | - | Uncontrolled initial value. Ignored if `value` is set. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | Fires when a date is selected or cleared. |
 | `disabled` | `DisabledRule[] \| boolean` | `false` | Disable specific dates, or disable the whole picker. |
 | `readOnly` | `boolean` | `false` | Prevents changes; still selectable visually for form display. |
 | `weekStartsOn` | `0 \| 1` | inferred from `locale` | `0` = Sunday, `1` = Monday. When omitted it is inferred from `locale` (`en-US` → `0`, `de-DE` → `1`); an explicit prop always wins. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | date-fns format string. |
 | `locale` | `string` | `'en-US'` | BCP 47 locale tag. |
 | `dir` | `'ltr' \| 'rtl'` | `'ltr'` | Layout direction. In `'rtl'` the calendar grid carries `dir="rtl"` and ArrowLeft/ArrowRight are mirrored to follow the visual layout (WAI-ARIA grid pattern); ArrowUp/Down, PageUp/Down, and Home/End keep their logical direction. See [Internationalization](../concepts/internationalization.md#right-to-left-rtl). |
-| `displayTimezone` | `string` | — | IANA zone (e.g., `"Asia/Seoul"`). When set, Input formats in this zone, Calendar highlights match civil days, and `onChange` emits civil midnight in this zone. See [Timezone](../concepts/timezone.md). |
+| `displayTimezone` | `string` | - | IANA zone (e.g., `"Asia/Seoul"`). When set, Input formats in this zone, Calendar highlights match civil days, and `onChange` emits civil midnight in this zone. See [Timezone](../concepts/timezone.md). |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom date adapter. |
-| `labels` | `Partial<DatePickerLabels>` | — | Override ARIA labels (defaults to English). Keys: `triggerOpen`, `triggerClose`, `popoverLabel`, `prevMonth`, `nextMonth`, `prevYear`, `nextYear`, `prevDecade`, `nextDecade`. |
-| `children` | `ReactNode` | — | Sub-components. |
+| `labels` | `Partial<DatePickerLabels>` | - | Override ARIA labels (defaults to English). Keys: `triggerOpen`, `triggerClose`, `popoverLabel`, `prevMonth`, `nextMonth`, `prevYear`, `nextYear`, `prevDecade`, `nextDecade`. |
+| `children` | `ReactNode` | - | Sub-components. |
 
 ### `DisabledRule`
 
@@ -253,9 +253,9 @@ Renders the month grid. Fully keyboard navigable (see [Accessibility](../concept
 | Prop | Type | Description |
 | --- | --- | --- |
 | `classNames` | `DatePickerCalendarClassNames` | Styling for internal slots. |
-| `onTitleClick` | `() => void` | Fires when the month/year title is clicked — wire to `MonthGrid` / `YearGrid`. |
-| `fixedWeeks` | `boolean` (default `false`) | Always render 6 week rows. Without it the grid is 4–6 rows, so the popover changes height from month to month. |
-| `showWeekNumber` | `boolean` (default `false`) | Render an ISO 8601 week-number column (1–53) on the left of the grid. The column is a `<th scope="row">` outside the WAI-ARIA grid data region, so keyboard navigation across date cells is unaffected. Style it with the `weekNumberHeader` / `weekNumber` `classNames` keys. |
+| `onTitleClick` | `() => void` | Fires when the month/year title is clicked. Wire to `MonthGrid` / `YearGrid`. |
+| `fixedWeeks` | `boolean` (default `false`) | Always render 6 week rows. Without it the grid is 4-6 rows, so the popover changes height from month to month. |
+| `showWeekNumber` | `boolean` (default `false`) | Render an ISO 8601 week-number column (1-53) on the left of the grid. The column is a `<th scope="row">` outside the WAI-ARIA grid data region, so keyboard navigation across date cells is unaffected. Style it with the `weekNumberHeader` / `weekNumber` `classNames` keys. |
 
 ### `classNames` keys
 
@@ -292,13 +292,13 @@ Disabled days use the native `disabled` + `aria-disabled` attributes (style with
 
 ## `<DatePicker.MonthGrid>` (optional)
 
-A 3×4 grid of months — drop in to let users jump directly to a month.
+A 3×4 grid of months. Drop in to let users jump directly to a month.
 
 | Prop | Type | Description |
 | --- | --- | --- |
 | `classNames` | `DatePickerMonthGridClassNames` | Styling. |
-| `onSelect` | `() => void` | Fired after picking a month — typically switches back to `Calendar`. |
-| `onTitleClick` | `() => void` | Fired when the year title is clicked — wire to `YearGrid`. |
+| `onSelect` | `() => void` | Fired after picking a month; typically switches back to `Calendar`. |
+| `onTitleClick` | `() => void` | Fired when the year title is clicked. Wire to `YearGrid`. |
 
 ```ts
 type DatePickerMonthGridClassNames = {
@@ -337,7 +337,7 @@ type DatePickerYearGridClassNames = {
 };
 ```
 
-Each year button emits `data-selected`, `data-current`, and `data-focused` — same contract as `MonthGrid`.
+Each year button emits `data-selected`, `data-current`, and `data-focused`, the same contract as `MonthGrid`.
 
 ## `<DatePicker.Presets>` / `<DatePicker.Preset>` (optional)
 
@@ -367,7 +367,7 @@ All `DatePicker.Root` callbacks are optional. Neither of the two newer ones fire
 | Prop | Signature | Fires when |
 | --- | --- | --- |
 | `onChange` | `(value: ISODateString \| null) => void` | A date is committed (click / Enter / preset / input typed). |
-| `onOpenChange` | `(isOpen: boolean) => void` | The popover opens or closes (any reason — click, keyboard, outside click, selection). |
+| `onOpenChange` | `(isOpen: boolean) => void` | The popover opens or closes (any reason: click, keyboard, outside click, selection). |
 | `onCalendarNavigate` | `(viewMonth: ISODateString) => void` | The calendar view moves to a different month. Emits the first day of the newly-visible month in UTC. |
 
 ```tsx
@@ -416,7 +416,7 @@ function WithJump() {
 }
 ```
 
-The “Try it live” example at the top of this page already wires this flow — tap the month title to open `MonthGrid`, tap the year to open `YearGrid`.
+The “Try it live” example at the top of this page already wires this flow: tap the month title to open `MonthGrid`, tap the year to open `YearGrid`.
 
 ### Uncontrolled with form submission
 
@@ -434,7 +434,7 @@ The “Try it live” example at the top of this page already wires this flow �
 
 ### Min / max dates
 
-There's no `minDate` / `maxDate` prop — express the same rule with `disabled`:
+There's no `minDate` / `maxDate` prop. Express the same rule with `disabled`:
 
 ```tsx
 <DatePicker
@@ -455,9 +455,9 @@ There's no `minDate` / `maxDate` prop — express the same rule with `disabled`:
 
 `disabled` rules compare against **instants**, not calendar-page coordinates. Without `displayTimezone` the two are the same thing and the example above is exact.
 
-Once you set `displayTimezone`, a hand-written `'2026-01-01T00:00:00.000Z'` is no longer civil January 1 in your zone — under a negative UTC offset it is still December 31 locally, and under a large positive offset it is already January 1 well before local midnight. The boundary day can then land on the wrong side of the rule.
+Once you set `displayTimezone`, a hand-written `'2026-01-01T00:00:00.000Z'` is no longer civil January 1 in your zone. Under a negative UTC offset it is still December 31 locally, and under a large positive offset it is already January 1 well before local midnight. The boundary day can then land on the wrong side of the rule.
 
-Pass the same kind of value the picker itself emits — the instant you receive from `onChange`, or one built with `civilMidnightFromUtcDay`:
+Pass the same kind of value the picker itself emits: the instant you receive from `onChange`, or one built with `civilMidnightFromUtcDay`:
 
 ```tsx
 import { civilMidnightFromUtcDay } from '@kalyx/core';
@@ -476,7 +476,7 @@ const tz = 'Asia/Seoul';
 </DatePicker>
 ```
 
-The same rule applies when calling [`isDateDisabled`](../api/core.md#isdatedisablediso-rules-adapter-timezone) yourself. For per-cell state inside a custom grid, prefer the precomputed `isDisabled` flag from `getCalendarDays` — it already normalizes each cell.
+The same rule applies when calling [`isDateDisabled`](../api/core.md#isdatedisablediso-rules-adapter-timezone) yourself. For per-cell state inside a custom grid, prefer the precomputed `isDisabled` flag from `getCalendarDays`; it already normalizes each cell.
 
 :::
 

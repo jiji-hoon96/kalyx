@@ -185,7 +185,7 @@ export function useWeekPicker(options: UseWeekPickerOptions = {}): UseWeekPicker
   }, [adapter, disabled, displayTimezone]);
 
   // Memoized so an unrelated re-render in the consumer doesn't rebuild the
-  // 42-cell grid — doubly worth it here, since every cell is then re-mapped
+  // 42-cell grid. Doubly worth it here, since every cell is then re-mapped
   // through `isWeekSelectionDisabled`.
   const calendar = useMemo(
     () =>

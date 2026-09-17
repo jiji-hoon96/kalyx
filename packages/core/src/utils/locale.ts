@@ -125,7 +125,7 @@ export function getWeekStartForLocale(locale = 'en-US'): WeekStartsOn {
       result = info.firstDay === 7 ? 0 : 1;
     }
   } catch {
-    // Unparseable locale or no Intl.Locale — keep the Sunday-first default.
+    // Unparseable locale or no Intl.Locale; keep the Sunday-first default.
   }
 
   weekStartCache.set(locale, result);

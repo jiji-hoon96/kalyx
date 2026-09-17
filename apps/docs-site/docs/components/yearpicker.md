@@ -9,11 +9,11 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 # YearPicker
 
-Year selector. The value is January 1 of the selected year in UTC-ISO form — for example, picking 2026 yields `"2026-01-01T00:00:00.000Z"`.
+Year selector. The value is January 1 of the selected year in UTC-ISO form. For example, picking 2026 yields `"2026-01-01T00:00:00.000Z"`.
 
 <figure>
   <img src="/img/demos/yearpicker.avif" alt="YearPicker demo: choosing a year from the decade grid" width="640" loading="lazy" />
-  <figcaption><em>Styling shown is demo-only — Kalyx ships zero CSS.</em></figcaption>
+  <figcaption><em>Styling shown is demo-only. Kalyx ships zero CSS.</em></figcaption>
 </figure>
 
 ```tsx
@@ -23,7 +23,7 @@ import { YearPicker } from '@kalyx/react';
 ## Anatomy
 
 ```tsx
-<YearPicker>            {/* Root — value = Jan 1 of the year, UTC */}
+<YearPicker>            {/* Root: value = Jan 1 of the year, UTC */}
   <YearPicker.Input /> {/* combobox <input>, parses "YYYY" */}
   <YearPicker.Trigger /> {/* button that toggles the popover */}
   <YearPicker.Popover> {/* Floating-UI portal, role="dialog" */}
@@ -57,7 +57,7 @@ The default `displayFormat` is `"yyyy"`.
 
 ### Try it live
 
-> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project; see the full imports in the non-live blocks above.
 
 ```jsx live
 function BasicYearPicker() {
@@ -104,7 +104,7 @@ function BasicYearPicker() {
 | `YearPicker.Popover` | = `DatePicker.Popover` | Floating UI positioning |
 | **`YearPicker.Grid`** | new | 12-year decade grid with prev/next decade navigation |
 
-The grid displays the decade block containing the current year (e.g., 2016–2027 when the value is 2026). Navigate by 12 years at a time using the header buttons.
+The grid displays the decade block containing the current year (e.g., 2016-2027 when the value is 2026). Navigate by 12 years at a time using the header buttons.
 
 ## Timezone
 

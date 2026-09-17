@@ -12,7 +12,7 @@ Kalyx is built around **composition over configuration**. Every picker is a smal
 ## The anatomy
 
 ```tsx
-<DatePicker value={...} onChange={...}>     {/* Root — holds state & context */}
+<DatePicker value={...} onChange={...}>     {/* Root: holds state & context */}
   <DatePicker.Input />                       {/* Text input, parses typed dates */}
   <DatePicker.Trigger />                     {/* Calendar icon button */}
   <DatePicker.Popover>                       {/* Floating UI positioned portal */}
@@ -30,7 +30,7 @@ Each leaf renders a single HTML element and takes its standard props (`className
 Most DatePicker libraries grow props into a laundry list:
 
 ```tsx
-// A different library — every feature is a new prop
+// A different library: every feature is a new prop
 <DatePicker
   showTimeSelect
   showMonthDropdown
@@ -42,7 +42,7 @@ Most DatePicker libraries grow props into a laundry list:
 />
 ```
 
-Kalyx does the opposite — if you want a month dropdown, you mount one:
+Kalyx does the opposite: if you want a month dropdown, you mount one:
 
 ```tsx
 <DatePicker.Popover>
@@ -53,7 +53,7 @@ Kalyx does the opposite — if you want a month dropdown, you mount one:
 
 This means:
 
-1. **Composition stays explicit.** Import the public parts you use — pickers you don't import are eliminated, and the sub-components hanging off a picker you do import come along with it. Verify the cost in your production bundler.
+1. **Composition stays explicit.** Import the public parts you use. Pickers you don't import are eliminated, and the sub-components hanging off a picker you do import come along with it. Verify the cost in your production bundler.
 2. **No hidden state.** The structure of the tree *is* the feature set.
 3. **Style per slot.** Every primitive is a DOM element you can target.
 
@@ -86,7 +86,7 @@ The same pattern applies to every family:
 Every slot is optional. These are all valid DatePickers:
 
 ```tsx
-{/* Just an input — no popover */}
+{/* Just an input, no popover */}
 <DatePicker value={v} onChange={setV}>
   <DatePicker.Input />
 </DatePicker>

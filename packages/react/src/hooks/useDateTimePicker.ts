@@ -23,7 +23,7 @@ import { usableDate } from '../internal/usableDate.js';
 import { NO_DISABLED_RULES } from '../internal/constants.js';
 
 export interface UseDateTimePickerOptions {
-  /** Selected datetime (controlled, ISO 8601 UTC — date and time) */
+  /** Selected datetime (controlled, ISO 8601 UTC, date and time) */
   value?: ISODateString | null;
   /** Initial datetime (uncontrolled mode) */
   defaultValue?: ISODateString;

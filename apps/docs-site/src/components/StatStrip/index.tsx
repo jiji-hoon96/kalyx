@@ -11,7 +11,7 @@ import styles from './StatStrip.module.css';
  *  - Static facts (bundle size, primitive count, a11y): baked in, never stale.
  *  - Live metrics (npm downloads, GitHub stars): fetched client-side with a
  *    static fallback so SSG never blocks and a network failure degrades to a
- *    reasonable last-known value. No inflation — small-but-solid is the story.
+ *    reasonable last-known value. No inflation; small-but-solid is the story.
  */
 
 type Stat = { value: string; label: string };

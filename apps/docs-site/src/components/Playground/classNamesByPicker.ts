@@ -24,12 +24,12 @@ export type PickerId =
  * Default classNames for each picker. These are Tailwind utility strings so the
  * Playground preview looks polished out of the box (Tailwind Play CDN is loaded
  * and scoped to `.tw-enable`, which the preview panel carries). Users can edit
- * or clear any field to see the headless picker react live — the whole point of
- * the editor — while the defaults double as a copy-pasteable Tailwind recipe.
+ * or clear any field to see the headless picker react live (the whole point of
+ * the editor) while the defaults double as a copy-pasteable Tailwind recipe.
  *
  * Accent = Kalyx brand indigo via the Tailwind `primary` color
  * (`#5b4fe1`, configured in static/js/tailwind-config.js). Unified with the
- * docs-site + demo tokens — see
+ * docs-site + demo tokens; see
  * docs/superpowers/specs/2026-07-10-kalyx-design-system.md. Neutral = slate.
  *
  * Kalyx itself ships zero CSS; nothing here lives in the library.
@@ -43,7 +43,7 @@ const DAY_SELECTED = 'bg-primary text-white hover:!bg-primary';
 const DAY_TODAY = 'font-semibold text-primary ring-1 ring-inset ring-primary/50';
 const DAY_DISABLED = 'text-slate-300 line-through hover:bg-transparent cursor-not-allowed';
 const DAY_OUTSIDE = 'text-slate-300';
-// Range endpoints — fully rounded (the grid uses 4px cell spacing, so each cell
+// Range endpoints: fully rounded (the grid uses 4px cell spacing, so each cell
 // reads as its own pill rather than a continuous bar). No background transition:
 // while re-picking a range, the in-range band is torn down and rebuilt on every
 // hover, and a 0.15s background fade turns that into a distracting flicker.
@@ -58,7 +58,7 @@ const CAL_NAVBTN =
 const CAL_TITLE = 'text-sm font-semibold text-slate-900';
 const CAL_GRID = 'border-separate [border-spacing:4px]';
 // Weekday header row (Sun/Mon/…). Pinned to a dark slate so it stays legible on
-// the calendar's white card — without an explicit color it inherits the docs
+// the calendar's white card; without an explicit color it inherits the docs
 // site's dark-mode body text (near-white) and vanishes on the light card.
 const CAL_WEEKDAY = 'pb-2 text-xs font-semibold uppercase tracking-wide text-slate-700';
 
@@ -78,7 +78,7 @@ const CELL_GRID = 'flex flex-col gap-2';
 const CELL_GRID_ROW = 'gap-2';
 
 // Time lists live inside the popover card (TimePicker / DateTimePicker), so no
-// border/shadow of their own — just a scroll area.
+// border/shadow of their own, just a scroll area.
 const DTP_LIST_ROOT =
   'h-52 w-16 overflow-y-auto rounded-lg bg-slate-50 p-1.5 [scrollbar-width:thin]';
 const LIST_OPTION =
@@ -134,7 +134,7 @@ export const CLASSNAMES_BY_PICKER: Record<PickerId, ClassNamesShape> = {
   datetimepicker: {
     input: INPUT,
     // Calendar sits inside a single popover card (styled in PreviewPanel), so it
-    // carries no card chrome of its own — just internal padding.
+    // carries no card chrome of its own, just internal padding.
     calendar: {
       root: 'p-1',
       header: CAL_HEADER,

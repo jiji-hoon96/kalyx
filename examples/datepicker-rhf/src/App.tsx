@@ -14,7 +14,7 @@ export default function App() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} style={{ padding: 32, fontFamily: 'sans-serif' }}>
-      <h1>Kalyx — DatePicker × React Hook Form</h1>
+      <h1>Kalyx: DatePicker × React Hook Form</h1>
       <Controller
         name="birthday"
         control={control}

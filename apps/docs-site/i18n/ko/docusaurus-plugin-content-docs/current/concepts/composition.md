@@ -12,7 +12,7 @@ Kalyx는 **설정보다 조합**을 따릅니다. 모든 picker는 작은 프리
 ## 구조
 
 ```tsx
-<DatePicker value={...} onChange={...}>     {/* Root — 상태와 컨텍스트 보유 */}
+<DatePicker value={...} onChange={...}>     {/* Root: 상태와 컨텍스트 보유 */}
   <DatePicker.Input />                       {/* 텍스트 입력, 타이핑된 날짜 파싱 */}
   <DatePicker.Trigger />                     {/* 캘린더 아이콘 버튼 */}
   <DatePicker.Popover>                       {/* Floating UI 포털 */}
@@ -30,7 +30,7 @@ Kalyx는 **설정보다 조합**을 따릅니다. 모든 picker는 작은 프리
 대부분의 DatePicker 라이브러리는 props가 줄줄이 늘어납니다.
 
 ```tsx
-// 다른 라이브러리 — 기능마다 새 prop
+// 다른 라이브러리: 기능마다 새 prop
 <DatePicker
   showTimeSelect
   showMonthDropdown
@@ -42,7 +42,7 @@ Kalyx는 **설정보다 조합**을 따릅니다. 모든 picker는 작은 프리
 />
 ```
 
-Kalyx는 반대입니다 — 월 드롭다운이 필요하면 그걸 mount합니다.
+Kalyx는 반대입니다. 월 드롭다운이 필요하면 그걸 mount합니다.
 
 ```tsx
 <DatePicker.Popover>
@@ -53,7 +53,7 @@ Kalyx는 반대입니다 — 월 드롭다운이 필요하면 그걸 mount합니
 
 이렇게 하면:
 
-1. **Composition이 명시적으로 유지됩니다.** 사용하는 공개 파트를 import 하세요 — import 하지 않은 picker 는 제거되고, import 한 picker 에 딸린 서브 컴포넌트는 함께 따라옵니다. 실제 비용은 프로덕션 번들러에서 확인하세요.
+1. **Composition이 명시적으로 유지됩니다.** 사용하는 공개 파트를 import 하세요. import 하지 않은 picker 는 제거되고, import 한 picker 에 딸린 서브 컴포넌트는 함께 따라옵니다. 실제 비용은 프로덕션 번들러에서 확인하세요.
 2. **숨은 상태가 없습니다.** 트리의 구조 *자체*가 기능 세트입니다.
 3. **슬롯별 스타일링.** 모든 프리미티브는 타깃 가능한 DOM 요소입니다.
 
@@ -86,7 +86,7 @@ DatePicker.YearGrid;   // <div>
 모든 슬롯은 선택적입니다. 아래도 모두 유효한 DatePicker입니다.
 
 ```tsx
-{/* input만 — popover 없음 */}
+{/* input만, popover 없음 */}
 <DatePicker value={v} onChange={setV}>
   <DatePicker.Input />
 </DatePicker>

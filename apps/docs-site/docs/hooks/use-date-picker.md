@@ -23,13 +23,13 @@ function useDatePicker(options?: UseDatePickerOptions): UseDatePickerReturn;
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | Controlled value. |
-| `defaultValue` | `ISODateString` | — | Uncontrolled initial value. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | Change callback. |
+| `value` | `ISODateString \| null` | - | Controlled value. |
+| `defaultValue` | `ISODateString` | - | Uncontrolled initial value. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | Change callback. |
 | `disabled` | `DisabledRule[]` | `[]` | Disable rules. |
 | `weekStartsOn` | `0 \| 1` | `0` | Week start. |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom adapter. |
-| `displayTimezone` | `string` | — | IANA zone. When set, `selectDate` stores civil-midnight-in-tz and today/selected highlighting uses civil-day comparison. See [Timezone](../concepts/timezone.md). |
+| `displayTimezone` | `string` | - | IANA zone. When set, `selectDate` stores civil-midnight-in-tz and today/selected highlighting uses civil-day comparison. See [Timezone](../concepts/timezone.md). |
 
 ### Return
 
@@ -43,7 +43,7 @@ function useDatePicker(options?: UseDatePickerOptions): UseDatePickerReturn;
 | `selectDate` | `(iso: ISODateString \| null) => void` | Set value programmatically. |
 | `viewMonth` | `ISODateString` | First-day-of-visible-month. |
 | `setViewMonth` | `(iso: ISODateString) => void` | Jump to a month. |
-| `calendar` | `CalendarGrid` | Weeks of `CalendarDay`s, 4–6 rows × 7 days. The hooks never set `fixedWeeks`, so the row count varies by month. |
+| `calendar` | `CalendarGrid` | Weeks of `CalendarDay`s, 4-6 rows × 7 days. The hooks never set `fixedWeeks`, so the row count varies by month. |
 | `focusedDate` | `ISODateString` | Currently keyboard-focused day. |
 | `setFocusedDate` | `(iso: ISODateString) => void` | Move focus. |
 | `previousMonth` | `() => void` | Shorthand for `setViewMonth(prev)`. |
@@ -56,7 +56,7 @@ function useDatePicker(options?: UseDatePickerOptions): UseDatePickerReturn;
 ```ts
 type CalendarDay = {
   isoString: ISODateString;
-  dayNumber: number;           // 1–31
+  dayNumber: number;           // 1-31
   isCurrentMonth: boolean;
   isToday: boolean;
   isSelected: boolean;
@@ -68,7 +68,7 @@ type CalendarDay = {
 };
 ```
 
-## Example — custom grid
+## Example: custom grid
 
 ```tsx
 import { useDatePicker } from '@kalyx/react';

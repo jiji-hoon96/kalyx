@@ -10,7 +10,7 @@ import {
 
 // Run dayjs in UTC mode so every operation matches Kalyx's UTC/ISO-8601
 // contract regardless of the host's local timezone. NOTE: this `extend` is a
-// load-time side effect — the package deliberately does NOT set
+// load-time side effect; the package deliberately does NOT set
 // `"sideEffects": false`, otherwise a bundler could legally drop this call and
 // `dayjs.utc(...)` would throw in the consumer's build.
 dayjs.extend(utc);
@@ -27,7 +27,7 @@ function normalize(value: string): string {
 
 /**
  * DateAdapter implementation backed by dayjs (UTC mode). A drop-in alternative
- * to `@kalyx/adapter-date-fns` for teams already shipping dayjs — same UTC
+ * to `@kalyx/adapter-date-fns` for teams already shipping dayjs: same UTC
  * semantics, validated against `@kalyx/core/test-helpers`. Timezone-aware
  * operations delegate to `@kalyx/core`'s Intl-based utilities (the correctness
  * moat lives in core, not the adapter).

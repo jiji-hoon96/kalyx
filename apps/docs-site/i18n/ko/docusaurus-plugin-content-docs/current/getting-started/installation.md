@@ -7,7 +7,7 @@ description: '@kalyx/react 설치, React 19 peer 요구사항, 함께 설치되�
 
 # 설치
 
-Kalyx는 두 개의 패키지로 배포됩니다. 대부분의 앱은 `@kalyx/react`만 설치하면 됩니다 — 필요한 것은 `@kalyx/core`에서 재export됩니다.
+Kalyx는 두 개의 패키지로 배포됩니다. 대부분의 앱은 `@kalyx/react`만 설치하면 됩니다. 필요한 것은 `@kalyx/core`에서 재export됩니다.
 
 ## 요구사항
 
@@ -26,11 +26,11 @@ npm install @kalyx/react
 
 `@kalyx/react`는 다음에 의존합니다.
 
-- `@kalyx/core` — 플랫폼 독립 날짜 로직.
-- `@floating-ui/react` — SSR 안전 popover 위치 계산.
-- `date-fns` — 기본 날짜 엔진. `@kalyx/adapter-date-fns`를 통해 연결됩니다.
+- `@kalyx/core`: 플랫폼 독립 날짜 로직.
+- `@floating-ui/react`: SSR 안전 popover 위치 계산.
+- `date-fns`: 기본 날짜 엔진. `@kalyx/adapter-date-fns`를 통해 연결됩니다.
 
-자동으로 함께 설치됩니다. timezone 처리에는 의존성이 추가되지 않습니다 —
+자동으로 함께 설치됩니다. timezone 처리에는 의존성이 추가되지 않습니다.
 `displayTimezone`은 플랫폼 자체의 `Intl.DateTimeFormat` 위에 구현돼 있습니다.
 
 ## TypeScript

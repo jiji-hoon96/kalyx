@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
  * Inline, dependency-free icon set for the landing feature cards.
  *
  * One consistent grid (24×24), one stroke weight (1.75), `currentColor` so the
- * accent is inherited from the card — replacing the emoji icons (🎨⚡🌍📦) that
+ * accent is inherited from the card, replacing the emoji icons (🎨⚡🌍📦) that
  * read as AI-generated. Kalyx ships zero CSS and adds no icon dependency, so
  * these are hand-authored paths, not an icon library.
  *
@@ -26,7 +26,7 @@ const COMMON = {
 };
 
 const PATHS: Record<IconName, ReactNode> = {
-  // Zero CSS — a paint swatch / palette
+  // Zero CSS: a paint swatch / palette
   palette: (
     <>
       <circle cx="13.5" cy="6.5" r="1.25" fill="currentColor" stroke="none" />
@@ -35,9 +35,9 @@ const PATHS: Record<IconName, ReactNode> = {
       <path d="M12 21a9 9 0 1 1 9-9c0 2-1.5 3-3 3h-1.5a2 2 0 0 0-1.5 3.3A1.5 1.5 0 0 1 12 21Z" />
     </>
   ),
-  // SSR-safe — a lightning bolt
+  // SSR-safe: a lightning bolt
   bolt: <path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z" />,
-  // Timezone-aware — a globe with meridians
+  // Timezone-aware: a globe with meridians
   globe: (
     <>
       <circle cx="12" cy="12" r="9" />

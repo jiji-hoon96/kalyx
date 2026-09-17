@@ -9,8 +9,8 @@ everyone, regardless of background or identity.
 ## Our Standard
 
 This project adopts the **[Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/), version 2.1**
-as its code of conduct. The full text — including the expected behavior,
-unacceptable behavior, scope, and enforcement guidelines — is maintained at the
+as its code of conduct. The full text (including the expected behavior,
+unacceptable behavior, scope, and enforcement guidelines) is maintained at the
 canonical URL above and applies in full to all project spaces (issues, pull
 requests, discussions, and any other official channel).
 

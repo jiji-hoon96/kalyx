@@ -7,7 +7,7 @@ description: '바로 쓰는 패턴. 생년월일 필드, 호텔 예약 범위, �
 
 # 유스케이스 레시피
 
-실제로 자주 마주치는 날짜 선택 문제에 대한 복붙 가능한 해법입니다. 각 레시피는 완성된 동작 컴포넌트입니다 — 라이브로 시험해 본 뒤 아래 소스를 복사하세요.
+실제로 자주 마주치는 날짜 선택 문제에 대한 복붙 가능한 해법입니다. 각 레시피는 완성된 동작 컴포넌트입니다. 라이브로 시험해 본 뒤 아래 소스를 복사하세요.
 
 간결함을 위해 Tailwind 스타일 클래스를 쓰지만, 중요한 건 **조합(composition)** 과 **props** 입니다. 클래스는 여러분 것으로 바꾸거나 [`classNames` 스타일링 계약](../concepts/styling.md)을 사용하세요.
 
@@ -15,7 +15,7 @@ description: '바로 쓰는 패턴. 생년월일 필드, 호텔 예약 범위, �
 
 ## 생년월일
 
-생일 선택기는 수십 년을 빠르게 건너뛸 수 있어야 합니다 — "이전 달"을 300번 누르고 싶은 사람은 없습니다. `Calendar → MonthGrid → YearGrid` 를 연결해 타이틀을 드릴업 컨트롤로 만들고, 미래 날짜를 비활성화하세요.
+생일 선택기는 수십 년을 빠르게 건너뛸 수 있어야 합니다. "이전 달"을 300번 누르고 싶은 사람은 없습니다. `Calendar → MonthGrid → YearGrid` 를 연결해 타이틀을 드릴업 컨트롤로 만들고, 미래 날짜를 비활성화하세요.
 
 ```jsx live
 function DateOfBirth() {
@@ -56,7 +56,7 @@ function DateOfBirth() {
           />
         )}
       </DatePicker.Popover>
-      <div className="kx-live-value">생년월일: <code>{dob?.slice(0, 10) ?? 'null'}</code> — 타이틀을 눌러 월 / 연도로 점프하세요.</div>
+      <div className="kx-live-value">생년월일: <code>{dob?.slice(0, 10) ?? 'null'}</code>. 타이틀을 눌러 월 / 연도로 점프하세요.</div>
     </DatePicker>
   );
 }
@@ -235,6 +235,6 @@ export function MeetingTime() {
 
 ## 더 보기
 
-- [DatePicker 패턴](../components/datepicker.md) — 폼 제출, `disabled` 를 통한 min/max.
-- [React Hook Form](./react-hook-form.md) — 검증과 함께 controlled 통합.
-- [Tailwind](./tailwind.md) / [shadcn](./shadcn.md) — 전체 스타일링 가이드.
+- [DatePicker 패턴](../components/datepicker.md): 폼 제출, `disabled` 를 통한 min/max.
+- [React Hook Form](./react-hook-form.md): 검증과 함께 controlled 통합.
+- [Tailwind](./tailwind.md) / [shadcn](./shadcn.md): 전체 스타일링 가이드.

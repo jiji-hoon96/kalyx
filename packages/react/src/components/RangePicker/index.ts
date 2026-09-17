@@ -21,7 +21,7 @@ import type {
 } from './Presets.js';
 
 /**
- * RangePicker — Headless date-range picker component
+ * RangePicker: Headless date-range picker component
  *
  * @example Basic
  * ```tsx

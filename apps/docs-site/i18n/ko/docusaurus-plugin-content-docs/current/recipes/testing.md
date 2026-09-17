@@ -239,7 +239,7 @@ test('displays date in the specified timezone', () => {
 
 ## 팁
 
-- **항상 `userEvent.setup()`을 쓰세요** — `fireEvent` 대신입니다. 실제 브라우저 동작(focus, blur, keydown 순서)을 시뮬레이션합니다.
-- **테스트 셋업에서 `ResizeObserver`를 목으로 만드세요** — jsdom에는 구현이 없는데 Floating UI가 이를 요구합니다.
-- **내부 구현을 테스트하지 마세요** — 내부 상태가 아니라 사용자가 보는 것(input 값, aria 속성, 보이는 텍스트)을 테스트하세요.
-- **스냅샷 테스트는 권장하지 않습니다** — 캘린더 그리드는 현재 날짜에 따라 바뀝니다. 동작 단언을 쓰세요.
+- **항상 `userEvent.setup()`을 쓰세요**. `fireEvent` 대신입니다. 실제 브라우저 동작(focus, blur, keydown 순서)을 시뮬레이션합니다.
+- **테스트 셋업에서 `ResizeObserver`를 목으로 만드세요**. jsdom에는 구현이 없는데 Floating UI가 이를 요구합니다.
+- **내부 구현을 테스트하지 마세요**. 내부 상태가 아니라 사용자가 보는 것(input 값, aria 속성, 보이는 텍스트)을 테스트하세요.
+- **스냅샷 테스트는 권장하지 않습니다**. 캘린더 그리드는 현재 날짜에 따라 바뀝니다. 동작 단언을 쓰세요.

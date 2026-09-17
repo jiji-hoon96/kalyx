@@ -13,7 +13,7 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 <figure>
   <img src="/img/demos/monthpicker.avif" alt="MonthPicker 데모: 12개월 그리드에서 월 선택" width="640" loading="lazy" />
-  <figcaption><em>화면의 스타일은 데모용입니다 — Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
+  <figcaption><em>화면의 스타일은 데모용입니다. Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
 </figure>
 
 ```tsx
@@ -23,7 +23,7 @@ import { MonthPicker } from '@kalyx/react';
 ## 구조
 
 ```tsx
-<MonthPicker>            {/* Root — value = first day of month, UTC */}
+<MonthPicker>            {/* Root: value = first day of month, UTC */}
   <MonthPicker.Input /> {/* combobox <input>, parses "YYYY-MM" */}
   <MonthPicker.Trigger /> {/* button that toggles the popover */}
   <MonthPicker.Popover> {/* Floating-UI portal, role="dialog" */}

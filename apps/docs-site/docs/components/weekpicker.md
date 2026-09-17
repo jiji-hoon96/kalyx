@@ -13,7 +13,7 @@ Week selector. A single click commits the entire week containing the clicked day
 
 <figure>
   <img src="/img/demos/weekpicker.avif" alt="WeekPicker demo: single click selecting a whole week" width="640" loading="lazy" />
-  <figcaption><em>Styling shown is demo-only — Kalyx ships zero CSS.</em></figcaption>
+  <figcaption><em>Styling shown is demo-only. Kalyx ships zero CSS.</em></figcaption>
 </figure>
 
 ```tsx
@@ -23,7 +23,7 @@ import { WeekPicker, type DateRange } from '@kalyx/react';
 ## Anatomy
 
 ```tsx
-<WeekPicker>            {/* Root — value = { start, end } of the week */}
+<WeekPicker>            {/* Root: value = { start, end } of the week */}
   <WeekPicker.Input part="start" /> {/* week-start combobox input */}
   <WeekPicker.Input part="end" />   {/* week-end combobox input */}
   <WeekPicker.Popover> {/* Floating-UI portal, role="dialog" */}
@@ -57,7 +57,7 @@ function Example() {
 
 ### Try it live
 
-> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project; see the full imports in the non-live blocks above.
 
 ```jsx live
 function BasicWeekPicker() {
@@ -108,13 +108,13 @@ function BasicWeekPicker() {
 | Prop | Type | Description |
 | --- | --- | --- |
 | `classNames` | `WeekPickerCalendarClassNames` | Styling slots. |
-| `weekAnchor` | `'calendar' \| 'clicked'` (default `'calendar'`) | How a clicked day becomes a week. `'calendar'` snaps to the `weekStartsOn`-aligned boundary — the usual "week of" behaviour. `'clicked'` instead takes the 7-day span anchored on the clicked day itself, which is a different notion of "week". |
-| `showWeekNumber` | `boolean` (default `false`) | Render an ISO 8601 week-number column (1–53) on the left of the grid. |
-| `fixedWeeks` | `boolean` (default `false`) | Always render 6 week rows. Without it the grid is 4–6 rows, so the popover changes height from month to month. |
+| `weekAnchor` | `'calendar' \| 'clicked'` (default `'calendar'`) | How a clicked day becomes a week. `'calendar'` snaps to the `weekStartsOn`-aligned boundary, the usual "week of" behaviour. `'clicked'` instead takes the 7-day span anchored on the clicked day itself, which is a different notion of "week". |
+| `showWeekNumber` | `boolean` (default `false`) | Render an ISO 8601 week-number column (1-53) on the left of the grid. |
+| `fixedWeeks` | `boolean` (default `false`) | Always render 6 week rows. Without it the grid is 4-6 rows, so the popover changes height from month to month. |
 
 ## weekStartsOn
 
-The `weekStartsOn` prop (inherited from `RangePicker.Root`) controls which day the week begins on — `0` for Sunday, `1` for Monday. When you omit it, the value is inferred from `locale` (`en-US` → `0`, `de-DE` → `1`); an explicit prop always wins.
+The `weekStartsOn` prop (inherited from `RangePicker.Root`) controls which day the week begins on: `0` for Sunday, `1` for Monday. When you omit it, the value is inferred from `locale` (`en-US` → `0`, `de-DE` → `1`); an explicit prop always wins.
 
 ```jsx live
 function MondayStartWeekPicker() {
@@ -175,15 +175,15 @@ With `weekStartsOn={1}`, clicking any date in, for example, April 14 2026 (Tuesd
 | `WeekPicker.Popover` | = `RangePicker.Popover` | Floating UI positioning |
 | **`WeekPicker.Calendar`** | wraps `RangePicker.Calendar` with `selectionMode="week"` | single-click selects the full week |
 
-Because `WeekPicker.Calendar` is implemented via the shared `selectionMode="week"` prop on `RangePicker.Calendar`, keyboard navigation (arrow keys, Home/End, Page Up/Down) behaves the same as `RangePicker` — pressing Enter or Space on the focused day commits the full week containing it.
+Because `WeekPicker.Calendar` is implemented via the shared `selectionMode="week"` prop on `RangePicker.Calendar`, keyboard navigation (arrow keys, Home/End, Page Up/Down) behaves the same as `RangePicker`; pressing Enter or Space on the focused day commits the full week containing it.
 
 ## Keyboard
 
-- **Arrow keys** — move the focused day.
-- **Home / End** — jump to the first / last day of the currently-focused week.
-- **Page Up / Page Down** — previous / next month. Shift + Page Up/Down — previous / next year.
-- **Enter / Space** — commit the full week containing the focused day.
-- **Escape** — close the popover without committing.
+- **Arrow keys**: move the focused day.
+- **Home / End**: jump to the first / last day of the currently-focused week.
+- **Page Up / Page Down**: previous / next month. Shift + Page Up/Down: previous / next year.
+- **Enter / Space**: commit the full week containing the focused day.
+- **Escape**: close the popover without committing.
 
 ## Disabled rules
 
@@ -245,7 +245,7 @@ Same shape as `RangePicker.Calendar` classNames, with an extra `dayInRange` modi
 />
 ```
 
-`WeekPicker.Calendar` wraps `RangePicker.Calendar`, so day cells emit the same `data-range-start` / `data-range-end` / `data-in-range` / `data-today` / `data-focused` / `data-outside-month` attributes — the whole committed week spans start→end. See [Styling](../concepts/styling.md).
+`WeekPicker.Calendar` wraps `RangePicker.Calendar`, so day cells emit the same `data-range-start` / `data-range-end` / `data-in-range` / `data-today` / `data-focused` / `data-outside-month` attributes; the whole committed week spans start→end. See [Styling](../concepts/styling.md).
 
 ## Related
 

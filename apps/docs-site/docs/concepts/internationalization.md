@@ -7,11 +7,11 @@ description: 'Localize month and weekday names with locale, override every ARIA 
 
 # Internationalization (i18n)
 
-Kalyx ships English ARIA labels by default. Override them per-component with the `labels` prop — no external i18n library required.
+Kalyx ships English ARIA labels by default. Override them per-component with the `labels` prop; no external i18n library required.
 
 ## How it works
 
-Every Root component (`DatePicker`, `RangePicker`, `TimePicker`, `DateTimePicker`) accepts a `labels` prop. Pass a **partial** object — only the keys you override are replaced; the rest keep their English defaults.
+Every Root component (`DatePicker`, `RangePicker`, `TimePicker`, `DateTimePicker`) accepts a `labels` prop. Pass a **partial** object. Only the keys you override are replaced; the rest keep their English defaults.
 
 ```tsx
 <DatePicker
@@ -148,7 +148,7 @@ Weekday headers and month names use `Intl.DateTimeFormat` under the hood. Pass t
 - `locale` controls **display formatting** (weekday names, month names in the header).
 - `labels` controls **ARIA attributes** (screen reader text).
 
-Both are independent — you can use `locale="ko-KR"` with English labels, or vice versa.
+Both are independent: you can use `locale="ko-KR"` with English labels, or vice versa.
 
 ## Right-to-left (RTL)
 
@@ -193,11 +193,11 @@ function RtlToggle() {
 }
 ```
 
-The navigation chevrons keep their visual "previous / next" meaning because the whole grid mirrors with `dir` — you don't need to swap them yourself. Provide localized `labels` (see [above](#label-keys-reference)) so screen-reader announcements match the language.
+The navigation chevrons keep their visual "previous / next" meaning because the whole grid mirrors with `dir`, so you don't need to swap them yourself. Provide localized `labels` (see [above](#label-keys-reference)) so screen-reader announcements match the language.
 
 > Passing `dir` on the ancestor `<div>` handles the CSS mirroring; passing it on the `<DatePicker>` Root is what mirrors the arrow-key navigation. Set both (as above) for a fully mirrored, keyboard-correct picker.
 
 ## Next
 
 - [Accessibility →](./accessibility.md)
-- [Migration guide (v0.2 → v0.3) →](../migration.md#v02--v03--aria-labels-i18n)
+- [Migration guide (v0.2 → v0.3) →](../migration.md#v02--v03-aria-labels-i18n)
