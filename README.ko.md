@@ -12,6 +12,9 @@
 [문서](https://kalyx-docs-site.vercel.app/ko) · [English](https://kalyx-docs-site.vercel.app) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.md](./README.md)
 
 [![npm](https://img.shields.io/npm/v/@kalyx/react?color=5b4fe1&label=%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
+[![CI](https://github.com/jiji-hoon96/kalyx/actions/workflows/pr-check.yml/badge.svg)](https://github.com/jiji-hoon96/kalyx/actions/workflows/pr-check.yml)
+[![codecov](https://codecov.io/gh/jiji-hoon96/kalyx/graph/badge.svg)](https://codecov.io/gh/jiji-hoon96/kalyx)
+[![npm downloads](https://img.shields.io/npm/dw/%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
 [![Bundle](https://img.shields.io/badge/gzip-~19.5KB-brightgreen)](https://kalyx-docs-site.vercel.app/ko/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
@@ -110,6 +113,25 @@ API 레퍼런스, 레시피 (Tailwind / shadcn / React Hook Form), 마이그레�
 ## 지원 환경
 
 React 19+ · 모든 모던 브라우저 · SSR: Next.js App Router / Pages Router / Remix · Node ≥ 20.
+
+## 로드맵
+
+최근 1.4.x 라인 배포물: day.js·Luxon 어댑터, `/headless` 훅 4종, `Presets` API, IANA `displayTimezone`, RTL + `Intl` 기반 i18n.
+
+**다음 계획**
+
+- 실험적 `@kalyx/adapter-temporal` (플래그 뒤 제공)
+- `@kalyx/core` 날짜 연산에 프로퍼티 기반 테스팅 (`fast-check`)
+- 의존성별 번들 크기 리포트
+- e2e 커버리지 확대: 렌더링 도중 props 변경, 로캘 전환
+
+**검토 중** (확정 아님)
+
+- 그레고리력 외 달력 체계 (페르시아, 히브리, 불교, …)
+- React Native 어댑터
+- 비주얼 리그레션 / Storybook 하네스
+
+이 목록은 실제 사용 피드백이 방향을 정합니다 — [이슈](https://github.com/jiji-hoon96/kalyx/issues)나 [디스커션](https://github.com/jiji-hoon96/kalyx/discussions)으로 의견을 주세요.
 
 ## 기여
 
