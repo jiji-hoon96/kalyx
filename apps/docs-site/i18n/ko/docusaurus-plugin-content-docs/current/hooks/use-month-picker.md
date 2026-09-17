@@ -7,7 +7,7 @@ description: '커스텀 MonthPicker UI 를 만듭니다. @kalyx/react/headless �
 
 # useMonthPicker
 
-`<MonthPicker>` 뒤의 헤드리스 훅. 12개월 그리드와 내비게이션을 노출합니다 — DOM 렌더링과 포커스/키보드 연결은 여러분의 몫입니다.
+`<MonthPicker>` 뒤의 헤드리스 훅. 12개월 그리드와 내비게이션을 노출합니다. DOM 렌더링과 포커스/키보드 연결은 여러분의 몫입니다.
 
 :::info `/headless` 엔트리
 Month / Year / Week / DateTime 훅은 어댑터 비의존(date-fns 미번들)인 **`@kalyx/react/headless`** 엔트리에서 export됩니다. [날짜 어댑터 & `/headless` 엔트리](../guides/adapters.md) 참고.
@@ -27,12 +27,12 @@ function useMonthPicker(options?: UseMonthPickerOptions): UseMonthPickerReturn;
 
 | 필드 | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | controlled 월 (월 시작 ISO로 저장). |
-| `defaultValue` | `ISODateString` | — | uncontrolled 초기 월. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | 월이 바뀔 때 호출. |
+| `value` | `ISODateString \| null` | - | controlled 월 (월 시작 ISO로 저장). |
+| `defaultValue` | `ISODateString` | - | uncontrolled 초기 월. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | 월이 바뀔 때 호출. |
 | `disabled` | `DisabledRule[]` | `[]` | 월은 완전히 배제될 때만 비활성. |
-| `adapter` | `DateAdapter` | — | 날짜 어댑터 (`/headless`에서 필수). |
-| `displayTimezone` | `string` | — | civil-day 비교용 IANA 존. [타임존](../concepts/timezone.md) 참고. |
+| `adapter` | `DateAdapter` | - | 날짜 어댑터 (`/headless`에서 필수). |
+| `displayTimezone` | `string` | - | civil-day 비교용 IANA 존. [타임존](../concepts/timezone.md) 참고. |
 | `locale` | `string` | `'en-US'` | 월 이름용 BCP 47 locale. |
 
 ### 반환

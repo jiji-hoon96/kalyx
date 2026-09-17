@@ -31,7 +31,7 @@ function toISO(dt: DateTime): string {
 
 /**
  * DateAdapter implementation backed by luxon (UTC mode). A drop-in alternative
- * to `@kalyx/adapter-date-fns` for teams already shipping luxon — same UTC
+ * to `@kalyx/adapter-date-fns` for teams already shipping luxon: same UTC
  * semantics, validated against `@kalyx/core/test-helpers`. Timezone-aware
  * operations delegate to `@kalyx/core`'s Intl-based utilities (the correctness
  * moat lives in core, not the adapter).

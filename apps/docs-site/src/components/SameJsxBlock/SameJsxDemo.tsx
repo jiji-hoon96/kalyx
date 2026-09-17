@@ -5,14 +5,14 @@ import styles from './SameJsxBlock.module.css';
 /**
  * Live style-switch demo body. Renders ONE real <DatePicker> and swaps only
  * the `classNames` between three styling stories (Tailwind / shadcn / plain
- * CSS) — proving the "same JSX, your styles" claim by showing the identical
+ * CSS), proving the "same JSX, your styles" claim by showing the identical
  * component actually re-skin, not just three static code snippets.
  *
  * Loaded via BrowserOnly + lazy from index.tsx (like HeroDemo) so SSG never
  * imports @kalyx/react and the chunk is client-only.
  *
  * The calendar body is rendered directly inside Root (no Popover) so it is
- * always visible in the demo panel — same trick HeroDemo uses.
+ * always visible in the demo panel (same trick HeroDemo uses).
  */
 
 const FROZEN = '2026-06-15T00:00:00.000Z';

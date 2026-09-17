@@ -58,7 +58,7 @@ async function moveOver(page: Page, target: Locator): Promise<void> {
 
 /**
  * Register the demo stylesheet as an init script so it is present from the
- * page's very first paint (before React hydration) — this prevents the brief
+ * page's very first paint (before React hydration); this prevents the brief
  * flash of unstyled, raw-headless pickers at the start of the recording.
  *
  * A MutationObserver re-appends the <style> tag if the SPA ever wipes <head>,
@@ -105,7 +105,7 @@ async function installTheme(page: Page): Promise<void> {
 /**
  * Runtime fallback: inject the stylesheet directly into the current document.
  * addStyleTag ships the CSS as a plain string, so it also dodges transpilation.
- * Idempotent — safe to call repeatedly. No-op when THEME=none.
+ * Idempotent: safe to call repeatedly. No-op when THEME=none.
  */
 async function applyTheme(page: Page): Promise<void> {
   if (!THEME_CSS) return;
@@ -202,7 +202,7 @@ async function demoRangePicker(page: Page, preview: Locator): Promise<void> {
 }
 
 async function demoTimePicker(page: Page, preview: Locator): Promise<void> {
-  // No popover — Hour/Minute lists + AM/PM render inline.
+  // No popover. Hour/Minute lists + AM/PM render inline.
   const hour = byRole(preview, SEL.role.option, { name: '9 hours' }).first();
   await moveAndClick(page, hour);
   const minute = byRole(preview, SEL.role.option, { name: '45 minutes' }).first();
@@ -326,7 +326,7 @@ async function recordPicker(browser: Browser, id: PickerId): Promise<string> {
   const finalPath = path.join(dir, `${id}.webm`);
   if (raw && raw !== `${id}.webm`) {
     if (existsSync(finalPath)) {
-      // stale from a previous run — overwrite
+      // stale from a previous run; overwrite
       renameSync(path.join(dir, raw), finalPath);
     } else {
       renameSync(path.join(dir, raw), finalPath);

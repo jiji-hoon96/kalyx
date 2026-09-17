@@ -133,4 +133,4 @@ runAdapterConformanceTests(MyAdapter, { describe, it, expect });
 
 - [어댑터 가이드 (커스텀 어댑터, `/headless` 엔트리) →](../guides/adapters.md)
 - [ISO 문자열 →](./iso-string.md)
-- [API 레퍼런스 — core →](../api/core.md)
+- [API 레퍼런스: core →](../api/core.md)

@@ -11,7 +11,7 @@ import type { Direction } from './rtl.js';
  * entire range.
  *
  * Used by `MonthPicker.Grid` / `YearPicker.Grid` and the matching headless hooks
- * to mark a whole month or year unselectable when min/max bounds rule it out —
+ * to mark a whole month or year unselectable when min/max bounds rule it out,
  * both for the rendered `isDisabled` flag and for the commit guard, so the two
  * cannot disagree.
  *
@@ -57,13 +57,13 @@ export interface UseGridStateOptions {
    * travel direction, focus is left where it was.
    */
   disabledFlags?: boolean[];
-  /** Enter / Space — receives the focused index. */
+  /** Enter / Space: receives the focused index. */
   onSelect: (index: number) => void;
-  /** PageUp — typically navigates to the previous frame (year/decade). */
+  /** PageUp: typically navigates to the previous frame (year/decade). */
   onPageUp: () => void;
-  /** PageDown — typically navigates to the next frame. */
+  /** PageDown: typically navigates to the next frame. */
   onPageDown: () => void;
-  /** Escape — typically closes the popover. */
+  /** Escape: typically closes the popover. */
   onEscape: () => void;
   /**
    * Layout direction. In "rtl" the physical ArrowLeft/ArrowRight (and the

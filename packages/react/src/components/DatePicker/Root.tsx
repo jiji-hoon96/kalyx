@@ -127,7 +127,7 @@ function DatePickerRootImpl({
 
   // Lazy initializers: today() is only computed once per mount instead of on every
   // render. Avoids redundant Date allocations and makes the SSR/hydration contract
-  // explicit — neither server nor client re-evaluates the fallback after first render.
+  // explicit: neither server nor client re-evaluates the fallback after first render.
   const [viewMonth, setViewMonth] = useState<ISODateString>(() => {
     const target = usableDate(currentValue, adapter) ?? adapter.today(displayTimezone);
     return displayTimezone
@@ -177,7 +177,7 @@ function DatePickerRootImpl({
       }
 
       // The grid emits UTC-midnight ISO strings. When displayTimezone is set, map those to the
-      // civil midnight of the same calendar day in that zone — otherwise "picking Jan 15 in KST"
+      // civil midnight of the same calendar day in that zone; otherwise "picking Jan 15 in KST"
       // would save Jan 14 15:00 UTC shifted incorrectly.
       const normalized =
         coordinate && displayTimezone

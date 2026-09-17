@@ -60,11 +60,11 @@ function utcEndOfWeek(d: Date, weekStartsOn: 0 | 1): Date {
 
 /**
  * Add days in UTC. A UTC day is exactly 86_400_000 ms (no DST), so this keeps a
- * UTC-midnight instant at UTC midnight n days later — unlike date-fns' `addDays`,
+ * UTC-midnight instant at UTC midnight n days later, unlike date-fns' `addDays`,
  * which mutates the LOCAL date field and drifts by an hour when the runtime's
  * timezone crosses a DST transition in the iterated range (the calendar grid
  * iterates day-by-day, so that drift duplicated/skipped a UTC day for users in a
- * DST zone — e.g. Asia/Seoul, which observed DST in 1987–88).
+ * DST zone, e.g. Asia/Seoul, which observed DST in 1987-88).
  */
 function utcAddDays(d: Date, n: number): Date {
   return new Date(d.getTime() + n * 86_400_000);

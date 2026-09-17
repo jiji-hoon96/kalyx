@@ -40,19 +40,19 @@ function MyForm() {
 			<h2>핵심 동작</h2>
 			<ul>
 				<li>
-					<strong>날짜 클릭 → 날짜만 변경, 시간 보존</strong> — 14:30 선택 후
+					<strong>날짜 클릭 → 날짜만 변경, 시간 보존</strong>: 14:30 선택 후
 					다른 날짜 클릭해도 시간은 14:30 유지
 				</li>
 				<li>
-					<strong>시간 변경 → 시간만 변경, 날짜 보존</strong> — 같은 날짜에서
+					<strong>시간 변경 → 시간만 변경, 날짜 보존</strong>: 같은 날짜에서
 					시간만 갱신
 				</li>
 				<li>
-					<strong>날짜 선택 후에도 팝오버 유지</strong> — DatePicker와 달리 시간
+					<strong>날짜 선택 후에도 팝오버 유지</strong>: DatePicker와 달리 시간
 					선택이 가능하도록 팝오버를 닫지 않음
 				</li>
 				<li>
-					<strong>Escape / 바깥 클릭</strong> — 확정하고 닫기
+					<strong>Escape / 바깥 클릭</strong>: 확정하고 닫기
 				</li>
 			</ul>
 

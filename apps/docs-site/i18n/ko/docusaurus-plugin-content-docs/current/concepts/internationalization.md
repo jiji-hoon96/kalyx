@@ -7,11 +7,11 @@ description: 'locale 로 월·요일 이름을 지역화하고, 모든 ARIA 라�
 
 # 다국어 (i18n)
 
-Kalyx는 영어 ARIA 라벨을 기본으로 제공합니다. `labels` prop으로 컴포넌트별 오버라이드하세요 — 별도 i18n 라이브러리 불필요.
+Kalyx는 영어 ARIA 라벨을 기본으로 제공합니다. `labels` prop으로 컴포넌트별 오버라이드하세요. 별도 i18n 라이브러리 불필요.
 
 ## 동작 방식
 
-모든 Root 컴포넌트(`DatePicker`, `RangePicker`, `TimePicker`, `DateTimePicker`)가 `labels` prop을 받습니다. **부분 객체**만 넘기면 됩니다 — 오버라이드한 키만 교체되고 나머지는 영어 기본값이 유지됩니다.
+모든 Root 컴포넌트(`DatePicker`, `RangePicker`, `TimePicker`, `DateTimePicker`)가 `labels` prop을 받습니다. **부분 객체**만 넘기면 됩니다. 오버라이드한 키만 교체되고 나머지는 영어 기본값이 유지됩니다.
 
 ```tsx
 <DatePicker
@@ -148,7 +148,7 @@ export const ja: DatePickerLabels = {
 - `locale`은 **표시 포맷**을 제어합니다 (요일 이름, 헤더의 월 이름).
 - `labels`는 **ARIA 속성**을 제어합니다 (스크린 리더 텍스트).
 
-둘은 독립적입니다 — `locale="ko-KR"`과 영어 라벨을 함께 쓸 수도 있고, 그 반대도 가능합니다.
+둘은 독립적입니다. `locale="ko-KR"`과 영어 라벨을 함께 쓸 수도 있고, 그 반대도 가능합니다.
 
 ## 오른쪽-왼쪽 (RTL)
 
@@ -193,11 +193,11 @@ function RtlToggle() {
 }
 ```
 
-내비게이션 화살표는 그리드 전체가 `dir`과 함께 미러링되므로 "이전 / 다음"의 시각적 의미를 그대로 유지합니다 — 직접 바꿀 필요가 없습니다. 스크린 리더 안내가 언어와 맞도록 지역화된 `labels`(위 라벨 키 레퍼런스 참고)를 제공하세요.
+내비게이션 화살표는 그리드 전체가 `dir`과 함께 미러링되므로 "이전 / 다음"의 시각적 의미를 그대로 유지합니다. 직접 바꿀 필요가 없습니다. 스크린 리더 안내가 언어와 맞도록 지역화된 `labels`(위 라벨 키 레퍼런스 참고)를 제공하세요.
 
 > 상위 `<div>`에 `dir`을 주면 CSS 미러링이 처리되고, `<DatePicker>` Root에 `dir`을 주면 화살표 키 내비게이션이 미러링됩니다. 완전히 미러링되고 키보드까지 올바른 picker를 위해서는 위 예시처럼 둘 다 설정하세요.
 
 ## 다음
 
 - [접근성 →](./accessibility.md)
-- [마이그레이션 가이드 (v0.2 → v0.3) →](../migration.md#v02--v03--aria-라벨-i18n)
+- [마이그레이션 가이드 (v0.2 → v0.3) →](../migration.md#v02--v03-aria-라벨-i18n)

@@ -238,7 +238,7 @@ test('displays date in the specified timezone', () => {
 
 ## Tips
 
-- **Always use `userEvent.setup()`** instead of `fireEvent` — it simulates real browser behavior (focus, blur, keydown sequences).
-- **Mock `ResizeObserver`** in your test setup — jsdom doesn't implement it, and Floating UI requires it.
-- **Don't test internal implementation** — test what the user sees (input values, aria attributes, visible text), not internal state.
-- **Snapshot testing is discouraged** — the calendar grid changes with the current date. Prefer behavior assertions.
+- **Always use `userEvent.setup()`** instead of `fireEvent`; it simulates real browser behavior (focus, blur, keydown sequences).
+- **Mock `ResizeObserver`** in your test setup. jsdom doesn't implement it, and Floating UI requires it.
+- **Don't test internal implementation**: test what the user sees (input values, aria attributes, visible text), not internal state.
+- **Snapshot testing is discouraged**: the calendar grid changes with the current date. Prefer behavior assertions.

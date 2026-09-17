@@ -7,7 +7,7 @@ description: 'shadcn/ui 의 class variant 를 빌려 같은 외형을 만들고,
 
 # shadcn/ui
 
-shadcn은 DatePicker를 직접 제공하지 않습니다 — 튜토리얼에서 "headless 라이브러리를 shadcn `Popover` 껍질에 끼워 쓰라"고 안내합니다. Kalyx가 딱 맞습니다.
+shadcn은 DatePicker를 직접 제공하지 않습니다. 튜토리얼에서 "headless 라이브러리를 shadcn `Popover` 껍질에 끼워 쓰라"고 안내합니다. Kalyx가 딱 맞습니다.
 
 ## Input + Popover + Calendar
 
@@ -111,7 +111,7 @@ export function ShadcnRange() {
 
 ## 폼 연동
 
-`react-hook-form`과 짝 지워 쓰세요 — [React Hook Form 레시피 →](./react-hook-form.md).
+`react-hook-form`과 짝 지워 쓰세요. [React Hook Form 레시피 →](./react-hook-form.md).
 
 ## 관련
 

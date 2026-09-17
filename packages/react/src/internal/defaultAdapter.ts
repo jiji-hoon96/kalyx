@@ -38,11 +38,11 @@ export function getDefaultAdapter(): DateAdapter | null {
  * Resolves which DateAdapter a Root component / hook should use.
  *
  * Resolution order:
- *  1. `passed` — adapter explicitly provided via prop / options. Always wins.
- *  2. `fallback` — module-level default supplied by the caller. The main
+ *  1. `passed`: adapter explicitly provided via prop / options. Always wins.
+ *  2. `fallback`: module-level default supplied by the caller. The main
  *     `@kalyx/react` entry installs `DateFnsAdapter` here via `setDefaultAdapter`
  *     so users get "install and it works" out of the box.
- *  3. neither — the `@kalyx/react/headless` entry never installs a default,
+ *  3. neither: the `@kalyx/react/headless` entry never installs a default,
  *     making the adapter contract explicit. Throwing here surfaces the missing
  *     adapter at render-time with a clear remediation hint rather than crashing
  *     later inside a date-math call with a cryptic stack trace.

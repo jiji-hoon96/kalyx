@@ -9,11 +9,11 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 # MonthPicker
 
-Month selector. The value is the first day of the selected month in UTC-ISO form — for example, picking April 2026 yields `"2026-04-01T00:00:00.000Z"`.
+Month selector. The value is the first day of the selected month in UTC-ISO form. For example, picking April 2026 yields `"2026-04-01T00:00:00.000Z"`.
 
 <figure>
   <img src="/img/demos/monthpicker.avif" alt="MonthPicker demo: choosing a month from the 12-month grid" width="640" loading="lazy" />
-  <figcaption><em>Styling shown is demo-only — Kalyx ships zero CSS.</em></figcaption>
+  <figcaption><em>Styling shown is demo-only. Kalyx ships zero CSS.</em></figcaption>
 </figure>
 
 ```tsx
@@ -23,7 +23,7 @@ import { MonthPicker } from '@kalyx/react';
 ## Anatomy
 
 ```tsx
-<MonthPicker>            {/* Root — value = first day of month, UTC */}
+<MonthPicker>            {/* Root: value = first day of month, UTC */}
   <MonthPicker.Input /> {/* combobox <input>, parses "YYYY-MM" */}
   <MonthPicker.Trigger /> {/* button that toggles the popover */}
   <MonthPicker.Popover> {/* Floating-UI portal, role="dialog" */}
@@ -57,7 +57,7 @@ The default `displayFormat` is `"yyyy-MM"`. Override it if you prefer a differen
 
 ### Try it live
 
-> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project; see the full imports in the non-live blocks above.
 
 ```jsx live
 function BasicMonthPicker() {
@@ -220,7 +220,7 @@ visible formatted input is not submitted under that name.
 
 ## Props
 
-`MonthPicker` Root accepts the same props as `DatePicker.Root`. The only difference is the default `displayFormat` — otherwise `disabled`, `readOnly`, `weekStartsOn`, `locale`, `displayTimezone`, `labels`, `adapter`, `onOpenChange`, and `onCalendarNavigate` all behave identically. See [DatePicker](./datepicker.md) for the full reference.
+`MonthPicker` Root accepts the same props as `DatePicker.Root`. The only difference is the default `displayFormat`; otherwise `disabled`, `readOnly`, `weekStartsOn`, `locale`, `displayTimezone`, `labels`, `adapter`, `onOpenChange`, and `onCalendarNavigate` all behave identically. See [DatePicker](./datepicker.md) for the full reference.
 
 ### Grid classNames
 

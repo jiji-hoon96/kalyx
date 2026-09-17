@@ -32,7 +32,7 @@ function setAt(obj: ClassNamesShape, path: LeafPath, next: string): ClassNamesSh
 export default function ClassNamesEditor({ pickerId, value, onChange }: ClassNamesEditorProps) {
   const leaves = Array.from(walkLeaves(value));
   return (
-    <fieldset className={styles.classNamesEditor} aria-label={`classNames editor — ${pickerId}`}>
+    <fieldset className={styles.classNamesEditor} aria-label={`classNames editor: ${pickerId}`}>
       <legend className={styles.controlLabel}>classNames</legend>
       {leaves.map(({ path, value: leafValue }) => {
         const label = path.join('.');

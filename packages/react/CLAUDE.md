@@ -1,15 +1,15 @@
-# @kalyx/react — 패키지 컨텍스트
+# @kalyx/react 패키지 컨텍스트
 
 > Headless React DatePicker 컴포넌트 레이어. @kalyx/core 위에 구축.
-> (AI 에이전트 공용 문서 — Claude Code 는 이 `CLAUDE.md` 를 자동 로드한다. 모노레포 전체 원칙은 루트 `CLAUDE.md` 참조.)
+> (AI 에이전트 공용 문서. Claude Code 는 이 `CLAUDE.md` 를 자동 로드한다. 모노레포 전체 원칙은 루트 `CLAUDE.md` 참조.)
 
 ## 핵심 원칙
 
-1. **Composition API** — `<DatePicker.Input />`, `<DatePicker.Calendar />` 서브 컴포넌트 조합
-2. **Dot Notation** — `Object.assign(Root, { Input, Calendar, ... })` 패턴
-3. **SSR 안전** — `window`/`document` 직접 참조 금지 (useEffect 안에서만)
-4. **Headless (Zero CSS)** — 스타일은 `classNames` prop과 `data-*` 속성으로 위임
-5. **접근성 내장** — WAI-ARIA Calendar Dialog 패턴, 키보드 네비게이션 10종
+1. **Composition API**: `<DatePicker.Input />`, `<DatePicker.Calendar />` 서브 컴포넌트 조합
+2. **Dot Notation**: `Object.assign(Root, { Input, Calendar, ... })` 패턴
+3. **SSR 안전**: `window`/`document` 직접 참조 금지 (useEffect 안에서만)
+4. **Headless (Zero CSS)**: 스타일은 `classNames` prop과 `data-*` 속성으로 위임
+5. **접근성 내장**: WAI-ARIA Calendar Dialog 패턴, 키보드 네비게이션 10종
 
 ## 파일 구조
 
@@ -23,7 +23,7 @@ src/
 │   ├── MonthPicker/          ← 월 단위 선택 (Root, Input, Trigger, Popover, Grid)
 │   ├── YearPicker/           ← 연도 단위 선택 (Root, Input, Trigger, Popover, Grid)
 │   ├── WeekPicker/           ← 주 단위 선택 (Root, Input, Popover, Calendar)
-│   └── _shared/              ← grid-keyboard.ts (grid 키보드 내비), rtl.ts (RTL `dir` prop 지원 — Direction, horizontalDayStep)
+│   └── _shared/              ← grid-keyboard.ts (grid 키보드 내비), rtl.ts (RTL `dir` prop 지원: Direction, horizontalDayStep)
 ├── context/
 │   ├── DatePickerContext.ts  ← createContext + useDatePickerContext
 │   ├── RangePickerContext.ts ← createContext + useRangePickerContext
@@ -40,7 +40,7 @@ src/
 │   ├── useChangeEffect.ts    ← 값 변경 시에만 콜백 실행 (내부)
 │   └── useListboxNavigation.ts ← 리스트박스 키보드 내비게이션 (내부)
 ├── index.ts                   ← 공개 API (7 컴포넌트 + 3 hooks + 타입)
-└── headless.ts                ← /headless 엔트리 (어댑터 자동주입 없음 — 7 hooks + DateTimePicker.Presets 포함 전체 API)
+└── headless.ts                ← /headless 엔트리 (어댑터 자동주입 없음. 7 hooks + DateTimePicker.Presets 포함 전체 API)
 ```
 
 ## 컴포넌트 추가 시 체크리스트
@@ -56,6 +56,6 @@ src/
 ## 빌드
 
 ```bash
-pnpm --filter @kalyx/react build     # tsup: ESM + CJS + DTS (번들 목표: index ≤20KB / headless ≤22KB — scripts/bundle-policy.js 단일 소스)
+pnpm --filter @kalyx/react build     # tsup: ESM + CJS + DTS (번들 목표: index ≤20KB / headless ≤22KB, scripts/bundle-policy.js 단일 소스)
 pnpm --filter @kalyx/react typecheck
 ```

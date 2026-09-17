@@ -13,7 +13,7 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 <figure>
   <img src="/img/demos/datetimepicker.avif" alt="DateTimePicker 데모: 한 popover에서 날짜와 시간을 차례로 선택" width="640" loading="lazy" />
-  <figcaption><em>화면의 스타일은 데모용입니다 — Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
+  <figcaption><em>화면의 스타일은 데모용입니다. Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
 </figure>
 
 ```tsx
@@ -23,7 +23,7 @@ import { DateTimePicker } from '@kalyx/react';
 ## 구조
 
 ```tsx
-<DateTimePicker>            {/* Root — one ISO string for date + time */}
+<DateTimePicker>            {/* Root: one ISO string for date + time */}
   <DateTimePicker.Input /> {/* combobox <input>, parses date + time */}
   <DateTimePicker.Popover> {/* Floating-UI portal, role="dialog" */}
     <DateTimePicker.Calendar /> {/* month grid (reuses DatePicker.Calendar) */}
@@ -59,7 +59,7 @@ function Example() {
 }
 ```
 
-일자를 고른 뒤에도 **popover가 닫히지 않습니다** — 이어서 시간을 조정하세요. 닫기는 자체 버튼이나 바깥 클릭으로 처리합니다.
+일자를 고른 뒤에도 **popover가 닫히지 않습니다**. 이어서 시간을 조정하세요. 닫기는 자체 버튼이나 바깥 클릭으로 처리합니다.
 
 ### 직접 사용해보기
 
@@ -120,23 +120,23 @@ function BasicDateTime() {
 
 | Prop | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | 제어형 datetime. |
-| `defaultValue` | `ISODateString` | — | 비제어 초기값. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | 날짜 또는 시간 변경 시 호출. |
+| `value` | `ISODateString \| null` | - | 제어형 datetime. |
+| `defaultValue` | `ISODateString` | - | 비제어 초기값. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | 날짜 또는 시간 변경 시 호출. |
 | `format` | `'12h' \| '24h'` | `'24h'` | 시간 포맷. |
 | `step` | `number` | `1` | 분 간격. |
 | `withSeconds` | `boolean` | `false` | 표시와 입력에 초를 포함한다. |
-| `filterTime` | `(hours: number, minutes: number) => boolean` | — | 슬롯별 비활성 predicate. `true` 를 반환하면 해당 슬롯이 **선택 불가**가 된다. `format` 과 무관하게 항상 24시간 값을 받는다. [`TimePicker` 의 `filterTime`](./timepicker.md) 과 같은 규칙이다. |
+| `filterTime` | `(hours: number, minutes: number) => boolean` | - | 슬롯별 비활성 predicate. `true` 를 반환하면 해당 슬롯이 **선택 불가**가 된다. `format` 과 무관하게 항상 24시간 값을 받는다. [`TimePicker` 의 `filterTime`](./timepicker.md) 과 같은 규칙이다. |
 | `disabled` | `DisabledRule[] \| boolean` | `false` | 날짜 비활성 규칙. |
 | `readOnly` | `boolean` | `false` | 변경 방지. |
 | `weekStartsOn` | `0 \| 1` | `0` | 주 시작. |
 | `displayFormat` | `string` | `'yyyy-MM-dd HH:mm'` | date-fns 포맷. |
 | `locale` | `string` | `'en-US'` | BCP 47 로케일. |
 | `dir` | `'ltr' \| 'rtl'` | `'ltr'` | 레이아웃 방향. 캘린더 그리드로 전달된다. `'rtl'`이면 ArrowLeft/ArrowRight가 반전된다(WAI-ARIA grid 패턴). [국제화](../concepts/internationalization.md#오른쪽-왼쪽-rtl) 참고. |
-| `displayTimezone` | `string` | — | IANA 타임존. 설정하면 캘린더와 시간 컨트롤이 이 타임존 기준으로 읽고 쓴다 (DST 인식). [Timezone](../concepts/timezone.md) 참고. |
-| `labels` | `Partial<DateTimePickerLabels>` | — | ARIA 라벨 재정의. |
+| `displayTimezone` | `string` | - | IANA 타임존. 설정하면 캘린더와 시간 컨트롤이 이 타임존 기준으로 읽고 쓴다 (DST 인식). [Timezone](../concepts/timezone.md) 참고. |
+| `labels` | `Partial<DateTimePickerLabels>` | - | ARIA 라벨 재정의. |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | 커스텀 어댑터. |
-| `children` | `ReactNode` | — | 서브 컴포넌트. |
+| `children` | `ReactNode` | - | 서브 컴포넌트. |
 
 ## 서브 컴포넌트
 
@@ -144,7 +144,7 @@ DateTimePicker는 DatePicker와 TimePicker의 서브 컴포넌트를 한 네임�
 
 | 이름 | 동작 |
 | --- | --- |
-| `.Input` | 결합 날짜+시간 입력 — 둘 다 파싱. |
+| `.Input` | 결합 날짜+시간 입력. 둘 다 파싱. |
 | `.Popover` | DatePicker.Popover와 동일. |
 | `.Calendar` | 월 그리드 (선택해도 열린 상태 유지). `fixedWeeks`를 포함해 `DatePicker.Calendar`와 동일한 prop을 받습니다. |
 | `.MonthGrid` | 선택. 월 이동. |
@@ -153,7 +153,7 @@ DateTimePicker는 DatePicker와 TimePicker의 서브 컴포넌트를 한 네임�
 | `.MinuteList` | TimePicker.MinuteList와 동일. |
 | `.AmPmToggle` | TimePicker.AmPmToggle와 동일 (12h 모드만). |
 
-모든 `classNames` 타입이 재export됩니다 — [DatePicker](./datepicker.md)와 [TimePicker](./timepicker.md) 참고.
+모든 `classNames` 타입이 재export됩니다. [DatePicker](./datepicker.md)와 [TimePicker](./timepicker.md) 참고.
 
 서브 컴포넌트는 원래 picker 와 동일한 `data-*` 상태 속성을 그대로 내보냅니다. 캘린더 날짜에는 `data-selected` / `data-today` / `data-focused`, 시간 옵션에는 `data-selected` 가 붙습니다. [스타일링](../concepts/styling.md) 참고.
 

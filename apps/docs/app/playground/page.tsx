@@ -1,7 +1,7 @@
 import { PlaygroundClient } from './PlaygroundClient';
 
 /**
- * Playground — admin-facing test surface that exercises every component
+ * Playground: admin-facing test surface that exercises every component
  * `@kalyx/react` ships with under one set of shared, live-editable controls
  * (locale, displayTimezone, weekStartsOn, 12h/24h, minute step, disabled rules).
  *

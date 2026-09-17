@@ -22,7 +22,7 @@ export interface DatePickerYearGridProps extends Omit<HTMLAttributes<HTMLDivElem
 }
 
 /**
- * DatePicker.YearGrid — Quickly pick a year from a 12-year grid.
+ * DatePicker.YearGrid: Quickly pick a year from a 12-year grid.
  * Click MonthGrid title -> YearGrid -> click a year -> back to MonthGrid.
  *
  * @example

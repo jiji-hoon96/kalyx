@@ -46,18 +46,18 @@ export function usePopover({
     }
   }, [referenceRef, refs, isOpen]);
 
-  // Focus restoration on close — but only to recover focus that was actually
+  // Focus restoration on close, but only to recover focus that was actually
   // lost. The calendar grid auto-focuses the selected day on open, so the
   // captured element is usually a day button inside the popover; when the
   // popover unmounts that button detaches and the browser drops focus to
   // <body>. In that case we restore to the captured element if it's still
-  // connected, otherwise to the reference control (the Input / Trigger) — the
+  // connected, otherwise to the reference control (the Input / Trigger), the
   // correct keyboard recovery point per WAI-ARIA. Opening is bound to a pointer
   // click, not focus (see Input's handleClick), so this does NOT reopen.
   //
   // If focus already moved elsewhere (e.g. the user closed the popover by
   // clicking another field), `document.activeElement` is that element, not
-  // <body>, and we leave it alone — stealing it back would be a regression.
+  // <body>, and we leave it alone; stealing it back would be a regression.
   useEffect(() => {
     if (isOpen) {
       previousFocusRef.current = document.activeElement as HTMLElement;
@@ -108,7 +108,7 @@ export function usePopover({
         // Consume the Escape so a host modal/dialog whose own Escape handler
         // also closes the modal doesn't close both on a single keypress.
         // Bubble-phase listener at document is too late to block React's
-        // synthetic bubble — Input/Calendar React handlers cover that path.
+        // synthetic bubble; Input/Calendar React handlers cover that path.
         // This document-level call protects against other native listeners.
         e.preventDefault();
         e.stopPropagation();
@@ -121,8 +121,8 @@ export function usePopover({
   }, [isOpen, close]);
 
   // Focus-out: when the user tabs out of the popover (and out of the reference
-  // element), close the popover. This isn't a focus *trap* — keyboard users can
-  // still leave with Tab — but it follows the Radix/Ark pattern of closing the
+  // element), close the popover. This isn't a focus *trap* (keyboard users can
+  // still leave with Tab), but it follows the Radix/Ark pattern of closing the
   // overlay when focus leaves so it doesn't dangle while the user is elsewhere.
   useEffect(() => {
     if (!isOpen) return;
@@ -134,7 +134,7 @@ export function usePopover({
       const next = e.relatedTarget as Node | null;
       const floating = floatingRef.current;
       const reference = referenceRef.current;
-      if (!next) return; // focus moved to body — leave popover alone
+      if (!next) return; // focus moved to body; leave popover alone
       const insideFloating = floating?.contains(next) ?? false;
       const insideReference = reference?.contains(next) ?? false;
       if (!insideFloating && !insideReference) {
@@ -152,7 +152,7 @@ export function usePopover({
   // Set floating + reference together when the popover mounts. The reference
   // is already attached via Input/Trigger's ref callback by the time the
   // popover renders, so calling setReference here means Floating UI has both
-  // elements before paint — eliminating the unpositioned first-frame flash.
+  // elements before paint, eliminating the unpositioned first-frame flash.
   const setFloatingRef = useCallback(
     (node: HTMLDivElement | null) => {
       floatingRef.current = node;

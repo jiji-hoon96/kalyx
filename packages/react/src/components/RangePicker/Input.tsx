@@ -18,7 +18,7 @@ export interface RangePickerInputProps extends Omit<
 }
 
 /**
- * RangePicker.Input — Separate input for start/end dates.
+ * RangePicker.Input: Separate input for start/end dates.
  *
  * Use one with `part="start"` and another with `part="end"`. Currently `readOnly`
  * because keyboard parsing of two inputs into a single range is ambiguous; users
@@ -31,7 +31,7 @@ export const RangePickerInput = forwardRef<HTMLInputElement, RangePickerInputPro
 
     const value = ctx.value[part];
     // Adapters render an unparseable value as "NaN-NaN-NaN" rather than throwing, so the
-    // validity check has to gate the format call — the catch alone would not see it.
+    // validity check has to gate the format call; the catch alone would not see it.
     let displayValue = '';
     if (value) {
       try {

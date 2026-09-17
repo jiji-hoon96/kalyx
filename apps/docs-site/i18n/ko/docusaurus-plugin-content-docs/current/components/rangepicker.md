@@ -13,7 +13,7 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 <figure>
   <img src="/img/demos/rangepicker.avif" alt="RangePicker 데모: 시작일과 종료일 선택, hover 미리보기" width="640" loading="lazy" />
-  <figcaption><em>화면의 스타일은 데모용입니다 — Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
+  <figcaption><em>화면의 스타일은 데모용입니다. Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
 </figure>
 
 ```tsx
@@ -23,7 +23,7 @@ import { RangePicker } from '@kalyx/react';
 ## 구조
 
 ```tsx
-<RangePicker>            {/* Root — holds the { start, end } range */}
+<RangePicker>            {/* Root: holds the { start, end } range */}
   <RangePicker.Input part="start" /> {/* start-date combobox input */}
   <RangePicker.Input part="end" />   {/* end-date combobox input */}
   <RangePicker.Popover> {/* Floating-UI portal, role="dialog" */}
@@ -105,19 +105,19 @@ function BasicRange() {
 
 | Prop | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
-| `value` | `DateRange` | — | 제어형 범위. |
-| `defaultValue` | `DateRange` | — | 비제어형 초기 범위. |
-| `onChange` | `(range: DateRange) => void` | — | 모든 변경(부분 포함)에 호출. |
+| `value` | `DateRange` | - | 제어형 범위. |
+| `defaultValue` | `DateRange` | - | 비제어형 초기 범위. |
+| `onChange` | `(range: DateRange) => void` | - | 모든 변경(부분 포함)에 호출. |
 | `disabled` | `DisabledRule[] \| boolean` | `false` | 비활성 규칙 또는 전체 비활성. |
 | `readOnly` | `boolean` | `false` | 변경 방지. |
 | `weekStartsOn` | `0 \| 1` | `locale` 에서 추론 | 주 시작. 생략하면 `locale` 에서 추론하고, 명시한 prop 이 우선한다. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | 포맷 문자열. |
 | `locale` | `string` | `'en-US'` | BCP 47 로케일. |
 | `dir` | `'ltr' \| 'rtl'` | `'ltr'` | 레이아웃 방향. `'rtl'`이면 캘린더 그리드에 `dir="rtl"`이 붙고 ArrowLeft/ArrowRight가 반전된다(WAI-ARIA grid 패턴). [국제화](../concepts/internationalization.md#오른쪽-왼쪽-rtl) 참고. |
-| `displayTimezone` | `string` | — | IANA 타임존. 설정하면 Input 포맷·Calendar 하이라이트·`onChange` 값이 모두 이 타임존의 civil day 기준이 된다. [Timezone](../concepts/timezone.md) 참고. |
-| `labels` | `Partial<RangePickerLabels>` | — | ARIA 라벨 재정의(기본값은 영어). |
+| `displayTimezone` | `string` | - | IANA 타임존. 설정하면 Input 포맷·Calendar 하이라이트·`onChange` 값이 모두 이 타임존의 civil day 기준이 된다. [Timezone](../concepts/timezone.md) 참고. |
+| `labels` | `Partial<RangePickerLabels>` | - | ARIA 라벨 재정의(기본값은 영어). |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | 커스텀 어댑터. |
-| `children` | `ReactNode` | — | 서브 컴포넌트. |
+| `children` | `ReactNode` | - | 서브 컴포넌트. |
 
 ### `DateRange`
 
@@ -128,11 +128,11 @@ type DateRange = {
 };
 ```
 
-선택 중에는 `end >= start`를 강제하지 않습니다 — 커밋 시점에 자동 스왑. `onChange`에서 `{ start, end }` 형태를 항상 받습니다.
+선택 중에는 `end >= start`를 강제하지 않습니다. 커밋 시점에 자동 스왑. `onChange`에서 `{ start, end }` 형태를 항상 받습니다.
 
 ## `<RangePicker.Input>`
 
-입력 두 개 — `start`용 하나, `end`용 하나 — 가 필요합니다. 먼저 렌더된 입력이 Floating UI 기준점이 됩니다.
+입력 두 개(`start`용 하나, `end`용 하나)가 필요합니다. 먼저 렌더된 입력이 Floating UI 기준점이 됩니다.
 
 | Prop | 타입 | 설명 |
 | --- | --- | --- |

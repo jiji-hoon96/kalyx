@@ -42,7 +42,7 @@ The requested agentmemory concepts were recalled first:
   `mem_msjlcamg_43def9763f68` (strength 7).
 
 The prior functional audit, rubric, cross-evaluation, post-fix rescore, and
-Claude/Codex correctness comparison were read before testing. The same D1–D7
+Claude/Codex correctness comparison were read before testing. The same D1-D7
 rubric was retained, with stricter requirements: a claim needed source or
 measured evidence, and a suspected defect needed a discriminating failing test.
 
@@ -73,7 +73,7 @@ This is why “all tests pass” was treated only as a starting point.
 
 ## Fixed findings
 
-### P1 — programmatic picker mutations bypassed malformed-value protection
+### P1: programmatic picker mutations bypassed malformed-value protection
 
 - **Evidence:** #207 made malformed external `value` safe to render, but final
   mutation methods still accepted the same invalid candidate. The regression in
@@ -83,14 +83,14 @@ This is why “all tests pass” was treated only as a starting point.
   `setRange({start:'not-a-date', end:null})`, `selectWeek('not-a-date')`, or the
   Month/Year/DateTime equivalents on latest main.
 - **Impact:** the UI was resilient to bad inbound state while programmatic APIs
-  could still emit it or throw during date math—an inconsistent callback contract.
+  could still emit it or throw during date math: an inconsistent callback contract.
 - **Files:** `packages/react/src/internal/usableDate.ts`, all date-bearing hooks,
   and Date/Range/DateTime Root commit boundaries.
 - **Fix:** keep #207's raw-value preservation/core comparison guards, add
   exception-safe adapter validation, and reject unusable mutation candidates
   immediately before normalization or callback dispatch.
 
-### P1 — Dayjs adapter accepted impossible civil dates
+### P1: Dayjs adapter accepted impossible civil dates
 
 - **Evidence:** shared conformance assertions at
   `packages/core/src/test-helpers/index.ts:157`; Dayjs alone accepted
@@ -104,7 +104,7 @@ This is why “all tests pass” was treated only as a starting point.
 - **Fix:** retain Dayjs instant validation and independently validate the ISO
   Y/M/D tuple against UTC calendar fields.
 
-### P1 — typed MonthPicker/YearPicker values violated their storage contract
+### P1: typed MonthPicker/YearPicker values violated their storage contract
 
 - **Evidence:** `MonthPicker.test.tsx:85` and `YearPicker.test.tsx:80` failed with
   June 15 / August 19 where the public contract promised June 1 / January 1.
@@ -117,12 +117,12 @@ This is why “all tests pass” was treated only as a starting point.
 - **Fix:** add an internal `selectionGranularity` commit boundary and normalize
   to month-start/year-start before civil-timezone conversion.
 
-### P1 — WeekPicker only guarded disabled endpoints
+### P1: WeekPicker only guarded disabled endpoints
 
 - **Evidence:** component test `WeekPicker.test.tsx:375` and headless test
   `useWeekPicker.test.tsx:129` both failed when Wednesday was disabled but the
   Sunday/Saturday endpoints were enabled.
-- **Reproduction:** disable `2026-01-14`, then select any day in Jan 11–17.
+- **Reproduction:** disable `2026-01-14`, then select any day in Jan 11-17.
 - **Impact:** contradicted the documented invariant that any disabled day makes
   its whole week unavailable; mouse, keyboard, ARIA, and headless state all
   disagreed with that contract.
@@ -132,7 +132,7 @@ This is why “all tests pass” was treated only as a starting point.
   same whole-week predicate for rendering, `aria-disabled`, click, Enter/Space,
   keyboard skipping, headless commit, and headless calendar flags.
 
-### P1 — named non-DatePicker inputs submitted display strings, not API values
+### P1: named non-DatePicker inputs submitted display strings, not API values
 
 - **Evidence:** four RED tests in
   `packages/react/src/components/__tests__/form-submission.test.tsx:15`.
@@ -146,7 +146,7 @@ This is why “all tests pass” was treated only as a starting point.
 - **Fix:** remove `name` from visible inputs and emit a hidden named field with
   the canonical ISO value, matching Date/Month/Year behavior.
 
-### P2 — programmatic time partials silently rolled over
+### P2: programmatic time partials silently rolled over
 
 - **Evidence:** `time.test.ts:45` and `timezone.test.ts:332` initially showed
   `{hours: 24}`, negative values, minute/second 60, and fractions becoming
@@ -160,7 +160,7 @@ This is why “all tests pass” was treated only as a starting point.
 - **Fix:** shared field-wise integer/range validation with `RangeError` before
   any date arithmetic.
 
-### P2 — adapter tarballs advertised but omitted LICENSE
+### P2: adapter tarballs advertised but omitted LICENSE
 
 - **Evidence:** the initial packed contents for all three adapters lacked
   `LICENSE`; `scripts/__tests__/check-package-tarballs.test.mjs:67` now proves
@@ -178,7 +178,7 @@ All publishable fixes are covered by `.changeset/quiet-calendars-guard.md`.
 
 ## Remaining findings and risks
 
-### P2 — Korean API documentation is not at English parity
+### P2: Korean API documentation is not at English parity
 
 - **Evidence:** non-empty line ratios are Date 57%, Range 59%, Week 54%, Time
   57%, DateTime 38%, Month 58%, Year 56%. Several Korean pages still contain
@@ -189,7 +189,7 @@ All publishable fixes are covered by `.changeset/quiet-calendars-guard.md`.
 - **Direction:** define a page-section parity manifest, translate the missing
   content, and fail CI when required headings/API rows diverge.
 
-### P2 — default CJS bundle has little remaining budget
+### P2: default CJS bundle has little remaining budget
 
 - **Evidence:** patched sizes are ESM/CJS 19.43/19.71 KB against 20 KB; the CJS
   margin is only 295 bytes. Headless is 20.71/21.04 KB against 22 KB.
@@ -199,7 +199,7 @@ All publishable fixes are covered by `.changeset/quiet-calendars-guard.md`.
   representation, audit duplicated default/headless code, and set an early
   warning threshold below the hard limit.
 
-### P2 — cross-browser E2E is not a pre-merge gate
+### P2: cross-browser E2E is not a pre-merge gate
 
 - **Evidence:** `.github/workflows/e2e-and-docs.yml` triggers on `push: main` and
   manual dispatch only. The PR aggregate gate does not depend on it.
@@ -208,7 +208,7 @@ All publishable fixes are covered by `.changeset/quiet-calendars-guard.md`.
 - **Direction:** add `pull_request` (possibly path-filtered with a stable skip
   job) and make the three browser results part of the required aggregate.
 
-### P2 — release/security actions use mutable version tags
+### P2: release/security actions use mutable version tags
 
 - **Evidence:** release uses `changesets/action@v1`; checkout/setup actions and
   the OSV reusable workflow also use tags rather than immutable commit SHAs.
@@ -217,7 +217,7 @@ All publishable fixes are covered by `.changeset/quiet-calendars-guard.md`.
 - **Direction:** pin third-party actions by full SHA and use automated, reviewed
   pin updates.
 
-### P3 — local adapter conformance can read stale built core helpers
+### P3: local adapter conformance can read stale built core helpers
 
 - **Evidence:** the new shared conformance assertion appeared green until
   `@kalyx/core` was rebuilt because tests import `@kalyx/core/test-helpers` from
@@ -227,7 +227,7 @@ All publishable fixes are covered by `.changeset/quiet-calendars-guard.md`.
 - **Direction:** alias the test-helper source in Vitest or add an explicit
   pretest core build.
 
-### P3 — two ignored HIGH advisories and governance state need monitoring
+### P3: two ignored HIGH advisories and governance state need monitoring
 
 - `pnpm audit --prod` reports two HIGH infinite-loop advisories in
   `image-size@2.0.2`, reachable only through private Docusaurus tooling. No fixed
@@ -262,7 +262,7 @@ All publishable fixes are covered by `.changeset/quiet-calendars-guard.md`.
    including impossible dates. Packed internal dependencies resolve to caret
    ranges (`workspace:^` source), avoiding the former exact-pin dead end.
 9. **Tree-shaking/consumer bundle:** every unused picker is eliminated in the
-   real esbuild consumer harness; a single picker remains 16.30–20.10 KB gzip
+   real esbuild consumer harness; a single picker remains 16.30-20.10 KB gzip
    because the pickers share substantial infrastructure.
 10. **English/Korean docs/API:** factual Month/Year disabled/form errors and all
     new form contracts are fixed; Korean completeness remains P2.

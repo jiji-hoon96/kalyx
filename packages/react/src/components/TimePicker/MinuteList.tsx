@@ -18,14 +18,14 @@ export interface TimePickerMinuteListProps extends Omit<
 }
 
 /**
- * TimePicker.MinuteList — `role="listbox"` pattern for minute selection.
+ * TimePicker.MinuteList: `role="listbox"` pattern for minute selection.
  * The displayed minutes depend on the `step` prop (e.g., step=15 -> [0, 15, 30, 45]).
  */
 export function TimePickerMinuteList({ classNames, ...props }: TimePickerMinuteListProps) {
   const ctx = useTimePickerContext('TimePicker.MinuteList');
   const { step, currentTime, isDisabled, isReadOnly, filterTime } = ctx;
 
-  // Stable across renders unless `step` changes — useListboxNavigation
+  // Stable across renders unless `step` changes; useListboxNavigation
   // identity-compares its `items` array internally.
   const minutes = useMemo(() => generateMinutes(step), [step]);
 

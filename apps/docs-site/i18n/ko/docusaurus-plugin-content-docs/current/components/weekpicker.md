@@ -23,7 +23,7 @@ import { WeekPicker, type DateRange } from '@kalyx/react';
 ## 구조
 
 ```tsx
-<WeekPicker>            {/* Root — value = { start, end } of the week */}
+<WeekPicker>            {/* Root: value = { start, end } of the week */}
   <WeekPicker.Input part="start" /> {/* week-start combobox input */}
   <WeekPicker.Input part="end" />   {/* week-end combobox input */}
   <WeekPicker.Popover> {/* Floating-UI portal, role="dialog" */}

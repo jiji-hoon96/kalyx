@@ -1,7 +1,7 @@
 {
 	"name": "@kalyx/adapter-date-fns",
 	"version": "1.0.2",
-	"description": "date-fns adapter for @kalyx/core — implements the DateAdapter contract using date-fns (timezone work is delegated to @kalyx/core's Intl-based utilities).",
+	"description": "date-fns adapter for @kalyx/core. Implements the DateAdapter contract using date-fns (timezone work is delegated to @kalyx/core's Intl-based utilities).",
 	"license": "MIT",
 	"author": "jiji-hoon96",
 	"homepage": "https://github.com/jiji-hoon96/kalyx#readme",

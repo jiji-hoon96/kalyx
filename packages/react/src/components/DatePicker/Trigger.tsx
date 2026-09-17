@@ -10,7 +10,7 @@ export interface DatePickerTriggerProps extends Omit<
 }
 
 /**
- * DatePicker.Trigger — Calendar icon button. Toggles the popover on click and
+ * DatePicker.Trigger: Calendar icon button. Toggles the popover on click and
  * announces its state via `aria-expanded` / `aria-haspopup="dialog"`.
  *
  * If you render a `DatePicker.Input`, the input acts as the popover reference;

@@ -2,7 +2,7 @@ import type { DateAdapter } from '../types.js';
 
 /**
  * The single matcher the conformance suite needs. Structurally satisfied by
- * Vitest's / Jest's `expect`, so the suite stays framework-agnostic — the host
+ * Vitest's / Jest's `expect`, so the suite stays framework-agnostic; the host
  * project injects its own `describe` / `it` / `expect`.
  */
 export interface ConformanceExpect {

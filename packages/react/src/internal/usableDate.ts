@@ -5,7 +5,7 @@ import type { DateAdapter, ISODateString } from '@kalyx/core';
  *
  * `value` / `defaultValue` normally arrive from a form field or a database row, so an empty
  * or malformed string is *data*, not a programming error. The calendar view is seeded from
- * that value, and every adapter builds its result from `new Date(value).toISOString()` — on
+ * that value, and every adapter builds its result from `new Date(value).toISOString()`. On
  * an unparseable string that throws `RangeError: Invalid time value` during render and takes
  * the whole React tree down with it. Under `renderToString` a single bad row becomes a 500.
  *

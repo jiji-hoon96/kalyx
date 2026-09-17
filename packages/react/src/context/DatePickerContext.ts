@@ -18,7 +18,7 @@ export interface DatePickerContextValue {
   selectDate: (iso: ISODateString | null) => void;
   /**
    * Apply a full datetime (date + time) in a single update. Only provided by
-   * DateTimePicker.Root — undefined for plain DatePicker. Used by
+   * DateTimePicker.Root; undefined for plain DatePicker. Used by
    * DateTimePicker.Presets so a preset like "today 09:00" commits both portions
    * atomically instead of racing `selectDate` (time-preserving) with `setTime`.
    * Returns whether the Root accepted the commit so callers only apply follow-up
@@ -75,7 +75,7 @@ export interface DatePickerContextValue {
   /**
    * Push a screen-reader announcement into the Root-level live region. Provided by
    * DatePicker/DateTimePicker Root so month navigation and date selection are announced
-   * even though the live region lives on Root (and thus survives Calendar unmount) —
+   * even though the live region lives on Root (and thus survives Calendar unmount),
    * parity with RangePickerContext.announce.
    */
   announce: (message: string) => void;

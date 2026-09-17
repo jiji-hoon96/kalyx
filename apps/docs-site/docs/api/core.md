@@ -79,7 +79,7 @@ See the [Adapters concept →](../concepts/adapters.md) for the full interface.
 
 ## `DateFnsAdapter`
 
-Default adapter — UTC-safe, built on date-fns v4.
+Default adapter. UTC-safe, built on date-fns v4.
 
 ```ts
 import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
@@ -89,7 +89,7 @@ import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 
 ### `getCalendarDays(viewMonth, adapter, options)`
 
-Build a 4–6 week grid for a month. Set `fixedWeeks: true` when the layout requires exactly 6 weeks.
+Build a 4-6 week grid for a month. Set `fixedWeeks: true` when the layout requires exactly 6 weeks.
 
 ```ts
 import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
@@ -102,7 +102,7 @@ const grid = getCalendarDays(
 );
 ```
 
-Returns `CalendarGrid` (4–6 arrays of 7 `CalendarDay`s). Leading and trailing days belong to neighboring months (`isCurrentMonth: false`). With `fixedWeeks: true`, the result is always 6×7.
+Returns `CalendarGrid` (4-6 arrays of 7 `CalendarDay`s). Leading and trailing days belong to neighboring months (`isCurrentMonth: false`). With `fixedWeeks: true`, the result is always 6×7.
 
 ### `isDateDisabled(iso, rules, adapter, timezone?)`
 
@@ -117,8 +117,8 @@ isDateDisabled(
 ); // → true (Saturday)
 
 // With `timezone`, `{ date }` / `{ dayOfWeek }` rules match by the civil day in
-// that zone. Pass the civil-midnight-in-timezone instant the pickers emit — the
-// same value `onChange` gives you — not a raw `…T00:00:00Z` grid coordinate:
+// that zone. Pass the civil-midnight-in-timezone instant the pickers emit (the
+// same value `onChange` gives you), not a raw `…T00:00:00Z` grid coordinate:
 isDateDisabled(
   '2026-01-15T05:00:00.000Z',            // civil Jan 15 in America/New_York
   [{ date: '2026-01-15T05:00:00.000Z' }],
@@ -131,12 +131,12 @@ isDateDisabled(
 coordinate: under a negative UTC offset, `2026-01-15T00:00:00.000Z` is still the
 14th locally. `{ before }` / `{ after }` are instant comparisons and ignore
 `timezone`. When you just need per-cell disabled state for a calendar, read the
-precomputed `isDisabled` flag from `getCalendarDays(...)` instead — it normalizes
+precomputed `isDisabled` flag from `getCalendarDays(...)` instead; it normalizes
 each cell for you.
 
 ### `getISOWeekNumber(iso)`
 
-ISO 8601 week number (1–53) of the instant's UTC day. Weeks start Monday and week 1 is the one containing the first Thursday of the year, so early-January and late-December dates can belong to the neighboring year's numbering. `WeekPicker` uses this for its week labels.
+ISO 8601 week number (1-53) of the instant's UTC day. Weeks start Monday and week 1 is the one containing the first Thursday of the year, so early-January and late-December dates can belong to the neighboring year's numbering. `WeekPicker` uses this for its week labels.
 
 ```ts
 import { getISOWeekNumber } from '@kalyx/core';
@@ -166,7 +166,7 @@ minDate(
 
 ### `normalizeISO(value)`
 
-Lenient normalizer — expands a date-only value like `2026-04-15` to a full UTC-midnight ISO string. Full ISO datetimes and unrecognized strings are returned unchanged; an empty string stays empty.
+Lenient normalizer. Expands a date-only value like `2026-04-15` to a full UTC-midnight ISO string. Full ISO datetimes and unrecognized strings are returned unchanged; an empty string stays empty.
 
 ### `parseInputValue(input, adapter)`
 
@@ -259,11 +259,11 @@ formatFullDate('2026-04-15T00:00:00.000Z', 'en-US');
 
 ### `getWeekStartForLocale(locale?)`
 
-The first day of the week the locale conventionally uses, narrowed to a `WeekStartsOn` — `0` (Sunday) or `1` (Monday). `DatePicker` and `RangePicker` call this when you don't pass `weekStartsOn`; an explicit prop always wins.
+The first day of the week the locale conventionally uses, narrowed to a `WeekStartsOn`: `0` (Sunday) or `1` (Monday). `DatePicker` and `RangePicker` call this when you don't pass `weekStartsOn`; an explicit prop always wins.
 
 :::note Saturday- and Friday-start locales are reported as Monday
 
-The runtime distinguishes more than two starts — `Intl` reports Saturday for `ar-AF` and `fa-IR`, and Friday for `dv-MV`. The public `WeekStartsOn` type is `0 | 1`, so every non-Sunday result is narrowed to `1`. Those locales therefore render a Monday-start grid, not their conventional one. If you need an exact start, pass `weekStartsOn` explicitly.
+The runtime distinguishes more than two starts: `Intl` reports Saturday for `ar-AF` and `fa-IR`, and Friday for `dv-MV`. The public `WeekStartsOn` type is `0 | 1`, so every non-Sunday result is narrowed to `1`. Those locales therefore render a Monday-start grid, not their conventional one. If you need an exact start, pass `weekStartsOn` explicitly.
 
 :::
 
@@ -325,7 +325,7 @@ UTC offset (minutes east of UTC) at the given instant. Differs before and after 
 
 ### `civilMidnightFromUtcDay(gridUtcIso, timeZone)`
 
-The bridge Calendar uses: maps a UTC-midnight grid cell ISO to civil midnight of the same calendar day in the zone. You rarely need this directly — it is exported for custom calendar renderers.
+The bridge Calendar uses: maps a UTC-midnight grid cell ISO to civil midnight of the same calendar day in the zone. You rarely need this directly; it is exported for custom calendar renderers.
 
 ```ts
 import { civilMidnightFromUtcDay } from '@kalyx/core';

@@ -39,7 +39,7 @@ export interface DatePickerCalendarProps extends Omit<HTMLAttributes<HTMLDivElem
   /** Called when the title ("January 2026") is clicked. Useful for switching to Month/Year views. */
   onTitleClick?: () => void;
   /**
-   * Render an ISO 8601 week-number column on the left of the grid (1–53).
+   * Render an ISO 8601 week-number column on the left of the grid (1-53).
    * The column is a `<th scope="row">`; it doesn't participate in the WAI-ARIA grid
    * data region, so keyboard navigation across the date cells is unaffected.
    */
@@ -51,7 +51,7 @@ export interface DatePickerCalendarProps extends Omit<HTMLAttributes<HTMLDivElem
   fixedWeeks?: boolean;
 }
 
-/** Safe wrapper for formatFullDate — falls back to ISO string on error */
+/** Safe wrapper for formatFullDate; falls back to ISO string on error */
 function safeFormatFullDate(iso: string, locale: string): string {
   try {
     return formatFullDate(iso, locale);
@@ -72,11 +72,11 @@ export function DatePickerCalendar({
 
   const { adapter, viewMonth, focusedDate, weekStartsOn, disabled, locale, displayTimezone } = ctx;
   const dir = ctx.dir;
-  // Memoized — weekday header tuples only change when locale or week start changes.
+  // Memoized: weekday header tuples only change when locale or week start changes.
   const weekdays = useMemo(() => getWeekdayNames(locale, weekStartsOn), [locale, weekStartsOn]);
 
   // Recompute cell flags with a timezone-aware today/selected matcher when displayTimezone is set.
-  // The grid iteration stays in UTC — only the `isSelected` / `isToday` highlighting shifts.
+  // The grid iteration stays in UTC; only the `isSelected` / `isToday` highlighting shifts.
   // Memoized so the 42-cell grid isn't rebuilt on unrelated re-renders (parent state, etc.).
   const weeks = useMemo(
     () =>
@@ -103,7 +103,7 @@ export function DatePickerCalendar({
     ],
   );
 
-  // For each row, derive the ISO week number from the Thursday cell — Thursday is always
+  // For each row, derive the ISO week number from the Thursday cell. Thursday is always
   // in the row's "owning" ISO week regardless of weekStartsOn, so this is stable across
   // week-start configurations.
   const thursdayIndex = weekStartsOn === 0 ? 4 : 3;
@@ -233,7 +233,7 @@ export function DatePickerCalendar({
           attempts++;
         }
         if (attempts >= 42) {
-          // No reachable enabled date in this direction — leave focus where it was.
+          // No reachable enabled date in this direction; leave focus where it was.
           return;
         }
 

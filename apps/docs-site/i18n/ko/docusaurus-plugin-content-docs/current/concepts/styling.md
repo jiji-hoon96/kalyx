@@ -9,8 +9,8 @@ description: '직접 쓴 CSS 로 Kalyx 를 스타일링합니다. classNames 슬
 
 Kalyx는 **CSS를 전혀 포함하지 않습니다**. 모든 파트는 의미론적이고 스타일이 없는 HTML을 렌더링하며, 두 가지 스타일링 계약을 노출합니다:
 
-1. **`classNames` prop** — 각 서브 컴포넌트에 있는, 슬롯 이름 → 클래스 문자열의 타입드 맵.
-2. **`data-*` 상태 어트리뷰트** — 인터랙티브 요소에 방출되어, 리렌더 없이 CSS / Tailwind로 상태별 스타일을 줄 수 있습니다.
+1. **`classNames` prop**: 각 서브 컴포넌트에 있는, 슬롯 이름 → 클래스 문자열의 타입드 맵.
+2. **`data-*` 상태 어트리뷰트**: 인터랙티브 요소에 방출되어, 리렌더 없이 CSS / Tailwind로 상태별 스타일을 줄 수 있습니다.
 
 둘 중 하나만 써도 되고, 안정적인 클래스 + 상태 기반 변형을 원하면 함께 쓰세요.
 
@@ -31,11 +31,11 @@ Kalyx는 **CSS를 전혀 포함하지 않습니다**. 모든 파트는 의미론
 />
 ```
 
-슬롯 키는 각 컴포넌트 페이지에 서브 컴포넌트별로 문서화되어 있습니다. 상태 슬롯(`daySelected`, `dayToday` 등)은 해당 상태가 활성일 때 기본 슬롯(`day`)에 **추가로** 적용됩니다 — 즉 선택된 날짜는 `day`와 `daySelected` 클래스를 모두 갖습니다.
+슬롯 키는 각 컴포넌트 페이지에 서브 컴포넌트별로 문서화되어 있습니다. 상태 슬롯(`daySelected`, `dayToday` 등)은 해당 상태가 활성일 때 기본 슬롯(`day`)에 **추가로** 적용됩니다. 즉 선택된 날짜는 `day`와 `daySelected` 클래스를 모두 갖습니다.
 
 ## 2. `data-*` 상태 어트리뷰트
 
-Tailwind(`data-[selected]:…`)나 일반 CSS 어트리뷰트 셀렉터를 쓰려면, 모든 상태 요소가 `data-*` 어트리뷰트도 함께 갖습니다. 이 어트리뷰트는 **상태가 활성일 때만 존재**하며(비활성이면 생략 — `data-selected="false"`는 절대 없음), 따라서 `[data-selected]`는 신뢰할 수 있는 셀렉터입니다.
+Tailwind(`data-[selected]:…`)나 일반 CSS 어트리뷰트 셀렉터를 쓰려면, 모든 상태 요소가 `data-*` 어트리뷰트도 함께 갖습니다. 이 어트리뷰트는 **상태가 활성일 때만 존재**하며(비활성이면 생략. `data-selected="false"`는 절대 없음), 따라서 `[data-selected]`는 신뢰할 수 있는 셀렉터입니다.
 
 ```css
 /* 일반 CSS */
@@ -45,7 +45,7 @@ Tailwind(`data-[selected]:…`)나 일반 CSS 어트리뷰트 셀렉터를 쓰�
 ```
 
 ```tsx
-/* Tailwind v3.1+ data variants — no classNames needed */
+/* Tailwind v3.1+ data variants: no classNames needed */
 <DatePicker.Calendar
   classNames={{
     day: 'rounded p-2 data-[selected]:bg-blue-600 data-[selected]:text-white data-[today]:ring-1',
@@ -89,7 +89,7 @@ Kalyx가 방출하는 어트리뷰트 목록입니다. `disabled` 날짜는 네�
 | 어트리뷰트 | 방출 주체 | 활성 조건 |
 | --- | --- | --- |
 | `data-active` | `DatePicker` / `RangePicker` / `DateTimePicker` `.Preset` | 프리셋이 해석한 날짜가 현재 값과 일치. |
-| `data-part` | `RangePicker` / `WeekPicker` `.Input` | 항상 — 값은 `"start"` 또는 `"end"`로, 각 입력을 타겟팅. |
+| `data-part` | `RangePicker` / `WeekPicker` `.Input` | 항상. 값은 `"start"` 또는 `"end"`로, 각 입력을 타겟팅. |
 
 ## 무엇을 써야 하나요?
 

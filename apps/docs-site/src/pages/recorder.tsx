@@ -8,7 +8,7 @@ import HeroDemo from '../components/HeroDemo';
  * to produce hero-light.webp / hero-dark.webp.
  *
  * Query params:
- *   ?frame=N — render HeroDemo with initialFrame=N, autoplay=false
+ *   ?frame=N: render HeroDemo with initialFrame=N, autoplay=false
  *
  * Theme is driven by Playwright's `colorScheme` context option (sets
  * prefers-color-scheme on the page). Docusaurus is configured with
@@ -17,7 +17,7 @@ import HeroDemo from '../components/HeroDemo';
  * overwritten by Docusaurus's own theme manager.
  *
  * The body is wrapped in <BrowserOnly> because Docusaurus SSGs this page at
- * build time — HeroDemo's matchMedia call would crash without a window.
+ * build time; HeroDemo's matchMedia call would crash without a window.
  * Hidden from production search engines via noindex meta. Not linked from
  * any nav surface.
  */
@@ -28,7 +28,7 @@ export default function RecorderRoute() {
       noFooter
       wrapperClassName="hero-recorder-page">
       <meta name="robots" content="noindex,nofollow" />
-      {/* Hide every piece of Docusaurus chrome — this route is screenshot
+      {/* Hide every piece of Docusaurus chrome; this route is screenshot
           fodder only, so heavy-handed CSS is fine. The hero must fill the
           entire 960×540 viewport without nav/announcement/footer bleed. */}
       <style>{`

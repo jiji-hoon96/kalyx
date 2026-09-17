@@ -27,12 +27,12 @@ function useYearPicker(options?: UseYearPickerOptions): UseYearPickerReturn;
 
 | 필드 | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | controlled 연도 (1월 1일 ISO로 저장). |
-| `defaultValue` | `ISODateString` | — | uncontrolled 초기 연도. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | 연도가 바뀔 때 호출. |
+| `value` | `ISODateString \| null` | - | controlled 연도 (1월 1일 ISO로 저장). |
+| `defaultValue` | `ISODateString` | - | uncontrolled 초기 연도. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | 연도가 바뀔 때 호출. |
 | `disabled` | `DisabledRule[]` | `[]` | 연도는 완전히 배제될 때만 비활성. |
-| `adapter` | `DateAdapter` | — | 날짜 어댑터 (`/headless`에서 필수). |
-| `displayTimezone` | `string` | — | civil-day 비교용 IANA 존. |
+| `adapter` | `DateAdapter` | - | 날짜 어댑터 (`/headless`에서 필수). |
+| `displayTimezone` | `string` | - | civil-day 비교용 IANA 존. |
 
 ### 반환
 

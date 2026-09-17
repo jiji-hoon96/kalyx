@@ -74,7 +74,7 @@ export function PlaygroundClient() {
 		[disableWeekends],
 	);
 
-	// `disabled` prop accepts boolean too — globalDisabled wins over rules.
+	// `disabled` prop accepts boolean too; globalDisabled wins over rules.
 	const sharedDisabled = globalDisabled ? true : disabledRules;
 
 	const tzOrUndefined = displayTimezone || undefined;
@@ -161,7 +161,7 @@ export function PlaygroundClient() {
 							value={displayTimezone}
 							onChange={(e) => setDisplayTimezone(e.target.value)}
 						>
-							<option value="">(none — UTC)</option>
+							<option value="">(none: UTC)</option>
 							{TIMEZONES.map((tz) => (
 								<option key={tz} value={tz}>
 									{tz}
@@ -436,7 +436,7 @@ export function PlaygroundClient() {
 					</header>
 					<ol>
 						{events.length === 0 ? (
-							<li className="playground-eventlog-empty">No events yet — interact with any picker.</li>
+							<li className="playground-eventlog-empty">No events yet. Interact with any picker.</li>
 						) : (
 							events.map((evt, i) => (
 								<li key={`${evt.at}-${i}`}>

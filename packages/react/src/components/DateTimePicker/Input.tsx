@@ -13,10 +13,10 @@ export interface DateTimePickerInputProps extends Omit<
 }
 
 /**
- * DateTimePicker.Input — Displays date and time combined.
+ * DateTimePicker.Input: Displays date and time combined.
  * Example: "2026-01-15 14:30"
  *
- * The input is read-only — use Calendar/TimePicker sub-components to select values.
+ * The input is read-only; use Calendar/TimePicker sub-components to select values.
  */
 export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerInputProps>(
   function DateTimePickerInput({ name, onClick, onKeyDown, ...props }, ref) {
@@ -24,7 +24,7 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
 
     // Combine the date portion (yyyy-MM-dd) and the time portion (HH:mm)
     // Adapters render an unparseable value as "NaN-NaN-NaN" rather than throwing, so the
-    // validity check has to gate the format call — the catch alone would not see it.
+    // validity check has to gate the format call; the catch alone would not see it.
     let displayValue = '';
     if (ctx.value && !usableDate(ctx.value, ctx.adapter)) {
       displayValue = ctx.value;

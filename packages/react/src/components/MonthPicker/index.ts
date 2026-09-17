@@ -11,7 +11,7 @@ import type { DatePickerPopoverProps } from '../DatePicker/Popover.js';
 import type { MonthPickerGridProps, MonthPickerGridClassNames } from './Grid.js';
 
 /**
- * MonthPicker — Headless month selector. Value is the first day of the selected month (UTC-ISO).
+ * MonthPicker: Headless month selector. Value is the first day of the selected month (UTC-ISO).
  *
  * Reuses DatePicker infrastructure (Root, Input, Trigger, Popover) so the public surface stays
  * consistent. The only new building block is `MonthPicker.Grid`, a 12-month commit grid.

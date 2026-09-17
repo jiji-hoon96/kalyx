@@ -1,7 +1,7 @@
 import styles from './StackBlitzEmbed.module.css';
 
 export type StackBlitzEmbedProps = {
-  /** examples/<id> — must match a real directory in this repo. */
+  /** examples/<id>. Must match a real directory in this repo. */
   id: string;
   /** File to open in the embed by default. Defaults to 'src/App.tsx'. */
   file?: string;

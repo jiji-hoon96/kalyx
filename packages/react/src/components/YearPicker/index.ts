@@ -11,7 +11,7 @@ import type { DatePickerPopoverProps } from '../DatePicker/Popover.js';
 import type { YearPickerGridProps, YearPickerGridClassNames } from './Grid.js';
 
 /**
- * YearPicker — Headless year selector. Value is Jan 1 of the selected year (UTC-ISO).
+ * YearPicker: Headless year selector. Value is Jan 1 of the selected year (UTC-ISO).
  *
  * Reuses DatePicker infrastructure (Root, Input, Trigger, Popover) so the public surface stays
  * consistent. The only new building block is `YearPicker.Grid`, a 12-year decade commit grid.

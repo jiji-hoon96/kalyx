@@ -9,11 +9,11 @@ import StackBlitzEmbed from '@site/src/components/StackBlitzEmbed';
 
 # RangePicker
 
-Two-date selection — a start and an end — with optional presets.
+Two-date selection (a start and an end) with optional presets.
 
 <figure>
   <img src="/img/demos/rangepicker.avif" alt="RangePicker demo: selecting a start and end date with hover preview" width="640" loading="lazy" />
-  <figcaption><em>Styling shown is demo-only — Kalyx ships zero CSS.</em></figcaption>
+  <figcaption><em>Styling shown is demo-only. Kalyx ships zero CSS.</em></figcaption>
 </figure>
 
 ```tsx
@@ -23,7 +23,7 @@ import { RangePicker } from '@kalyx/react';
 ## Anatomy
 
 ```tsx
-<RangePicker>            {/* Root — holds the { start, end } range */}
+<RangePicker>            {/* Root: holds the { start, end } range */}
   <RangePicker.Input part="start" /> {/* start-date combobox input */}
   <RangePicker.Input part="end" />   {/* end-date combobox input */}
   <RangePicker.Popover> {/* Floating-UI portal, role="dialog" */}
@@ -59,7 +59,7 @@ function Example() {
 
 ### Try it live
 
-> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project — see the full imports in the non-live blocks above.
+> The live editor runs with `React` and all Kalyx components in scope, so `import` lines are omitted. Copy them in when porting to your project; see the full imports in the non-live blocks above.
 
 ```jsx live
 function BasicRange() {
@@ -105,19 +105,19 @@ function BasicRange() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `DateRange` | — | Controlled range. |
-| `defaultValue` | `DateRange` | — | Uncontrolled initial range. |
-| `onChange` | `(range: DateRange) => void` | — | Fires on every change (including partial). |
+| `value` | `DateRange` | - | Controlled range. |
+| `defaultValue` | `DateRange` | - | Uncontrolled initial range. |
+| `onChange` | `(range: DateRange) => void` | - | Fires on every change (including partial). |
 | `disabled` | `DisabledRule[] \| boolean` | `false` | Disable rules or entire picker. |
 | `readOnly` | `boolean` | `false` | Prevents changes. |
 | `weekStartsOn` | `0 \| 1` | inferred from `locale` | Week start. Inferred from `locale` when omitted; an explicit prop wins. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | Format string. |
 | `locale` | `string` | `'en-US'` | BCP 47 locale. |
 | `dir` | `'ltr' \| 'rtl'` | `'ltr'` | Layout direction. In `'rtl'` the calendar grid carries `dir="rtl"` and ArrowLeft/ArrowRight are mirrored (WAI-ARIA grid pattern). See [Internationalization](../concepts/internationalization.md#right-to-left-rtl). |
-| `displayTimezone` | `string` | — | IANA zone. When set, `start`/`end` are civil midnight of the clicked day in this zone. See [Timezone](../concepts/timezone.md). |
+| `displayTimezone` | `string` | - | IANA zone. When set, `start`/`end` are civil midnight of the clicked day in this zone. See [Timezone](../concepts/timezone.md). |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | Custom adapter. |
-| `labels` | `Partial<RangePickerLabels>` | — | Override ARIA labels. Adds `startInput`, `endInput`, `presetsGroup` on top of DatePicker's label keys. |
-| `children` | `ReactNode` | — | Sub-components. |
+| `labels` | `Partial<RangePickerLabels>` | - | Override ARIA labels. Adds `startInput`, `endInput`, `presetsGroup` on top of DatePicker's label keys. |
+| `children` | `ReactNode` | - | Sub-components. |
 
 ### `DateRange`
 
@@ -128,11 +128,11 @@ type DateRange = {
 };
 ```
 
-Kalyx doesn't enforce that `end >= start` while the user is selecting — it auto-swaps on commit. You get both values via `onChange`; the shape is always `{ start, end }`.
+Kalyx doesn't enforce that `end >= start` while the user is selecting; it auto-swaps on commit. You get both values via `onChange`; the shape is always `{ start, end }`.
 
 ## `<RangePicker.Input>`
 
-Two inputs required — one for `start`, one for `end`. The first input rendered acts as the Floating UI reference for the popover.
+Two inputs required: one for `start`, one for `end`. The first input rendered acts as the Floating UI reference for the popover.
 
 | Prop | Type | Description |
 | --- | --- | --- |
@@ -152,8 +152,8 @@ Month grid with range highlighting.
 | `classNames` | `RangePickerCalendarClassNames` | Styling. |
 | `selectionMode` | `'range' \| 'week'` (default `'range'`) | `'week'` selects a whole week per click. `WeekPicker.Calendar` is this component with `selectionMode` pinned to `'week'`. |
 | `weekAnchor` | `'calendar' \| 'clicked'` (default `'calendar'`) | Only with `selectionMode="week"`. `'calendar'` snaps to the `weekStartsOn`-aligned boundary; `'clicked'` takes the 7-day span anchored on the clicked day. |
-| `fixedWeeks` | `boolean` (default `false`) | Always render 6 week rows. Without it the grid is 4–6 rows, so the popover changes height from month to month. |
-| `showWeekNumber` | `boolean` (default `false`) | Render an ISO 8601 week-number column (1–53) on the left of the grid. The column is a `<th scope="row">` outside the WAI-ARIA grid data region, so keyboard navigation across date cells is unaffected. Style it with the `weekNumberHeader` / `weekNumber` `classNames` keys. |
+| `fixedWeeks` | `boolean` (default `false`) | Always render 6 week rows. Without it the grid is 4-6 rows, so the popover changes height from month to month. |
+| `showWeekNumber` | `boolean` (default `false`) | Render an ISO 8601 week-number column (1-53) on the left of the grid. The column is a `<th scope="row">` outside the WAI-ARIA grid data region, so keyboard navigation across date cells is unaffected. Style it with the `weekNumberHeader` / `weekNumber` `classNames` keys. |
 
 ```ts
 type RangePickerCalendarClassNames = {

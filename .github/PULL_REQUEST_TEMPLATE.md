@@ -5,12 +5,12 @@
 ## Type
 
 <!-- Check one -->
-- [ ] `feat` — New feature
-- [ ] `fix` — Bug fix
-- [ ] `refactor` — Code change that neither fixes a bug nor adds a feature
-- [ ] `docs` — Documentation only
-- [ ] `test` — Adding or updating tests
-- [ ] `chore` — Build, CI, deps, or tooling
+- [ ] `feat`: New feature
+- [ ] `fix`: Bug fix
+- [ ] `refactor`: Code change that neither fixes a bug nor adds a feature
+- [ ] `docs`: Documentation only
+- [ ] `test`: Adding or updating tests
+- [ ] `chore`: Build, CI, deps, or tooling
 
 ## Changes
 
@@ -28,7 +28,7 @@
 - [ ] `pnpm lint` passes
 - [ ] `pnpm test:run` passes
 - [ ] `pnpm build` succeeds
-- [ ] Bundle size checked (`pnpm check-bundle` — default entry ≤ 20 KB, headless ≤ 22 KB gzip)
+- [ ] Bundle size checked (`pnpm check-bundle`: default entry ≤ 20 KB, headless ≤ 22 KB gzip)
 - [ ] Changeset added (if public API changed)
 - [ ] New public APIs have JSDoc comments
 - [ ] Accessibility: axe passes, keyboard navigation works

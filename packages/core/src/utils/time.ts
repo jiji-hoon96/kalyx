@@ -133,7 +133,7 @@ export function generateHours(format: '12h' | '24h' = '24h'): number[] {
  * - `step=45` → `[0, 45]`
  * - `step=60` → `[0]` (on-the-hour only)
  *
- * Steps above 60 are rejected because they always collapse to `[0]` — useful UX
+ * Steps above 60 are rejected because they always collapse to `[0]`; useful UX
  * is impossible past that point.
  */
 export function generateMinutes(step = 1): number[] {

@@ -1,4 +1,4 @@
-// @kalyx/react/headless — adapter-explicit entry point.
+// @kalyx/react/headless: adapter-explicit entry point.
 //
 // Re-exports the same public surface as `@kalyx/react`, but deliberately
 // skips installing a default `DateAdapter`. Pass one yourself via the `adapter`
@@ -38,7 +38,7 @@ export { useRangePicker } from './hooks/useRangePicker.js';
 export { useTimePicker } from './hooks/useTimePicker.js';
 // Headless-only hooks for the remaining pickers. These deliberately live on the
 // `/headless` entry alone (not the default `@kalyx/react`) to keep the budgeted
-// default bundle unchanged — see the 2026-06-18 correctness-first direction spec.
+// default bundle unchanged; see the 2026-06-18 correctness-first direction spec.
 export { useMonthPicker } from './hooks/useMonthPicker.js';
 export { useYearPicker } from './hooks/useYearPicker.js';
 export { useWeekPicker } from './hooks/useWeekPicker.js';
@@ -137,7 +137,7 @@ export type {
   UseDateTimePickerReturn,
 } from './hooks/useDateTimePicker.js';
 
-// Core types/utilities — same as the main entry. We deliberately do NOT
+// Core types/utilities: same as the main entry. We deliberately do NOT
 // re-export `DateFnsAdapter` here; importing it would defeat the point of
 // the headless entry. If you want date-fns, install `@kalyx/adapter-date-fns`
 // directly or just use the main `@kalyx/react` entry.

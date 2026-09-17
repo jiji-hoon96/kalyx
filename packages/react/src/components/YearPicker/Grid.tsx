@@ -22,7 +22,7 @@ export interface YearPickerGridProps extends Omit<HTMLAttributes<HTMLDivElement>
 }
 
 /**
- * YearPicker.Grid — 12-year decade commit grid. Clicking a year selects it and closes the popover.
+ * YearPicker.Grid: 12-year decade commit grid. Clicking a year selects it and closes the popover.
  *
  * Unlike `DatePicker.YearGrid` (drilldown), this component commits the year selection via
  * `ctx.selectDate`, emitting the year-start ISO string (Jan 1 at UTC midnight).

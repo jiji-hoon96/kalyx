@@ -29,7 +29,7 @@ export function resolveEnabledCalendarFocus(
       if (!isDisabled(inMonth)) return inMonth;
     }
     // The whole month is disabled. Keep travelling the way the user asked
-    // instead of bouncing forward past the month they navigated away from —
+    // instead of bouncing forward past the month they navigated away from;
     // that turns the "previous month" button into a permanent dead end.
     for (let offset = 1; offset <= 366; offset++) {
       const earlier = adapter.addDays(monthStart, -offset);

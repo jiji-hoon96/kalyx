@@ -7,7 +7,7 @@ description: 'Swap date-fns for Day.js or Luxon using the @kalyx/react/headless 
 # Date adapters & the `/headless` entry
 
 `@kalyx/react` ships with `date-fns` wired up out of the box. If you're starting
-fresh, you don't need to think about adapters — install, import, render, done.
+fresh, you don't need to think about adapters: install, import, render, done.
 
 This guide is for the second case: you already ship `dayjs`, `luxon`, or
 `Temporal` in your app, and you'd rather not bundle a second date library just
@@ -79,14 +79,14 @@ reason to switch.
 You should switch to the `/headless` entry when:
 
 - **You already ship `dayjs` / `luxon` / `Temporal`.** Bundling `date-fns`
-  alongside is dead weight — a second parser, a second arithmetic engine,
+  alongside is dead weight: a second parser, a second arithmetic engine,
   a second formatter.
 - **You need a date library Kalyx doesn't bundle.** Pass your own adapter and
   Kalyx will route every date operation through it.
 - **You need a deterministic clock for tests.** A stub adapter whose `today()`
   always returns the same ISO string makes calendar snapshots stable.
 
-If none of these apply, stay on the default — switching costs more bytes of
+If none of these apply, stay on the default; switching costs more bytes of
 your attention than it saves of your bundle.
 
 ---
@@ -112,7 +112,7 @@ import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 
 Every Root component (`DatePicker`, `RangePicker`, `TimePicker`,
 `DateTimePicker`, `MonthPicker`, `YearPicker`, `WeekPicker`) accepts the same
-`adapter` prop. All seven hooks accept an `adapter` option — `useDatePicker`,
+`adapter` prop. All seven hooks accept an `adapter` option: `useDatePicker`,
 `useRangePicker` and `useTimePicker` from the main entry, plus `useMonthPicker`,
 `useYearPicker`, `useWeekPicker` and `useDateTimePicker`, which the `/headless`
 entry exports exclusively.
@@ -126,7 +126,7 @@ Pass one via <DatePicker adapter={...}>.
 If you don't need a custom adapter, import from '@kalyx/react' instead.
 ```
 
-This is intentional — catching the mistake at render is much friendlier than
+This is intentional: catching the mistake at render is much friendlier than
 crashing later inside a `addMonths` call with a stack trace pointing at the
 Calendar grid.
 
@@ -134,7 +134,7 @@ Calendar grid.
 
 You can use `@kalyx/react` (with the default adapter) for most of your app and
 `@kalyx/react/headless` (with a custom adapter) for the one screen that needs
-it. They compose freely — the component implementations are the same code,
+it. They compose freely; the component implementations are the same code,
 only the default-adapter installation differs.
 
 ---
@@ -190,7 +190,7 @@ interface DateAdapter {
 
 ### dayjs reference implementation
 
-Sketch — works for most non-DST-edge use cases. Install
+Sketch. Works for most non-DST-edge use cases. Install
 `dayjs`, `dayjs/plugin/utc`, `dayjs/plugin/timezone`,
 `dayjs/plugin/customParseFormat`.
 
@@ -289,7 +289,7 @@ import { DayjsAdapter } from './my-dayjs-adapter';
 - **Always return ISO 8601 UTC strings** (ending in `Z`). Local-time strings
   will silently drift on the next operation.
 - **`getMonth` is 0-indexed.** Match `Date.getUTCMonth()`. luxon's `.month`
-  is 1-indexed — subtract 1.
+  is 1-indexed; subtract 1.
 - **`startOfDay` / `today` take a timezone**. When provided, return the
   civil-midnight instant *of that zone*, not UTC midnight. Without it, return
   UTC midnight of the same calendar day. The TimePicker and Calendar both

@@ -7,7 +7,7 @@ description: 'Kalyx takes and returns ISO 8601 UTC strings, never Date objects. 
 
 # ISO 8601 UTC strings
 
-Every Kalyx value — `value`, `defaultValue`, `onChange`'s argument, every item in a `DateRange` — is an ISO 8601 UTC string or `null`. Never a `Date` object.
+Every Kalyx value (`value`, `defaultValue`, `onChange`'s argument, every item in a `DateRange`) is an ISO 8601 UTC string or `null`. Never a `Date` object.
 
 ```ts
 type ISODateString = string; // e.g. "2026-04-15T00:00:00.000Z"
@@ -25,7 +25,7 @@ const picked = new Date(2026, 3, 15); // "2026-04-14T15:00:00.000Z" in KST 🤦
 await save(picked);
 
 // Read back from DB in a UTC server
-new Date(picked.toISOString()).getDate(); // 14 — off by one
+new Date(picked.toISOString()).getDate(); // 14: off by one
 ```
 
 ISO strings eliminate the ambiguity at the boundary:
@@ -40,12 +40,12 @@ ISO strings eliminate the ambiguity at the boundary:
 Kalyx guarantees:
 
 1. Dates are stored as **UTC midnight** (`T00:00:00.000Z`) unless a time is explicitly set.
-2. `onChange` never fires with a `Date` — only a string or `null`.
+2. `onChange` never fires with a `Date`, only a string or `null`.
 3. Internal arithmetic uses the [`DateAdapter`](./adapters.md) which is UTC-safe end to end.
 
 ## Displaying in local time
 
-The value is UTC. **Display** is a rendering concern — handled by `displayFormat` and `locale` on each root:
+The value is UTC. **Display** is a rendering concern, handled by `displayFormat` and `locale` on each root:
 
 ```tsx
 <DatePicker
@@ -62,8 +62,8 @@ The value is UTC. **Display** is a rendering concern — handled by `displayForm
 ```
 
 `displayFormat` is **not** a full date-fns format string. The adapter does a literal
-token substitution over exactly eight tokens — `yyyy`, `MM`, `dd`, `HH`, `mm`, `ss`,
-`M`, `d` — and leaves everything else untouched. Month names are not among them:
+token substitution over exactly eight tokens (`yyyy`, `MM`, `dd`, `HH`, `mm`, `ss`,
+`M`, `d`) and leaves everything else untouched. Month names are not among them:
 `"MMM d, yyyy"` renders `"044 15, 2026"`, because `MM` and `M` each match inside
 `MMM`. All three shipped adapters share this limit. For a localized month name,
 format the value yourself with `Intl.DateTimeFormat` and render your own trigger text.
@@ -73,7 +73,7 @@ format the value yourself with `Intl.DateTimeFormat` and render your own trigger
 
 ## Converting to and from `Date`
 
-When you must bridge to a `Date` — for example, in a legacy form library — do it at the edge:
+When you must bridge to a `Date` (for example, in a legacy form library), do it at the edge:
 
 ```ts
 // Date → ISO
@@ -99,13 +99,13 @@ parseInputValue('2026-04-15', DateFnsAdapter); // "2026-04-15T00:00:00.000Z"
 parseInputValue('nope', DateFnsAdapter); // null
 ```
 
-These two live in `@kalyx/core`, not `@kalyx/react` — only `DateFnsAdapter` is re-exported from the React package. `parseInputValue` takes the adapter as its second argument and reads the input format from it; there is no separate format parameter.
+These two live in `@kalyx/core`, not `@kalyx/react`. Only `DateFnsAdapter` is re-exported from the React package. `parseInputValue` takes the adapter as its second argument and reads the input format from it; there is no separate format parameter.
 
 ## Times and time zones
 
-`TimePicker` and `DateTimePicker` also return ISO strings. The date part of a pure `TimePicker` value is a stable placeholder — consume only the time fields (`getTime(iso)` in `@kalyx/core` helps).
+`TimePicker` and `DateTimePicker` also return ISO strings. The date part of a pure `TimePicker` value is a stable placeholder; consume only the time fields (`getTime(iso)` in `@kalyx/core` helps).
 
-For IANA time-zone-aware display and input — rendering `"2026-04-15T00:00:00Z"` as `"2026-04-15 09:00 KST"`, or making a calendar click emit the civil midnight of that day in the user's zone — use the `displayTimezone` prop. See the dedicated [Timezone concept page](./timezone.md).
+For IANA time-zone-aware display and input (rendering `"2026-04-15T00:00:00Z"` as `"2026-04-15 09:00 KST"`, or making a calendar click emit the civil midnight of that day in the user's zone), use the `displayTimezone` prop. See the dedicated [Timezone concept page](./timezone.md).
 
 ## Next
 

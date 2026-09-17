@@ -4,10 +4,10 @@ import type {LoadContext, Plugin} from '@docusaurus/types';
 
 /**
  * Emits LLM-friendly artifacts after the build:
- *   - `/<route>.md`  — the raw Markdown source of every English doc page
- *   - `/llms.txt`    — an index (per the llmstxt.org convention) linking to them
+ *   - `/<route>.md`: the raw Markdown source of every English doc page
+ *   - `/llms.txt`: an index (per the llmstxt.org convention) linking to them
  *
- * Pure DX / agent affordance — no marketing surface. English docs only
+ * Pure DX / agent affordance, no marketing surface. English docs only
  * (the canonical source); the `/ko` locale is a translation layer.
  */
 export default function llmsTxtPlugin(context: LoadContext): Plugin {

@@ -13,7 +13,7 @@ input, trigger, popover, 캘린더 그리드로 이뤄진 단일 날짜 선택.
 
 <figure>
   <img src="/img/demos/datepicker.avif" alt="DatePicker 데모: popover를 열고 날짜를 선택" width="640" loading="lazy" />
-  <figcaption><em>화면의 스타일은 데모용입니다 — Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
+  <figcaption><em>화면의 스타일은 데모용입니다. Kalyx는 CSS를 전혀 포함하지 않습니다.</em></figcaption>
 </figure>
 
 ```tsx
@@ -118,19 +118,19 @@ function BasicDatePicker() {
 
 | Prop | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | 제어형 선택 날짜. |
-| `defaultValue` | `ISODateString` | — | 비제어형 초기값. `value` 있으면 무시. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | 선택 또는 초기화 시 호출. |
+| `value` | `ISODateString \| null` | - | 제어형 선택 날짜. |
+| `defaultValue` | `ISODateString` | - | 비제어형 초기값. `value` 있으면 무시. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | 선택 또는 초기화 시 호출. |
 | `disabled` | `DisabledRule[] \| boolean` | `false` | 특정 날짜 비활성화 또는 전체 비활성. |
 | `readOnly` | `boolean` | `false` | 변경 방지, 표시용으로 선택 가능. |
 | `weekStartsOn` | `0 \| 1` | `locale` 에서 추론 | `0` = 일요일, `1` = 월요일. 생략하면 `locale` 에서 추론한다(`en-US` → `0`, `de-DE` → `1`). 명시한 prop 이 항상 우선한다. |
 | `displayFormat` | `string` | `'yyyy-MM-dd'` | date-fns 포맷 문자열. |
 | `locale` | `string` | `'en-US'` | BCP 47 로케일 태그. |
 | `dir` | `'ltr' \| 'rtl'` | `'ltr'` | 레이아웃 방향. `'rtl'`이면 캘린더 그리드에 `dir="rtl"`이 붙고 ArrowLeft/ArrowRight가 시각적 레이아웃을 따르도록 반전된다(WAI-ARIA grid 패턴). ArrowUp/Down, PageUp/Down, Home/End는 논리적 방향을 유지한다. [국제화](../concepts/internationalization.md#오른쪽-왼쪽-rtl) 참고. |
-| `displayTimezone` | `string` | — | IANA 타임존(예: `"Asia/Seoul"`). 설정하면 Input 이 이 타임존으로 포맷하고, Calendar 하이라이트가 그 타임존의 civil day 와 맞으며, `onChange` 는 이 타임존의 civil midnight 을 내보낸다. [Timezone](../concepts/timezone.md) 참고. |
-| `labels` | `Partial<DatePickerLabels>` | — | ARIA 라벨 재정의(기본값은 영어). 키: `triggerOpen`, `triggerClose`, `popoverLabel`, `prevMonth`, `nextMonth`, `prevYear`, `nextYear` 등. |
+| `displayTimezone` | `string` | - | IANA 타임존(예: `"Asia/Seoul"`). 설정하면 Input 이 이 타임존으로 포맷하고, Calendar 하이라이트가 그 타임존의 civil day 와 맞으며, `onChange` 는 이 타임존의 civil midnight 을 내보낸다. [Timezone](../concepts/timezone.md) 참고. |
+| `labels` | `Partial<DatePickerLabels>` | - | ARIA 라벨 재정의(기본값은 영어). 키: `triggerOpen`, `triggerClose`, `popoverLabel`, `prevMonth`, `nextMonth`, `prevYear`, `nextYear` 등. |
 | `adapter` | `DateAdapter` | `DateFnsAdapter` | 커스텀 날짜 어댑터. |
-| `children` | `ReactNode` | — | 서브 컴포넌트. |
+| `children` | `ReactNode` | - | 서브 컴포넌트. |
 
 ### `DisabledRule`
 
@@ -234,7 +234,7 @@ Floating UI 위치 계산 포털 (`role="dialog"`, `aria-modal="false"`). 바깥
 | `classNames` | `DatePickerCalendarClassNames` | 내부 슬롯 스타일. |
 | `fixedWeeks` | `boolean` (기본 `false`) | 항상 6주 행을 렌더. 지정하지 않으면 4~6행이라 달마다 popover 높이가 바뀐다. |
 | `showWeekNumber` | `boolean` (기본 `false`) | 그리드 왼쪽에 ISO 8601 주차 열(1~53)을 렌더한다. 이 열은 WAI-ARIA grid 데이터 영역 밖의 `<th scope="row">` 라 날짜 셀 키보드 내비게이션에 영향을 주지 않는다. `classNames` 의 `weekNumberHeader` / `weekNumber` 키로 스타일링한다. |
-| `onTitleClick` | `() => void` | 월/연 타이틀 클릭 시 — `MonthGrid`/`YearGrid`와 연결. |
+| `onTitleClick` | `() => void` | 월/연 타이틀 클릭 시. `MonthGrid`/`YearGrid`와 연결. |
 
 ### `classNames` 키
 
@@ -276,8 +276,8 @@ type DatePickerCalendarClassNames = {
 | Prop | 타입 | 설명 |
 | --- | --- | --- |
 | `classNames` | `DatePickerMonthGridClassNames` | 스타일. |
-| `onSelect` | `() => void` | 월 선택 후 호출 — 보통 `Calendar`로 복귀. |
-| `onTitleClick` | `() => void` | 연도 타이틀 클릭 — `YearGrid`와 연결. |
+| `onSelect` | `() => void` | 월 선택 후 호출. 보통 `Calendar`로 복귀. |
+| `onTitleClick` | `() => void` | 연도 타이틀 클릭. `YearGrid`와 연결. |
 
 ```ts
 type DatePickerMonthGridClassNames = {
@@ -368,7 +368,7 @@ function WithJump() {
 
 ### 최소 / 최대 날짜
 
-별도의 `minDate`/`maxDate` prop은 없습니다 — 동일한 규칙을 `disabled`로 표현하세요.
+별도의 `minDate`/`maxDate` prop은 없습니다. 동일한 규칙을 `disabled`로 표현하세요.
 
 ```tsx
 <DatePicker
@@ -389,9 +389,9 @@ function WithJump() {
 
 `disabled` 규칙은 캘린더 좌표가 아니라 **instant**를 비교합니다. `displayTimezone`을 쓰지 않으면 둘이 같은 것이라 위 예제가 정확합니다.
 
-`displayTimezone`을 켜는 순간, 손으로 쓴 `'2026-01-01T00:00:00.000Z'`는 더 이상 그 존의 civil 1월 1일이 아닙니다 — 음수 UTC offset에서는 현지 기준 아직 12월 31일이고, 큰 양수 offset에서는 현지 자정보다 한참 전에 이미 1월 1일입니다. 그래서 경계일이 규칙의 반대편에 놓일 수 있습니다.
+`displayTimezone`을 켜는 순간, 손으로 쓴 `'2026-01-01T00:00:00.000Z'`는 더 이상 그 존의 civil 1월 1일이 아닙니다. 음수 UTC offset에서는 현지 기준 아직 12월 31일이고, 큰 양수 offset에서는 현지 자정보다 한참 전에 이미 1월 1일입니다. 그래서 경계일이 규칙의 반대편에 놓일 수 있습니다.
 
-피커가 실제로 내보내는 것과 같은 종류의 값을 넘기세요 — `onChange`로 받은 instant, 또는 `civilMidnightFromUtcDay`로 만든 값입니다.
+피커가 실제로 내보내는 것과 같은 종류의 값을 넘기세요. `onChange`로 받은 instant, 또는 `civilMidnightFromUtcDay`로 만든 값입니다.
 
 ```tsx
 import { civilMidnightFromUtcDay } from '@kalyx/core';
@@ -410,7 +410,7 @@ const tz = 'Asia/Seoul';
 </DatePicker>
 ```
 
-[`isDateDisabled`](../api/core.md#isdatedisablediso-rules-adapter-timezone)를 직접 호출할 때도 같은 규칙이 적용됩니다. 커스텀 그리드의 셀별 상태는 `getCalendarDays`가 미리 계산해 둔 `isDisabled` 플래그를 쓰세요 — 셀마다 이미 정규화돼 있습니다.
+[`isDateDisabled`](../api/core.md#isdatedisablediso-rules-adapter-timezone)를 직접 호출할 때도 같은 규칙이 적용됩니다. 커스텀 그리드의 셀별 상태는 `getCalendarDays`가 미리 계산해 둔 `isDisabled` 플래그를 쓰세요. 셀마다 이미 정규화돼 있습니다.
 
 :::
 

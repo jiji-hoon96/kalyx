@@ -27,12 +27,12 @@ function useYearPicker(options?: UseYearPickerOptions): UseYearPickerReturn;
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | Controlled year (stored as Jan 1 ISO). |
-| `defaultValue` | `ISODateString` | — | Uncontrolled initial year. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | Fires when the year changes. |
+| `value` | `ISODateString \| null` | - | Controlled year (stored as Jan 1 ISO). |
+| `defaultValue` | `ISODateString` | - | Uncontrolled initial year. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | Fires when the year changes. |
 | `disabled` | `DisabledRule[]` | `[]` | A year is disabled only when fully excluded. |
-| `adapter` | `DateAdapter` | — | Date adapter (required on `/headless`). |
-| `displayTimezone` | `string` | — | IANA zone for civil-day comparison. |
+| `adapter` | `DateAdapter` | - | Date adapter (required on `/headless`). |
+| `displayTimezone` | `string` | - | IANA zone for civil-day comparison. |
 
 ### Return
 

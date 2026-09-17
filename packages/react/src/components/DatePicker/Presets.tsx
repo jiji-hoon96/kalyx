@@ -25,7 +25,7 @@ export interface DatePickerPresetsProps extends Omit<HTMLAttributes<HTMLDivEleme
 }
 
 /**
- * DatePicker.Presets — Container wrapping preset buttons.
+ * DatePicker.Presets: Container wrapping preset buttons.
  *
  * @example
  * ```tsx
@@ -86,7 +86,7 @@ export interface DatePickerPresetProps extends Omit<HTMLAttributes<HTMLButtonEle
 }
 
 /**
- * DatePicker.Preset — One-click preset button to select a specific date.
+ * DatePicker.Preset: One-click preset button to select a specific date.
  *
  * Pass either `value` (a preset key) or `date` (a direct ISO string).
  *

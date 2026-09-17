@@ -11,7 +11,7 @@ description: 'react-datepicker 나 react-day-picker 에서 Kalyx 로 옮깁니�
 
 ## `react-datepicker`에서
 
-`react-datepicker`는 수십 개의 prop을 가진 단일 컴포넌트를 씁니다 — Kalyx는 그것들을 각각 서브 컴포넌트로 쪼갭니다.
+`react-datepicker`는 수십 개의 prop을 가진 단일 컴포넌트를 씁니다. Kalyx는 그것들을 각각 서브 컴포넌트로 쪼갭니다.
 
 ### 이전
 
@@ -60,7 +60,7 @@ const [view, setView] = useState<'days' | 'months' | 'years'>('days');
 | `showYearDropdown` | `<DatePicker.YearGrid>` 를 마운트 |
 | `dateFormat` | `displayFormat` |
 | `locale` | `locale` (BCP 47 태그) |
-| CSS import | 제거 — 스타일시트가 필요 없습니다 |
+| CSS import | 제거. 스타일시트가 필요 없습니다 |
 
 ### TimePicker 대응
 
@@ -91,10 +91,10 @@ const [view, setView] = useState<'days' | 'months' | 'years'>('days');
 | `<DayPicker mode="range">` | `<RangePicker>` + `<RangePicker.Calendar>` |
 | `selected` (`Date`) | `value` (`ISODateString`) |
 | `onSelect` | `onChange` |
-| `disabled` matcher | `DisabledRule[]` — `before`/`after`/`dayOfWeek`는 같은 형태 |
+| `disabled` matcher | `DisabledRule[]`. `before`/`after`/`dayOfWeek`는 같은 형태 |
 | `classNames` | `classNames` (키가 다릅니다. [DatePicker](./components/datepicker.md) 참고) |
 
-`react-day-picker`는 Input과 TimePicker를 제공하지 않습니다 — 그게 바로 Kalyx가 메우는 공백입니다. `react-day-picker`에 별도 텍스트 입력과 시간 컴포넌트를 붙여 쓰고 있었다면, 날짜는 `<DatePicker.Input>` 하나로 합치고 날짜+시간은 `<DateTimePicker>`로 옮길 수 있습니다.
+`react-day-picker`는 Input과 TimePicker를 제공하지 않습니다. 그게 바로 Kalyx가 메우는 공백입니다. `react-day-picker`에 별도 텍스트 입력과 시간 컴포넌트를 붙여 쓰고 있었다면, 날짜는 `<DatePicker.Input>` 하나로 합치고 날짜+시간은 `<DateTimePicker>`로 옮길 수 있습니다.
 
 ## React Aria의 `DatePicker`에서
 
@@ -103,7 +103,7 @@ React Aria는 철학적으로 가장 가깝지만 전 구간에 `@internationali
 | React Aria | Kalyx |
 | --- | --- |
 | `CalendarDate`, `DateValue` | `ISODateString` |
-| `useDatePicker` | `useDatePicker` (반환 형태가 다릅니다 — [훅 문서](./hooks/use-date-picker.md) 참고) |
+| `useDatePicker` | `useDatePicker` (반환 형태가 다릅니다. [훅 문서](./hooks/use-date-picker.md) 참고) |
 | `<DatePicker>` + `<Group>` + `<DateInput>` + `<Popover>` + `<Calendar>` | `<DatePicker>` + `<DatePicker.Input>` + `<DatePicker.Popover>` + `<DatePicker.Calendar>` |
 
 변환 shim:
@@ -118,7 +118,7 @@ const toISO = (cal: CalendarDate | null): ISODateString | null =>
   cal ? new Date(Date.UTC(cal.year, cal.month - 1, cal.day)).toISOString() : null;
 ```
 
-## v0.2 → v0.3 — ARIA 라벨 i18n
+## v0.2 → v0.3: ARIA 라벨 i18n
 
 v0.3부터 기본 ARIA 라벨이 한국어에서 영어로 바뀝니다. 앱이 한국 사용자를 대상으로 한다면 `labels` prop으로 라벨을 복원하세요.
 
@@ -151,13 +151,13 @@ v0.3부터 기본 ARIA 라벨이 한국어에서 영어로 바뀝니다. 앱이 
 </DatePicker>
 ```
 
-신경 쓰는 키만 덮어쓰면 됩니다 — 지정하지 않은 키는 영어 기본값을 유지합니다.
+신경 쓰는 키만 덮어쓰면 됩니다. 지정하지 않은 키는 영어 기본값을 유지합니다.
 
 전체 키 레퍼런스와 재사용 가능한 locale 프리셋은 [국제화 가이드](./concepts/internationalization.md)를 참고하세요.
 
-## v0.3 → v0.4 — `displayTimezone` 추가
+## v0.3 → v0.4: `displayTimezone` 추가
 
-v0.4는 네 피커 전부(및 대응 훅)에 `displayTimezone`을 도입합니다. Breaking change는 없습니다 — prop을 생략하면 v0.3 시맨틱이 유지됩니다. 사용자에게 표시할 존이 서버 런타임과 다르거나, "하루 어긋남" 버그에 명시적인 방벽을 세우고 싶을 때 채택하세요.
+v0.4는 네 피커 전부(및 대응 훅)에 `displayTimezone`을 도입합니다. Breaking change는 없습니다. prop을 생략하면 v0.3 시맨틱이 유지됩니다. 사용자에게 표시할 존이 서버 런타임과 다르거나, "하루 어긋남" 버그에 명시적인 방벽을 세우고 싶을 때 채택하세요.
 
 ### 이전 (v0.3, 암묵적 UTC / 런타임 로컬)
 
@@ -192,7 +192,7 @@ ISO 계약은 바뀌지 않습니다. prop을 설정했을 때 *바뀌는* 것�
 - 캘린더 클릭 시 `onChange`가 클릭한 셀의 UTC 자정이 아니라 *그 존에서의* 클릭한 날의 civil 자정을 내보냅니다.
 - `TimePicker` / `DateTimePicker`의 시·분 컨트롤이 해당 존에서 관측되는 시각을 DST를 인식하며 읽고 씁니다.
 
-커스텀 `DateAdapter` 구현은 `format`·`isSameDay`·`startOfDay`·`today`의 `timezone?: string` 인자를 존중해야 합니다 — 내장 `DateFnsAdapter`는 이미 그렇게 합니다.
+커스텀 `DateAdapter` 구현은 `format`·`isSameDay`·`startOfDay`·`today`의 `timezone?: string` 인자를 존중해야 합니다. 내장 `DateFnsAdapter`는 이미 그렇게 합니다.
 
 전체 맥락은 [Timezone 개념 문서](./concepts/timezone.md)를 참고하세요.
 
@@ -205,7 +205,7 @@ ISO 계약은 바뀌지 않습니다. prop을 설정했을 때 *바뀌는* 것�
 3. 기능 플래그를 마운트할 서브 컴포넌트로 번역합니다.
 4. 커스텀 스타일을 `classNames` 슬롯 맵으로 옮깁니다.
 5. SSR 렌더링과 폼 제출을 테스트합니다.
-6. 새 컴포넌트에 axe를 돌립니다 — 스타일 변경이 대비(contrast)를 퇴행시킬 수 있습니다.
+6. 새 컴포넌트에 axe를 돌립니다. 스타일 변경이 대비(contrast)를 퇴행시킬 수 있습니다.
 
 ## 도움 받기
 

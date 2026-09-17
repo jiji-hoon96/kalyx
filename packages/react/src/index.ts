@@ -1,10 +1,10 @@
-// @kalyx/react — public API entry point
+// @kalyx/react: public API entry point
 // The published bundle is prefixed with `"use client";` (injected by tsup at build
 // time, see tsup.config.ts) so React Server Component hosts (Next.js App Router etc.)
 // treat it as a client boundary without consumers wrapping each import.
 
 // Auto-install the default adapter so users get "install and it works" out of the
-// box. The `@kalyx/react/headless` entry deliberately skips this step — see
+// box. The `@kalyx/react/headless` entry deliberately skips this step; see
 // src/headless.ts for the explicit-adapter contract.
 import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 import { setDefaultAdapter } from './internal/defaultAdapter.js';

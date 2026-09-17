@@ -15,7 +15,7 @@ export interface DateTimePickerPresetsProps extends Omit<HTMLAttributes<HTMLDivE
 }
 
 /**
- * DateTimePicker.Presets — container that groups one-click datetime presets.
+ * DateTimePicker.Presets: container that groups one-click datetime presets.
  * Place {@link DateTimePickerPreset} buttons inside.
  *
  * @example
@@ -43,14 +43,14 @@ export interface DateTimePickerPresetProps extends Omit<
   HTMLAttributes<HTMLButtonElement>,
   'value'
 > {
-  /** Full datetime (ISO 8601 UTC) to commit when clicked — includes both date and time. */
+  /** Full datetime (ISO 8601 UTC) to commit when clicked; includes both date and time. */
   value: ISODateString;
   children: ReactNode;
   className?: string;
 }
 
 /**
- * DateTimePicker.Preset — one-click button that commits a full datetime (date + time).
+ * DateTimePicker.Preset: one-click button that commits a full datetime (date + time).
  *
  * Unlike `DateTimePicker.Calendar` (which preserves the existing time) this sets both the
  * date and time portions atomically, so a preset like "tomorrow 9 AM" lands exactly.

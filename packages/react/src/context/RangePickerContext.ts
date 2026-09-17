@@ -74,8 +74,8 @@ export interface RangePickerContextValue {
   labels: RangePickerLabels;
   /**
    * Push a transient message to the picker's `role="status"` live region.
-   * The live region lives on Root so it survives popover close/Calendar unmount
-   * — without that, announcements set on the commit click are silenced before
+   * The live region lives on Root so it survives popover close/Calendar unmount;
+   * without that, announcements set on the commit click are silenced before
    * screen readers can pick them up.
    */
   announce: (message: string) => void;

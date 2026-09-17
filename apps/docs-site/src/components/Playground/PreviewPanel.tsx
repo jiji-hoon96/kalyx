@@ -127,7 +127,7 @@ function DateTimePickerPreview({ classNames, locale, timezone }: SubProps) {
   // DateTimePicker keeps its popover open after a day click (so you can also
   // pick a time); it commits/closes on Escape or outside click. We reuse that
   // public Escape-to-close behavior by dispatching an Escape keydown into the
-  // open dialog — the library's own handler closes it.
+  // open dialog; the library's own handler closes it.
   const handleApply = useCallback(() => {
     const dialog = popoverRef.current?.querySelector<HTMLElement>('[role="dialog"]');
     const grid = dialog?.querySelector<HTMLElement>('[role="grid"]') ?? dialog;

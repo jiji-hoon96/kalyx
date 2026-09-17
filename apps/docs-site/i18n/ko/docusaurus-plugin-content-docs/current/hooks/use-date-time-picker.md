@@ -7,7 +7,7 @@ description: '하나의 값으로 날짜와 시간을 함께 다루는 커스텀
 
 # useDateTimePicker
 
-`<DateTimePicker>` 뒤의 헤드리스 훅. 하나의 ISO 문자열이 캘린더와 시각을 모두 구동합니다 — `selectDate` 는 시각을 보존하고 `setTime` 은 날짜를 보존합니다.
+`<DateTimePicker>` 뒤의 헤드리스 훅. 하나의 ISO 문자열이 캘린더와 시각을 모두 구동합니다. `selectDate` 는 시각을 보존하고 `setTime` 은 날짜를 보존합니다.
 
 :::info `/headless` 엔트리
 **`@kalyx/react/headless`**(어댑터 비의존)에서 export됩니다. [날짜 어댑터 & `/headless` 엔트리](../guides/adapters.md) 참고.
@@ -27,13 +27,13 @@ function useDateTimePicker(options?: UseDateTimePickerOptions): UseDateTimePicke
 
 | 필드 | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
-| `value` | `ISODateString \| null` | — | controlled datetime (날짜 + 시간, UTC). |
-| `defaultValue` | `ISODateString` | — | uncontrolled 초기 datetime. |
-| `onChange` | `(value: ISODateString \| null) => void` | — | datetime이 바뀔 때 호출. |
+| `value` | `ISODateString \| null` | - | controlled datetime (날짜 + 시간, UTC). |
+| `defaultValue` | `ISODateString` | - | uncontrolled 초기 datetime. |
+| `onChange` | `(value: ISODateString \| null) => void` | - | datetime이 바뀔 때 호출. |
 | `disabled` | `DisabledRule[]` | `[]` | 비활성 규칙 (날짜에 적용). |
 | `weekStartsOn` | `0 \| 1` | `0` | 주 시작 요일. |
-| `adapter` | `DateAdapter` | — | 날짜 어댑터 (`/headless`에서 필수). |
-| `displayTimezone` | `string` | — | IANA 존. `currentTime` 이 이 존으로 보고됨. [타임존](../concepts/timezone.md) 참고. |
+| `adapter` | `DateAdapter` | - | 날짜 어댑터 (`/headless`에서 필수). |
+| `displayTimezone` | `string` | - | IANA 존. `currentTime` 이 이 존으로 보고됨. [타임존](../concepts/timezone.md) 참고. |
 
 ### 반환
 
@@ -58,9 +58,9 @@ function useDateTimePicker(options?: UseDateTimePickerOptions): UseDateTimePicke
 
 ```ts
 type TimeValue = {
-  hours: number;   // 0–23
-  minutes: number; // 0–59
-  seconds: number; // 0–59
+  hours: number;   // 0~23
+  minutes: number; // 0~59
+  seconds: number; // 0~59
 };
 ```
 

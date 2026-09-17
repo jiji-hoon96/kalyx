@@ -19,7 +19,7 @@ export interface DatePickerInputProps extends Omit<
 }
 
 /**
- * DatePicker.Input — Combobox-style text input wired to the DatePicker context.
+ * DatePicker.Input: Combobox-style text input wired to the DatePicker context.
  *
  * Accepts free-form date typing (parsed via the active adapter), opens the popover
  * on click / `ArrowDown`, and commits typed values on `Enter` / blur.
@@ -34,7 +34,7 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
 
     // Text currently being edited (edit mode)
     const [inputText, setInputText] = useState<string | null>(null);
-    // IME (composition) state — non-Latin scripts like Korean/Japanese/Chinese fire
+    // IME (composition) state. Non-Latin scripts like Korean/Japanese/Chinese fire
     // change events for in-progress composition characters. Parsing those mid-stream
     // throws away the user's input. Defer parsing until composition completes.
     const isComposingRef = useRef(false);
@@ -64,7 +64,7 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
     }
     const displayValue = inputText !== null ? inputText : formattedValue;
 
-    // Open on an explicit pointer click, not on focus — tabbing between form
+    // Open on an explicit pointer click, not on focus: tabbing between form
     // fields should not pop the calendar open, and restoring focus after a
     // selection would otherwise loop us back to open.
     const handleClick = useCallback(
@@ -149,7 +149,7 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
           if (inputText !== null) {
             commitText(inputText);
           } else if (ctx.isOpen) {
-            // No typed text but the popover is open — commit the calendar's
+            // No typed text but the popover is open: commit the calendar's
             // currently focused day so Enter "just works" even when focus
             // never made it from the input to the day button (notably WebKit).
             ctx.selectDate(ctx.focusedDate);

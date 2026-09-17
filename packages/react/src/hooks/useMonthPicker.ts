@@ -58,7 +58,7 @@ export interface UseMonthPickerReturn {
 
 /**
  * Headless MonthPicker state for fully custom UIs. DOM-free (preserves the
- * React Native seam) — it exposes the 12-month grid and navigation; the
+ * React Native seam): it exposes the 12-month grid and navigation; the
  * consumer renders and wires focus/keyboard.
  *
  * @example

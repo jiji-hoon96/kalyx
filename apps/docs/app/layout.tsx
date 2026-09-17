@@ -4,7 +4,7 @@ import Link from 'next/link';
 import './globals.css';
 
 export const metadata: Metadata = {
-	title: 'Kalyx — Headless React DatePicker',
+	title: 'Kalyx: Headless React DatePicker',
 	description:
 		'CSS 없이 설치 즉시 동작하고, 어떤 스타일링 방식으로도 자유롭게 커스터마이징 가능한 React DatePicker',
 };

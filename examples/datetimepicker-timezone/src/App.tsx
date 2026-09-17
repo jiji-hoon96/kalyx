@@ -7,7 +7,7 @@ export default function App() {
 
   return (
     <div style={{ padding: 32, fontFamily: 'sans-serif' }}>
-      <h1>Kalyx — DateTimePicker × timezone</h1>
+      <h1>Kalyx: DateTimePicker × timezone</h1>
       <p>Stored ISO is always UTC; display shifts per timezone.</p>
       <label style={{ display: 'block', marginBottom: 12 }}>
         Timezone:&nbsp;

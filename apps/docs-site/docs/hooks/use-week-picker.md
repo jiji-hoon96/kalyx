@@ -27,15 +27,15 @@ function useWeekPicker(options?: UseWeekPickerOptions): UseWeekPickerReturn;
 
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `DateRange` | — | Controlled week as a `{ start, end }` range. |
-| `defaultValue` | `DateRange` | — | Uncontrolled initial week. |
-| `onChange` | `(week: DateRange) => void` | — | Fires when the selected week changes. |
+| `value` | `DateRange` | - | Controlled week as a `{ start, end }` range. |
+| `defaultValue` | `DateRange` | - | Uncontrolled initial week. |
+| `onChange` | `(week: DateRange) => void` | - | Fires when the selected week changes. |
 | `disabled` | `DisabledRule[]` | `[]` | Disable rules. |
 | `weekStartsOn` | `0 \| 1` | `0` | Day the week starts on. |
 | `weekAnchor` | `'calendar' \| 'clicked'` | `'calendar'` | How a clicked day becomes a week. `'calendar'` snaps to the `weekStartsOn`-aligned week boundary; `'clicked'` takes the 7-day span anchored on the clicked day itself. |
 | `selectingTarget` | `'start' \| 'end'` | `'start'` | Which end of the 7-day span the clicked day anchors. Only meaningful with `weekAnchor="clicked"`. |
-| `adapter` | `DateAdapter` | — | Date adapter (required on `/headless`). |
-| `displayTimezone` | `string` | — | IANA zone for civil-day comparison. |
+| `adapter` | `DateAdapter` | - | Date adapter (required on `/headless`). |
+| `displayTimezone` | `string` | - | IANA zone for civil-day comparison. |
 
 ### Return
 
@@ -47,7 +47,7 @@ function useWeekPicker(options?: UseWeekPickerOptions): UseWeekPickerReturn;
 | `selectWeek` | `(iso: ISODateString) => void` | Commit the whole week containing the clicked day. |
 | `viewMonth` | `ISODateString` | First-day-of-visible-month. |
 | `setViewMonth` | `(iso: ISODateString) => void` | Jump to a month. |
-| `calendar` | `CalendarGrid` | 4–6 rows × 7 days, with the selected week highlighted as a range. The row count varies by month. |
+| `calendar` | `CalendarGrid` | 4-6 rows × 7 days, with the selected week highlighted as a range. The row count varies by month. |
 | `previousMonth` / `nextMonth` | `() => void` | Month navigation shorthands. |
 | `pickerId` | `string` | Stable ID for ARIA wiring. |
 | `adapter` | `DateAdapter` | The resolved adapter. |

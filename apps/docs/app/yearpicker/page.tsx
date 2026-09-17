@@ -5,7 +5,7 @@ export default function YearPickerPage() {
 		<>
 			<h1>YearPicker</h1>
 			<p>
-				연도 단위 선택. 값은 해당 연도의 1월 1일(UTC-ISO)로 저장된다 — 예:{' '}
+				연도 단위 선택. 값은 해당 연도의 1월 1일(UTC-ISO)로 저장된다. 예:{' '}
 				<code>&quot;2026-01-01T00:00:00.000Z&quot;</code>. 12년 단위 decade 그리드로
 				먼 연도까지 빠르게 이동 가능.
 			</p>
@@ -42,7 +42,7 @@ export default function YearPickerPage() {
 					<tr>
 						<td><code>displayTimezone</code></td>
 						<td><code>string</code></td>
-						<td>IANA 타임존 — 타임존-인식 연도 하이라이팅</td>
+						<td>IANA 타임존. 타임존-인식 연도 하이라이팅</td>
 					</tr>
 				</tbody>
 			</table>

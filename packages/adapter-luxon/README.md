@@ -1,6 +1,6 @@
 # @kalyx/adapter-luxon
 
-> A `DateAdapter` for [Kalyx](https://github.com/jiji-hoon96/kalyx) built on **luxon** (UTC mode). Drop-in replacement for the bundled date-fns adapter — same contract, your existing luxon dependency.
+> A `DateAdapter` for [Kalyx](https://github.com/jiji-hoon96/kalyx) built on **luxon** (UTC mode). Drop-in replacement for the bundled date-fns adapter: same contract, your existing luxon dependency.
 
 [![npm](https://img.shields.io/npm/v/@kalyx/adapter-luxon?color=5b4fe1)](https://www.npmjs.com/package/@kalyx/adapter-luxon)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/jiji-hoon96/kalyx/blob/main/LICENSE)
@@ -33,11 +33,11 @@ All values in and out are **ISO 8601 UTC strings**. The adapter pins luxon to UT
 
 ## Conformance
 
-Verified against the shared adapter contract via [`@kalyx/core/test-helpers`](https://kalyx-docs-site.vercel.app/docs/guides/adapters) — the same suite that validates [`@kalyx/adapter-date-fns`](https://www.npmjs.com/package/@kalyx/adapter-date-fns) and [`@kalyx/adapter-dayjs`](https://www.npmjs.com/package/@kalyx/adapter-dayjs).
+Verified against the shared adapter contract via [`@kalyx/core/test-helpers`](https://kalyx-docs-site.vercel.app/docs/guides/adapters), the same suite that validates [`@kalyx/adapter-date-fns`](https://www.npmjs.com/package/@kalyx/adapter-date-fns) and [`@kalyx/adapter-dayjs`](https://www.npmjs.com/package/@kalyx/adapter-dayjs).
 
 ## Documentation
 
-- [Adapters guide](https://kalyx-docs-site.vercel.app/docs/guides/adapters) — swapping adapters, writing your own
+- [Adapters guide](https://kalyx-docs-site.vercel.app/docs/guides/adapters): swapping adapters, writing your own
 - [Full docs](https://kalyx-docs-site.vercel.app) · [한국어](https://kalyx-docs-site.vercel.app/ko)
 
 ## License

@@ -8,7 +8,7 @@ export default function App() {
 
   return (
     <div style={{ padding: 32, fontFamily: 'sans-serif' }}>
-      <h1>Kalyx — RangePicker with presets</h1>
+      <h1>Kalyx: RangePicker with presets</h1>
       <RangePicker value={range} onChange={setRange}>
         <RangePicker.Input part="start" />
         <RangePicker.Input part="end" />

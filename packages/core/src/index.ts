@@ -15,7 +15,7 @@ export type {
 //
 //   import { DateFnsAdapter } from '@kalyx/adapter-date-fns';
 //
-// `@kalyx/react` continues to wire the date-fns adapter as the default — direct
+// `@kalyx/react` continues to wire the date-fns adapter as the default; direct
 // consumers of `@kalyx/core` who held a reference to the previous re-export need
 // to switch their import path.
 

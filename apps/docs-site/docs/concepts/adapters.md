@@ -72,7 +72,7 @@ import { DatePicker, DateFnsAdapter } from '@kalyx/react';
 
 ## Why adapters?
 
-- **Swap engines without changing component code.** The next big date API is `Temporal` — a lighter adapter will drop in when it lands in stable browsers.
+- **Swap engines without changing component code.** The next big date API is `Temporal`; a lighter adapter will drop in when it lands in stable browsers.
 - **Shrink bundles for niche use cases.** Teams using Luxon or Day.js can provide their own adapter and avoid shipping date-fns.
 - **Test with a frozen clock.** A stub adapter that returns a fixed `today()` makes calendar tests deterministic.
 
@@ -98,7 +98,7 @@ import { DayjsAdapter } from '@kalyx/adapter-dayjs';
 ```
 
 `@kalyx/adapter-luxon` works the same way with `LuxonAdapter`. The `/headless` entry
-ships no adapter of its own, so `adapter` is required there — omitting it throws at
+ships no adapter of its own, so `adapter` is required there; omitting it throws at
 render time with a message naming the component.
 
 ## Writing your own adapter
@@ -111,7 +111,7 @@ interface above; three details are easy to get wrong:
 - `isSameDay`, `startOfDay`, and `today` all take an optional `timezone`. Ignoring it
   breaks `displayTimezone` for every picker.
 
-Keep all arithmetic in UTC — Kalyx assumes ISO strings end in `Z`.
+Keep all arithmetic in UTC. Kalyx assumes ISO strings end in `Z`.
 
 Do not hand-verify the result. `@kalyx/core/test-helpers` exports the same conformance
 suite the three official adapters run, and it is the definition of "correct" here:
@@ -126,7 +126,7 @@ runAdapterConformanceTests(MyAdapter, { describe, it, expect });
 
 ## Dependency note
 
-`@kalyx/core` is now date-library-agnostic — it carries no `date-fns`
+`@kalyx/core` is now date-library-agnostic: it carries no `date-fns`
 dependency of its own. The default adapter lives in `@kalyx/adapter-date-fns`
 and is auto-installed by the main `@kalyx/react` entry, so installing
 `@kalyx/react` still "just works".
@@ -142,4 +142,4 @@ how-to.
 
 - [Adapters guide (custom adapters, `/headless` entry) →](../guides/adapters.md)
 - [ISO strings →](./iso-string.md)
-- [API Reference — core →](../api/core.md)
+- [API Reference: core →](../api/core.md)
