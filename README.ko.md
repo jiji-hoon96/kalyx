@@ -19,6 +19,8 @@
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/jiji-hoon96/kalyx/tree/main/examples/datepicker-basic?file=src%2FApp.tsx)
+
 </div>
 
 ---
