@@ -17,10 +17,11 @@ export default function WhyKalyx() {
           </h2>
           <p className={styles.body}>
             <Translate id="home.whyKalyx.body">
-              react-day-picker is headless but only ships Calendar.
-              react-datepicker is integrated but forces its CSS on you.
-              Kalyx is the one that's both — every primitive, no stylesheet,
-              ≤20 KB.
+              Build a date with new Date in Seoul, store it, and the server
+              sees the day before. Kalyx never takes a Date: values go in and
+              out as ISO 8601 UTC strings, and the display timezone is a
+              separate prop. On top of that, a list-style TimePicker and month,
+              year, and week pickers share the same composition API.
             </Translate>
           </p>
           <Link className={styles.cta} to="/docs/intro">

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import styles from './StatStrip.module.css';
 
 /**
- * A thin strip of honest, verifiable numbers under the hero — the TanStack
+ * A thin strip of honest, verifiable numbers under the hero. The TanStack
  * "stat row" format, but with numbers this project can actually stand behind.
  *
  * Two kinds of stat:
@@ -18,9 +18,9 @@ type Stat = { value: string; label: string };
 
 const STATIC_STATS: Stat[] = [
   { value: '7', label: translate({ id: 'home.stats.primitives', message: 'date primitives' }) },
-  { value: '≤20 KB', label: translate({ id: 'home.stats.bundle', message: 'gzipped, all pickers' }) },
+  { value: '~19 KB', label: translate({ id: 'home.stats.bundle', message: 'gzip, one DatePicker with deps' }) },
   { value: '0', label: translate({ id: 'home.stats.css', message: 'CSS files to import' }) },
-  { value: 'WCAG AA', label: translate({ id: 'home.stats.a11y', message: 'accessible by default' }) },
+  { value: 'jest-axe', label: translate({ id: 'home.stats.a11y', message: 'checks in component tests' }) },
 ];
 
 function formatCount(n: number): string {

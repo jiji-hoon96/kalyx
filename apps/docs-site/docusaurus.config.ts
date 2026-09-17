@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'Kalyx',
-  tagline: 'The headless DatePicker, finally complete',
+  tagline: 'Headless React date pickers that take and return ISO 8601 UTC strings',
   favicon: 'img/kalyx-logo.svg',
 
   future: {
@@ -42,7 +42,7 @@ const config: Config = {
 
   themes: ['@docusaurus/theme-live-codeblock'],
 
-  // Tailwind Play CDN — lets the Tailwind recipe's live examples render real
+  // Tailwind Play CDN. It lets the Tailwind recipe's live examples render real
   // Tailwind utility classes at runtime. Scoped via the `tw-enable` class on
   // the wrapper so the rest of the docs site is unaffected.
   scripts: [
@@ -104,7 +104,7 @@ const config: Config = {
     },
     metadata: [
       {name: 'keywords', content: 'react, datepicker, headless, typescript, tailwind, accessible, ssr, calendar, timepicker, rangepicker'},
-      {name: 'description', content: 'Headless, SSR-safe React DatePicker with Input, Calendar, TimePicker, and RangePicker in ~18.5 KB (≤ 20 KB ceiling).'},
+      {name: 'description', content: 'Headless, SSR-safe React date pickers (date, range, time, date+time, month, year, week) that take and return ISO 8601 UTC strings. Zero CSS.'},
     ],
     navbar: {
       title: 'Kalyx',

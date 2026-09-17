@@ -1,6 +1,6 @@
 {
   "home.hero.eyebrow": {
-    "message": "Headless · SSR-safe · 20 KB 이하",
+    "message": "Headless · SSR 안전 · ISO 문자열 입출력",
     "description": "히어로 상단 뱃지"
   },
   "home.hero.title.line1": {
@@ -44,7 +44,7 @@
     "description": "FeatureGrid: SSR 카드 제목"
   },
   "home.featureGrid.ssr.body": {
-    "message": "렌더 시점에 window/document 접근 없음. RSC, Next.js App Router, Remix loader 안에서도 그대로 동작합니다.",
+    "message": "렌더 시점에 window/document 접근 없음. 7종 picker 모두 renderToString 테스트가 있고, 배포 엔트리에는 React Server Components 를 위한 'use client' 지시어가 붙어 있습니다.",
     "description": "FeatureGrid: SSR 카드 본문"
   },
   "home.featureGrid.timezone.title": {
@@ -52,15 +52,15 @@
     "description": "FeatureGrid: Timezone 카드 제목"
   },
   "home.featureGrid.timezone.body": {
-    "message": "플랫폼 자체 Intl 기반 IANA timezone, DST까지 처리, 추가 의존성 없음. 입력도 출력도 ISO-8601 UTC string — 저장 계층은 깔끔하게.",
+    "message": "플랫폼 자체 Intl 기반 IANA timezone, DST까지 처리, 추가 의존성 없음. 입력도 출력도 ISO-8601 UTC string 이라 저장 계층이 깔끔합니다.",
     "description": "FeatureGrid: Timezone 카드 본문"
   },
   "home.featureGrid.bundle.title": {
-    "message": "20 KB gzip 이하",
+    "message": "gzip 약 19 KB",
     "description": "FeatureGrid: 번들 카드 제목"
   },
   "home.featureGrid.bundle.body": {
-    "message": "7종 picker + hook + date-fns 어댑터 전부 포함. 기본 엔트리에 20 KB CI 한계를, 더 큰 headless 엔트리에는 별도로 22 KB 한계를 적용합니다.",
+    "message": "DatePicker 하나를 의존성까지 묶어 minify 하고 React 는 외부로 둔 크기입니다. 7종 picker + 훅 전부는 약 26 KB. 배포 파일에는 CI 한계를 따로 둡니다(기본 엔트리 20 KB, headless 엔트리 22 KB).",
     "description": "FeatureGrid: 번들 카드 본문"
   },
   "home.sameJsx.eyebrow": {
@@ -124,7 +124,7 @@
     "description": "WhyKalyx 섹션 제목"
   },
   "home.whyKalyx.body": {
-    "message": "react-day-picker는 headless지만 Calendar뿐. react-datepicker는 통합이지만 CSS를 강제합니다. Kalyx는 둘 다 — 모든 프리미티브, 스타일시트 없음, 20 KB 이하.",
+    "message": "서울에서 new Date 로 만든 날짜를 저장하면 서버에는 전날로 들어갑니다. Kalyx 는 Date 를 받지 않습니다. 값은 ISO 8601 UTC 문자열로 주고받고, 표시 타임존은 별도 prop 입니다. 여기에 목록형 TimePicker 와 월·연·주 피커가 같은 조합형 API 를 씁니다.",
     "description": "WhyKalyx 섹션 본문"
   },
   "home.whyKalyx.cta": {
@@ -160,7 +160,7 @@
     "description": "StatStrip: 프리미티브 개수 라벨"
   },
   "home.stats.bundle": {
-    "message": "gzip, 전체 피커 포함",
+    "message": "gzip, DatePicker 하나 (의존성 포함)",
     "description": "StatStrip: 번들 크기 라벨"
   },
   "home.stats.css": {
@@ -168,7 +168,7 @@
     "description": "StatStrip: CSS 파일 수 라벨"
   },
   "home.stats.a11y": {
-    "message": "기본 제공 접근성",
+    "message": "컴포넌트 테스트의 접근성 검사",
     "description": "StatStrip: 접근성 라벨"
   },
   "home.stats.downloads": {
