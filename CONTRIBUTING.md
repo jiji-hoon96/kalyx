@@ -17,6 +17,18 @@ pnpm install
 pnpm build
 ```
 
+## Looking for a first contribution?
+
+Pick any issue labeled [`good first issue`](https://github.com/jiji-hoon96/kalyx/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22). Current starters:
+
+- [#233 — Add CI + Codecov badges to the npm package README](https://github.com/jiji-hoon96/kalyx/issues/233)
+- [#234 — Chakra UI recipe (+ optional example)](https://github.com/jiji-hoon96/kalyx/issues/234)
+- [#235 — e2e: locale switching](https://github.com/jiji-hoon96/kalyx/issues/235)
+- [#236 — e2e: mid-flight prop changes](https://github.com/jiji-hoon96/kalyx/issues/236)
+- [#237 — State Gregorian-only support in the docs](https://github.com/jiji-hoon96/kalyx/issues/237)
+
+Comment on the issue before starting so we don't duplicate work — and feel free to ask questions there. This list is maintained; if a starter issue is already claimed, the label search will show the freshest set.
+
 ## Development
 
 ```bash
