@@ -12,8 +12,8 @@ import Reveal from '../components/Reveal';
 export default function Home(): JSX.Element {
   return (
     <Layout
-      title="Kalyx — seven date primitives, one API"
-      description="Headless React DatePicker + 6 sibling primitives. Zero CSS, SSR-safe, ≤20 KB gzipped.">
+      title="Kalyx: seven date primitives, one API"
+      description="Headless React DatePicker + 6 sibling primitives. ISO 8601 UTC strings in and out, zero CSS, SSR-safe.">
       <main>
         <Hero />
         <StatStrip />

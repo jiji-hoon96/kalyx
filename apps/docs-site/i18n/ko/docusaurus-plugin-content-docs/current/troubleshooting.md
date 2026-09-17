@@ -37,7 +37,7 @@ Kalyx ships its own `.d.ts` files. If you see type errors, ensure your `tsconfig
 }
 ```
 
-The legacy `"node"` resolution mode doesn't support `package.json` `exports` — upgrade to `"bundler"` or `"node16"`.
+The legacy `"node"` resolution mode doesn't support `package.json` `exports`. Upgrade to `"bundler"` or `"node16"`.
 
 ---
 
@@ -49,10 +49,10 @@ Kalyx does **not** use `useLayoutEffect`. If you see this warning, it's from ano
 
 ### `ReferenceError: window is not defined`
 
-This should never happen with Kalyx components — all `window`/`document` access is inside `useEffect`. If you encounter it:
+This should never happen with Kalyx components: all `window`/`document` access is inside `useEffect`. If you encounter it:
 
 1. Check that you're using `@kalyx/react` (not importing from `@kalyx/core` directly in a server component)
-2. Ensure you're not destructuring Kalyx components in a Server Component file — wrap them in a Client Component:
+2. Ensure you're not destructuring Kalyx components in a Server Component file. Wrap them in a Client Component:
 
 ```tsx title="components/MyDatePicker.tsx"
 'use client';
@@ -75,7 +75,7 @@ export function MyDatePicker() {
 
 If you see a hydration mismatch, check:
 
-- Are you using `displayTimezone`? The server and client must resolve the same timezone. Avoid relying on the system timezone — always pass an explicit IANA zone string.
+- Are you using `displayTimezone`? The server and client must resolve the same timezone. Avoid relying on the system timezone. Always pass an explicit IANA zone string.
 - Are you conditionally rendering based on `new Date()`? The server timestamp differs from the client's. Use `defaultValue` instead of computing a value during render.
 
 ---
@@ -86,9 +86,9 @@ If you see a hydration mismatch, check:
 
 Kalyx uses [Floating UI](https://floating-ui.com/) with `flip` and `shift` middleware. If the popover is mispositioned:
 
-1. **Check for `overflow: hidden` on ancestors** — Floating UI detects overflow boundaries. A parent with `overflow: hidden` can clip or misposition the popover.
-2. **Check CSS transforms on ancestors** — `transform` creates a new containing block, which can offset `position: fixed` elements.
-3. **In a modal/dialog?** — The popover renders as a sibling, not a portal. If your modal clips overflow, the popover may be clipped.
+1. **Check for `overflow: hidden` on ancestors.** Floating UI detects overflow boundaries. A parent with `overflow: hidden` can clip or misposition the popover.
+2. **Check CSS transforms on ancestors.** `transform` creates a new containing block, which can offset `position: fixed` elements.
+3. **In a modal/dialog?** The popover renders as a sibling, not a portal. If your modal clips overflow, the popover may be clipped.
 
 ### Popover doesn't close on outside click
 
@@ -102,7 +102,7 @@ This can happen if an element calls `event.stopPropagation()` before the click r
 
 이것은 **가장 많이 보고되는 datepicker 버그**입니다([react-datepicker #1018](https://github.com/Hacker0x01/react-datepicker/issues/1018)이 10년 된 사례). 거의 항상 두 가지 원인 중 하나입니다.
 
-**원인 1 — ISO 문자열 대신 네이티브 `Date`를 전달함.** `Date`는 *런타임의* 로컬 존으로 해석되며, 사용자 브라우저와 서버에서 다릅니다:
+**원인 1. ISO 문자열 대신 네이티브 `Date`를 전달함.** `Date`는 *런타임의* 로컬 존으로 해석되며, 사용자 브라우저와 서버에서 다릅니다:
 
 ```ts
 // ❌ off-by-one이 기다리고 있음
@@ -110,14 +110,14 @@ const picked = new Date(2026, 3, 15); // 로컬 자정 → UTC+9에서 "2026-04-
 save(picked.toISOString());           // 서버는 4월 14일로 읽음
 ```
 
-Kalyx는 `Date`를 받지 않습니다 — 값 계약이 ISO-8601 UTC 문자열이라 이 부류의 버그가 구조적으로 제거됩니다. 항상 `onChange`에서 값을 읽으세요:
+Kalyx는 `Date`를 받지 않습니다. 값 계약이 ISO-8601 UTC 문자열이라 이 부류의 버그가 구조적으로 제거됩니다. 항상 `onChange`에서 값을 읽으세요:
 
 ```tsx
 // ✅ value는 이미 올바른 UTC ISO 문자열
 <DatePicker value={value} onChange={setValue}>...</DatePicker>
 ```
 
-**원인 2 — UTC 순간을 다른 civil 존에서 표시함.** `"2026-04-15T00:00:00.000Z"`는 UTC에서 4월 15일이고 서울에서도 4월 15일이지만, `"2026-04-15T15:00:00.000Z"`는 서울에서 4월 16일입니다. 캘린더가 특정 존의 *civil* 일자 기준으로 커밋·강조하길 원하면 `displayTimezone`을 설정하세요:
+**원인 2. UTC 순간을 다른 civil 존에서 표시함.** `"2026-04-15T00:00:00.000Z"`는 UTC에서 4월 15일이고 서울에서도 4월 15일이지만, `"2026-04-15T15:00:00.000Z"`는 서울에서 4월 16일입니다. 캘린더가 특정 존의 *civil* 일자 기준으로 커밋·강조하길 원하면 `displayTimezone`을 설정하세요:
 
 ```tsx
 <DatePicker
@@ -147,14 +147,14 @@ import { civilMidnightFromUtcDay } from '@kalyx/core';
 
 const tz = 'America/New_York';
 
-// ❌ raw UTC 좌표 — New_York에서 이 instant는 현지 기준 아직 1월 14일
+// ❌ raw UTC 좌표: New_York에서 이 instant는 현지 기준 아직 1월 14일
 disabled={[{ before: '2026-01-15T00:00:00.000Z' }]}
 
 // ✅ 같은 civil 날짜를, 피커가 실제로 쓰는 instant로 표현
 disabled={[{ before: civilMidnightFromUtcDay('2026-01-15T00:00:00.000Z', tz) }]}
 ```
 
-믿을 수 있는 규칙: `displayTimezone`을 설정했다면 피커에 넘기는 모든 날짜는 **피커가 스스로 내보낼 수 있었던 값**이어야 합니다 — `onChange`로 돌려받은 값이거나 `civilMidnightFromUtcDay`로 만든 값입니다. 커스텀 그리드 안에서는 `isDateDisabled`를 직접 부르지 말고 `getCalendarDays`가 셀마다 이미 계산해 둔 `isDisabled` 플래그를 쓰세요.
+믿을 수 있는 규칙: `displayTimezone`을 설정했다면 피커에 넘기는 모든 날짜는 **피커가 스스로 내보낼 수 있었던 값**이어야 합니다. `onChange`로 돌려받은 값이거나 `civilMidnightFromUtcDay`로 만든 값입니다. 커스텀 그리드 안에서는 `isDateDisabled`를 직접 부르지 말고 `getCalendarDays`가 셀마다 이미 계산해 둔 `isDisabled` 플래그를 쓰세요.
 
 ### DST 전환 시 예기치 않은 동작
 
@@ -166,17 +166,17 @@ DST 전환(예: 미국 "spring forward") 동안 새벽 2:00는 존재하지 않�
 
 ### Components have no styles at all
 
-This is by design — Kalyx is headless. You must provide styles via `classNames` props or `className`. See the [Tailwind recipe](./recipes/tailwind.md) for a complete example.
+This is by design. Kalyx is headless. You must provide styles via `classNames` props or `className`. See the [Tailwind recipe](./recipes/tailwind.md) for a complete example.
 
 ### `classNames` prop doesn't work
 
 Make sure you're passing an object, not a string:
 
 ```tsx
-// ❌ Wrong — className (string) only applies to the root element
+// ❌ Wrong: className (string) only applies to the root element
 <DatePicker.Calendar className="my-calendar" />
 
-// ✅ Right — classNames (object) targets internal slots
+// ✅ Right: classNames (object) targets internal slots
 <DatePicker.Calendar
   classNames={{
     root: 'my-calendar',
@@ -196,7 +196,7 @@ Both `className` (root element) and `classNames` (slots) are supported. Use `cla
 
 비제어 모드에서는 `name` 을 `DatePicker.Input` 에 넘긴다. ISO 값을 담은 hidden
 필드를 렌더하는 건 Input 이고, Root 에는 `name` prop 이 없다. 폼 제출을 지원하는
-피커는 `DatePicker` 뿐이다 — MonthPicker·YearPicker·WeekPicker·RangePicker·
+피커는 `DatePicker` 뿐이다. MonthPicker·YearPicker·WeekPicker·RangePicker·
 DateTimePicker 는 지원하지 않는다.
 
 ```tsx
@@ -213,7 +213,7 @@ See the dedicated [React Hook Form recipe](./recipes/react-hook-form.md).
 ### The input shows the raw string instead of a formatted date
 
 넘긴 값이 파싱 가능한 ISO 8601 문자열이 아니다. 피커는 값을 추측해서 고치지 않고
-그대로 둔다 — 캘린더는 이번 달로 열리고, 입력창은 넘긴 문자열을 그대로 되돌려
+그대로 둔다. 캘린더는 이번 달로 열리고, 입력창은 넘긴 문자열을 그대로 되돌려
 보여줘서 잘못된 데이터가 눈에 남는다.
 
 빈 문자열이나 `null` 컬럼이 `value` 로 흘러들어올 때 주로 나타난다. "선택 없음" 은
@@ -226,7 +226,7 @@ See the dedicated [React Hook Form recipe](./recipes/react-hook-form.md).
 </DatePicker>
 ```
 
-`new Date(value)` 가 파싱하지 못하는 값은 전부 malformed 다 — `''`, `'null'`,
+`new Date(value)` 가 파싱하지 못하는 값은 전부 malformed 다. 예를 들어 `''`, `'null'`,
 `'2026-02-30T00:00:00.000Z'`(2월 30일은 없다), 정규화 없이 이어붙인 `'2026-01-15'` 등.
 
 ---
@@ -235,9 +235,9 @@ See the dedicated [React Hook Form recipe](./recipes/react-hook-form.md).
 
 ### Calendar re-renders on every state change
 
-This is normal — the calendar grid is lightweight (~42 cells). If you're experiencing jank:
+This is normal. The calendar grid is lightweight (~42 cells). If you're experiencing jank:
 
-1. Profile with React DevTools — check if the re-render is actually slow
+1. Profile with React DevTools and check whether the re-render is actually slow
 2. Avoid creating new objects on every render in parent components:
 
 ```tsx
@@ -251,17 +251,17 @@ const DISABLED = [{ dayOfWeek: [0, 6] }] as const;
 
 ### 번들 크기가 예상보다 큽니다
 
-서로 다른 두 숫자를 보게 되는데, 둘 다 맞습니다 — 재는 대상이 다릅니다.
+서로 다른 두 숫자를 보게 되는데, 둘 다 맞습니다. 재는 대상이 다릅니다.
 
-**~19.5 KB 는 배포된 아티팩트입니다.** 배지와 CI 게이트가 추적하는 값으로, 의존성을 external 로 둔 `@kalyx/react` 자체 `dist/index.js` 의 gzip 크기입니다. Kalyx 가 직접 통제하고 게이팅하는 수치입니다 — 기본 엔트리는 ESM·CJS 모두 20 KB 입니다. 선택적으로 쓰는 `headless` 엔트리는 같은 컴포넌트에 훅 7종까지 싣기 때문에 22 KB 로 따로 게이팅합니다.
+**~19.5 KB 는 배포된 아티팩트입니다.** 배지와 CI 게이트가 추적하는 값으로, 의존성을 external 로 둔 `@kalyx/react` 자체 `dist/index.js` 의 gzip 크기입니다. Kalyx 가 직접 통제하고 게이팅하는 수치입니다. 기본 엔트리는 ESM·CJS 모두 20 KB 입니다. 선택적으로 쓰는 `headless` 엔트리는 같은 컴포넌트에 훅 7종까지 싣기 때문에 22 KB 로 따로 게이팅합니다.
 
-**소비자가 실제로 배포하는 크기는 16~26 KB** 로, 얼마나 import 하느냐에 따라 달라집니다. 아티팩트가 참조만 하던 의존성을 번들러가 해석하므로, 그래프에 `@kalyx/core`·`@kalyx/adapter-date-fns`(및 거기서 쓰는 date-fns 함수들)·`@floating-ui/react` 가 함께 들어옵니다. 이 저장소에서 `pnpm check-tree-shaking` 을 돌리면 실측 시나리오를 볼 수 있습니다 — 현재 `TimePicker` 하나는 약 16.39 KB gzip, 가장 무거운 단일 picker(DateTimePicker)는 약 20.19 KB, 7종 전부 + 메인 엔트리 훅 3종은 약 25.69 KB 입니다.
+**소비자가 실제로 배포하는 크기는 약 16~26 KB** 로, 얼마나 import 하느냐에 따라 달라집니다. 아티팩트가 참조만 하던 의존성을 번들러가 해석하므로, 그래프에 `@kalyx/core`·`@kalyx/adapter-date-fns`(및 거기서 쓰는 date-fns 함수들)·`@floating-ui/react` 가 함께 들어옵니다. 이 저장소의 `pnpm check-tree-shaking` 이 이 크기를 잽니다. esbuild 로 minify 하고 위 의존성을 함께 묶은 뒤(React, React DOM 은 외부) gzip 한 값입니다. 현재 `TimePicker` 하나는 약 16.36 KB, `DatePicker` 하나는 약 18.90 KB, 가장 무거운 단일 picker(DateTimePicker)는 약 20.16 KB, 7종 전부 + 메인 엔트리 훅 3종은 약 25.65 KB 입니다.
 
-소비자 수치가 항상 더 큽니다 — 아티팩트 수치는 소비자가 해석해야 할 의존성을 빼고 잰 값이기 때문입니다. 얼마나 더 큰지는 import 범위에 달렸습니다: 전부 import 하면 아티팩트보다 약 6.5 KB 크고, 하나만 import 하면 그보다 작습니다. 단일 합산 수치를 공개하는 라이브러리와 비교할 때는 본인 사용 범위에 맞는 시나리오를 인용하세요.
+소비자 수치가 항상 더 큽니다. 아티팩트 수치는 소비자가 해석해야 할 의존성을 빼고 잰 값이기 때문입니다. 얼마나 더 큰지는 import 범위에 달렸습니다: 전부 import 하면 아티팩트보다 약 6 KB 크고, 하나만 import 하면 그보다 작습니다. 단일 합산 수치를 공개하는 라이브러리와 비교할 때는 본인 사용 범위에 맞는 시나리오를 인용하세요.
 
 그보다도 번들이 크다면:
 
-1. 프로덕션 번들러 리포트를 확인하세요. 쓰지 않는 picker 는 실제로 제거됩니다(TimePicker 하나만 쓰면 약 16.39 KB, 7종 + 메인 엔트리 훅 3종은 약 25.69 KB). 다만 picker 들이 context·popover·캘린더 계산 같은 상당한 기반을 공유하므로, 하나만 쓴다고 7분의 1이 되지는 않습니다.
+1. 프로덕션 번들러 리포트를 확인하세요. 쓰지 않는 picker 는 실제로 제거됩니다(TimePicker 하나만 쓰면 약 16.36 KB, 7종 + 메인 엔트리 훅 3종은 약 25.65 KB). 다만 picker 들이 context·popover·캘린더 계산 같은 상당한 기반을 공유하므로, 하나만 쓴다고 7분의 1이 되지는 않습니다.
 2. 기본 엔트리는 date-fns 어댑터를 포함합니다. 앱에서 다른 날짜 라이브러리를 사용한다면 같은 소비자 설정으로 명시적인 `/headless` 엔트리와 비교해 date-fns 가 두 번 계산되지 않게 하세요.
 3. 산출물 한계는 `pnpm check-bundle`, 소비자 시나리오는 `pnpm check-tree-shaking`으로 확인하세요.
 

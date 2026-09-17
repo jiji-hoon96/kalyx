@@ -3,12 +3,12 @@ id: intro
 title: Introduction
 sidebar_position: 1
 slug: /intro
-description: 'Kalyx is a headless React date-picker library: seven pickers, zero CSS, SSR-safe, ISO 8601 UTC strings in and out, ~19.5 KB gzip.'
+description: 'Kalyx is a headless React date-picker library: seven pickers, zero CSS, SSR-safe, ISO 8601 UTC strings in and out.'
 ---
 
 # Kalyx
 
-**Kalyx** is a headless React DatePicker library that ships *complete*. Seven composable pickers — **DatePicker**, **RangePicker**, **TimePicker**, **DateTimePicker**, **MonthPicker**, **YearPicker**, and **WeekPicker** — behind one consistent API.
+**Kalyx** is a headless React date-picker library whose values go in and come out as ISO 8601 UTC strings. Seven composable pickers (**DatePicker**, **RangePicker**, **TimePicker**, **DateTimePicker**, **MonthPicker**, **YearPicker**, and **WeekPicker**) sit behind one consistent API.
 
 ```tsx
 import { DatePicker } from '@kalyx/react';
@@ -24,7 +24,7 @@ import { DatePicker } from '@kalyx/react';
 
 ## See it in action
 
-All seven pickers, recorded from the [live playground](/playground). Styling is demo-only — Kalyx ships zero CSS.
+All seven pickers, recorded from the [live playground](/playground). Styling is demo-only. Kalyx ships zero CSS.
 
 <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', margin: '1.5rem 0'}}>
   <figure style={{margin: 0}}><img src="/img/demos/datepicker.avif" alt="DatePicker demo" loading="lazy" style={{width: '100%', borderRadius: '10px', border: '1px solid var(--ifm-color-emphasis-200)'}} /><figcaption>DatePicker</figcaption></figure>
@@ -38,29 +38,27 @@ All seven pickers, recorded from the [live playground](/playground). Styling is 
 
 ## Why Kalyx exists
 
-The React ecosystem in 2026 has two extremes — and nothing in between:
+Create a date with `new Date(2026, 3, 15)` in Seoul and store it, and the server receives April 14 (15:00 UTC), because midnight at UTC+9 is the previous afternoon in UTC. Kalyx doesn't accept `Date` at any boundary. Values go in and come out as ISO 8601 UTC strings, and the display timezone is a separate opt-in prop (`displayTimezone`), so what you store doesn't depend on the viewer's zone. See the [Timezone concept page](./concepts/timezone).
 
-| Option | What it offers | What it doesn't |
-| --- | --- | --- |
-| **react-day-picker** | Headless, accessible calendar grid, range mode | No input, no time picker |
-| **react-datepicker** | All-in-one features | 60 KB, required CSS, Date-object API, timezone pitfalls |
-| **Ark UI / React Aria** | Composition patterns | No TimePicker (Ark), heavy dependencies (Aria) |
+Other headless libraries already cover dates, ranges, and date+time. What Kalyx adds is narrower:
 
-Kalyx fills the gap:
+- **Value model.** Values are ISO 8601 UTC strings that go into JSON as they are, not `@internationalized/date` objects (the model Ark UI and React Aria use).
+- **List-style TimePicker.** `TimePicker.HourList` and `TimePicker.MinuteList` are `role="listbox"` lists you pick from.
+- **Month, year, and week pickers** use the same composition API as DatePicker.
 
-- **Headless philosophy** — no stylesheets, no classes you must override.
-- **Integrated primitives** — 7 pickers (DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker) share one context model.
-- **Composition first** — Radix-style dot notation. No 100-prop monoliths.
-- **~19.5 KB gzip (≤ 20 KB ceiling)** — measured, enforced in CI.
-- **SSR-safe** — tested with Next.js App Router.
-- **ISO 8601 UTC strings** as the value contract — no Date-object footguns.
-- **Timezone-aware** — opt-in `displayTimezone` prop handles DST and civil-day semantics without changing the UTC storage contract. See the [Timezone concept page](./concepts/timezone).
+Around that:
+
+- **Headless.** No stylesheets, no classes you must override.
+- **Composition first.** Radix-style dot notation. No 100-prop monoliths.
+- **SSR-safe.** Every picker has a `renderToString` test, and both entries ship with a `"use client"` directive.
+- **Accessible.** WAI-ARIA roles and full keyboard support, with jest-axe checks in the component tests.
 
 ## Who it's for
 
 - Teams already using **Tailwind**, **shadcn/ui**, **Chakra**, or their own design system, who want date UI that obeys their tokens.
-- Apps that care about **bundle size** — the whole set of pickers lands in roughly the space one competitor's single picker takes, under a CI-enforced ceiling, and unused pickers are eliminated (TimePicker alone ~16.39 KB vs ~25.69 KB for all seven plus the three main-entry hooks). See [Troubleshooting → bundle size](./troubleshooting.md#bundle-size-seems-larger-than-expected).
-- Anything running on **Next.js**, **Remix**, or other SSR/RSC environments.
+- Apps that store dates and can't afford an off-by-one day between the browser and the server.
+- Apps that watch **bundle size**. Minified with its dependencies bundled and React external, one DatePicker is ~19 KB gzip and all seven pickers plus the three main-entry hooks are ~26 KB. Pickers you don't import are eliminated, but the rest share a large base. See [Troubleshooting → bundle size](./troubleshooting.md#bundle-size-seems-larger-than-expected).
+- Server-rendered React apps, such as the Next.js App Router with Kalyx inside a client component. See [SSR safety](./concepts/ssr).
 
 ## What's in the box
 
@@ -78,7 +76,7 @@ useDatePicker               DEFAULT_*_LABELS
 useRangePicker              …and more
 useTimePicker
 
-@kalyx/react/headless — the same components without the bundled adapter,
+@kalyx/react/headless: the same components without the bundled adapter,
 plus useMonthPicker / useYearPicker / useWeekPicker / useDateTimePicker.
 ```
 

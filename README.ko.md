@@ -2,12 +2,12 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./img/hero-dark.webp">
-  <img src="./img/hero-light.webp" alt="Kalyx — 7개의 날짜 프리미티브, 하나의 API" width="720">
+  <img src="./img/hero-light.webp" alt="Kalyx: 7개의 날짜 프리미티브, 하나의 API" width="720">
 </picture>
 
 # Kalyx
 
-**마침내 완성된 Headless React DatePicker.**
+**값을 ISO 8601 UTC 문자열로 주고받는 Headless React 날짜 피커.**
 
 [문서](https://kalyx-docs-site.vercel.app/ko) · [English](https://kalyx-docs-site.vercel.app) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.md](./README.md)
 
@@ -15,7 +15,7 @@
 [![CI](https://github.com/jiji-hoon96/kalyx/actions/workflows/pr-check.yml/badge.svg)](https://github.com/jiji-hoon96/kalyx/actions/workflows/pr-check.yml)
 [![codecov](https://codecov.io/gh/jiji-hoon96/kalyx/branch/main/graph/badge.svg)](https://codecov.io/gh/jiji-hoon96/kalyx)
 [![npm downloads](https://img.shields.io/npm/dw/%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-~19.5KB-brightgreen)](https://kalyx-docs-site.vercel.app/ko/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip%20%28dist%20file%2C%20deps%20external%29-~19.5KB-brightgreen)](https://kalyx-docs-site.vercel.app/ko/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -26,7 +26,7 @@
 
 ---
 
-Kalyx는 **완결된 채로** 배포되는 Headless React DatePicker 라이브러리입니다. 단일 날짜 / 범위 / 시간 / 날짜+시간 / 월 / 연 / 주 7종 픽커를 하나의 조합형 API로 다룹니다 — gzip ~19.5 KB (≤ 20 KB), CSS 없음, SSR 안전.
+Kalyx는 단일 날짜 / 범위 / 시간 / 날짜+시간 / 월 / 연 / 주 7종 픽커를 하나의 Headless 조합형 API로 다루는 React 라이브러리입니다. CSS는 없습니다. 의존성까지 묶고 React는 외부로 두면 DatePicker 하나가 gzip ~19 KB, 7종 전부가 ~26 KB 입니다([측정 방법](#번들)).
 
 ```bash
 pnpm add @kalyx/react
@@ -43,25 +43,29 @@ import { DatePicker } from '@kalyx/react';
 </DatePicker>
 ```
 
-`onChange`는 항상 `ISODateString | null` — UTC 안전, `Date` 객체 없음.
+`onChange`는 항상 `ISODateString | null` 을 반환합니다. UTC 안전, `Date` 객체 없음.
 
 ## Kalyx를 쓰는 이유
 
-2026년 React 데이트 피커 시장은 둘 중 하나를 강요한다: 통합됐지만 무거운 것(react-datepicker ~62 KB, MUI ~58 KB), 또는 가볍지만 부분적인 것(react-day-picker — calendar grid만; Ark UI — standalone TimePicker 없음; React Aria — `@internationalized/date` 종속). react-calendar는 단일 날짜·범위는 다루지만 time·RSC·timezone 저장이 빠지고, react-native-calendars는 모바일 우선이다.
+서울에서 `new Date(2026, 3, 15)` 로 날짜를 만들어 저장하면 서버에는 4월 14일(UTC 15:00)로 들어갑니다. UTC+9 의 자정은 UTC 로 전날 오후이기 때문입니다. 그래서 Kalyx는 어떤 경계에서도 `Date` 를 받지 않습니다. 값은 ISO 8601 UTC 문자열로 들어오고 나가며, 표시 타임존은 값과 분리된 opt-in prop(`displayTimezone`)이라 저장값이 보는 사람의 타임존에 따라 달라지지 않습니다.
 
-Kalyx는 **7개 프리미티브** — 단일 날짜, 범위, 시간, 날짜+시간, 월, 연, 주 — 를 하나의 composition API로 묶는다. Headless, ~19.5 KB gzip, SSR 안전, ISO 문자열 입출력, date-fns/dayjs/luxon용 adapter 패턴.
+날짜·범위·날짜+시간은 다른 headless 라이브러리도 이미 다룹니다. Kalyx가 더하는 것은 더 좁습니다.
+
+- **값 모델.** 값이 `@internationalized/date` 객체(Ark UI·React Aria 의 방식)가 아니라 ISO 8601 UTC 문자열이라 JSON 에 그대로 실립니다.
+- **목록형 TimePicker.** `TimePicker.HourList`·`TimePicker.MinuteList` 는 `role="listbox"` 목록에서 골라 찍는 입력입니다.
+- **월·연·주 피커**가 DatePicker 와 같은 조합형 API 를 씁니다.
 
 ## 특징
 
-- **Zero CSS** — 임포트할 스타일시트도, 재정의할 클래스도 없음.
-- **Composition API** — Radix 스타일 dot 표기. props 폭발 없음.
-- **SSR 안전** — Next.js App Router 검증.
-- **ISO 8601 UTC 문자열** — `Date` 객체의 함정 없음.
-- **IANA 타임존** — `displayTimezone`이 DST·civil day 처리, 저장 계약은 UTC.
-- **접근성** — WAI-ARIA + 풀 키보드, axe 자동 통과.
-- **i18n 준비 완료** — `locale` prop (Intl 기반 월/요일/AM-PM 이름, locale 기반 주 시작 요일 추론) + `dir` prop 으로 RTL 지원.
-- **picker별 tree-shaking** — 쓰지 않는 picker 는 제거됩니다. 실측으로 TimePicker 하나만 쓰면 약 16.39 KB gzip, 7종 픽커 + 메인 엔트리 훅 3종을 전부 쓰면 약 25.69 KB 입니다. `pnpm check-tree-shaking` 으로 확인할 수 있습니다.
-- **TypeScript strict** — `any` 없음.
+- **Zero CSS.** 임포트할 스타일시트도, 재정의할 클래스도 없음 (Tailwind, shadcn/ui, Chakra, 일반 CSS 무엇이든).
+- **Composition API.** Radix 스타일 dot 표기. props 폭발 없음.
+- **SSR 안전.** 7종 픽커 모두 `renderToString` 테스트가 있고, 두 엔트리 모두 `"use client"` 지시어로 배포됩니다.
+- **ISO 8601 UTC 문자열.** 입출력에 `Date` 객체가 없음.
+- **IANA 타임존.** opt-in `displayTimezone`이 DST 를 처리하고, 저장 계약은 UTC 그대로.
+- **접근성.** WAI-ARIA 역할과 풀 키보드 지원, 컴포넌트 테스트에 jest-axe 검사 포함.
+- **i18n 준비 완료.** `locale` prop (Intl 기반 월/요일/AM-PM 이름, locale 기반 주 시작 요일 추론) + `dir` prop 으로 RTL 지원.
+- **picker별 tree-shaking.** 쓰지 않는 picker 는 제거되지만 남은 picker 들은 큰 공통 기반을 공유합니다. 실측으로 DatePicker 하나만 쓰면 약 18.90 KB gzip, TimePicker 하나만 쓰면 약 16.36 KB, 7종 픽커 + 메인 엔트리 훅 3종을 전부 쓰면 약 25.65 KB 입니다. `pnpm check-tree-shaking` 으로 확인할 수 있습니다.
+- **TypeScript strict.** `any` 없음.
 
 ## 패키지
 
@@ -110,11 +114,16 @@ API 레퍼런스, 레시피 (Tailwind / shadcn / React Hook Form), 마이그레�
 
 ## 번들
 
-`@kalyx/react` → gzip **약 19.5 KB**. CI 한계는 기본 엔트리(ESM+CJS)가 20 KB, 더 큰 headless 엔트리가 별도로 22 KB 입니다.
+두 숫자는 서로 다른 것을 잽니다.
+
+- **앱에 실제로 실리는 크기** (`pnpm check-tree-shaking`). esbuild 로 minify 하고 `@kalyx/core`·`@kalyx/adapter-date-fns`·`@floating-ui/react` 까지 함께 묶은 뒤(React, React DOM 은 외부) gzip 한 크기. DatePicker 하나 ~19 KB, 7종 픽커 + 훅 ~26 KB.
+- **배포 파일 한 개의 크기** (`pnpm check-bundle`, 배지의 값). `packages/react/dist/index.js` 한 파일이고 위 세 의존성은 외부 import 로 남깁니다. gzip ~19.5 KB. CI 한계는 기본 엔트리(ESM+CJS)가 20 KB, 더 큰 headless 엔트리가 별도로 22 KB 입니다.
+
+의존성을 포함한 다른 라이브러리의 크기 수치와 비교할 때는 첫 번째 숫자를 씁니다.
 
 ## 지원 환경
 
-React 19+ · 모든 모던 브라우저 · SSR: Next.js App Router / Pages Router / Remix · Node ≥ 20.
+React 19+ · 모던 브라우저 · SSR: 모든 picker 에 `renderToString` 테스트 · Node ≥ 20.
 
 ## 로드맵
 

@@ -7,13 +7,13 @@ description: 'Kalyx 는 hydration 불일치 없이 서버에서 렌더됩니다.
 
 # SSR 안전
 
-Kalyx는 서버 렌더링을 전제로 설계됐습니다. Next.js App Router, Pages Router, Remix, `renderToString`을 호출하는 모든 환경에서 동작합니다.
+Kalyx는 서버 렌더링을 전제로 설계됐습니다. 7종 picker 모두 컴포넌트 테스트에 `renderToString` 테스트가 있고, 배포 엔트리에는 Next.js App Router 등 RSC 환경을 위한 `'use client'` 지시어가 붙어 있습니다.
 
 ## Kalyx가 하는 것
 
-- **안정적 ID**는 React `useId()`로 — 서버/클라이언트 간 일치.
+- **안정적 ID**는 React `useId()`로 만들어 서버/클라이언트 간 일치.
 - **모듈 스코프 `window`/`document` 접근 없음.** 모든 DOM 접근은 `useEffect` 안.
-- **`useLayoutEffect` 사용 안 함** (핫패스) — SSR 경고 회피.
+- **`useLayoutEffect` 사용 안 함** (핫패스). SSR 경고 회피.
 - **Floating UI**는 SSR 안전한 `useFloating`으로 위치 계산.
 
 한 줄로: 서버에서 `@kalyx/react`를 import하는 것은 안전합니다.
@@ -79,12 +79,12 @@ export { DatePicker } from '@kalyx/react';
 SSR 첫 렌더에는 아직 사용자 상호작용이 없습니다. `defaultValue` 혹은 `value={null}`로 시작하세요.
 
 ```tsx
-{/* 비제어 — 폼에 적합 */}
+{/* 비제어: 폼에 적합 */}
 <DatePicker defaultValue="2026-04-15T00:00:00.000Z">
   <DatePicker.Input name="checkIn" />
 </DatePicker>
 
-{/* null 제어 — 선택 필드에 적합 */}
+{/* null 제어: 선택 필드에 적합 */}
 <DatePicker value={null} onChange={setDate}>
   <DatePicker.Input />
 </DatePicker>

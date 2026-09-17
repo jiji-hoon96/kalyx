@@ -3,12 +3,12 @@ id: intro
 title: 소개
 sidebar_position: 1
 slug: /intro
-description: 'Kalyx 는 headless React 날짜 피커 라이브러리입니다. 피커 7종, CSS 없음, SSR 안전, ISO 8601 UTC 문자열 입출력, gzip 약 19.5 KB.'
+description: 'Kalyx 는 headless React 날짜 피커 라이브러리입니다. 피커 7종, CSS 없음, SSR 안전, ISO 8601 UTC 문자열 입출력.'
 ---
 
 # Kalyx
 
-**Kalyx** 는 *완성된 상태로* 출시되는 headless React DatePicker 라이브러리다. 7개의 조합 가능한 picker — **DatePicker**, **RangePicker**, **TimePicker**, **DateTimePicker**, **MonthPicker**, **YearPicker**, **WeekPicker** — 가 하나의 일관된 API 뒤에 자리한다.
+**Kalyx** 는 값을 ISO 8601 UTC 문자열로 주고받는 headless React 날짜 피커 라이브러리다. 7개의 조합 가능한 picker(**DatePicker**, **RangePicker**, **TimePicker**, **DateTimePicker**, **MonthPicker**, **YearPicker**, **WeekPicker**)가 하나의 일관된 API 뒤에 자리한다.
 
 ```tsx
 import { DatePicker } from '@kalyx/react';
@@ -38,29 +38,27 @@ import { DatePicker } from '@kalyx/react';
 
 ## Kalyx 가 존재하는 이유
 
-2026년 React 생태계에는 두 극단만 존재하고 그 사이가 비어 있다:
+서울에서 `new Date(2026, 3, 15)` 로 날짜를 만들어 저장하면 서버에는 4월 14일(UTC 15:00)로 들어간다. UTC+9 의 자정은 UTC 로 전날 오후이기 때문이다. 그래서 Kalyx 는 어떤 경계에서도 `Date` 를 받지 않는다. 값은 ISO 8601 UTC 문자열로 들어오고 나가며, 표시 타임존은 값과 분리된 opt-in prop(`displayTimezone`)이라 저장값이 보는 사람의 타임존에 따라 달라지지 않는다. [Timezone 컨셉 페이지](./concepts/timezone) 참고.
 
-| 옵션 | 제공하는 것 | 부족한 것 |
-| --- | --- | --- |
-| **react-day-picker** | Headless, 접근성 갖춘 캘린더 그리드, range 모드 | input 없음, 시간 피커 없음 |
-| **react-datepicker** | 통합된 기능 | 60KB, CSS 강제, Date 객체 API, timezone 함정 |
-| **Ark UI / React Aria** | Composition 패턴 | TimePicker 미제공(Ark), 무거운 의존성(Aria) |
+날짜·범위·날짜+시간은 다른 headless 라이브러리도 이미 다룬다. Kalyx 가 더하는 것은 더 좁다.
 
-Kalyx 는 그 공백을 채운다:
+- **값 모델.** 값이 `@internationalized/date` 객체(Ark UI·React Aria 의 방식)가 아니라 ISO 8601 UTC 문자열이라 JSON 에 그대로 실린다.
+- **목록형 TimePicker.** `TimePicker.HourList`·`TimePicker.MinuteList` 는 `role="listbox"` 목록에서 골라 찍는 입력이다.
+- **월·연·주 피커**가 DatePicker 와 같은 조합형 API 를 쓴다.
 
-- **Headless 철학** — 스타일시트 없음, 덮어써야 할 클래스 없음.
-- **통합된 primitive** — 7개의 picker (DatePicker, RangePicker, TimePicker, DateTimePicker, MonthPicker, YearPicker, WeekPicker) 가 하나의 컨텍스트 모델을 공유한다.
-- **Composition 우선** — Radix 스타일의 dot notation. 100개짜리 prop 덩어리 없음.
-- **~19.5 KB gzip (≤ 20 KB 한계)** — 측정된 값, CI 에서 강제된다.
-- **SSR 안전** — Next.js App Router 환경에서 검증됨.
-- **ISO 8601 UTC 문자열** 을 값 계약으로 사용 — Date 객체로 인한 함정 없음.
-- **Timezone 인지** — opt-in `displayTimezone` prop 이 UTC 저장 계약을 유지한 채 DST 와 civil-day 의미론을 처리한다. [Timezone 컨셉 페이지](./concepts/timezone) 참고.
+그 밖에:
+
+- **Headless.** 스타일시트 없음, 덮어써야 할 클래스 없음.
+- **Composition 우선.** Radix 스타일의 dot notation. 100개짜리 prop 덩어리 없음.
+- **SSR 안전.** 7종 picker 모두 `renderToString` 테스트가 있고, 두 엔트리 모두 `"use client"` 지시어로 배포된다.
+- **접근성.** WAI-ARIA 역할과 풀 키보드 지원, 컴포넌트 테스트에 jest-axe 검사 포함.
 
 ## 누구를 위한 것인가
 
 - 이미 **Tailwind**, **shadcn/ui**, **Chakra**, 또는 자체 디자인 시스템을 쓰고 있고, 그 토큰을 따르는 date UI 가 필요한 팀.
-- **번들 크기** 를 신경 쓰는 앱 — 피커 7종 전부가 경쟁 라이브러리 하나치 정도 공간에 들어가고 CI 로 천장을 강제하며, 쓰지 않는 picker 는 제거됩니다(TimePicker 하나 약 16.39 KB, 7종 + 메인 엔트리 훅 3종 전부 약 25.69 KB). [트러블슈팅 → 번들 크기](./troubleshooting.md#번들-크기가-예상보다-큽니다) 참고.
-- **Next.js**, **Remix**, 또는 다른 SSR/RSC 환경에서 동작하는 것.
+- 날짜를 저장하고, 브라우저와 서버 사이에서 하루가 밀리면 안 되는 앱.
+- **번들 크기** 를 신경 쓰는 앱. 의존성까지 묶어 minify 하고 React 는 외부로 두면 DatePicker 하나가 gzip 약 19 KB, 7종 picker + 메인 엔트리 훅 3종 전부가 약 26 KB 입니다. 쓰지 않는 picker 는 제거되지만 남은 picker 들은 큰 공통 기반을 공유합니다. [트러블슈팅 → 번들 크기](./troubleshooting.md#번들-크기가-예상보다-큽니다) 참고.
+- 서버 렌더링하는 React 앱. 예를 들어 Next.js App Router 에서 Kalyx 를 client component 안에 두는 경우. [SSR 안전](./concepts/ssr) 참고.
 
 ## 패키지 구성
 
@@ -78,7 +76,7 @@ useDatePicker               DEFAULT_*_LABELS
 useRangePicker              …and more
 useTimePicker
 
-@kalyx/react/headless — the same components without the bundled adapter,
+@kalyx/react/headless: the same components without the bundled adapter,
 plus useMonthPicker / useYearPicker / useWeekPicker / useDateTimePicker.
 ```
 

@@ -7,13 +7,13 @@ description: 'Kalyx renders on the server without hydration mismatches. What it 
 
 # SSR safety
 
-Kalyx is designed for server rendering. It runs in Next.js App Router, Pages Router, Remix, and any environment that calls `renderToString`.
+Kalyx is designed for server rendering. Every picker has a `renderToString` test in the component test suite, and the published entries carry the `'use client'` directive for the Next.js App Router and other RSC setups.
 
 ## What Kalyx does
 
-- **Stable IDs** via React's `useId()` — matches between server and client.
+- **Stable IDs** via React's `useId()`, so they match between server and client.
 - **No `window`/`document` at module scope.** All DOM access is inside `useEffect`.
-- **No `useLayoutEffect`** in hot paths — avoids the SSR warning.
+- **No `useLayoutEffect`** in hot paths, which avoids the SSR warning.
 - **Floating UI** handles positioning with its SSR-safe `useFloating` hook.
 
 In short: importing `@kalyx/react` on a server is safe.
@@ -62,7 +62,7 @@ export default function Page() {
 ## RSC (React Server Components)
 
 Kalyx components are client components, and **the published bundle already carries the
-`'use client'` directive** — `packages/react/tsup.config.ts` prepends it to every built
+`'use client'` directive**. `packages/react/tsup.config.ts` prepends it to every built
 entry (`dist/index.js`, `dist/index.cjs`, `dist/headless.js`, `dist/headless.cjs`). You
 can import a picker directly inside a Server Component file's module graph without
 writing a boundary of your own.
@@ -81,12 +81,12 @@ export { DatePicker } from '@kalyx/react';
 In SSR, the initial render has no user interaction yet. Start with either `defaultValue` or `value={null}`:
 
 ```tsx
-{/* Uncontrolled — good for forms */}
+{/* Uncontrolled: good for forms */}
 <DatePicker defaultValue="2026-04-15T00:00:00.000Z">
   <DatePicker.Input name="checkIn" />
 </DatePicker>
 
-{/* Controlled with null — good for optional fields */}
+{/* Controlled with null: good for optional fields */}
 <DatePicker value={null} onChange={setDate}>
   <DatePicker.Input />
 </DatePicker>

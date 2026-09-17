@@ -203,7 +203,7 @@ import type {
 ## Runtime dependencies
 
 - `@kalyx/core` (workspace)
-- `@kalyx/adapter-date-fns` (workspace — bundles `date-fns` for the default entry)
+- `@kalyx/adapter-date-fns` (workspace; bundles `date-fns` for the default entry)
 - `@floating-ui/react ^0.27.0`
 
 Peer dependencies: `react ^19.0.0`, `react-dom ^19.0.0`.
@@ -213,9 +213,13 @@ non-default backend): `@kalyx/adapter-dayjs`, `@kalyx/adapter-luxon`.
 
 ## Bundle size
 
-Gzipped default-entry artifact: **~19.5 KB** (7 components, CI ceiling 20 KB). The headless ESM and CJS artifacts have their own CI gate at 22 KB — that entry ships the same components plus all seven hooks and `DateTimePicker.Presets`, so it is budgeted separately rather than sharing the default entry's number.
+Two numbers, measuring different things.
 
-That figure measures the artifact with its dependencies external. What your application ships is larger, because the bundler also resolves `@kalyx/core`, `@kalyx/adapter-date-fns`, and `@floating-ui/react`. `sideEffects: false` is declared and the dot-notation exports are pure-annotated, so pickers you don't import are eliminated — TimePicker alone measures ~16.39 KB, the heaviest single picker (DateTimePicker) ~20.19 KB, against ~25.69 KB for all seven plus the three main-entry hooks. Run `pnpm check-tree-shaking` for the full scenario table. The pickers share a large base, so the saving is real but well short of linear. Measure your production bundle for your exact imports, and see [Troubleshooting → bundle size](../troubleshooting.md#bundle-size-seems-larger-than-expected) for the full reconciliation.
+**The published file** (`pnpm check-bundle`, shown in the README badge). `packages/react/dist/index.js` alone, gzipped, with `@kalyx/core`, `@kalyx/adapter-date-fns`, and `@floating-ui/react` left as external imports: **~19.5 KB** for ESM (19.78 KB for CJS), under a CI ceiling of 20 KB. The headless ESM and CJS files (20.79 KB and 21.09 KB) have their own CI gate at 22 KB. That entry ships the same components plus all seven hooks and `DateTimePicker.Presets`, so it is budgeted separately rather than sharing the default entry's number.
+
+**What your app ships** (`pnpm check-tree-shaking`). This is larger, because the bundler also resolves those three dependencies. The script minifies with esbuild, bundles the dependencies, leaves React and React DOM external, then gzips. One DatePicker is **~19 KB** (18.90 KB) and all seven pickers plus the three main-entry hooks are **~26 KB** (25.65 KB). Use this number when comparing against size figures that include dependencies.
+
+`sideEffects: false` is declared and the dot-notation exports are pure-annotated, so pickers you don't import are eliminated. TimePicker alone measures ~16.36 KB and the heaviest single picker (DateTimePicker) ~20.16 KB. Run `pnpm check-tree-shaking` for the full scenario table. The pickers share a large base, so the saving is real but well short of linear. Measure your production bundle for your exact imports, and see [Troubleshooting → bundle size](../troubleshooting.md#bundle-size-seems-larger-than-expected) for the full reconciliation.
 
 ## See also
 

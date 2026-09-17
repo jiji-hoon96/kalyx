@@ -37,7 +37,7 @@ Kalyx ships its own `.d.ts` files. If you see type errors, ensure your `tsconfig
 }
 ```
 
-The legacy `"node"` resolution mode doesn't support `package.json` `exports` — upgrade to `"bundler"` or `"node16"`.
+The legacy `"node"` resolution mode doesn't support `package.json` `exports`. Upgrade to `"bundler"` or `"node16"`.
 
 ---
 
@@ -49,10 +49,10 @@ Kalyx does **not** use `useLayoutEffect`. If you see this warning, it's from ano
 
 ### `ReferenceError: window is not defined`
 
-This should never happen with Kalyx components — all `window`/`document` access is inside `useEffect`. If you encounter it:
+This should never happen with Kalyx components: all `window`/`document` access is inside `useEffect`. If you encounter it:
 
 1. Check that you're using `@kalyx/react` (not importing from `@kalyx/core` directly in a server component)
-2. Ensure you're not destructuring Kalyx components in a Server Component file — wrap them in a Client Component:
+2. Ensure you're not destructuring Kalyx components in a Server Component file. Wrap them in a Client Component:
 
 ```tsx title="components/MyDatePicker.tsx"
 'use client';
@@ -75,7 +75,7 @@ export function MyDatePicker() {
 
 If you see a hydration mismatch, check:
 
-- Are you using `displayTimezone`? The server and client must resolve the same timezone. Avoid relying on the system timezone — always pass an explicit IANA zone string.
+- Are you using `displayTimezone`? The server and client must resolve the same timezone. Avoid relying on the system timezone. Always pass an explicit IANA zone string.
 - Are you conditionally rendering based on `new Date()`? The server timestamp differs from the client's. Use `defaultValue` instead of computing a value during render.
 
 ---
@@ -86,9 +86,9 @@ If you see a hydration mismatch, check:
 
 Kalyx uses [Floating UI](https://floating-ui.com/) with `flip` and `shift` middleware. If the popover is mispositioned:
 
-1. **Check for `overflow: hidden` on ancestors** — Floating UI detects overflow boundaries. A parent with `overflow: hidden` can clip or misposition the popover.
-2. **Check CSS transforms on ancestors** — `transform` creates a new containing block, which can offset `position: fixed` elements.
-3. **In a modal/dialog?** — The popover renders as a sibling, not a portal. If your modal clips overflow, the popover may be clipped.
+1. **Check for `overflow: hidden` on ancestors.** Floating UI detects overflow boundaries. A parent with `overflow: hidden` can clip or misposition the popover.
+2. **Check CSS transforms on ancestors.** `transform` creates a new containing block, which can offset `position: fixed` elements.
+3. **In a modal/dialog?** The popover renders as a sibling, not a portal. If your modal clips overflow, the popover may be clipped.
 
 ### Popover doesn't close on outside click
 
@@ -102,7 +102,7 @@ This can happen if an element calls `event.stopPropagation()` before the click r
 
 This is the **single most-reported datepicker bug** ([react-datepicker #1018](https://github.com/Hacker0x01/react-datepicker/issues/1018) is a decade-old example). It almost always comes from one of two causes.
 
-**Cause 1 — you passed a native `Date` instead of an ISO string.** A `Date` is interpreted in the *runtime's* local zone, which differs between the user's browser and your server:
+**Cause 1: you passed a native `Date` instead of an ISO string.** A `Date` is interpreted in the *runtime's* local zone, which differs between the user's browser and your server:
 
 ```ts
 // ❌ off-by-one waiting to happen
@@ -110,14 +110,14 @@ const picked = new Date(2026, 3, 15); // local midnight → "2026-04-14T15:00:00
 save(picked.toISOString());           // server reads April 14
 ```
 
-Kalyx never takes a `Date` — its value contract is an ISO-8601 UTC string, so this class of bug is structurally removed. Always read the value from `onChange`:
+Kalyx never takes a `Date`. Its value contract is an ISO-8601 UTC string, so this class of bug is structurally removed. Always read the value from `onChange`:
 
 ```tsx
 // ✅ value is already a correct UTC ISO string
 <DatePicker value={value} onChange={setValue}>...</DatePicker>
 ```
 
-**Cause 2 — you display a UTC instant in a different civil zone.** `"2026-04-15T00:00:00.000Z"` is April 15 in UTC but still April 15 in Seoul; `"2026-04-15T15:00:00.000Z"` is April 16 in Seoul. If you want the calendar to commit and highlight by *civil* day in a specific zone, set `displayTimezone`:
+**Cause 2: you display a UTC instant in a different civil zone.** `"2026-04-15T00:00:00.000Z"` is April 15 in UTC but still April 15 in Seoul; `"2026-04-15T15:00:00.000Z"` is April 16 in Seoul. If you want the calendar to commit and highlight by *civil* day in a specific zone, set `displayTimezone`:
 
 ```tsx
 <DatePicker
@@ -140,21 +140,21 @@ See the [Timezone concept page](./concepts/timezone.md) for the full model.
 
 ### Disabled dates or min/max boundaries are off by one under `displayTimezone`
 
-Same root cause as above, one layer down. `disabled` rules and the `isDateDisabled` helper compare **instants**. A boundary you wrote by hand as `'2026-01-15T00:00:00.000Z'` is a UTC coordinate, not civil midnight in your zone — so with `displayTimezone` set, the boundary day itself can fall on the wrong side of the rule.
+Same root cause as above, one layer down. `disabled` rules and the `isDateDisabled` helper compare **instants**. A boundary you wrote by hand as `'2026-01-15T00:00:00.000Z'` is a UTC coordinate, not civil midnight in your zone, so with `displayTimezone` set, the boundary day itself can fall on the wrong side of the rule.
 
 ```tsx
 import { civilMidnightFromUtcDay } from '@kalyx/core';
 
 const tz = 'America/New_York';
 
-// ❌ a raw UTC coordinate — in New_York this instant is still Jan 14 locally
+// ❌ a raw UTC coordinate: in New_York this instant is still Jan 14 locally
 disabled={[{ before: '2026-01-15T00:00:00.000Z' }]}
 
 // ✅ the same civil day, expressed as the instant the picker itself uses
 disabled={[{ before: civilMidnightFromUtcDay('2026-01-15T00:00:00.000Z', tz) }]}
 ```
 
-The reliable rule: when `displayTimezone` is set, every date you hand the picker should be a value it could have emitted — one you got back from `onChange`, or one you built with `civilMidnightFromUtcDay`. Inside a custom grid, use the `isDisabled` flag `getCalendarDays` already computed for each cell instead of calling `isDateDisabled` yourself.
+The reliable rule: when `displayTimezone` is set, every date you hand the picker should be a value it could have emitted: one you got back from `onChange`, or one you built with `civilMidnightFromUtcDay`. Inside a custom grid, use the `isDisabled` flag `getCalendarDays` already computed for each cell instead of calling `isDateDisabled` yourself.
 
 ### DST transition causes unexpected behavior
 
@@ -166,17 +166,17 @@ During DST transitions (e.g., US "spring forward"), 2:00 AM doesn't exist. Kalyx
 
 ### Components have no styles at all
 
-This is by design — Kalyx is headless. You must provide styles via `classNames` props or `className`. See the [Tailwind recipe](./recipes/tailwind.md) for a complete example.
+This is by design. Kalyx is headless. You must provide styles via `classNames` props or `className`. See the [Tailwind recipe](./recipes/tailwind.md) for a complete example.
 
 ### `classNames` prop doesn't work
 
 Make sure you're passing an object, not a string:
 
 ```tsx
-// ❌ Wrong — className (string) only applies to the root element
+// ❌ Wrong: className (string) only applies to the root element
 <DatePicker.Calendar className="my-calendar" />
 
-// ✅ Right — classNames (object) targets internal slots
+// ✅ Right: classNames (object) targets internal slots
 <DatePicker.Calendar
   classNames={{
     root: 'my-calendar',
@@ -196,7 +196,7 @@ Both `className` (root element) and `classNames` (slots) are supported. Use `cla
 
 In uncontrolled mode, pass a `name` prop to `DatePicker.Input`. The Input is what
 renders the hidden field carrying the ISO value, and `name` is not a prop on the
-Root. Note that `DatePicker` is the only picker with form-submission support —
+Root. Note that `DatePicker` is the only picker with form-submission support.
 MonthPicker, YearPicker, WeekPicker, RangePicker and DateTimePicker have none.
 
 ```tsx
@@ -226,7 +226,7 @@ Pass `null` for "no selection" instead of `''`:
 </DatePicker>
 ```
 
-Anything `new Date(value)` cannot parse counts as malformed — `''`, `'null'`,
+Anything `new Date(value)` cannot parse counts as malformed: `''`, `'null'`,
 `'2026-02-30T00:00:00.000Z'` (February has no 30th), or a bare `'2026-01-15'`
 that was concatenated rather than normalized.
 
@@ -236,9 +236,9 @@ that was concatenated rather than normalized.
 
 ### Calendar re-renders on every state change
 
-This is normal — the calendar grid is lightweight (~42 cells). If you're experiencing jank:
+This is normal. The calendar grid is lightweight (~42 cells). If you're experiencing jank:
 
-1. Profile with React DevTools — check if the re-render is actually slow
+1. Profile with React DevTools and check whether the re-render is actually slow
 2. Avoid creating new objects on every render in parent components:
 
 ```tsx
@@ -252,17 +252,17 @@ const DISABLED = [{ dayOfWeek: [0, 6] }] as const;
 
 ### Bundle size seems larger than expected
 
-You will see two different numbers, and both are correct — they measure different things.
+You will see two different numbers, and both are correct. They measure different things.
 
 **~19.5 KB is the published artifact.** That is what the badge and the CI ceiling track: the gzipped size of `@kalyx/react`'s own `dist/index.js`, with its dependencies left external. It is the number Kalyx controls and gates on: 20 KB for the default entry in both ESM and CJS. The opt-in `headless` entry is gated separately at 22 KB, since it ships the same components plus all seven hooks.
 
-**16–26 KB is what a consumer actually ships**, depending on how much you import. Your bundler resolves the dependencies the artifact only references, so the graph also pulls in `@kalyx/core`, `@kalyx/adapter-date-fns` (and the date-fns functions it uses), and `@floating-ui/react`. Run `pnpm check-tree-shaking` in this repository for the measured scenarios — currently ~16.39 KB gzipped for `TimePicker` alone, ~20.19 KB for the heaviest single picker (DateTimePicker), and ~25.69 KB for all seven plus the three main-entry hooks.
+**About 16 to 26 KB is what a consumer actually ships**, depending on how much you import. Your bundler resolves the dependencies the artifact only references, so the graph also pulls in `@kalyx/core`, `@kalyx/adapter-date-fns` (and the date-fns functions it uses), and `@floating-ui/react`. `pnpm check-tree-shaking` in this repository measures that: esbuild minify with those dependencies bundled and React and React DOM external, then gzip. Current figures are ~16.36 KB for `TimePicker` alone, ~18.90 KB for `DatePicker` alone, ~20.16 KB for the heaviest single picker (DateTimePicker), and ~25.65 KB for all seven plus the three main-entry hooks.
 
-The consumer figure is always the larger of the two, because the artifact number excludes dependencies the consumer must resolve. How much larger depends on your imports: roughly 6.5 KB over the artifact if you import everything, and less if you import one picker. Quote the scenario that matches your usage when comparing against libraries that publish a single all-in number.
+The consumer figure is always the larger of the two, because the artifact number excludes dependencies the consumer must resolve. How much larger depends on your imports: roughly 6 KB over the artifact if you import everything, and less if you import one picker. Quote the scenario that matches your usage when comparing against libraries that publish a single all-in number.
 
 If your own bundle is larger than that:
 
-1. Inspect your production bundler report. Unused pickers *are* eliminated (TimePicker alone measures ~16.39 KB against ~25.69 KB for all seven plus the three main-entry hooks), but the pickers share a substantial base — context, popover, calendar math — so importing one is not a seventh of importing all.
+1. Inspect your production bundler report. Unused pickers *are* eliminated (TimePicker alone measures ~16.36 KB against ~25.65 KB for all seven plus the three main-entry hooks), but the pickers share a substantial base (context, popover, calendar math), so importing one is not a seventh of importing all.
 2. The default entry includes the date-fns adapter. If your app already ships another date library, compare the explicit `/headless` entry with the same consumer setup so date-fns isn't counted twice.
 3. Run `pnpm check-bundle` for artifact ceilings and `pnpm check-tree-shaking` for the consumer scenarios.
 

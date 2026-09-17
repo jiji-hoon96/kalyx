@@ -17,20 +17,21 @@ describe('<FeatureGrid>', () => {
     expect(screen.getAllByTestId('feature-card')).toHaveLength(FEATURES.length);
   });
 
-  it('has exactly 4 features (Zero CSS, SSR-safe, Timezone-aware, ≤20 KB)', () => {
+  it('has exactly 4 features (Zero CSS, SSR-safe, Timezone-aware, bundle size)', () => {
     expect(FEATURES).toHaveLength(4);
     expect(FEATURES.map((f) => f.id)).toEqual(['zero-css', 'ssr-safe', 'timezone', 'bundle']);
   });
 
-  it('describes the bundle using the enforced ceiling, not a stale competitor ratio', () => {
+  it('describes the bundle with measured consumer sizes, not a stale competitor ratio', () => {
     const bundle = FEATURES.find((feature) => feature.id === 'bundle');
 
-    // The headline tracks the default entry — what `import from '@kalyx/react'`
-    // costs — which is the 20 KB gate. The opt-in headless entry has a separate,
-    // larger ceiling and the body must name both rather than implying one number.
-    expect(bundle?.titleDefault).toBe('≤20 KB gzipped');
-    expect(bundle?.bodyDefault).toContain('20 KB CI ceiling');
-    expect(bundle?.bodyDefault).toContain('headless entry has its own at 22 KB');
+    // The headline is the consumer figure from `pnpm check-tree-shaking` (one
+    // DatePicker, deps bundled, React external). The body names what was
+    // measured and keeps the two CI ceilings on the published files apart.
+    expect(bundle?.titleDefault).toBe('~19 KB gzipped');
+    expect(bundle?.bodyDefault).toContain('dependencies bundled and React external');
+    expect(bundle?.bodyDefault).toContain('~26 KB');
+    expect(bundle?.bodyDefault).toContain('20 KB for the default entry and 22 KB for the headless entry');
     expect(bundle?.bodyDefault).not.toContain('Default and headless artifacts each');
     expect(bundle?.bodyDefault).not.toContain('quarter of react-datepicker');
   });

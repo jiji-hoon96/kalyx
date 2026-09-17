@@ -2,12 +2,12 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./img/hero-dark.webp">
-  <img src="./img/hero-light.webp" alt="Kalyx — seven date primitives, one API" width="720">
+  <img src="./img/hero-light.webp" alt="Kalyx: seven date primitives, one API" width="720">
 </picture>
 
 # Kalyx
 
-**The headless React DatePicker, finally complete.**
+**Headless React date pickers that take and return ISO 8601 UTC strings.**
 
 [Docs](https://kalyx-docs-site.vercel.app) · [한국어](https://kalyx-docs-site.vercel.app/ko) · [npm](https://www.npmjs.com/package/@kalyx/react) · [README.ko](./README.ko.md)
 
@@ -15,7 +15,7 @@
 [![CI](https://github.com/jiji-hoon96/kalyx/actions/workflows/pr-check.yml/badge.svg)](https://github.com/jiji-hoon96/kalyx/actions/workflows/pr-check.yml)
 [![codecov](https://codecov.io/gh/jiji-hoon96/kalyx/branch/main/graph/badge.svg)](https://codecov.io/gh/jiji-hoon96/kalyx)
 [![npm downloads](https://img.shields.io/npm/dw/%40kalyx%2Freact)](https://www.npmjs.com/package/@kalyx/react)
-[![Bundle](https://img.shields.io/badge/gzip-~19.5KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
+[![Bundle](https://img.shields.io/badge/gzip%20%28dist%20file%2C%20deps%20external%29-~19.5KB-brightgreen)](https://kalyx-docs-site.vercel.app/docs/api/react#bundle-size)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![React 19](https://img.shields.io/badge/React-19%2B-61DAFB)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
@@ -26,7 +26,7 @@
 
 ---
 
-Kalyx ships a **complete** set of date-related React primitives — single dates, date ranges, time, date+time, month, year, and week — under one composition API. ~19.5 KB gzip (≤20 KB ceiling), zero CSS, SSR-safe.
+Kalyx ships seven date-related React pickers (single date, range, time, date+time, month, year, week) under one headless composition API, with zero CSS. Bundled with its dependencies and React left external, one DatePicker is ~19 KB gzip and all seven are ~26 KB ([how this is measured](#bundle)).
 
 ```bash
 pnpm add @kalyx/react
@@ -43,25 +43,29 @@ import { DatePicker } from '@kalyx/react';
 </DatePicker>
 ```
 
-`onChange` always returns `ISODateString | null` — UTC-safe, no `Date` objects.
+`onChange` always returns `ISODateString | null`. UTC-safe, no `Date` objects.
 
 ## Why Kalyx
 
-In 2026, the React date-picker landscape forces a trade-off: integrated-but-heavy (react-datepicker ~62 KB, MUI ~58 KB) or headless-but-partial (react-day-picker — calendar grid only; Ark UI — no standalone TimePicker; React Aria — `@internationalized/date` lock-in). react-calendar covers single dates and ranges but stops short of time, RSC, and timezone-aware storage. react-native-calendars is mobile-first.
+Create a date with `new Date(2026, 3, 15)` in Seoul and store it, and the server receives April 14 (15:00 UTC), because midnight at UTC+9 is the previous afternoon in UTC. Kalyx doesn't accept `Date` at any boundary. Values go in and come out as ISO 8601 UTC strings, and the display timezone is a separate opt-in prop (`displayTimezone`), so what you store doesn't depend on the viewer's zone.
 
-Kalyx ships **seven primitives** — single date, range, time, date+time, month, year, week — under one composition API. Headless, ~19.5 KB gzip, SSR-safe, ISO strings in / ISO strings out, adapter pattern for date-fns / dayjs / luxon.
+Other headless libraries already cover dates, ranges, and date+time. What Kalyx adds is narrower:
+
+- **Value model.** Values are ISO 8601 UTC strings that go into JSON as they are, not `@internationalized/date` objects (the model Ark UI and React Aria use).
+- **List-style TimePicker.** `TimePicker.HourList` and `TimePicker.MinuteList` are `role="listbox"` lists you pick from.
+- **Month, year, and week pickers** use the same composition API as DatePicker.
 
 ## Features
 
-- **Zero CSS** — bring your own (Tailwind, shadcn/ui, Chakra, plain CSS).
-- **Composition API** — Radix-style dot notation. No prop explosions.
-- **SSR-safe** — Next.js App Router verified.
-- **ISO 8601 UTC strings** — eliminates `Date`-object footguns.
-- **IANA timezone-aware** — opt-in `displayTimezone` handles DST without changing storage.
-- **Accessible** — WAI-ARIA + full keyboard, axe-clean.
-- **i18n-ready** — `locale` prop (Intl-based month/weekday/AM-PM names, locale-inferred week start) + RTL via the `dir` prop.
-- **Per-picker tree-shaking** — unused pickers are eliminated: TimePicker alone measures ~16.39 KB gzip against ~25.69 KB for all seven pickers plus the three main-entry hooks. Verify with `pnpm check-tree-shaking`.
-- **TypeScript strict** — no `any`.
+- **Zero CSS.** Bring your own (Tailwind, shadcn/ui, Chakra, plain CSS).
+- **Composition API.** Radix-style dot notation. No prop explosions.
+- **SSR-safe.** Every picker has a `renderToString` test, and both entries ship with a `"use client"` directive.
+- **ISO 8601 UTC strings.** No `Date` objects in or out.
+- **IANA timezone-aware.** Opt-in `displayTimezone` handles DST without changing storage.
+- **Accessible.** WAI-ARIA roles and full keyboard support, with jest-axe checks in the component tests.
+- **i18n-ready.** `locale` prop (Intl-based month/weekday/AM-PM names, locale-inferred week start) + RTL via the `dir` prop.
+- **Per-picker tree-shaking.** Pickers you don't import are eliminated, but the rest share a large base: DatePicker alone measures ~18.90 KB gzip and TimePicker alone ~16.36 KB, against ~25.65 KB for all seven pickers plus the three main-entry hooks. Verify with `pnpm check-tree-shaking`.
+- **TypeScript strict.** No `any`.
 
 ## Packages
 
@@ -93,7 +97,7 @@ API reference, recipes (Tailwind / shadcn / React Hook Form), and migration guid
 
 ### Demos
 
-Recorded from the [live playground](https://kalyx-docs-site.vercel.app/playground). Styling is demo-only — Kalyx ships zero CSS.
+Recorded from the [live playground](https://kalyx-docs-site.vercel.app/playground). Styling is demo-only. Kalyx ships zero CSS.
 
 | | | |
 |:---:|:---:|:---:|
@@ -110,11 +114,16 @@ Recorded from the [live playground](https://kalyx-docs-site.vercel.app/playgroun
 
 ## Bundle
 
-`@kalyx/react` → **~19.5 KB** gzip. CI gate: ≤ 20 KB for the default entry (ESM + CJS); the larger headless entry is gated separately at ≤ 22 KB.
+Two numbers, measuring different things.
+
+- **What your app ships** (`pnpm check-tree-shaking`). Minified with esbuild, with `@kalyx/core`, `@kalyx/adapter-date-fns`, and `@floating-ui/react` bundled, React and React DOM external, then gzipped. One DatePicker ~19 KB, all seven pickers plus hooks ~26 KB.
+- **The published file** (`pnpm check-bundle`, shown in the badge). `packages/react/dist/index.js` alone, with those three dependencies left as external imports: ~19.5 KB gzip. CI gates it at ≤ 20 KB for the default entry (ESM + CJS) and ≤ 22 KB for the larger headless entry.
+
+Use the first number when comparing against size figures that include dependencies.
 
 ## Browser support
 
-React 19+ · all modern browsers · SSR: Next.js App Router / Pages Router / Remix · Node ≥ 20.
+React 19+ · modern browsers · SSR: `renderToString` tested for every picker · Node ≥ 20.
 
 ## Roadmap
 

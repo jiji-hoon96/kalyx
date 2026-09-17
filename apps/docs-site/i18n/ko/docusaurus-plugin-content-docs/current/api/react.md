@@ -199,7 +199,7 @@ import type {
 ## 런타임 의존성
 
 - `@kalyx/core` (workspace)
-- `@kalyx/adapter-date-fns` (workspace — 기본 엔트리를 위해 `date-fns`를 함께 들고 옵니다)
+- `@kalyx/adapter-date-fns` (workspace. 기본 엔트리를 위해 `date-fns`를 함께 들고 옵니다)
 - `@floating-ui/react ^0.27.0`
 
 Peer 의존성: `react ^19.0.0`, `react-dom ^19.0.0`.
@@ -208,9 +208,13 @@ Peer 의존성: `react ^19.0.0`, `react-dom ^19.0.0`.
 
 ## 번들 크기
 
-기본 엔트리 산출물은 gzip 기준 **약 19.5 KB**입니다(컴포넌트 7종, CI 한계 20 KB). Headless ESM/CJS 산출물에는 별도의 22 KB CI 게이트가 적용됩니다 — 이 엔트리는 같은 컴포넌트에 더해 훅 7종 전부와 `DateTimePicker.Presets`까지 싣기 때문에, 기본 엔트리의 수치를 공유하지 않고 따로 예산을 잡습니다.
+두 숫자는 서로 다른 것을 잽니다.
 
-이 수치는 의존성을 external 로 둔 **산출물** 기준입니다. 애플리케이션이 실제로 배포하는 크기는 더 큽니다. 번들러가 `@kalyx/core`·`@kalyx/adapter-date-fns`·`@floating-ui/react` 까지 해석하기 때문입니다. `sideEffects: false`를 선언하고 dot-notation export 에 pure 주석이 붙어 있어, import 하지 않은 picker 는 제거됩니다 — TimePicker 하나는 약 16.39 KB, 가장 무거운 picker(DateTimePicker)는 약 20.19 KB 이고 7종 전부 + 메인 엔트리 훅 3종은 약 25.69 KB 입니다. 전체 시나리오 표는 `pnpm check-tree-shaking` 으로 확인하세요. picker 들이 큰 기반을 공유하므로 절감은 실제이되 선형과는 거리가 멉니다. 실제 import 조합은 프로덕션 번들에서 직접 측정하시고, 전체 설명은 [트러블슈팅 → 번들 크기](../troubleshooting.md#번들-크기가-예상보다-큽니다)를 참고하세요.
+**배포 파일 한 개의 크기** (`pnpm check-bundle`, README 배지의 값). `packages/react/dist/index.js` 한 파일을 gzip 한 크기이고 `@kalyx/core`·`@kalyx/adapter-date-fns`·`@floating-ui/react` 는 외부 import 로 남깁니다. ESM **약 19.5 KB**(CJS 19.78 KB)이고 CI 한계는 20 KB 입니다. Headless ESM/CJS 파일(20.79 KB, 21.09 KB)에는 별도의 22 KB CI 게이트가 적용됩니다. 이 엔트리는 같은 컴포넌트에 더해 훅 7종 전부와 `DateTimePicker.Presets`까지 싣기 때문에, 기본 엔트리의 수치를 공유하지 않고 따로 예산을 잡습니다.
+
+**앱에 실제로 실리는 크기** (`pnpm check-tree-shaking`). 번들러가 위 세 의존성까지 해석하므로 더 큽니다. 스크립트는 esbuild 로 minify 하고 의존성을 함께 묶은 뒤(React, React DOM 은 외부) gzip 합니다. DatePicker 하나 **약 19 KB**(18.90 KB), 7종 picker + 메인 엔트리 훅 3종 전부 **약 26 KB**(25.65 KB)입니다. 의존성을 포함한 다른 라이브러리의 크기 수치와 비교할 때는 이 숫자를 씁니다.
+
+`sideEffects: false`를 선언하고 dot-notation export 에 pure 주석이 붙어 있어, import 하지 않은 picker 는 제거됩니다. TimePicker 하나는 약 16.36 KB, 가장 무거운 picker(DateTimePicker)는 약 20.16 KB 입니다. 전체 시나리오 표는 `pnpm check-tree-shaking` 으로 확인하세요. picker 들이 큰 기반을 공유하므로 절감은 실제이되 선형과는 거리가 멉니다. 실제 import 조합은 프로덕션 번들에서 직접 측정하시고, 전체 설명은 [트러블슈팅 → 번들 크기](../troubleshooting.md#번들-크기가-예상보다-큽니다)를 참고하세요.
 
 ## 함께 보기
 
